@@ -1,0 +1,75 @@
+@import 'c/commonStyles';
+
+.viability-check-wrap {
+  min-height: 14rem;
+}
+
+.form-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.65);
+  z-index: 2;
+  border-radius: 1rem;
+}
+
+.form-required-indicator {
+  color: #ef4444;
+  margin-left: 0.125rem;
+}
+
+/* The hosting modal is fixed at 672 x 344 - below the global 768px breakpoint
+   in commonStyles - so we force a 2-column grid here and tighten spacing
+   so everything fits without breaking to a single column. */
+.form-fields-grid {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem 0.75rem;
+}
+
+.form-body {
+  padding: 0.75rem 1rem;
+}
+
+.form-field-value-col {
+  max-width: none;
+}
+
+/* Top-aligned label so the bullet sits with the first line of multi-line labels */
+.form-field-label {
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.15;
+}
+
+/* Active field bullet indicator (matches the design's purple dot) */
+.form-field-label::before {
+  content: '';
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #4f46e5;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.viability-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* Centered primary action used for the Viability Check submit button */
+.viability-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.viability-cv-hint {
+  color: #64748b;
+  font-size: 0.8125rem;
+}

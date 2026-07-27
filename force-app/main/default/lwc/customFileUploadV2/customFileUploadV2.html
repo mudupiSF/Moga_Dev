@@ -1,0 +1,299 @@
+<template>
+    <div class="upload-container">
+        <!-- Header -->
+        <div class="header-bar">
+            <lightning-icon icon-name="utility:upload" size="small"></lightning-icon>
+            <span class="header-title">Advanced Document Upload</span>
+            <button class="btn-refresh" title="Refresh" onclick={handleRefresh}>&#8635;</button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-row">
+            <template if:false={restrictGallery}>
+                <button class="btn btn-primary" onclick={openFilePicker}>
+                    <lightning-icon icon-name="utility:attach" size="x-small" alternative-text="Upload"></lightning-icon>
+                    Upload File
+                </button>
+            </template>
+            <button class="btn btn-secondary" onclick={startCamera}>
+                <lightning-icon icon-name="utility:photo" size="x-small" alternative-text="Camera"></lightning-icon>
+                Take Photo
+            </button>
+            <template if:true={showVideoButtons}>
+                <button class="btn btn-video" onclick={openVideoPicker}>
+                    <lightning-icon icon-name="utility:video" size="x-small" alternative-text="Video"></lightning-icon>
+                    Upload Video
+                </button>
+                <button class="btn btn-record" onclick={startVideoRecorder}>
+                    <lightning-icon icon-name="utility:record" size="x-small" alternative-text="Record"></lightning-icon>
+                    Take Video
+                </button>
+            </template>
+            <template if:true={showMergeButton}>
+                <button class="btn btn-success" onclick={openMergeModal} disabled={isMerging}>
+                    <lightning-icon icon-name="utility:layers" size="x-small" alternative-text="Merge"></lightning-icon>
+                    {mergeLabel}
+                </button>
+            </template>
+            <template if:true={files.length}>
+                <button class="btn btn-upload" onclick={uploadAll} disabled={isUploading}>
+                    <lightning-icon icon-name="utility:upload" size="x-small" alternative-text="Upload All"></lightning-icon>
+                    {uploadLabel}
+                </button>
+            </template>
+        </div>
+
+        <!-- Hidden file input -->
+        <input type="file" multiple class="hidden-input" data-id="fileInput" onchange={handleFileSelect} />
+        <!-- Hidden video input -->
+        <input type="file" accept="video/*" class="hidden-input" data-id="videoInput" onchange={handleVideoSelect} />
+
+        <!-- ── Video Upload Confirm Modal ───────────────────────────────────── -->
+        <template if:true={showVideoModal}>
+            <div class="modal-overlay">
+                <div class="modal video-modal">
+                    <div class="modal-header">
+                        <span>Upload Video</span>
+                        <button class="close-btn" onclick={closeVideoModal}>&#10005;</button>
+                    </div>
+                    <div class="video-modal-body">
+                        <div class="video-info-row">
+                            <span class="video-size-label"><strong>{videoFileName}</strong></span>
+                        </div>
+                        <div class="video-info-row">
+                            <span class="video-size-label">Size: <strong>{videoOriginalSize}</strong></span>
+                            <template if:true={videoIsLarge}>
+                                <span class="video-large-badge">&#9888; &gt;50 MB — multipart upload will be used</span>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick={confirmVideoUpload}>Upload</button>
+                        <button class="btn btn-secondary" onclick={closeVideoModal}>Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ── Take Video Modal ─────────────────────────────────────────────── -->
+        <template if:true={showVideoRecorder}>
+            <div class="modal-overlay">
+                <div class="modal video-recorder-modal">
+                    <div class="modal-header">
+                        <span>Take Video</span>
+                        <template if:true={isRecording}>
+                            <span class="rec-badge">&#9679; REC {recDurationLabel}</span>
+                        </template>
+                        <button class="close-btn" onclick={stopVideoRecorder}>&#10005;</button>
+                    </div>
+                    <div class="camera-body">
+                        <video class="camera-preview" data-id="recPreviewEl" autoplay playsinline muted></video>
+                        <div class="camera-controls">
+                            <template if:false={isRecording}>
+                                <button class="btn btn-capture" onclick={startRecording}>
+                                    <lightning-icon icon-name="utility:record" size="small" alternative-text="Record"></lightning-icon>
+                                    Start Recording
+                                </button>
+                            </template>
+                            <template if:true={isRecording}>
+                                <button class="btn btn-stop-rec" onclick={stopRecording}>
+                                    <lightning-icon icon-name="utility:stop" size="small" alternative-text="Stop"></lightning-icon>
+                                    Stop
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                    <template if:true={recVideoReady}>
+                        <div class="rec-preview-wrap">
+                            <video class="rec-playback" src={recPlaybackSrc} controls playsinline></video>
+                            <div class="rec-size-info">{recVideoSize}</div>
+                        </div>
+                    </template>
+                    <div class="modal-footer">
+                        <template if:true={recVideoReady}>
+                            <button class="btn btn-primary" onclick={useRecordedVideo}>Use This Video</button>
+                            <button class="btn btn-secondary" onclick={retakeVideo}>Retake</button>
+                        </template>
+                        <button class="btn btn-secondary" onclick={stopVideoRecorder}>Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ── Camera Modal ─────────────────────────────────────────────────── -->
+        <template if:true={showCamera}>
+            <div class="modal-overlay">
+                <div class="modal camera-modal">
+                    <div class="modal-header">
+                        <span>Camera</span>
+                        <button class="close-btn" onclick={stopCamera}>&#10005;</button>
+                    </div>
+                    <div class="camera-body">
+                        <video class="camera-preview" data-id="videoEl" autoplay playsinline muted></video>
+                        <div class="camera-controls">
+                            <button class="btn btn-capture" onclick={capturePhoto}>
+                                <lightning-icon icon-name="utility:photo" size="small" alternative-text="Capture"></lightning-icon>
+                                Capture
+                            </button>
+                        </div>
+                        <template if:true={capturedPhotos.length}>
+                            <div class="captured-strip">
+                                <template for:each={capturedPhotos} for:item="photo">
+                                    <div key={photo.id} class="captured-thumb-wrap">
+                                        <img src={photo.dataUrl} class="captured-thumb" alt="captured" />
+                                        <button class="thumb-delete" data-id={photo.id} onclick={deleteCapturedPhoto}>&#10005;</button>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="modal-footer">
+                        <template if:false={restrictGallery}>
+                            <button class="btn btn-secondary" onclick={openFilePicker}>&#128247; Pick from Gallery</button>
+                        </template>
+                        <button class="btn btn-primary" onclick={addCapturedToFiles} disabled={noCapturedPhotos}>
+                            Add {capturedPhotos.length} Photo(s)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ── Image Edit Modal ─────────────────────────────────────────────── -->
+        <template if:true={showEditModal}>
+            <div class="modal-overlay">
+                <div class="modal edit-modal">
+                    <div class="modal-header">
+                        <span>Edit &mdash; {editFileName}</span>
+                        <button class="close-btn" onclick={closeEditModal}>&#10005;</button>
+                    </div>
+                    <div class="edit-modal-body">
+                        <canvas class="edit-canvas" data-id="editCanvas"></canvas>
+                    </div>
+                    <div class="edit-toolbar">
+                        <button class="btn btn-tool" onclick={editRotateLeft} title="Rotate Left">&#8634; Rotate Left</button>
+                        <button class="btn btn-tool" onclick={editRotateRight} title="Rotate Right">&#8635; Rotate Right</button>
+                        <template if:true={enableCompression}>
+                            <button class="btn btn-tool" onclick={editCompress} title="Compress image">&#9112; Compress</button>
+                        </template>
+                        <button class={editMaskBtnClass} onclick={editToggleMask} title="Paint to redact sensitive areas">&#9998; {editMaskLabel}</button>
+                        <template if:true={editHasMasks}>
+                            <button class="btn btn-tool-danger" onclick={editClearMasks} title="Remove all masks">&#10005; Clear Masks</button>
+                        </template>
+                    </div>
+                    <template if:true={editMaskActive}>
+                        <div class="mask-hint">Paint over sensitive areas (Aadhaar number, PAN, etc.)</div>
+                    </template>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick={closeEditModal}>&#10003; Done</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ── Merge Selection Modal ────────────────────────────────────────── -->
+        <template if:true={showMergeModal}>
+            <div class="modal-overlay">
+                <div class="modal merge-modal">
+                    <div class="modal-header">
+                        <span>Select Images to Merge into PDF</span>
+                        <button class="close-btn" onclick={closeMergeModal}>&#10005;</button>
+                    </div>
+                    <div class="merge-hint">Click to select &bull; Drag or use arrows to reorder</div>
+                    <div class="merge-modal-body">
+                        <template for:each={imageFilesForMerge} for:item="mf">
+                            <div key={mf.id}
+                                class={mf.mergeCardClass}
+                                data-id={mf.id}
+                                draggable="true"
+                                onclick={toggleMergeSelect}
+                                ondragstart={mergeDragStart}
+                                ondragover={mergeDragOver}
+                                ondrop={mergeDrop}
+                                ondragend={mergeDragEnd}>
+                                <div class="merge-order-badge">{mf.mergeOrder}</div>
+                                <div class="merge-check-badge">{mf.mergeCheckIcon}</div>
+                                <img src={mf.mergeDataUrl} class="merge-thumb-img" alt={mf.displayName} />
+                                <span class="merge-name">{mf.customName}</span>
+                                <div class="merge-reorder-row">
+                                    <button class="merge-arrow-btn" data-id={mf.id} onclick={mergeMoveLeft}  disabled={mf.isFirst}>&#8592;</button>
+                                    <button class="merge-arrow-btn" data-id={mf.id} onclick={mergeMoveRight} disabled={mf.isLast}>&#8594;</button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="modal-footer merge-footer">
+                        <span class="merge-count-label">{mergeSelectedLabel}</span>
+                        <button class="btn btn-success" onclick={doMergePDF} disabled={mergeDisabled}>{mergeLabel}</button>
+                        <button class="btn btn-secondary" onclick={closeMergeModal}>Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ── File Preview Grid ─────────────────────────────────────────────── -->
+        <template if:true={showPreviewGrid}>
+            <div class="preview-grid">
+                <template for:each={files} for:item="file">
+                    <div key={file.id} class="preview-card">
+                        <div class="preview-img-wrap">
+                            <template if:true={file.isImage}>
+                                <canvas class="preview-canvas" data-id={file.id}></canvas>
+                                <button class="edit-overlay-btn" data-id={file.id} onclick={openEditModal}>&#9998; Edit</button>
+                            </template>
+                            <template if:false={file.isImage}>
+                                <div class="pdf-placeholder">
+                                    <lightning-icon icon-name={file.iconName} size="large"></lightning-icon>
+                                    <span class="pdf-name">{file.displayName}</span>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="card-toolbar">
+                            <button class="tool-btn tool-btn-danger" title="Remove" data-id={file.id} onclick={removeFile}>
+                                <lightning-icon icon-name="utility:delete" size="x-small" alternative-text="Delete"></lightning-icon>
+                            </button>
+                        </div>
+
+                        <div class="card-info">
+                            <input
+                                type="text"
+                                class="file-name-input"
+                                value={file.customName}
+                                placeholder="File name"
+                                data-id={file.id}
+                                onchange={handleCustomNameChange}
+                            />
+                            <span class="file-size">{file.sizeLabel}</span>
+                            <template if:true={file.compressed}>
+                                <span class="badge-compressed">Compressed</span>
+                            </template>
+                            <template if:true={file.masked}>
+                                <span class="badge-masked">Masked</span>
+                            </template>
+                            <template if:true={file.uploaded}>
+                                <span class="badge-uploaded">Uploaded</span>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- Status -->
+        <template if:true={statusMessage}>
+            <div class={statusClass}>
+                <lightning-icon icon-name={statusIcon} size="x-small" alternative-text="status"></lightning-icon>
+                {statusMessage}
+            </div>
+        </template>
+
+        <!-- Upload Progress -->
+        <template if:true={isUploading}>
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style={progressStyle}></div>
+                <span class="progress-label">{progressLabel}</span>
+            </div>
+        </template>
+    </div>
+</template>

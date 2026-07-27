@@ -1,0 +1,31 @@
+.dashboard-container {
+    padding: 1rem;
+    min-height: 300px;
+}
+
+.slds-gutters {
+    margin: -0.5rem;
+}
+
+.slds-gutters > .slds-col {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.color-yellow {
+    color: #FFD700;
+}
+
+.color-amber {
+    color: #FF8C00;
+}
+
+.dashboard-card {
+    height: 100%;
+}
+
+.slds-box {
+    background-color: #f3f3f3;
+    border-radius: 0.25rem;
+    padding: 1rem;
+}

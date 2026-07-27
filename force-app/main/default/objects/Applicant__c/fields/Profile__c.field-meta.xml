@@ -1,0 +1,1113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Profile__c</fullName>
+    <label>Profile</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>ADVOCATE</fullName>
+                <default>false</default>
+                <label>ADVOCATE</label>
+            </value>
+            <value>
+                <fullName>AGRICULTURE PRODUCE</fullName>
+                <default>false</default>
+                <label>AGRICULTURE PRODUCE</label>
+            </value>
+            <value>
+                <fullName>AGRICULTURIST</fullName>
+                <default>false</default>
+                <label>AGRICULTURIST</label>
+            </value>
+            <value>
+                <fullName>ASSOCIATION</fullName>
+                <default>false</default>
+                <label>ASSOCIATION</label>
+            </value>
+            <value>
+                <fullName>AUTO CONSULTANT</fullName>
+                <default>false</default>
+                <label>AUTO CONSULTANT</label>
+            </value>
+            <value>
+                <fullName>AUTOMOBILE ANCILLARY</fullName>
+                <default>false</default>
+                <label>AUTOMOBILE ANCILLARY</label>
+            </value>
+            <value>
+                <fullName>AUTOMOBILE DEALERS</fullName>
+                <default>false</default>
+                <label>AUTOMOBILE DEALERS</label>
+            </value>
+            <value>
+                <fullName>AUTOMOBILE MANUFACTURER</fullName>
+                <default>false</default>
+                <label>AUTOMOBILE MANUFACTURER</label>
+            </value>
+            <value>
+                <fullName>BAKERY</fullName>
+                <default>false</default>
+                <label>BAKERY</label>
+            </value>
+            <value>
+                <fullName>BANK EMPLOYEE</fullName>
+                <default>false</default>
+                <label>BANK EMPLOYEE</label>
+            </value>
+            <value>
+                <fullName>BAR OWNER</fullName>
+                <default>false</default>
+                <label>BAR OWNER</label>
+            </value>
+            <value>
+                <fullName>BEAUTY PARLOR</fullName>
+                <default>false</default>
+                <label>BEAUTY PARLOR</label>
+            </value>
+            <value>
+                <fullName>BLDG. CONTRACTOR</fullName>
+                <default>false</default>
+                <label>BLDG. CONTRACTOR</label>
+            </value>
+            <value>
+                <fullName>BLUE METAL</fullName>
+                <default>false</default>
+                <label>BLUE METAL</label>
+            </value>
+            <value>
+                <fullName>BROKER</fullName>
+                <default>false</default>
+                <label>BROKER</label>
+            </value>
+            <value>
+                <fullName>BUILDER</fullName>
+                <default>false</default>
+                <label>BUILDER</label>
+            </value>
+            <value>
+                <fullName>CABLE</fullName>
+                <default>false</default>
+                <label>CABLE</label>
+            </value>
+            <value>
+                <fullName>CEMENT</fullName>
+                <default>false</default>
+                <label>CEMENT</label>
+            </value>
+            <value>
+                <fullName>CERAMICS</fullName>
+                <default>false</default>
+                <label>CERAMICS</label>
+            </value>
+            <value>
+                <fullName>CHARTERED ACCOUNTANT</fullName>
+                <default>false</default>
+                <label>CHARTERED ACCOUNTANT</label>
+            </value>
+            <value>
+                <fullName>CHEMICALS AND DYES</fullName>
+                <default>false</default>
+                <label>CHEMICALS AND DYES</label>
+            </value>
+            <value>
+                <fullName>CHIT COMPANY</fullName>
+                <default>false</default>
+                <label>CHIT COMPANY</label>
+            </value>
+            <value>
+                <fullName>CLINIC</fullName>
+                <default>false</default>
+                <label>CLINIC</label>
+            </value>
+            <value>
+                <fullName>COAL MINING</fullName>
+                <default>false</default>
+                <label>COAL MINING</label>
+            </value>
+            <value>
+                <fullName>COFFEE AND TEA</fullName>
+                <default>false</default>
+                <label>COFFEE AND TEA</label>
+            </value>
+            <value>
+                <fullName>COLLECTION AGENCY</fullName>
+                <default>false</default>
+                <label>COLLECTION AGENCY</label>
+            </value>
+            <value>
+                <fullName>COMMISSION AGENCY</fullName>
+                <default>false</default>
+                <label>COMMISSION AGENCY</label>
+            </value>
+            <value>
+                <fullName>COMPUTER PERIPHERAL DEALER</fullName>
+                <default>false</default>
+                <label>COMPUTER PERIPHERAL DEALER</label>
+            </value>
+            <value>
+                <fullName>CONSTRUCTION COMPANY</fullName>
+                <default>false</default>
+                <label>CONSTRUCTION COMPANY</label>
+            </value>
+            <value>
+                <fullName>CONSULTANTS OPERATING FROM RESIDENCE</fullName>
+                <default>false</default>
+                <label>CONSULTANTS OPERATING FROM RESIDENCE</label>
+            </value>
+            <value>
+                <fullName>CONTRACT WORKER</fullName>
+                <default>false</default>
+                <label>CONTRACT WORKER</label>
+            </value>
+            <value>
+                <fullName>COOPERATIVE SOCIETY</fullName>
+                <default>false</default>
+                <label>COOPERATIVE SOCIETY</label>
+            </value>
+            <value>
+                <fullName>DAILY WAGES</fullName>
+                <default>false</default>
+                <label>DAILY WAGES</label>
+            </value>
+            <value>
+                <fullName>DAIRY FARMING</fullName>
+                <default>false</default>
+                <label>DAIRY FARMING</label>
+            </value>
+            <value>
+                <fullName>DOCK AND MINE WORKER</fullName>
+                <default>false</default>
+                <label>DOCK AND MINE WORKER</label>
+            </value>
+            <value>
+                <fullName>DOCTOR</fullName>
+                <default>false</default>
+                <label>DOCTOR</label>
+            </value>
+            <value>
+                <fullName>EARTH WORK</fullName>
+                <default>false</default>
+                <label>EARTH WORK</label>
+            </value>
+            <value>
+                <fullName>EDUCTIONAL INSTITUTION</fullName>
+                <default>false</default>
+                <label>EDUCTIONAL INSTITUTION</label>
+            </value>
+            <value>
+                <fullName>ELECTRONICS</fullName>
+                <default>false</default>
+                <label>ELECTRONICS</label>
+            </value>
+            <value>
+                <fullName>EMPLOYEE UNION OFFICE BEARER</fullName>
+                <default>false</default>
+                <label>EMPLOYEE UNION OFFICE BEARER</label>
+            </value>
+            <value>
+                <fullName>ENGINEER</fullName>
+                <default>false</default>
+                <label>ENGINEER</label>
+            </value>
+            <value>
+                <fullName>ENGINEERING GOODS</fullName>
+                <default>false</default>
+                <label>ENGINEERING GOODS</label>
+            </value>
+            <value>
+                <fullName>FERTILISERS</fullName>
+                <default>false</default>
+                <label>FERTILISERS</label>
+            </value>
+            <value>
+                <fullName>FILM PERSONALITY</fullName>
+                <default>false</default>
+                <label>FILM PERSONALITY</label>
+            </value>
+            <value>
+                <fullName>FINANCE CO</fullName>
+                <default>false</default>
+                <label>FINANCE CO</label>
+            </value>
+            <value>
+                <fullName>FINANCIAL SERVICES</fullName>
+                <default>false</default>
+                <label>FINANCIAL SERVICES</label>
+            </value>
+            <value>
+                <fullName>FLAT PROMOTER</fullName>
+                <default>false</default>
+                <label>FLAT PROMOTER</label>
+            </value>
+            <value>
+                <fullName>FOOD PRODUCTS</fullName>
+                <default>false</default>
+                <label>FOOD PRODUCTS</label>
+            </value>
+            <value>
+                <fullName>FRUITS AND VEGETABLES</fullName>
+                <default>false</default>
+                <label>FRUITS AND VEGETABLES</label>
+            </value>
+            <value>
+                <fullName>FURNITURE SHOP</fullName>
+                <default>false</default>
+                <label>FURNITURE SHOP</label>
+            </value>
+            <value>
+                <fullName>GARAGE MECHANIC</fullName>
+                <default>false</default>
+                <label>GARAGE MECHANIC</label>
+            </value>
+            <value>
+                <fullName>GOVERNMENT SERVANT</fullName>
+                <default>false</default>
+                <label>GOVERNMENT SERVANT</label>
+            </value>
+            <value>
+                <fullName>GRANITE</fullName>
+                <default>false</default>
+                <label>GRANITE</label>
+            </value>
+            <value>
+                <fullName>GROCERY SHOP</fullName>
+                <default>false</default>
+                <label>GROCERY SHOP</label>
+            </value>
+            <value>
+                <fullName>HINDU UNDIVIDED FAMILY</fullName>
+                <default>false</default>
+                <label>HINDU UNDIVIDED FAMILY</label>
+            </value>
+            <value>
+                <fullName>HOSPITAL</fullName>
+                <default>false</default>
+                <label>HOSPITAL</label>
+            </value>
+            <value>
+                <fullName>HOTEL AND RESTAURENT</fullName>
+                <default>false</default>
+                <label>HOTEL AND RESTAURENT</label>
+            </value>
+            <value>
+                <fullName>INTELLIGENCE PERSONNEL</fullName>
+                <default>false</default>
+                <label>INTELLIGENCE PERSONNEL</label>
+            </value>
+            <value>
+                <fullName>IRON AND STEEL</fullName>
+                <default>false</default>
+                <label>IRON AND STEEL</label>
+            </value>
+            <value>
+                <fullName>JEWELLER</fullName>
+                <default>false</default>
+                <label>JEWELLER</label>
+            </value>
+            <value>
+                <fullName>JOB WORKER</fullName>
+                <default>false</default>
+                <label>JOB WORKER</label>
+            </value>
+            <value>
+                <fullName>LAND DEVELOPER</fullName>
+                <default>false</default>
+                <label>LAND DEVELOPER</label>
+            </value>
+            <value>
+                <fullName>LANDLORD</fullName>
+                <default>false</default>
+                <label>LANDLORD</label>
+            </value>
+            <value>
+                <fullName>LAWYER</fullName>
+                <default>false</default>
+                <label>LAWYER</label>
+            </value>
+            <value>
+                <fullName>LEATHER</fullName>
+                <default>false</default>
+                <label>LEATHER</label>
+            </value>
+            <value>
+                <fullName>LIQUOR</fullName>
+                <default>false</default>
+                <label>LIQUOR</label>
+            </value>
+            <value>
+                <fullName>LIQUOR SHOP OWNER</fullName>
+                <default>false</default>
+                <label>LIQUOR SHOP OWNER</label>
+            </value>
+            <value>
+                <fullName>MARBLE</fullName>
+                <default>false</default>
+                <label>MARBLE</label>
+            </value>
+            <value>
+                <fullName>MECHANIC SHOP</fullName>
+                <default>false</default>
+                <label>MECHANIC SHOP</label>
+            </value>
+            <value>
+                <fullName>MEDICAL SHOP</fullName>
+                <default>false</default>
+                <label>MEDICAL SHOP</label>
+            </value>
+            <value>
+                <fullName>MONEY LENDER</fullName>
+                <default>false</default>
+                <label>MONEY LENDER</label>
+            </value>
+            <value>
+                <fullName>MUTUAL BENEFIT SOCIETY</fullName>
+                <default>false</default>
+                <label>MUTUAL BENEFIT SOCIETY</label>
+            </value>
+            <value>
+                <fullName>MUTUAL FUND</fullName>
+                <default>false</default>
+                <label>MUTUAL FUND</label>
+            </value>
+            <value>
+                <fullName>NEWS REPORTER</fullName>
+                <default>false</default>
+                <label>NEWS REPORTER</label>
+            </value>
+            <value>
+                <fullName>OFFICE CUM RESIDENCE</fullName>
+                <default>false</default>
+                <label>OFFICE CUM RESIDENCE</label>
+            </value>
+            <value>
+                <fullName>OIL AND PETROLEUM</fullName>
+                <default>false</default>
+                <label>OIL AND PETROLEUM</label>
+            </value>
+            <value>
+                <fullName>PAINT</fullName>
+                <default>false</default>
+                <label>PAINT</label>
+            </value>
+            <value>
+                <fullName>PAPER AND PACKAGING</fullName>
+                <default>false</default>
+                <label>PAPER AND PACKAGING</label>
+            </value>
+            <value>
+                <fullName>PARCEL AND COURIER</fullName>
+                <default>false</default>
+                <label>PARCEL AND COURIER</label>
+            </value>
+            <value>
+                <fullName>PLACEMENT AGENCY</fullName>
+                <default>false</default>
+                <label>PLACEMENT AGENCY</label>
+            </value>
+            <value>
+                <fullName>PLANTATION CO</fullName>
+                <default>false</default>
+                <label>PLANTATION CO</label>
+            </value>
+            <value>
+                <fullName>PLASTICS</fullName>
+                <default>false</default>
+                <label>PLASTICS</label>
+            </value>
+            <value>
+                <fullName>POLICE</fullName>
+                <default>false</default>
+                <label>POLICE</label>
+            </value>
+            <value>
+                <fullName>POLITICIAN</fullName>
+                <default>false</default>
+                <label>POLITICIAN</label>
+            </value>
+            <value>
+                <fullName>POULTRY FARMING</fullName>
+                <default>false</default>
+                <label>POULTRY FARMING</label>
+            </value>
+            <value>
+                <fullName>POWER INDUSTRY</fullName>
+                <default>false</default>
+                <label>POWER INDUSTRY</label>
+            </value>
+            <value>
+                <fullName>REAL ESTATE BROKER</fullName>
+                <default>false</default>
+                <label>REAL ESTATE BROKER</label>
+            </value>
+            <value>
+                <fullName>REPOSSESSION AGENCY</fullName>
+                <default>false</default>
+                <label>REPOSSESSION AGENCY</label>
+            </value>
+            <value>
+                <fullName>ROAD WORK</fullName>
+                <default>false</default>
+                <label>ROAD WORK</label>
+            </value>
+            <value>
+                <fullName>RUBBER</fullName>
+                <default>false</default>
+                <label>RUBBER</label>
+            </value>
+            <value>
+                <fullName>SAND QUARRYING</fullName>
+                <default>false</default>
+                <label>SAND QUARRYING</label>
+            </value>
+            <value>
+                <fullName>SEA FOOD</fullName>
+                <default>false</default>
+                <label>SEA FOOD</label>
+            </value>
+            <value>
+                <fullName>SECURITY AGENCY</fullName>
+                <default>false</default>
+                <label>SECURITY AGENCY</label>
+            </value>
+            <value>
+                <fullName>SHARE BROKERS</fullName>
+                <default>false</default>
+                <label>SHARE BROKERS</label>
+            </value>
+            <value>
+                <fullName>SHIPPING</fullName>
+                <default>false</default>
+                <label>SHIPPING</label>
+            </value>
+            <value>
+                <fullName>SMALL INVESTMENTS COMPANY</fullName>
+                <default>false</default>
+                <label>SMALL INVESTMENTS COMPANY</label>
+            </value>
+            <value>
+                <fullName>SOFTWARE ENGINEER</fullName>
+                <default>false</default>
+                <label>SOFTWARE ENGINEER</label>
+            </value>
+            <value>
+                <fullName>SPAREPARTS DEALER</fullName>
+                <default>false</default>
+                <label>SPAREPARTS DEALER</label>
+            </value>
+            <value>
+                <fullName>STD - ISD - PCO</fullName>
+                <default>false</default>
+                <label>STD - ISD - PCO</label>
+            </value>
+            <value>
+                <fullName>SUGAR</fullName>
+                <default>false</default>
+                <label>SUGAR</label>
+            </value>
+            <value>
+                <fullName>TEXTILES</fullName>
+                <default>false</default>
+                <label>TEXTILES</label>
+            </value>
+            <value>
+                <fullName>TIME SHARE COMPANY</fullName>
+                <default>false</default>
+                <label>TIME SHARE COMPANY</label>
+            </value>
+            <value>
+                <fullName>TOURISM</fullName>
+                <default>false</default>
+                <label>TOURISM</label>
+            </value>
+            <value>
+                <fullName>TOURS &amp; TRAVELS</fullName>
+                <default>false</default>
+                <label>TOURS &amp; TRAVELS</label>
+            </value>
+            <value>
+                <fullName>TRANSPORTER</fullName>
+                <default>false</default>
+                <label>TRANSPORTER</label>
+            </value>
+            <value>
+                <fullName>TRUST</fullName>
+                <default>false</default>
+                <label>TRUST</label>
+            </value>
+            <value>
+                <fullName>VIDEO PARLOR</fullName>
+                <default>false</default>
+                <label>VIDEO PARLOR</label>
+            </value>
+            <value>
+                <fullName>WINE SHOP OWNER</fullName>
+                <default>false</default>
+                <label>WINE SHOP OWNER</label>
+            </value>
+            <value>
+                <fullName>WOOD</fullName>
+                <default>false</default>
+                <label>WOOD</label>
+            </value>
+            <value>
+                <fullName>TEACHER / PROFESSOR</fullName>
+                <default>false</default>
+                <label>TEACHER / PROFESSOR</label>
+            </value>
+            <value>
+                <fullName>PENSIONER/RETIRED</fullName>
+                <default>false</default>
+                <label>PENSIONER/RETIRED</label>
+            </value>
+            <value>
+                <fullName>TAILOR/READYMADE GARMENTS</fullName>
+                <default>false</default>
+                <label>TAILOR/READYMADE GARMENTS</label>
+            </value>
+            <value>
+                <fullName>LAB TECHNICIAN</fullName>
+                <default>false</default>
+                <label>LAB TECHNICIAN</label>
+            </value>
+            <value>
+                <fullName>STUDENT</fullName>
+                <default>false</default>
+                <label>STUDENT</label>
+            </value>
+            <value>
+                <fullName>LIC AGENT</fullName>
+                <default>false</default>
+                <label>LIC AGENT</label>
+            </value>
+            <value>
+                <fullName>HANDLOOMS/POWERLOOMS</fullName>
+                <default>false</default>
+                <label>HANDLOOMS/POWERLOOMS</label>
+            </value>
+            <value>
+                <fullName>SALOON</fullName>
+                <default>false</default>
+                <label>SALOON</label>
+            </value>
+            <value>
+                <fullName>STATIONERY</fullName>
+                <default>false</default>
+                <label>STATIONERY</label>
+            </value>
+            <value>
+                <fullName>GENERAL STORES/KIRANA SHOP</fullName>
+                <default>false</default>
+                <label>GENERAL STORES/KIRANA SHOP</label>
+            </value>
+            <value>
+                <fullName>PUROHIT/PANDIT/ASTROLOGER</fullName>
+                <default>false</default>
+                <label>PUROHIT/PANDIT/ASTROLOGER</label>
+            </value>
+            <value>
+                <fullName>WATER SUPPLIER</fullName>
+                <default>false</default>
+                <label>WATER SUPPLIER</label>
+            </value>
+            <value>
+                <fullName>GAS AGENCY</fullName>
+                <default>false</default>
+                <label>GAS AGENCY</label>
+            </value>
+            <value>
+                <fullName>PHARMACEUTICALS</fullName>
+                <default>false</default>
+                <label>PHARMACEUTICALS</label>
+            </value>
+            <value>
+                <fullName>OPTICIANS</fullName>
+                <default>false</default>
+                <label>OPTICIANS</label>
+            </value>
+            <value>
+                <fullName>DECORATOR</fullName>
+                <default>false</default>
+                <label>DECORATOR</label>
+            </value>
+            <value>
+                <fullName>COMPUTER CENTRE</fullName>
+                <default>false</default>
+                <label>COMPUTER CENTRE</label>
+            </value>
+            <value>
+                <fullName>GARDENER</fullName>
+                <default>false</default>
+                <label>GARDENER</label>
+            </value>
+            <value>
+                <fullName>TELECOMMUNICATION</fullName>
+                <default>false</default>
+                <label>TELECOMMUNICATION</label>
+            </value>
+            <value>
+                <fullName>BIDI WORK</fullName>
+                <default>false</default>
+                <label>BIDI WORK</label>
+            </value>
+            <value>
+                <fullName>CONTRACTOR</fullName>
+                <default>false</default>
+                <label>CONTRACTOR</label>
+            </value>
+            <value>
+                <fullName>BUSINESS</fullName>
+                <default>false</default>
+                <label>BUSINESS</label>
+            </value>
+            <value>
+                <fullName>AQUACULTURE</fullName>
+                <default>false</default>
+                <label>AQUACULTURE</label>
+            </value>
+            <value>
+                <fullName>SUPERVISOR</fullName>
+                <default>false</default>
+                <label>SUPERVISOR</label>
+            </value>
+            <value>
+                <fullName>TRADING BUSINESS</fullName>
+                <default>false</default>
+                <label>TRADING BUSINESS</label>
+            </value>
+            <value>
+                <fullName>DYING UNIT</fullName>
+                <default>false</default>
+                <label>DYING UNIT</label>
+            </value>
+            <value>
+                <fullName>CONDUCTOR</fullName>
+                <default>false</default>
+                <label>CONDUCTOR</label>
+            </value>
+            <value>
+                <fullName>EDITOR</fullName>
+                <default>false</default>
+                <label>EDITOR</label>
+            </value>
+            <value>
+                <fullName>FABRICATION WORK BUSINESS</fullName>
+                <default>false</default>
+                <label>FABRICATION WORK BUSINESS</label>
+            </value>
+            <value>
+                <fullName>FEED BUSINESS</fullName>
+                <default>false</default>
+                <label>FEED BUSINESS</label>
+            </value>
+            <value>
+                <fullName>NOT MENTIONED/NOT CLEAR</fullName>
+                <default>false</default>
+                <label>NOT MENTIONED/NOT CLEAR</label>
+            </value>
+            <value>
+                <fullName>TAX CONSULTANT</fullName>
+                <default>false</default>
+                <label>TAX CONSULTANT</label>
+            </value>
+            <value>
+                <fullName>DEALER - PAINT</fullName>
+                <default>false</default>
+                <label>DEALER - PAINT</label>
+            </value>
+            <value>
+                <fullName>WORKSHOP</fullName>
+                <default>false</default>
+                <label>WORKSHOP</label>
+            </value>
+            <value>
+                <fullName>NURSE</fullName>
+                <default>false</default>
+                <label>NURSE</label>
+            </value>
+            <value>
+                <fullName>HOUSE WIFE</fullName>
+                <default>false</default>
+                <label>HOUSE WIFE</label>
+            </value>
+            <value>
+                <fullName>FLOWER STALL</fullName>
+                <default>false</default>
+                <label>FLOWER STALL</label>
+            </value>
+            <value>
+                <fullName>MEDICAL - REP</fullName>
+                <default>false</default>
+                <label>MEDICAL - REP</label>
+            </value>
+            <value>
+                <fullName>BUSINESS - MASALA POWER</fullName>
+                <default>false</default>
+                <label>BUSINESS - MASALA POWER</label>
+            </value>
+            <value>
+                <fullName>CARPENTER</fullName>
+                <default>false</default>
+                <label>CARPENTER</label>
+            </value>
+            <value>
+                <fullName>LIBRARIAN</fullName>
+                <default>false</default>
+                <label>LIBRARIAN</label>
+            </value>
+            <value>
+                <fullName>BRICKS - MFGR</fullName>
+                <default>false</default>
+                <label>BRICKS - MFGR</label>
+            </value>
+            <value>
+                <fullName>JOURNALIST</fullName>
+                <default>false</default>
+                <label>JOURNALIST</label>
+            </value>
+            <value>
+                <fullName>RICE - MERCHANT</fullName>
+                <default>false</default>
+                <label>RICE - MERCHANT</label>
+            </value>
+            <value>
+                <fullName>PETROL BUNK</fullName>
+                <default>false</default>
+                <label>PETROL BUNK</label>
+            </value>
+            <value>
+                <fullName>BED WORKER</fullName>
+                <default>false</default>
+                <label>BED WORKER</label>
+            </value>
+            <value>
+                <fullName>GOLD SMITH</fullName>
+                <default>false</default>
+                <label>GOLD SMITH</label>
+            </value>
+            <value>
+                <fullName>ACCOUNTANT</fullName>
+                <default>false</default>
+                <label>ACCOUNTANT</label>
+            </value>
+            <value>
+                <fullName>FITTER</fullName>
+                <default>false</default>
+                <label>FITTER</label>
+            </value>
+            <value>
+                <fullName>SALES - EXEUCITVE</fullName>
+                <default>false</default>
+                <label>SALES - EXEUCITVE</label>
+            </value>
+            <value>
+                <fullName>STALL - TEA/COFFEE/JUICE</fullName>
+                <default>false</default>
+                <label>STALL - TEA/COFFEE/JUICE</label>
+            </value>
+            <value>
+                <fullName>BUSINESS- STONE - SUPPLIER</fullName>
+                <default>false</default>
+                <label>BUSINESS- STONE - SUPPLIER</label>
+            </value>
+            <value>
+                <fullName>TECHNICIAN</fullName>
+                <default>false</default>
+                <label>TECHNICIAN</label>
+            </value>
+            <value>
+                <fullName>COOK</fullName>
+                <default>false</default>
+                <label>COOK</label>
+            </value>
+            <value>
+                <fullName>MEDICAL - TRANSCRIPTION</fullName>
+                <default>false</default>
+                <label>MEDICAL - TRANSCRIPTION</label>
+            </value>
+            <value>
+                <fullName>CANDLE -MFGRS</fullName>
+                <default>false</default>
+                <label>CANDLE -MFGRS</label>
+            </value>
+            <value>
+                <fullName>PVT TUTION</fullName>
+                <default>false</default>
+                <label>PVT TUTION</label>
+            </value>
+            <value>
+                <fullName>EXEUTIVE</fullName>
+                <default>false</default>
+                <label>EXEUTIVE</label>
+            </value>
+            <value>
+                <fullName>MKTG EXEUCITVE/PVT COMPANY</fullName>
+                <default>false</default>
+                <label>MKTG EXEUCITVE/PVT COMPANY</label>
+            </value>
+            <value>
+                <fullName>PEON</fullName>
+                <default>false</default>
+                <label>PEON</label>
+            </value>
+            <value>
+                <fullName>MUNICIPAL - CORPORATION</fullName>
+                <default>false</default>
+                <label>MUNICIPAL - CORPORATION</label>
+            </value>
+            <value>
+                <fullName>TENT- BUSINESS</fullName>
+                <default>false</default>
+                <label>TENT- BUSINESS</label>
+            </value>
+            <value>
+                <fullName>DRY CLEAR</fullName>
+                <default>false</default>
+                <label>DRY CLEAR</label>
+            </value>
+            <value>
+                <fullName>CYCLE - SHOP</fullName>
+                <default>false</default>
+                <label>CYCLE - SHOP</label>
+            </value>
+            <value>
+                <fullName>SEASONAL BUSINESS</fullName>
+                <default>false</default>
+                <label>SEASONAL BUSINESS</label>
+            </value>
+            <value>
+                <fullName>ENGINEERING &amp; PLUMBING WORKS</fullName>
+                <default>false</default>
+                <label>ENGINEERING &amp; PLUMBING WORKS</label>
+            </value>
+            <value>
+                <fullName>XRAY &amp; MEDICAL LABS</fullName>
+                <default>false</default>
+                <label>XRAY &amp; MEDICAL LABS</label>
+            </value>
+            <value>
+                <fullName>MANAGER</fullName>
+                <default>false</default>
+                <label>MANAGER</label>
+            </value>
+            <value>
+                <fullName>INTERIOR DESIGNER &amp; DECROTORS</fullName>
+                <default>false</default>
+                <label>INTERIOR DESIGNER &amp; DECROTORS</label>
+            </value>
+            <value>
+                <fullName>TIMBER DEPOT &amp; SAW MILL</fullName>
+                <default>false</default>
+                <label>TIMBER DEPOT &amp; SAW MILL</label>
+            </value>
+            <value>
+                <fullName>RICE &amp; FLOUR MILL</fullName>
+                <default>false</default>
+                <label>RICE &amp; FLOUR MILL</label>
+            </value>
+            <value>
+                <fullName>TUTORIAL / VOCATIONAL INSTITUTE</fullName>
+                <default>false</default>
+                <label>TUTORIAL / VOCATIONAL INSTITUTE</label>
+            </value>
+            <value>
+                <fullName>FANCY &amp; GIFT SHOP_RETAIL</fullName>
+                <default>false</default>
+                <label>FANCY &amp; GIFT SHOP_RETAIL</label>
+            </value>
+            <value>
+                <fullName>TAILORING SHOP</fullName>
+                <default>false</default>
+                <label>TAILORING SHOP</label>
+            </value>
+            <value>
+                <fullName>BAKERY &amp; SMALL FOOD RETAILS</fullName>
+                <default>false</default>
+                <label>BAKERY &amp; SMALL FOOD RETAILS</label>
+            </value>
+            <value>
+                <fullName>SUGAR MILL &amp; DISTILLERY</fullName>
+                <default>false</default>
+                <label>SUGAR MILL &amp; DISTILLERY</label>
+            </value>
+            <value>
+                <fullName>STUDIO, PHOTO LAB &amp; VIDEOGRAPHY</fullName>
+                <default>false</default>
+                <label>STUDIO, PHOTO LAB &amp; VIDEOGRAPHY</label>
+            </value>
+            <value>
+                <fullName>PAINTER</fullName>
+                <default>false</default>
+                <label>PAINTER</label>
+            </value>
+            <value>
+                <fullName>WATCHMAN &amp; SECURITY</fullName>
+                <default>false</default>
+                <label>WATCHMAN &amp; SECURITY</label>
+            </value>
+            <value>
+                <fullName>PRINTING PRESS (EXCEPT NEWSPAPER)</fullName>
+                <default>false</default>
+                <label>PRINTING PRESS (EXCEPT NEWSPAPER)</label>
+            </value>
+            <value>
+                <fullName>MANAGEMENT EXECUTIVE</fullName>
+                <default>false</default>
+                <label>MANAGEMENT EXECUTIVE</label>
+            </value>
+            <value>
+                <fullName>RMP DOCTOR</fullName>
+                <default>false</default>
+                <label>RMP DOCTOR</label>
+            </value>
+            <value>
+                <fullName>PHOTOGRAPHER</fullName>
+                <default>false</default>
+                <label>PHOTOGRAPHER</label>
+            </value>
+            <value>
+                <fullName>NON RESIDENT_NRI &amp; NRE</fullName>
+                <default>false</default>
+                <label>NON RESIDENT_NRI &amp; NRE</label>
+            </value>
+            <value>
+                <fullName>MOBILE SHOP - RETAIL</fullName>
+                <default>false</default>
+                <label>MOBILE SHOP - RETAIL</label>
+            </value>
+            <value>
+                <fullName>CANTEEN &amp; MESS</fullName>
+                <default>false</default>
+                <label>CANTEEN &amp; MESS</label>
+            </value>
+            <value>
+                <fullName>JUDGE / MAGISTRATE</fullName>
+                <default>false</default>
+                <label>JUDGE / MAGISTRATE</label>
+            </value>
+            <value>
+                <fullName>INTERNET CAFÉ</fullName>
+                <default>false</default>
+                <label>INTERNET CAFÉ</label>
+            </value>
+            <value>
+                <fullName>Stamp Vendor</fullName>
+                <default>false</default>
+                <label>Stamp Vendor</label>
+            </value>
+            <value>
+                <fullName>Driver</fullName>
+                <default>false</default>
+                <label>Driver</label>
+            </value>
+            <value>
+                <fullName>CONSTRUCTION ANXILLARY SERVICES / SUPPLIES</fullName>
+                <default>false</default>
+                <label>CONSTRUCTION ANXILLARY SERVICES / SUPPLIES</label>
+            </value>
+            <value>
+                <fullName>CATERING &amp; PANDAL SERVICES</fullName>
+                <default>false</default>
+                <label>CATERING &amp; PANDAL SERVICES</label>
+            </value>
+            <value>
+                <fullName>PRIVATE CABLE OPERATORS</fullName>
+                <default>false</default>
+                <label>PRIVATE CABLE OPERATORS</label>
+            </value>
+            <value>
+                <fullName>BOOK SHOP - RETAIL</fullName>
+                <default>false</default>
+                <label>BOOK SHOP - RETAIL</label>
+            </value>
+            <value>
+                <fullName>AUTO OWNER</fullName>
+                <default>false</default>
+                <label>AUTO OWNER</label>
+            </value>
+            <value>
+                <fullName>PROFESSIONAL ARTISTS</fullName>
+                <default>false</default>
+                <label>PROFESSIONAL ARTISTS</label>
+            </value>
+            <value>
+                <fullName>HARDWARE SHOP - RETAIL</fullName>
+                <default>false</default>
+                <label>HARDWARE SHOP - RETAIL</label>
+            </value>
+            <value>
+                <fullName>FOOTWEAR &amp; LEATHER ARTICLES - RETAIL</fullName>
+                <default>false</default>
+                <label>FOOTWEAR &amp; LEATHER ARTICLES - RETAIL</label>
+            </value>
+            <value>
+                <fullName>FISHING BUSINESS</fullName>
+                <default>false</default>
+                <label>FISHING BUSINESS</label>
+            </value>
+            <value>
+                <fullName>FISHER MAN</fullName>
+                <default>false</default>
+                <label>FISHER MAN</label>
+            </value>
+            <value>
+                <fullName>ELECTRICIAN</fullName>
+                <default>false</default>
+                <label>ELECTRICIAN</label>
+            </value>
+            <value>
+                <fullName>ELECTRICALS SHOP</fullName>
+                <default>false</default>
+                <label>ELECTRICALS SHOP</label>
+            </value>
+            <value>
+                <fullName>UN-EMPLOYED</fullName>
+                <default>false</default>
+                <label>UN-EMPLOYED</label>
+            </value>
+            <value>
+                <fullName>Hardware Engineer</fullName>
+                <default>false</default>
+                <label>Hardware Engineer</label>
+            </value>
+            <value>
+                <fullName>PREPARATION AND SPINNING OF WOOL</fullName>
+                <default>false</default>
+                <label>PREPARATION AND SPINNING OF WOOL</label>
+            </value>
+            <value>
+                <fullName>DIAMONDS, GEMS AND JEWELLERY</fullName>
+                <default>false</default>
+                <label>DIAMONDS, GEMS AND JEWELLERY</label>
+            </value>
+            <value>
+                <fullName>ADVERTISING AND PUBLICITY CONCERNS</fullName>
+                <default>false</default>
+                <label>ADVERTISING AND PUBLICITY CONCERNS</label>
+            </value>
+            <value>
+                <fullName>CONSTRUCTION EQUIPMENT LEASING</fullName>
+                <default>false</default>
+                <label>CONSTRUCTION EQUIPMENT LEASING</label>
+            </value>
+            <value>
+                <fullName>TELEPHONE OPERATOR/RECEPTIONIST</fullName>
+                <default>false</default>
+                <label>TELEPHONE OPERATOR/RECEPTIONIST</label>
+            </value>
+            <value>
+                <fullName>PHYSIOTHERAPIST</fullName>
+                <default>false</default>
+                <label>PHYSIOTHERAPIST</label>
+            </value>
+            <value>
+                <fullName>WORKING ABROAD</fullName>
+                <default>false</default>
+                <label>WORKING ABROAD</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

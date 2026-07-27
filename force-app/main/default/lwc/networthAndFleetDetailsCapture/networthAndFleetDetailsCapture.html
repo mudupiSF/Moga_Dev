@@ -1,0 +1,443 @@
+<template>
+    <div class="nf-embedded-layout">
+        <div class="nf-shell nf-shell-embedded">
+            <div class="nf-body">
+                <div class="nf-accordion" role="presentation">
+                    <div class={networthAccordionItemClass}>
+                        <button
+                            type="button"
+                            class={networthAccordionTriggerClass}
+                            data-section="networth"
+                            aria-expanded={isNetworthAccordionOpen}
+                            onclick={handleAccordionToggle}>
+                            <span class="nf-accordion-trigger-main">
+                                <span class="nf-accordion-icon-wrap nf-accordion-icon-wrap-networth">
+                                    <lightning-icon icon-name="utility:moneybag" size="x-small" class="nf-accordion-icon"></lightning-icon>
+                                </span>
+                                <span class="nf-accordion-text">
+                                    <span class="nf-accordion-label">Networth Details</span>
+                                    <span class="nf-accordion-desc">Immovable property, assets, liabilities and net worth</span>
+                                </span>
+                            </span>
+                            <lightning-icon icon-name={networthChevronIcon} size="x-small" class="nf-accordion-chevron"></lightning-icon>
+                        </button>
+                        <template lwc:if={isNetworthAccordionOpen}>
+                        <div class="nf-accordion-panel">
+                        <div class="nf-accordion-content" data-section-content="networth">
+                            <div class="nf-section-block">
+                                <div class="nf-section-header">
+                                    <h3 class="nf-section-title">(A) Total Value of Immovable Property</h3>
+                                </div>
+                                <template for:each={networthSectionsA} for:item="section">
+                                    <div key={section.id} class="nf-section-card">
+                                        <button type="button" class="nf-delete-btn" data-id={section.id}
+                                            onclick={deleteNetworthSection} disabled={disableAllFields}
+                                            title="Delete section">
+                                            <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                        </button>
+                                        <div class="nf-field-grid">
+                                            <lightning-input label="Asset Type (Land, Building etc)"
+                                                value={section.Asset_Type__c} data-id={section.id}
+                                                data-field="Asset_Type__c" onchange={handleSectionInputChange} required
+                                                disabled={disableAllFields}></lightning-input>
+                                            <lightning-input label="Property Owner Name"
+                                                value={section.Property_Owner_Name__c} data-id={section.id}
+                                                data-field="Property_Owner_Name__c" onchange={handleSectionInputChange}
+                                                pattern="[A-Za-z\s]*"
+                                                message-when-pattern-mismatch="Only alphabets are allowed" required
+                                                disabled={disableAllFields}></lightning-input>
+                                            <lightning-textarea label="Address With Survey Number"
+                                                value={section.Address_With_Survey_Number__c} data-id={section.id}
+                                                data-field="Address_With_Survey_Number__c"
+                                                onchange={handleSectionInputChange} required
+                                                disabled={disableAllFields}></lightning-textarea>
+                                            <lightning-input label="Extent (sq ft, acre, cent)"
+                                                value={section.Extent_sq_ft_acre_cent__c} data-id={section.id}
+                                                data-field="Extent_sq_ft_acre_cent__c" onchange={handleSectionInputChange}
+                                                required disabled={disableAllFields}></lightning-input>
+                                            <lightning-input type="number" label="Market Value (lacs)"
+                                                value={section.Market_Value__c} data-id={section.id}
+                                                data-field="Market_Value__c" onchange={handleSectionInputChange} min="1"
+                                                required disabled={disableAllFields}></lightning-input>
+                                            <lightning-combobox label="Document Collected"
+                                                value={section.Document_Collected__c} options={documentCollectedOptions}
+                                                data-id={section.id} data-field="Document_Collected__c"
+                                                onchange={handleSectionInputChange} required
+                                                disabled={disableAllFields}></lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="nf-inline-action">
+                                    <button type="button" class="nf-secondary-btn" onclick={addNetworthSectionA}
+                                        disabled={disableAllFields}>Add more</button>
+                                </div>
+                            </div>
+
+                            <div class="nf-section-block">
+                                <div class="nf-section-header">
+                                    <h3 class="nf-section-title">(B) Total Value of Other Assets</h3>
+                                </div>
+                                <template for:each={networthSectionsB} for:item="section">
+                                    <div key={section.id} class="nf-section-card">
+                                        <button type="button" class="nf-delete-btn" data-id={section.id}
+                                            onclick={deleteNetworthSection} disabled={disableAllFields}
+                                            title="Delete section">
+                                            <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                        </button>
+                                        <div class="nf-field-grid">
+                                            <lightning-input label="Nature of Asset" value={section.Nature_Of_Asset__c}
+                                                data-id={section.id} data-field="Nature_Of_Asset__c"
+                                                onchange={handleSectionInputChange} required
+                                                disabled={disableAllFields}></lightning-input>
+                                            <lightning-textarea label="Particulars of Asset/Complete Description"
+                                                value={section.Particulars_Of_Asset_Complete_Descriptio__c}
+                                                data-id={section.id}
+                                                data-field="Particulars_Of_Asset_Complete_Descriptio__c"
+                                                onchange={handleSectionInputChange} required
+                                                disabled={disableAllFields}></lightning-textarea>
+                                            <lightning-input type="number" label="Quantity" value={section.Quantity__c}
+                                                data-id={section.id} data-field="Quantity__c"
+                                                onchange={handleSectionInputChange} required
+                                                disabled={disableAllFields}></lightning-input>
+                                            <lightning-input type="number" label="Value at Cost (lacs)"
+                                                value={section.Value_at_Cost_lacs__c} data-id={section.id}
+                                                data-field="Value_at_Cost_lacs__c" onchange={handleSectionInputChange}
+                                                required disabled={disableAllFields}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="nf-inline-action">
+                                    <button type="button" class="nf-secondary-btn" onclick={addNetworthSectionB}
+                                        disabled={disableAllFields}>Add more</button>
+                                </div>
+                            </div>
+
+                            <div class="nf-section-block">
+                                <div class="nf-section-header">
+                                    <h3 class="nf-section-title">(C) Total Liabilities</h3>
+                                </div>
+                                <template for:each={networthSectionsC} for:item="section">
+                                    <div key={section.id} class="nf-section-card">
+                                        <button type="button" class="nf-delete-btn" data-id={section.id}
+                                            onclick={deleteNetworthSection} disabled={disableAllFields}
+                                            title="Delete section">
+                                            <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                        </button>
+                                        <div class="nf-field-grid">
+                                            <lightning-input label="Borrowed From" value={section.Borrowed_From__c}
+                                                data-id={section.id} data-field="Borrowed_From__c"
+                                                onchange={handleSectionInputChange} required
+                                                disabled={disableAllFields}></lightning-input>
+                                            <lightning-input type="number" label="Amount and Securities Offered"
+                                                value={section.Amount_and_Securities_Offered__c} data-id={section.id}
+                                                data-field="Amount_and_Securities_Offered__c"
+                                                onchange={handleSectionInputChange} required
+                                                disabled={disableAllFields}></lightning-input>
+                                            <lightning-input label="Purpose" value={section.Purpose__c} data-id={section.id}
+                                                data-field="Purpose__c" onchange={handleSectionInputChange} required
+                                                disabled={disableAllFields}></lightning-input>
+                                            <lightning-input type="number" label="O/s as on date (in Lacs)"
+                                                value={section.O_s_as_on_date_In_Lacs__c} data-id={section.id}
+                                                data-field="O_s_as_on_date_In_Lacs__c" onchange={handleSectionInputChange}
+                                                required disabled={disableAllFields}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="nf-inline-action">
+                                    <button type="button" class="nf-secondary-btn" onclick={addNetworthSectionC}
+                                        disabled={disableAllFields}>Add more</button>
+                                </div>
+                            </div>
+
+                            <div class="nf-summary-card">
+                                <h3 class="nf-section-title">Net Worth Calculation</h3>
+                                <div class="nf-field-grid">
+                                    <lightning-input type="number" label="Net Worth (A + B - C)" value={netWorth}
+                                        disabled></lightning-input>
+                                    <lightning-textarea label="Remarks" value={networthRemarks}
+                                        onchange={handleRemarksChange} required
+                                        disabled={disableAllFields}></lightning-textarea>
+                                </div>
+                            </div>
+
+                            <div class="nf-upload-card">
+                                <div class="nf-upload-header">
+                                    <lightning-icon icon-name="utility:upload" size="x-small"
+                                        class="nf-upload-icon"></lightning-icon>
+                                    <span class="nf-upload-title">Upload Networth Document</span>
+                                </div>
+                                <template lwc:if={hasNetworthDocument}>
+                                    <div class="nf-file-chip">
+                                        <lightning-icon icon-name="utility:success" size="x-small"></lightning-icon>
+                                        <span>{networthDocumentName}</span>
+                                    </div>
+                                </template>
+                                <template lwc:if={showNetworthDocumentUpload}>
+                                    <lightning-file-upload label="" name="networthDocument" record-id={recordId}
+                                        accept={acceptedFormats}
+                                        onuploadfinished={handleNetworthUploadFinished}></lightning-file-upload>
+                                </template>
+                            </div>
+                            <div class="nf-section-action-row">
+                                <button type="button" class="nf-primary-btn" onclick={handleSaveNetworth}
+                                    disabled={isSaveDisabled}>Save Networth Details</button>
+                            </div>
+                        </div>
+                        </div>
+                        </template>
+                    </div>
+
+                    <div class={fleetAccordionItemClass}>
+                        <button
+                            type="button"
+                            class={fleetAccordionTriggerClass}
+                            data-section="fleet"
+                            aria-expanded={isFleetAccordionOpen}
+                            onclick={handleAccordionToggle}>
+                            <span class="nf-accordion-trigger-main">
+                                <span class="nf-accordion-icon-wrap nf-accordion-icon-wrap-fleet">
+                                    <lightning-icon icon-name="utility:travel_and_places" size="x-small" class="nf-accordion-icon"></lightning-icon>
+                                </span>
+                                <span class="nf-accordion-text">
+                                    <span class="nf-accordion-label">Fleet Details</span>
+                                    <span class="nf-accordion-desc">Free fleet and financed by others vehicle records</span>
+                                </span>
+                            </span>
+                            <lightning-icon icon-name={fleetChevronIcon} size="x-small" class="nf-accordion-chevron"></lightning-icon>
+                        </button>
+                        <template lwc:if={isFleetAccordionOpen}>
+                        <div class="nf-accordion-panel">
+                        <div class="nf-accordion-content" data-section-content="fleet">
+                            <div class="nf-section-block">
+                                <div class="nf-section-header">
+                                    <h3 class="nf-section-title">Fleet Type</h3>
+                                </div>
+                                <div class="nf-table-wrap">
+                                    <table class="nf-table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Fleet Type</th>
+                                                <th scope="col">Count</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={fleetData} for:item="fleet">
+                                                <tr key={fleet.Id}>
+                                                    <td>{fleet.fleetType}</td>
+                                                    <td>{fleet.count}</td>
+                                                    <td>
+                                                        <button type="button" class="nf-secondary-btn nf-table-btn"
+                                                            data-type={fleet.fleetType}
+                                                            onclick={handleViewFleetClick}>{fleetBtnLabel}</button>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="nf-summary-card">
+                                <div class="nf-field-grid">
+                                    <lightning-input type="number" label="Total Fleet Count" value={totalFleetCount}
+                                        disabled></lightning-input>
+                                    <lightning-textarea label="Remarks" value={fleetRemarks}
+                                        onchange={handleFleetRemarkChange} required
+                                        disabled={disableAllFields}></lightning-textarea>
+                                </div>
+                            </div>
+
+                            <div class="nf-upload-card">
+                                <div class="nf-upload-header">
+                                    <lightning-icon icon-name="utility:upload" size="x-small"
+                                        class="nf-upload-icon"></lightning-icon>
+                                    <span class="nf-upload-title">Upload Fleet Documents</span>
+                                </div>
+                                <template lwc:if={hasFleetDocument}>
+                                    <div class="nf-file-chip">
+                                        <lightning-icon icon-name="utility:success" size="x-small"></lightning-icon>
+                                        <span>{fleetDocumentName}</span>
+                                    </div>
+                                </template>
+                                <template lwc:if={showFleetDocumentUpload}>
+                                    <lightning-file-upload label="" name="fleetDocument" record-id={recordId}
+                                        accept={acceptedFormats}
+                                        onuploadfinished={handleFleetUploadFinished}></lightning-file-upload>
+                                </template>
+                            </div>
+                            <div class="nf-section-action-row">
+                                <button type="button" class="nf-primary-btn" onclick={handleSaveFleetSection}
+                                    disabled={isSaveDisabled}>Save Fleet Details</button>
+                            </div>
+                        </div>
+                        </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <template lwc:if={showFleetModal}>
+            <section role="dialog" class="slds-modal slds-fade-in-open nf-modal-zindex" tabindex="-1" aria-modal="true">
+                <div class="slds-modal__container nf-modal-container">
+                    <header class="slds-modal__header nf-modal-header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={handleCloseFleetModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse"
+                                size="small"></lightning-icon>
+                        </button>
+                        <h2 class="slds-modal__title">Fleet Details - {selectedFleetType}</h2>
+                    </header>
+                    <div class="slds-modal__content nf-modal-body">
+                        <template lwc:if={fleetdataExist}>
+                            <div class="nf-table-wrap">
+                                <table class="nf-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Product</th>
+                                            <th scope="col">Asset Make</th>
+                                            <th scope="col">Model</th>
+                                            <th scope="col">Year</th>
+                                            <th scope="col">Demand</th>
+                                            <th scope="col">Expiry Date</th>
+                                            <th scope="col">Financier</th>
+                                            <template lwc:if={showFleetActionsColumn}>
+                                                <th scope="col">Actions</th>
+                                            </template>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={fleetDetails} for:item="fleet">
+                                            <tr key={fleet.Id}>
+                                                <td>{fleet.Product__c}</td>
+                                                <td>{fleet.Asset_Make__c}</td>
+                                                <td>{fleet.Asset_Model__c}</td>
+                                                <td>{fleet.Year_of_Manufacture__c}</td>
+                                                <td>{fleet.Current_Demand__c}</td>
+                                                <td>{fleet.Policy_Expire_Date__c}</td>
+                                                <td>{fleet.Financiar_Name__c}</td>
+                                                <template lwc:if={showFleetActionsColumn}>
+                                                    <td>
+                                                        <template lwc:if={canEditDeleteFleet}>
+                                                            <button type="button" class="nf-icon-action"
+                                                                data-fleet-id={fleet.Id} onclick={handleEditFleet}
+                                                                title="Edit">
+                                                                <lightning-icon icon-name="utility:edit"
+                                                                    size="x-small"></lightning-icon>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="nf-icon-action nf-icon-action-danger"
+                                                                data-fleet-id={fleet.Id} onclick={handleDeleteFleet}
+                                                                title="Delete">
+                                                                <lightning-icon icon-name="utility:delete"
+                                                                    size="x-small"></lightning-icon>
+                                                            </button>
+                                                        </template>
+                                                    </td>
+                                                </template>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <p class="nf-empty-text">No fleet records found.</p>
+                        </template>
+
+                        <template lwc:if={showFleetAddForm}>
+                            <div class="nf-fleet-form">
+                                <h3 class="nf-section-title">{fleetFormTitle}</h3>
+                                <div class="nf-field-grid">
+                                    <lightning-combobox label="Product" value={fleetRecord.Product__c}
+                                        options={productOptions} data-field="Product__c"
+                                        onchange={handleFormInputChange} required></lightning-combobox>
+                                    <div class="nf-picklist-field">
+                                        <label class="nf-picklist-label">
+                                            Asset Make
+                                            <abbr class="nf-required" title="required">*</abbr>
+                                        </label>
+                                        <c-dynamic-searchable-picklist
+                                            name="Asset_Make__c"
+                                            label="Asset Make"
+                                            mode="remote"
+                                            search-config-key="MMV_Fleet_Make"
+                                            search-context-json={mmvMakeSearchContextJson}
+                                            value={fleetRecord.Asset_Make__c}
+                                            selected-label={assetMakeSelectedLabel}
+                                            placeholder="Search asset make..."
+                                            disabled={isFleetMakeDisabled}
+                                            onchange={handleFleetMakeChange}
+                                            onsearcherror={handleFleetSearchError}>
+                                        </c-dynamic-searchable-picklist>
+                                    </div>
+                                    <div class="nf-picklist-field">
+                                        <label class="nf-picklist-label">
+                                            Asset Model
+                                            <abbr class="nf-required" title="required">*</abbr>
+                                        </label>
+                                        <c-dynamic-searchable-picklist
+                                            name="Asset_Model__c"
+                                            label="Asset Model"
+                                            mode="remote"
+                                            search-config-key="MMV_Fleet_Model"
+                                            search-context-json={mmvModelSearchContextJson}
+                                            value={fleetRecord.Asset_Model__c}
+                                            selected-label={assetModelSelectedLabel}
+                                            placeholder="Search asset model..."
+                                            disabled={isFleetModelDisabled}
+                                            onchange={handleFleetModelChange}
+                                            onsearcherror={handleFleetSearchError}>
+                                        </c-dynamic-searchable-picklist>
+                                    </div>
+                                    <lightning-input label="Vehicle Number/YOM" value={fleetRecord.Vehicle_Number__c}
+                                        data-field="Vehicle_Number__c" onchange={handleFormInputChange}
+                                        pattern={vehicleNumberPattern}
+                                        message-when-pattern-mismatch={vehicleNumberMessage} required></lightning-input>
+                                    <lightning-input label="Year of Manufacture"
+                                        value={fleetRecord.Year_of_Manufacture__c} data-field="Year_of_Manufacture__c"
+                                        onchange={handleFormInputChange} pattern="\d{4}" maxlength="4"
+                                        message-when-pattern-mismatch="Please enter a valid year (YYYY)"
+                                        required></lightning-input>
+                                    <lightning-input type="date" label="Seasoning" value={fleetRecord.Seasoning__c}
+                                        data-field="Seasoning__c" onchange={handleFormInputChange}
+                                        required></lightning-input>
+                                    <lightning-input type="number" label="Current Demand"
+                                        value={fleetRecord.Current_Demand__c} data-field="Current_Demand__c"
+                                        onchange={handleFormInputChange} required></lightning-input>
+                                    <lightning-input label="Financier Name" value={fleetRecord.Financiar_Name__c}
+                                        data-field="Financiar_Name__c" onchange={handleFormInputChange}
+                                        pattern="[A-Za-z\s]*" message-when-pattern-mismatch="Only alphabets are allowed"
+                                        required></lightning-input>
+                                    <lightning-input type="datetime" label="Policy Expiry Date"
+                                        value={fleetRecord.Policy_Expire_Date__c} data-field="Policy_Expire_Date__c"
+                                        onchange={handleFormInputChange} required></lightning-input>
+                                </div>
+                                <div class="nf-modal-actions">
+                                    <button type="button" class="nf-primary-btn"
+                                        onclick={handleSaveFleetRecord}>{fleetSaveButtonLabel}</button>
+                                    <button type="button" class="nf-secondary-btn"
+                                        onclick={toggleFleetAddForm}>Cancel</button>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="nf-modal-actions nf-modal-actions-center">
+                                <template lwc:if={showFleetAddButton}>
+                                    <button type="button" class="nf-primary-btn"
+                                        onclick={toggleFleetAddForm}>Add New Fleet</button>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button type="button" class="nf-primary-btn"
+                            onclick={handleCloseFleetModal}>Close</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open nf-backdrop"></div>
+        </template>
+    </div>
+</template>

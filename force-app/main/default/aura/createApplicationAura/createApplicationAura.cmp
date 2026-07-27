@@ -1,0 +1,5 @@
+<aura:component
+    implements="lightning:actionOverride,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome"
+    access="global">
+    <c:createApplication />
+</aura:component>

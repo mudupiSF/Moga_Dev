@@ -1,0 +1,279 @@
+<template lwc:render-mode="light">
+    <template lwc:if={loading}>
+        <lightning-spinner alternative-text="Loading" variant="brand" size="medium"></lightning-spinner>
+        <!-- <c-custom-spinner size="medium" initial-messages={spinnerMessages}  alternative-text="Loading" cycle-interval-ms="3000" mode="css"></c-custom-spinner> -->
+    </template>
+    <div class="app-container">
+        <div class="slds-builder-header_container">
+            <header class="slds-builder-header">
+                <div class="slds-builder-header__item" onclick={handleBack}>
+                    <a href="#" class="slds-builder-header__item-action" title="Back">
+                        <lightning-icon icon-name="utility:back" size="xx-small" alternative-text="Back"
+                            variant="inverse"></lightning-icon>
+                    </a>
+                </div>
+                <div class="slds-builder-header__item">
+                    <div class="slds-builder-header__item-label slds-media slds-media_center">
+                        <div class="slds-media__figure">
+                            <lightning-icon icon-name="utility:builder" size="xx-small"
+                                variant="inverse"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">Template Builder</div>
+                    </div>
+                </div>
+                <nav class="slds-builder-header__item slds-builder-header__nav">
+                    <ul class="slds-builder-header__nav-list">
+                        <li class="slds-builder-header__nav-item slds-p-around_x-small">
+                            <div class="slds-builder-header__item slds-has-flexi-truncate">
+                                <h1 class="slds-builder-header__item-label">
+                                    <span class="slds-truncate" title="Page Type">{templateTitle}</span>
+                                </h1>
+                            </div>
+                           
+                        </li>
+
+                    </ul>
+                </nav>
+                <div class="slds-builder-header__item slds-has-flexi-truncate">
+                    <h1 class="slds-builder-header__item-label">
+                        <span class="slds-truncate" title="Page Type">{recordName}</span>
+                    </h1>
+                </div>
+                <div class="slds-builder-header__item slds-builder-header__utilities">
+                    <div class="slds-builder-header__utilities-item">
+                        <span class="slds-builder-header__item-action slds-media slds-media_center">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="utility:help" size="xx-small"
+                                    variant="inverse"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">Help</div>
+                        </span>
+                    </div>
+                </div>
+            </header>
+            <div class="slds-builder-toolbar" role="toolbar">
+                <div class="slds-builder-toolbar__item-group" aria-label="Canvas Actions">
+                   
+                </div>
+                <div class="slds-builder-toolbar__item-group" aria-label="Edit actions">
+                  
+                    <lightning-input type="toggle" label="Preview" disabled={templateStage} checked={pagedViewer}
+                        name="pagedViewer" onchange={togglePagedViewer}></lightning-input>
+
+                    <template lwc:if={moveableInitialized}>
+                        <lightning-button variant="destructive" label={cancelOperationLabel} title="Cancel"
+                            class="slds-m-left_x-small" onclick={destroyMoveableInstance}></lightning-button>
+                    </template>
+
+                  
+                </div>
+                <div class="slds-builder-toolbar__actions" aria-label="Document actions">
+                    <span class="slds-button slds-p-horizontal_small" aria-live="polite">
+                        <lightning-input type="toggle" label={renderLabel} checked={renderer} disabled={templateStage}
+                            name="viewRenderer" onchange={toggleDocumentRenderer}></lightning-input>
+
+                    </span>
+                    
+
+                    <div class="slds-form-element" role="group" aria-labelledby="file-selector-primary-label-101">
+                        <div class="slds-form-element__control">
+                            <template lwc:if={showUploadButton}>
+
+                            </template>
+                            <template lwc:if={showActivateButton}>
+                                <lightning-button variant="brand" label="Activate" title="Activate"
+                                    class="slds-m-left_x-small" style="margin:6px 8px;"
+                                    onclick={activateTemplate}></lightning-button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <template lwc:if={disableSaveButton}>
+                        <div class="slds-file-selector slds-file-selector_files">
+                            <div class="slds-file-selector__dropzone">
+                                <input type="file" class="slds-file-selector__input slds-assistive-text" accept=".docx"
+                                    onchange={handleTemplateFileUpload} id="file-upload-input-103" />
+
+                                <label class="slds-file-selector__body" for="file-upload-input-103"
+                                    id="file-selector-secondary-label102">
+                                    <span class="slds-file-selector__button slds-button slds-button_neutral">
+                                        <lightning-icon icon-name="utility:upload"
+                                            size="xx-small"></lightning-icon>Upload Files</span>
+                                </label>
+                            </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <lightning-button variant="brand" label="Save" disabled={disableSaveTemplateButton}
+                            onclick={saveTemplate}></lightning-button>
+                    </template>
+                </div>
+            </div>
+
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="left-pane slds-col slds-size_1-of-1 slds-medium-size_3-of-12 slds-large-size_4-of-12">
+                <lightning-tabset class="left-pane-tabset">
+                    <lightning-tab label="JSON Editor">
+                        <div class="slds-card json-card">
+                            <div class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
+                                Paste JSON data here.
+                            </div>
+                            <div class="slds-p-around_small app-left-inner json-panel">
+                                <div class="json-toolbar slds-m-bottom_x-small">
+                                    <lightning-button variant="neutral" label="Format JSON" title="Pretty-print JSON"
+                                        icon-name="utility:preview" onclick={formatJson}
+                                        disabled={disableFormatButton}></lightning-button>
+                                </div>
+
+                                <template lwc:if={jsonErrorMessage}>
+                                    <div class="slds-form-element slds-m-bottom_x-small">
+                                        <div id="json-error-message"
+                                            class="slds-form-element__help slds-form-element__help_error" role="alert">
+                                            <lightning-icon icon-name="utility:error" size="x-small"
+                                                class="slds-m-right_xx-small"></lightning-icon>
+                                            <strong>JSON Error:</strong> {jsonErrorMessage}
+                                            <template lwc:if={jsonErrorLine}>
+                                                <span class="slds-m-left_x-small">(Line {jsonErrorLine})</span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <div class={jsonEditorHostClass} data-id="jsonEditorHost">
+                                    <!-- CodeMirror binds to this textarea -->
+                                    <textarea data-id="jsonTextarea" disabled={contentNotLoaded} data-json-input="true"
+                                        aria-invalid={hasJsonError} aria-describedby={jsonErrorDescribedBy}></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </lightning-tab>
+                    <lightning-tab label="Configuration">
+                        <lightning-accordion active-section-name="Singature">
+                            <lightning-accordion-section name="Components" label="Components">
+                                <div class="slds-text-body_small slds-m-bottom_x-small slds-text-color_weak">
+                                    <b>Notice</b>: This signature is a graphical representation of the signer's intent. It is an image-based acknowledgment and does not constitute a Qualified Electronic Signature (QES) or a cryptographically sealed document as defined by eIDAS or ESIGN Act standards.
+                                </div>
+                                <template for:each={signatureFields} for:item="signatureField">
+                                    <div key={signatureField.id}>
+                                        <lightning-input type="text" label="Signature Label"
+                                            value={signatureField.signatureValue} data-name="signatureValue" class="slds-m-vertical_medium" data-index={signatureField.id} onchange={handleSignatureValueChange}></lightning-input>
+                                        <lightning-combobox name="singaturePosition" label="Position" value={signatureField.signaturePosition}
+                                            placeholder="Select Progress" data-name="signaturePosition" data-index={signatureField.id} options={signaturePositionOptions}
+                                            onchange={handleSignatureValueChange}></lightning-combobox>
+                                            <!-- combobox to place at last page or all pages -->
+                                            <lightning-combobox name="singaturePage" label="Page" class="slds-m-vertical_medium" value={signatureField.singaturePage}
+                                            placeholder="Select Progress" data-name="singaturePage" data-index={signatureField.id} options={signaturePageOptions}
+                                            onchange={handleSignatureValueChange}></lightning-combobox>
+                                        <lightning-input type="checkbox" label="Stamp Audit Trail" data-name="auditTrail" class="slds-m-vertical_medium" data-index={signatureField.id} checked={signatureField.auditTrail} onchange={handleSignatureValueChange}></lightning-input>
+                                        <lightning-button variant="destructive" label="Remove Signature"  title="Remove Signature" class="slds-m-vertical_medium" onclick={removeSignature} data-index={signatureField.id}></lightning-button>
+                                    </div>
+                                </template>
+                                <lightning-button variant="brand" label="Add Signature" class="slds-m-vertical_medium" title="Add Signature"
+                                    onclick={addSignature}></lightning-button>
+                            </lightning-accordion-section>
+                            <!-- <lightning-accordion-section name="PDF_Metadata" label="PDF Metadata">
+                                <textarea data-id="pdfMetadataTextarea" class="pdf-metadata-textarea"
+                                    rows="16"></textarea>
+                            </lightning-accordion-section> -->
+                        </lightning-accordion>
+                    </lightning-tab>
+                </lightning-tabset>
+            </div>
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_9-of-12 slds-large-size_8-of-12">
+                <span>
+                    <!-- Main Content -->
+                    <div class="main-content">
+                        <!-- Canvas Area -->
+                        <div class="canvas-container">
+                            <div class="canvas-workspace">
+                                <div class="pages-container" style="width: 100% !important; height: 100% !important;">
+                                    <template lwc:if={pagedViewer}>
+                                        <div class="page-wrapper">
+                                            <div class="page-wrapper">
+                                                <div class="preview-pane" data-id="previewPane">
+                                                    <c-p-d-fforce-renderer custom-spinner={customSpinner}
+                                                        template-id={recordId} paged-viewer input-json={JSONdata}
+                                                        paged-viewer-content={OrignalHtmlContent}
+                                                        onpagedjscompleted={handlePagedJSCompleted}></c-p-d-fforce-renderer>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="page-wrapper">
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right-click Context Menu (docx section) -->
+    <div class="section-context-menu" data-section-context-menu>
+        <div class="section-context-menu-header">Section Actions</div>
+        <template for:each={sectionContextMenuItemsForRender} for:item="item">
+            <div key={item.id} class={item.className} data-action={item.action}
+                onclick={handleSectionContextMenuItemClick}>
+                {item.label}
+            </div>
+        </template>
+    </div>
+
+    <!-- Right-click Context Menu (selectable elements) -->
+    <div class="element-context-menu" data-element-context-menu onclick={handleElementContextMenuClick}
+        onpointerdown={handleElementContextMenuPointerDown}>
+        <div class="element-context-menu-header">Element Actions</div>
+        <template for:each={elementContextMenuItemsForRender} for:item="item">
+            <div key={item.id} class={item.className} onclick={handleElementContextMenuClick}
+                onpointerdown={handleElementContextMenuPointerDown} data-action={item.action}>
+                {item.label}
+            </div>
+        </template>
+    </div>
+
+    <!-- Right-click Context Menu (page break line) -->
+    <div class="break-context-menu" data-break-context-menu>
+        <div class="break-context-menu-header">Page break</div>
+        <!-- Items are generated dynamically in JS based on the element under the page-break line -->
+        <div data-break-menu-items></div>
+    </div>
+
+    <!-- <template lwc:if={vfPageUrl}>
+        <iframe id="pdfjs-iframe" class="iframe" width="0" height="0" src={vfPageUrl}></iframe>
+    </template> -->
+
+    <!-- Edit Element Modal (HTML code editor) -->
+    <template lwc:if={showEditElementModal}>
+        <section class="slds-modal slds-fade-in-open slds-modal_large edit-element-modal" role="dialog" tabindex="-1"
+            aria-modal="true" aria-labelledby="edit-element-modal-title">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h1 id="edit-element-modal-title" class="slds-modal__title slds-hyphenate">Edit Element</h1>
+                    <lightning-button-icon icon-name="utility:close" alternative-text="Close" variant="bare-inverse"
+                        class="slds-modal__close" onclick={handleEditElementModalCancel}></lightning-button-icon>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <p class="slds-m-bottom_small slds-text-body_small slds-text-color_weak">Edit the HTML below.
+                        Changes will replace the element in the document when you click Save. Spans and other elements
+                        before table rows are automatically wrapped in a row so they stay inside the table.</p>
+                    <div class="edit-element-editor-host">
+                        <textarea data-id="htmlElementTextarea" class="edit-element-textarea" rows="16"></textarea>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button variant="neutral" label="Cancel"
+                        onclick={handleEditElementModalCancel}></lightning-button>
+                    <lightning-button variant="brand" label="Save"
+                        onclick={handleEditElementModalSave}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" onclick={handleEditElementModalCancel}></div>
+    </template>
+</template>

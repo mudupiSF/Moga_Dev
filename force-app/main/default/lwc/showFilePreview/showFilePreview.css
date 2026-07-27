@@ -1,0 +1,19 @@
+.viewer-container .viewer-backdrop{
+    width: 100%;
+    height: 100%;
+}
+
+
+
+.viewer-fixed{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+
+div.viewer-button.viewer-fullscreen{
+    display: none;
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Deactivate_Action_Checklist_Trigger__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set this to true if action checklist trigger needs to be deactivated.</description>
+    <label>Deactivate Action Checklist Trigger</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

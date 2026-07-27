@@ -1,0 +1,59 @@
+<template>
+    <div class={menuContainerClass}>
+        <div class="vertical-menu">
+            <ul class="slds-nav-vertical" role="tablist">
+                <template for:each={menuSections} for:item="section">
+                    <template if:true={section.isItemSection}>
+                        <template if:false={section.item.isHidden}>
+                            <c-stage-menu-item
+                                key={section.sectionKey}
+                                index="0"
+                                item={section.item}
+                                active-tab-id={activeTabId}
+                                is-top-level="true"
+                                onmenuselect={handleMenuSelect}
+                                ontoggle={handleToggle}>
+                            </c-stage-menu-item>
+                        </template>
+                    </template>
+                    <template if:true={section.isGroupSection}>
+                        <li class="menu-group-accordion" role="presentation" key={section.sectionKey}>
+                            <div class={section.groupHeaderClass} data-group-name={section.name} onclick={handleGroupHeaderClick}>
+                                <lightning-icon
+                                    icon-name={section.groupChevronIcon}
+                                    size="xx-small"
+                                    class={section.groupChevronClass}>
+                                </lightning-icon>
+                                <span class="group-label">{section.name}</span>
+                                <template if:true={section.isGroupCompleted}>
+                                    <lightning-icon
+                                        icon-name="utility:success"
+                                        size="x-small"
+                                        alternative-text="Completed"
+                                        title="All sub-stages completed"
+                                        class="group-completed-tick">
+                                    </lightning-icon>
+                                </template>
+                            </div>
+                            <ul class={section.groupContentClass} role="tablist">
+                                <template for:each={section.items} for:item="groupItem">
+                                    <template if:false={groupItem.isHidden}>
+                                        <c-stage-menu-item
+                                            key={groupItem.key}
+                                            index="0"
+                                            item={groupItem}
+                                            active-tab-id={activeTabId}
+                                            is-top-level="true"
+                                            onmenuselect={handleMenuSelect}
+                                            ontoggle={handleToggle}>
+                                        </c-stage-menu-item>
+                                    </template>
+                                </template>
+                            </ul>
+                        </li>
+                    </template>
+                </template>
+            </ul>
+        </div>
+    </div>
+</template>

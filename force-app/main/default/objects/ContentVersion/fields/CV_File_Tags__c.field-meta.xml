@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CV_File_Tags__c</fullName>
+    <description>Provenance / transformation tags stamped onto a ContentVersion at upload time by embedCustomFileUploadController.stampFileTags.</description>
+    <label>CV File Tags</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Uploaded</fullName>
+                <default>false</default>
+                <label>Uploaded</label>
+            </value>
+            <value>
+                <fullName>Live Image Capture</fullName>
+                <default>false</default>
+                <label>Live Image Capture</label>
+            </value>
+            <value>
+                <fullName>Live Video Capture</fullName>
+                <default>false</default>
+                <label>Live Video Capture</label>
+            </value>
+            <value>
+                <fullName>Compressed</fullName>
+                <default>false</default>
+                <label>Compressed</label>
+            </value>
+            <value>
+                <fullName>Masked</fullName>
+                <default>false</default>
+                <label>Masked</label>
+            </value>
+            <value>
+                <fullName>Merged</fullName>
+                <default>false</default>
+                <label>Merged</label>
+            </value>
+            <value>
+                <fullName>Rotated</fullName>
+                <default>false</default>
+                <label>Rotated</label>
+            </value>
+            <value>
+                <fullName>Watermarked</fullName>
+                <default>false</default>
+                <label>Watermarked</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionNumber>6</activeVersionNumber>
+    <description>Use this flow to quickly change an Account&apos;s billing or shipping address.  This will write to the MDM (Heroku) to provide account address history details using MuleSoft.  Then Salesforce Connect will display the account address changes back in Salesforce.</description>
+    <masterLabel>Address Change Flow</masterLabel>
+</FlowDefinition>

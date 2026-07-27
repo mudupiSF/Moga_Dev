@@ -1,0 +1,359 @@
+@import "c/commonStyles";
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Office Address Details — KYC Section 5.
+   Visual language mirrors the Permanent Address KYC card on the same page
+   (dark slate header + indigo overlay, indigo "available-to-fill" hint on
+   inputs, indigo pill Verify chip) so the section reads as a peer of the
+   other KYC bucket cards. Class names are preserved — the HTML still uses
+   `office-*` selectors — only the styling rules below change.
+   ────────────────────────────────────────────────────────────────────────── */
+
+:host {
+    display: block;
+    width: 100%;
+    font-family: var(--p4-font-family);
+
+    /* Mirror the KYC parent's color tokens locally — LWC styles are scoped
+       so the parent's `:host` custom properties don't bleed into this child. */
+    --office-slate-100:       #f1f5f9;
+    --office-slate-200:       #e2e8f0;
+    --office-slate-300:       #cbd5e1;
+    --office-slate-400:       #94a3b8;
+    --office-slate-500:       #64748b;
+    --office-slate-700:       #334155;
+    --office-slate-800:       #1e293b;
+    --office-slate-900:       #0f172a;
+    --office-indigo-500:      #6366f1;
+    --office-indigo-600:      #4f46e5;
+    --office-indigo-700:      #4338ca;
+    --office-indigo-hint:      #6366f1;
+    --office-indigo-hint-halo: rgba(99, 102, 241, 0.22);
+    --office-emerald-500:      #10b981;
+    --office-emerald-600:      #059669;
+    --office-error-red:        #ea001e;
+}
+
+:host, :host * { font-family: var(--p4-font-family); }
+
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+.office-card {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--office-slate-100);
+    overflow: visible;
+    box-sizing: border-box;
+    margin-bottom: clamp(16px, 2vw, 24px);
+}
+
+/* ── Card header — dark slate + left-side indigo overlay ──────────────── */
+.office-card-header {
+    height: 72px;
+    min-height: 72px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background: var(--office-slate-900);
+    border-radius: 1rem 1rem 0 0;
+}
+
+.office-header-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(49, 46, 129, 0.8), transparent);
+    pointer-events: none;
+}
+
+.office-header-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 1rem;
+    height: 100%;
+}
+
+.office-header-icon-wrap {
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.office-header-icon {
+    --sds-c-icon-color-foreground-default: #ffffff;
+    --slds-c-icon-color-foreground-default: #ffffff;
+}
+
+.office-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.office-header-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.025em;
+}
+
+.office-header-subtitle {
+    margin: 0;
+    font-size: 0.75rem;
+    color: rgba(199, 210, 254, 0.8);
+}
+
+@media (max-width: 768px) {
+    .office-card-header  { height: 64px; min-height: 64px; }
+    .office-header-content { padding: 0 0.75rem; }
+    .office-header-title   { font-size: 1.125rem; }
+    .office-card-body      { padding: 0.75rem; }
+}
+
+/* ── Card body ────────────────────────────────────────────────────────────── */
+.office-card-body {
+    padding: 1rem;
+    overflow: visible;
+}
+
+@media (min-width: 768px) {
+    .office-card-body { padding: 1.25rem; }
+}
+
+/* ── Field grid — single col on mobile, 2 col on desktop (matches KYC) ── */
+.office-fields-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem 1rem;
+    align-items: start;
+}
+
+@media (min-width: 768px) {
+    .office-fields-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.office-field-wrap { min-width: 0; }
+.office-field-wrap-full   { grid-column: 1 / -1; }
+.office-field-wrap-half   { grid-column: span 1; }
+
+@media (max-width: 720px) {
+    .office-field-wrap-half { grid-column: span 1; }
+}
+
+/* ── Field cell — bare flex wrapper to match KYC `.kyc-field-cell` ─────── */
+.office-field-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.office-field-label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--office-slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.office-required-indicator {
+    color: var(--office-error-red);
+    margin-left: 0.125rem;
+    font-weight: 700;
+}
+
+.office-field-value-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+
+/* ── Inputs — indigo "available-to-fill" halo mirrors KYC pattern ─────── */
+.office-input,
+.office-action-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 0.875rem;
+    border: 1px solid var(--office-slate-200);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--office-slate-800);
+    background: #ffffff;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    font-family: inherit;
+}
+
+.office-input:focus,
+.office-action-input:focus {
+    outline: none;
+    border-color: var(--office-indigo-600);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+}
+
+.office-input:not(:focus):placeholder-shown,
+.office-action-input:not(:focus):placeholder-shown {
+    border-color: var(--office-indigo-hint);
+    box-shadow: 0 0 0 3px var(--office-indigo-hint-halo);
+}
+
+.office-input--readonly {
+    background: var(--office-slate-100);
+    color: var(--office-slate-500);
+    cursor: not-allowed;
+    border-color: var(--office-slate-200);
+    box-shadow: none;
+}
+.office-input--readonly:not(:focus):placeholder-shown {
+    border-color: var(--office-slate-200);
+    box-shadow: none;
+}
+
+.office-input-helper {
+    font-size: 0.75rem;
+    color: var(--office-slate-500);
+    margin-top: 0.125rem;
+}
+
+.office-field-error {
+    margin: 0.125rem 0 0 0;
+    font-size: 0.75rem;
+    color: var(--office-error-red);
+}
+
+/* ── Email + Verify chip ──────────────────────────────────────────────── */
+.office-input-with-action-wrap {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+}
+
+.office-action-input {
+    flex: 1 1 auto;
+}
+
+.office-input-with-action-btn-wrap {
+    display: flex;
+    align-items: stretch;
+}
+
+/* Indigo pill Verify chip — mirrors `.kyc-aadhaar-verify-btn`. */
+.office-action-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    border: none;
+    background: var(--office-indigo-600);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    padding: 0 1.25rem;
+    height: 40px;
+    min-width: 100px;
+    border-radius: 999px;
+    box-shadow: 0 6px 14px rgba(79, 70, 229, 0.22);
+    transition: background-color 140ms ease, box-shadow 140ms ease,
+                transform 120ms ease;
+}
+
+.office-action-btn:hover:not(:disabled) {
+    background: var(--office-indigo-700);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+}
+
+.office-action-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.office-action-btn:disabled {
+    cursor: not-allowed;
+    background: var(--office-slate-300);
+    box-shadow: none;
+    color: #ffffff;
+    opacity: 0.85;
+}
+
+/* VERIFIED state — Indigo border + Turquoise fill, matching the global
+   `.form-action-btn--verified` treatment used on Basic Details */
+.office-action-btn.office-action-btn--verified,
+.office-action-btn.office-action-btn--verified:hover,
+.office-action-btn.office-action-btn--verified:disabled {
+    background: var(--form-cyan-100, #cffafe);
+    color: var(--form-indigo-700, #4338ca);
+    border: 1px solid var(--form-indigo-700, #4338ca);
+    box-shadow: 0 0 0 3px var(--form-cyan-halo, rgba(44, 218, 238, 0.18));
+    cursor: default;
+    opacity: 1;
+    transform: none;
+}
+
+/* ── Read-only display variant (post-stage) ────────────────────────────── */
+.office-info-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.office-info-cell-header {
+    display: flex;
+    align-items: center;
+}
+
+.office-info-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--office-slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.office-info-value-wrap { display: flex; }
+
+.office-info-value-with-action-row {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex: 1 1 auto;
+}
+
+.office-info-value {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--office-slate-800);
+    font-weight: 500;
+}
+
+.office-info-action-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--office-indigo-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Read-only "VERIFIED" pill (post-stage) — matches the global
+   `.form-info-action-label--verified` treatment for visual consistency. */
+.office-info-action-label.office-info-action-label--verified {
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    background: var(--form-cyan-100, #cffafe);
+    color: var(--form-indigo-700, #4338ca);
+    border: 1px solid var(--form-indigo-700, #4338ca);
+    box-shadow: 0 0 0 2px var(--form-cyan-halo, rgba(44, 218, 238, 0.18));
+}

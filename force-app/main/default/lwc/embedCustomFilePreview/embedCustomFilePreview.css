@@ -1,0 +1,1685 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   embedCustomFilePreview 
+   3-level hierarchy:
+     LWC root (Top Bar + Pagination)
+     └── Document Checklist (dark-indigo header bar)
+         └── File Tile (light card, mini accordion)
+   Palette: Indigo primary + Turquoise accent (MOGA cyan)
+   Mobile/tablet: collapses meta grids, stacks header actions, allows full-bleed
+   modals (bottom-sheet behavior on <=620px).
+
+   Special icons (multi-upload, delete-all, reupload) come from the
+   `special_icons` static resource — see .ecfp-special-icon rules below.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+:host {
+    /* Indigo (primary) */
+    --ecfp-indigo-50:   #EEF2FF;
+    --ecfp-indigo-100:  #E0E7FF;
+    --ecfp-indigo-200:  #C7D2FE;
+    --ecfp-indigo-300:  #A5B4FC;
+    --ecfp-indigo-500:  #6366F1;
+    --ecfp-indigo-600:  #4F46E5;
+    --ecfp-indigo-700:  #4338CA;
+    --ecfp-indigo-800:  #3730A3;
+    --ecfp-indigo-900:  #1E1B4B;
+    --ecfp-indigo-950:  #14133E;
+
+    /* Turquoise / Cyan (secondary) — MOGA palette */
+    --ecfp-turq-50:     #ECFEFF;
+    --ecfp-turq-100:    #CFFAFE;
+    --ecfp-turq-200:    #A5F3FC;
+    --ecfp-turq-300:    #67E8F9;
+    --ecfp-turq-400:    #22D3EE;
+    --ecfp-turq-500:    #06B6D4;
+    --ecfp-turq-600:    #0891B2;
+    --ecfp-turq-700:    #0E7490;
+
+    /* Surfaces / neutrals */
+    --ecfp-surface:     #F7F8FB;
+    --ecfp-card-bg:     #FFFFFF;
+    --ecfp-border:      #E5E7EB;
+    --ecfp-border-soft: #EEF0F4;
+    --ecfp-text:        #1F2937;
+    --ecfp-text-soft:   #6B7280;
+    --ecfp-text-muted:  #9CA3AF;
+    --ecfp-danger-50:   #FEF2F2;
+    --ecfp-danger-500:  #EF4444;
+    --ecfp-danger-600:  #DC2626;
+
+    /* Effects */
+    --ecfp-radius:       12px;
+    --ecfp-radius-sm:    8px;
+    --ecfp-radius-lg:    16px;
+    --ecfp-shadow-card:  0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+    --ecfp-shadow-pop:   0 12px 30px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.06);
+
+    display: block;
+    font-family: 'Inter', 'Salesforce Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--ecfp-text);
+}
+
+.ecfp-shell {
+    background: var(--ecfp-card-bg);
+    border: 1px solid var(--ecfp-border);
+    border-radius: var(--ecfp-radius-lg);
+    overflow: hidden;                    /* clip top-bar to rounded shell */
+    box-shadow: var(--ecfp-shadow-card);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   TOP BAR — mirrors embedCustomFileUpload's `.ecfu-header` for visual parity. Dark navy bar, white icon pill, white title text,
+   white-on-dark search input and pill action buttons.
+   ──────────────────────────────────────────────────────────────────────────── */
+.ecfp-topbar {
+    background: var(--ecfp-indigo-950);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.ecfp-topbar-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.ecfp-topbar-icon-pill {
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    color: #FFFFFF;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ecfp-topbar-icon-pill lightning-icon {
+    --sds-c-icon-color-foreground-default:  #FFFFFF;
+    --slds-c-icon-color-foreground-default: #FFFFFF;
+    --sds-c-icon-color-foreground:          #FFFFFF;
+    --slds-c-icon-color-foreground:         #FFFFFF;
+}
+
+.ecfp-topbar-title-text {
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    margin: 0;
+}
+
+.ecfp-topbar-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* — Search (white-on-dark) — */
+.ecfp-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    padding: 4px 14px 4px 36px;
+    min-width: 260px;
+    transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.ecfp-search:focus-within {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--ecfp-turq-300);
+    box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.18);
+}
+
+.ecfp-search-icon {
+    position: absolute;
+    left: 12px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.ecfp-search-icon lightning-icon {
+    --sds-c-icon-color-foreground-default:  rgba(255, 255, 255, 0.85);
+    --slds-c-icon-color-foreground-default: rgba(255, 255, 255, 0.85);
+}
+
+.ecfp-search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 13px;
+    color: #FFFFFF;
+    width: 220px;
+    padding: 6px 0;
+}
+
+.ecfp-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* — Top-bar pill buttons (toggle-all / refresh) — */
+.ecfp-topbar-btn {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #FFFFFF;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.ecfp-topbar-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.32);
+    transform: translateY(-1px);
+}
+
+.ecfp-topbar-btn-refresh:hover {
+    transform: rotate(180deg);
+}
+
+.ecfp-topbar-btn lightning-icon {
+    --sds-c-icon-color-foreground-default:  #FFFFFF;
+    --slds-c-icon-color-foreground-default: #FFFFFF;
+    --sds-c-icon-color-foreground:          #FFFFFF;
+    --slds-c-icon-color-foreground:         #FFFFFF;
+}
+
+/* Restore interior horizontal padding for every child below the full-bleed topbar */
+.ecfp-shell > .ecfp-status,
+.ecfp-shell > .ecfp-status-error,
+.ecfp-shell > .ecfp-loading,
+.ecfp-shell > .ecfp-empty,
+.ecfp-shell > .ecfp-checklists,
+.ecfp-shell > .ecfp-adhoc-create,
+.ecfp-shell > .ecfp-pagination-bar {
+    margin-left: 18px;
+    margin-right: 18px;
+}
+
+.ecfp-shell > .ecfp-checklists,
+.ecfp-shell > .ecfp-adhoc-create {
+    margin-top: 16px;
+}
+
+/* The ad-hoc creation tile is the last element while creating (pagination is
+   hidden), so give it bottom spacing to separate it from the component edge. */
+.ecfp-shell > .ecfp-adhoc-create {
+    margin-bottom: 18px;
+}
+
+.ecfp-shell > .ecfp-pagination-bar {
+    margin-bottom: 18px;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   STATUS STRIP
+   ──────────────────────────────────────────────────────────────────────────── */
+.ecfp-status,
+.ecfp-status-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: var(--ecfp-radius-sm);
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.ecfp-status {
+    background: var(--ecfp-turq-50);
+    color: var(--ecfp-turq-700);
+    border: 1px solid var(--ecfp-turq-200);
+}
+
+.ecfp-status-error {
+    background: var(--ecfp-danger-50);
+    color: var(--ecfp-danger-600);
+    border: 1px solid #FECACA;
+}
+
+/* — Loading / Empty — */
+.ecfp-loading,
+.ecfp-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: var(--ecfp-text-soft);
+    gap: 12px;
+}
+
+.ecfp-empty p { font-size: 14px; margin: 0; }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   CHECKLISTS LIST
+   ──────────────────────────────────────────────────────────────────────────── */
+.ecfp-checklists {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ecfp-cl-card {
+    border-radius: var(--ecfp-radius);
+    border: 1px solid var(--ecfp-border);
+    background: var(--ecfp-card-bg);
+    overflow: hidden;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.ecfp-cl-card:hover {
+    border-color: var(--ecfp-indigo-200);
+    box-shadow: var(--ecfp-shadow-card);
+}
+
+.ecfp-cl-card.is-empty-mandatory {
+    border-color: var(--ecfp-turq-300);
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.18);
+}
+
+/* — Checklist Header (dark indigo bar) — */
+.ecfp-cl-header {
+    background: var(--ecfp-indigo-900);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    gap: 16px;
+}
+
+.ecfp-cl-header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.ecfp-cl-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+}
+
+.ecfp-cl-icon lightning-icon {
+    --sds-c-icon-color-foreground-default:  #FFFFFF;
+    --slds-c-icon-color-foreground-default: #FFFFFF;
+    --sds-c-icon-color-foreground:          #FFFFFF;
+    --slds-c-icon-color-foreground:         #FFFFFF;
+}
+
+.ecfp-cl-header h3 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0;
+    color: #FFFFFF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ecfp-cl-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* Checklist-header action buttons sit on dark indigo. Lightning-icons here
+   must render WHITE (`variant="inverse"` set on the tag is the primary
+   mechanism; SLDS vars are belt-and-braces for older orgs). The static-
+   resource PNGs are full circular badges that already have their visible
+   pictogram in white/red — no CSS filter applied.*/
+/* Checklist Header Action Buttons — uniform 40x40 wrapper for ALL header
+   actions (multi-upload, transfer, delete-all, expand/collapse). The
+   parent button drives `color: #FFFFFF` on dark indigo so child inline
+   SVGs render WHITE via stroke="currentColor". Lightning-icons get the
+   matching SLDS vars override for the same effect. */
+.ecfp-cl-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--ecfp-radius-sm);
+    background: transparent;
+    border: 1px solid transparent;
+    color: #FFFFFF;
+    cursor: pointer;
+    padding: 0;
+    transition: background 120ms ease, color 150ms ease, transform 120ms ease, box-shadow 200ms ease;
+}
+
+.ecfp-cl-action:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+}
+
+.ecfp-cl-action lightning-icon {
+    --sds-c-icon-color-foreground-default:  #FFFFFF;
+    --slds-c-icon-color-foreground-default: #FFFFFF;
+    --sds-c-icon-color-foreground:          #FFFFFF;
+    --slds-c-icon-color-foreground:         #FFFFFF;
+}
+
+/* Multi-Upload — inline SVG (stroke="currentColor"). Hover => TURQUOISE
+   color flip + stroke-shaped GLOW via drop-shadow on the SVG itself
+   (clean halo around thin strokes, not a smudge around a bitmap). */
+.ecfp-cl-action-multi {
+    background: transparent;
+}
+
+.ecfp-cl-action-multi:hover {
+    background: rgba(34, 211, 238, 0.18);
+    color: var(--ecfp-turq-300);
+}
+
+.ecfp-cl-action-multi:hover .ecfp-special-icon {
+    filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.85))
+            drop-shadow(0 0 8px rgba(34, 211, 238, 0.45));
+}
+
+.ecfp-cl-action-multi.is-highlighted {
+    animation: ecfp-multi-pulse 1.6s ease-in-out infinite;
+    background: rgba(34, 211, 238, 0.14);
+    color: var(--ecfp-turq-300);
+}
+
+.ecfp-cl-action-multi.is-highlighted .ecfp-special-icon {
+    filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.85));
+}
+
+@keyframes ecfp-multi-pulse {
+    0%, 100% { box-shadow: 0 0 0 0   rgba(34, 211, 238, 0.65); }
+    50%      { box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.06); }
+}
+
+/* Transfer Ownership — lightning-icon, stays WHITE inherits from .ecfp-cl-action */
+.ecfp-cl-action-transfer {}
+
+/* Delete-All — inline SVG. Hover => RED color + RED stroke glow. Per
+   user spec: delete is the only header action that goes RED on hover
+   (everything else goes TURQUOISE). */
+.ecfp-cl-action-delete-all {
+    background: transparent;
+}
+
+.ecfp-cl-action-delete-all:hover {
+    background: rgba(239, 68, 68, 0.18);
+    color: #FCA5A5;
+}
+
+.ecfp-cl-action-delete-all:hover .ecfp-special-icon {
+    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.85))
+            drop-shadow(0 0 8px rgba(239, 68, 68, 0.45));
+}
+
+/* Expand/Collapse — pure white SLDS icon (no fill) */
+.ecfp-cl-action-expand {}
+
+.ecfp-cl-expand-placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--ecfp-radius-sm);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.35);
+    cursor: not-allowed;
+}
+
+.ecfp-cl-expand-placeholder lightning-icon {
+    --sds-c-icon-color-foreground-default:  rgba(255, 255, 255, 0.5);
+    --slds-c-icon-color-foreground-default: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Special-resource icons — inline SVGs ───────────────────────────────────
+   These are stroke-only inline SVGs (stroke="currentColor", fill="none")
+   sourced from the special_icons static resource and inlined into the
+   HTML for direct color theming.
+     Color  → inherits from parent button via currentColor
+     Sizing → 22px default (header bar buttons), 18px for compact tile
+              actions (.ecfp-special-icon-sm modifier).
+   With strokes (not bitmaps), drop-shadow filters trace the stroke
+   shape — giving a clean halo glow, NOT a smudged bitmap halo. */
+.ecfp-special-icon {
+    width: 22px;
+    height: 22px;
+    display: block;
+    flex-shrink: 0;
+    pointer-events: none;
+    color: inherit;
+    transition: color 150ms ease, filter 200ms ease, transform 120ms ease;
+}
+
+.ecfp-special-icon-sm {
+    width: 18px;
+    height: 18px;
+}
+
+/* — Checklist Sub Header (light strip with category + flags) — */
+.ecfp-cl-subheader {
+    background: var(--ecfp-indigo-50);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px;
+}
+
+.ecfp-cl-subheader-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ecfp-indigo-800);
+    flex-wrap: wrap;
+}
+
+.ecfp-cl-meta-label {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ecfp-indigo-700);
+}
+
+.ecfp-cl-meta-value {
+    color: var(--ecfp-indigo-900);
+    font-weight: 600;
+}
+
+.ecfp-cl-meta-value:empty::after {
+    content: '—';
+    color: var(--ecfp-text-muted);
+    font-weight: 500;
+}
+
+.ecfp-cl-meta-pipe {
+    color: var(--ecfp-indigo-300);
+    margin: 0 4px;
+}
+
+.ecfp-cl-subheader-flags {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
+.ecfp-cl-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    padding: 4px 8px;
+    border-radius: var(--ecfp-radius-sm);
+    transition: background 120ms ease, box-shadow 120ms ease;
+}
+
+.ecfp-cl-flag:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.ecfp-cl-flag input[type="checkbox"] {
+    accent-color: var(--ecfp-indigo-700);
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+.ecfp-cl-flag.is-mandatory input[type="checkbox"] {
+    accent-color: var(--ecfp-danger-500);
+}
+
+.ecfp-cl-flag.is-highlighted {
+    background: rgba(34, 211, 238, 0.2);
+    box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.4);
+}
+
+.ecfp-flag-text {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 11px;
+    color: var(--ecfp-indigo-900);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   CHECKLIST BODY — File Tiles
+   ──────────────────────────────────────────────────────────────────────────── */
+.ecfp-cl-body {
+    padding: 14px 16px;
+    background: var(--ecfp-card-bg);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+.ecfp-cl-body::-webkit-scrollbar { width: 8px; }
+.ecfp-cl-body::-webkit-scrollbar-thumb {
+    background: var(--ecfp-indigo-100);
+    border-radius: 4px;
+}
+
+/* In-flight upload row (before file tile exists) */
+.ecfp-file-progress-row {
+    padding: 10px 14px;
+    border-radius: var(--ecfp-radius-sm);
+    background: var(--ecfp-indigo-50);
+    border: 1px dashed var(--ecfp-indigo-200);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ecfp-file-progress-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--ecfp-indigo-800);
+}
+
+.ecfp-file-progress-name {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 70%;
+}
+
+.ecfp-file-progress-pct {
+    font-weight: 700;
+    color: var(--ecfp-indigo-700);
+}
+
+.ecfp-progress-track {
+    background: var(--ecfp-indigo-100);
+    border-radius: 999px;
+    height: 6px;
+    overflow: hidden;
+}
+
+.ecfp-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ecfp-indigo-600), var(--ecfp-turq-500));
+    border-radius: 999px;
+    transition: width 200ms ease;
+}
+
+/* ── File Tile (mini accordion card) ─────────────────────────────────────── */
+.ecfp-tile {
+    position: relative;
+    border: 1px solid var(--ecfp-border);
+    border-radius: var(--ecfp-radius-sm);
+    background: var(--ecfp-card-bg);
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+    overflow: hidden;
+}
+
+.ecfp-tile:hover {
+    border-color: var(--ecfp-indigo-200);
+    box-shadow: var(--ecfp-shadow-card);
+}
+
+.ecfp-tile.is-expanded {
+    border-color: var(--ecfp-indigo-300);
+    background: var(--ecfp-surface);
+}
+
+/* Tile header */
+.ecfp-tile-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+}
+
+.ecfp-tile-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--ecfp-radius-sm);
+    background: var(--ecfp-indigo-50);
+    border: 1px solid var(--ecfp-indigo-100);
+    color: var(--ecfp-indigo-700);
+    cursor: pointer;
+    transition: background 120ms ease, transform 120ms ease;
+}
+
+.ecfp-tile-chevron:hover {
+    background: var(--ecfp-turq-50);
+    border-color: var(--ecfp-turq-200);
+    color: var(--ecfp-turq-700);
+}
+
+.ecfp-tile-chevron lightning-icon {
+    --sds-c-icon-color-foreground-default: currentColor;
+}
+
+.ecfp-tile-chevron.is-open {
+    background: var(--ecfp-indigo-100);
+    color: var(--ecfp-indigo-800);
+}
+
+.ecfp-tile-name-block {
+    flex: 1;
+    min-width: 0;
+}
+
+.ecfp-tile-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ecfp-indigo-900);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ecfp-tile-spacer { flex: 1; min-width: 0; }
+
+.ecfp-tile-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.ecfp-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--ecfp-radius-sm);
+    background: var(--ecfp-card-bg);
+    border: 1px solid var(--ecfp-border);
+    color: var(--ecfp-text-muted);
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.ecfp-action-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.ecfp-action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.ecfp-action-btn lightning-icon {
+    --sds-c-icon-color-foreground-default: currentColor;
+}
+
+/* Preview eye — INDIGO icon on light card background. No conditional
+   glow / turquoise fill — that's reserved for a future iteration when
+   we have semantic states to drive it. */
+.ecfp-action-preview {
+    color: var(--ecfp-indigo-700);
+}
+
+.ecfp-action-preview:hover:not(:disabled) {
+    background: var(--ecfp-indigo-50);
+    border-color: var(--ecfp-indigo-200);
+}
+
+/* Re-upload — inline SVG (stroke="currentColor"). On the LIGHT file-tile
+   card: default => INDIGO, hover => TURQUOISE + clean stroke glow. */
+.ecfp-action-reupload {
+    background: var(--ecfp-card-bg);
+    border-color: var(--ecfp-border);
+    color: var(--ecfp-indigo-700);
+}
+
+.ecfp-action-reupload:hover:not(:disabled) {
+    background: var(--ecfp-turq-50);
+    border-color: var(--ecfp-turq-200);
+    color: var(--ecfp-turq-500);
+}
+
+.ecfp-action-reupload:hover:not(:disabled) .ecfp-special-icon {
+    filter: drop-shadow(0 0 3px rgba(34, 211, 238, 0.70))
+            drop-shadow(0 0 6px rgba(34, 211, 238, 0.35));
+}
+
+/* Delete */
+.ecfp-action-delete:hover:not(:disabled) {
+    background: var(--ecfp-danger-50);
+    border-color: #FCA5A5;
+    color: var(--ecfp-danger-600);
+}
+
+.ecfp-action-deleting {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--ecfp-radius-sm);
+    background: var(--ecfp-danger-50);
+    border: 1px solid #FCA5A5;
+    position: relative;
+}
+
+.ecfp-action-deleting lightning-spinner {
+    --sds-c-spinner-color-foreground: var(--ecfp-danger-600);
+}
+
+/* — Tile Body (metadata grid 2-row × 3-col) — */
+.ecfp-tile-body {
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--ecfp-border-soft);
+    background: var(--ecfp-card-bg);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Desktop: single ROW with all 5 fields (File Type / File Size / Created
+   Date / Uploaded By / Version) — matches React UI spec.
+   Tablet + Mobile: collapses to 3 cols (then to fewer at narrower widths
+   via the media-query overrides below). */
+.ecfp-meta-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.ecfp-meta-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.ecfp-meta-cell-empty {}
+
+.ecfp-meta-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ecfp-text-muted);
+}
+
+.ecfp-meta-value {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ecfp-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ecfp-meta-value-strong {
+    color: var(--ecfp-indigo-700);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 12px;
+}
+
+/* ── Re-upload overlay (covers entire tile during versioning) ────────────── */
+.ecfp-tile-reupload-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(238, 242, 255, 0.95);
+    backdrop-filter: blur(2px);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+}
+
+.ecfp-tile-reupload-card {
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.ecfp-tile-reupload-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ecfp-indigo-800);
+    text-align: center;
+}
+
+.ecfp-tile-reupload-pct {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ecfp-indigo-700);
+    text-align: center;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   PAGINATION
+   ──────────────────────────────────────────────────────────────────────────── */
+.ecfp-pagination-bar {
+    margin-top: 18px;
+    padding: 10px 4px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--ecfp-border-soft);
+    padding-top: 14px;
+}
+
+.ecfp-pagination-info {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ecfp-text-soft);
+}
+
+.ecfp-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ecfp-page-arrow {
+    width: 30px;
+    height: 30px;
+    border-radius: var(--ecfp-radius-sm);
+    background: var(--ecfp-card-bg);
+    border: 1px solid var(--ecfp-border);
+    color: var(--ecfp-text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.ecfp-page-arrow:hover:not(:disabled) {
+    background: var(--ecfp-turq-50);
+    border-color: var(--ecfp-turq-200);
+    color: var(--ecfp-turq-700);
+}
+
+.ecfp-page-arrow:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.ecfp-page-arrow lightning-icon {
+    --sds-c-icon-color-foreground-default: currentColor;
+}
+
+.ecfp-page-btn {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 8px;
+    border-radius: var(--ecfp-radius-sm);
+    background: var(--ecfp-card-bg);
+    border: 1px solid var(--ecfp-border);
+    color: var(--ecfp-text);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.ecfp-page-btn:hover {
+    background: var(--ecfp-turq-50);
+    border-color: var(--ecfp-turq-200);
+    color: var(--ecfp-turq-700);
+}
+
+.ecfp-page-btn.is-active {
+    background: var(--ecfp-indigo-700);
+    border-color: var(--ecfp-indigo-700);
+    color: #FFFFFF;
+}
+
+.ecfp-page-btn.is-active:hover {
+    background: var(--ecfp-indigo-800);
+    border-color: var(--ecfp-indigo-800);
+    color: #FFFFFF;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   MODALS
+   ──────────────────────────────────────────────────────────────────────────── */
+.ecfp-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: ecfp-fade-in 160ms ease-out;
+}
+
+@keyframes ecfp-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.ecfp-modal {
+    background: var(--ecfp-card-bg);
+    border-radius: var(--ecfp-radius);
+    box-shadow: var(--ecfp-shadow-pop);
+    width: min(900px, 100%);
+    max-height: min(92vh, 100%);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ecfp-modal-small { width: min(440px, 100%); }
+.ecfp-modal-xl    { width: min(1100px, 100%); }
+
+.ecfp-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--ecfp-indigo-900);
+    color: #FFFFFF;
+    flex-shrink: 0;
+    gap: 12px;
+}
+
+.ecfp-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 15px;
+    min-width: 0;
+}
+
+.ecfp-modal-title lightning-icon {
+    --sds-c-icon-color-foreground-default: var(--ecfp-turq-300);
+}
+
+.ecfp-modal-title span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ecfp-modal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.ecfp-btn-close {
+    background: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--ecfp-radius-sm);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.ecfp-btn-close:hover { background: rgba(255, 255, 255, 0.2); }
+
+.ecfp-modal-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    background: var(--ecfp-surface);
+    display: flex;
+    flex-direction: column;
+}
+
+.ecfp-modal-body-padded {
+    padding: 20px;
+    background: var(--ecfp-card-bg);
+}
+
+.ecfp-confirm-text {
+    margin: 0;
+    font-size: 14px;
+    color: var(--ecfp-text);
+    line-height: 1.55;
+}
+
+.ecfp-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 12px 18px;
+    background: var(--ecfp-card-bg);
+    border-top: 1px solid var(--ecfp-border-soft);
+    flex-shrink: 0;
+}
+
+.ecfp-btn-primary,
+.ecfp-btn-secondary,
+.ecfp-btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: var(--ecfp-radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.ecfp-btn-primary {
+    background: var(--ecfp-indigo-700);
+    color: #FFFFFF;
+}
+.ecfp-btn-primary:hover { background: var(--ecfp-indigo-800); }
+
+.ecfp-btn-secondary {
+    background: var(--ecfp-card-bg);
+    color: var(--ecfp-indigo-700);
+    border-color: var(--ecfp-indigo-200);
+}
+.ecfp-btn-secondary:hover {
+    background: var(--ecfp-turq-50);
+    color: var(--ecfp-turq-700);
+    border-color: var(--ecfp-turq-200);
+}
+
+.ecfp-btn-danger {
+    background: var(--ecfp-danger-600);
+    color: #FFFFFF;
+}
+.ecfp-btn-danger:hover {
+    background: #B91C1C;
+}
+
+.ecfp-btn-primary lightning-icon,
+.ecfp-btn-secondary lightning-icon {
+    --sds-c-icon-color-foreground-default: currentColor;
+}
+
+.ecfp-unsupported {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 12px;
+    color: var(--ecfp-text-soft);
+}
+
+.ecfp-unsupported p { margin: 0; font-size: 14px; }
+
+/* — Hidden native file input — */
+.ecfp-hidden-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — Tablet (≤1024px) & Mobile (≤620px)
+   ──────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .ecfp-shell { padding: 14px; }
+
+    .ecfp-search { min-width: 200px; }
+    .ecfp-search-input { width: 160px; }
+
+    .ecfp-cl-subheader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    /* Tablet falls back to 3 cols → 5 fields wrap into 2 rows (3 + 2). */
+    .ecfp-meta-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .ecfp-meta-cell-empty { display: none; }
+}
+
+@media (max-width: 720px) {
+    .ecfp-topbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .ecfp-topbar-controls {
+        flex-wrap: wrap;
+    }
+
+    .ecfp-search {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .ecfp-search-input { width: 100%; }
+
+    .ecfp-cl-header {
+        padding: 10px 12px;
+        gap: 10px;
+    }
+
+    .ecfp-cl-header h3 {
+        font-size: 12px;
+    }
+
+    .ecfp-cl-header-actions {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .ecfp-cl-subheader { padding: 10px 12px; }
+
+    .ecfp-cl-body { padding: 10px 12px; }
+
+    .ecfp-tile-header {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .ecfp-tile-name-block {
+        order: 1;
+        flex: 1 1 100%;
+    }
+
+    .ecfp-tile-actions {
+        order: 2;
+        margin-left: auto;
+    }
+
+    .ecfp-tile-spacer { display: none; }
+
+    /* Mobile keeps 3 cols (2 rows total) per user spec. Below 480px we fall back to 2 cols for breathing room. */
+    .ecfp-meta-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    /* Pop preview / advanced modal full-screen on mobile */
+    .ecfp-modal {
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+
+    .ecfp-modal-overlay { padding: 0; }
+}
+
+@media (max-width: 480px) {
+    .ecfp-pagination-bar {
+        justify-content: center;
+    }
+
+    .ecfp-pagination-info {
+        display: none;
+    }
+
+    /* Tiny phones — drop to 2 cols so labels don't get cramped. */
+    .ecfp-meta-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   "+ New Ad-Hoc File" topbar button (text pill)
+   ═══════════════════════════════════════════════════════════════════════ */
+.ecfp-adhoc-new-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 40px;
+    padding: 0 14px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 10px;
+    background: var(--ecfp-indigo-600);
+    color: #FFFFFF;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.ecfp-adhoc-new-btn:hover {
+    background: var(--ecfp-indigo-500);
+    border-color: rgba(255, 255, 255, 0.32);
+    transform: translateY(-1px);
+}
+
+.ecfp-adhoc-new-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.ecfp-adhoc-new-btn lightning-icon {
+    --sds-c-icon-color-foreground-default:  #FFFFFF;
+    --slds-c-icon-color-foreground-default: #FFFFFF;
+    --sds-c-icon-color-foreground:          #FFFFFF;
+    --slds-c-icon-color-foreground:         #FFFFFF;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Preview-mode filters (Applicant Type + Document Type) — top-bar slot
+   ═══════════════════════════════════════════════════════════════════════ */
+.ecfp-filter-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ecfp-filter-dropdown {
+    position: relative;
+}
+
+.ecfp-filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #FFFFFF;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease;
+}
+
+.ecfp-filter-toggle:hover,
+.ecfp-filter-toggle-open {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.32);
+}
+
+.ecfp-filter-toggle-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ecfp-filter-toggle-text {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ecfp-filter-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 20;
+    min-width: 180px;
+    max-height: 260px;
+    overflow-y: auto;
+    padding: 6px;
+    background: #FFFFFF;
+    border: 1px solid var(--ecfp-border);
+    border-radius: 10px;
+    box-shadow: var(--ecfp-shadow-card);
+}
+
+.ecfp-filter-menu-open {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ecfp-filter-opt {
+    text-align: left;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ecfp-text);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease;
+}
+
+.ecfp-filter-opt:hover {
+    background: var(--ecfp-indigo-50);
+    color: var(--ecfp-indigo-600);
+}
+
+.ecfp-filter-opt-active {
+    background: var(--ecfp-indigo-600);
+    color: #FFFFFF;
+}
+
+.ecfp-filter-toggle lightning-icon {
+    --sds-c-icon-color-foreground-default:  #FFFFFF;
+    --slds-c-icon-color-foreground-default: #FFFFFF;
+    --sds-c-icon-color-foreground:          #FFFFFF;
+    --slds-c-icon-color-foreground:         #FFFFFF;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   New Ad-Hoc File creation tile (full-width, matches checklist tile)
+   ═══════════════════════════════════════════════════════════════════════ */
+.ecfp-adhoc-create-tile {
+    background: var(--ecfp-card-bg);
+    border: 1px solid var(--ecfp-border);
+    border-radius: var(--ecfp-radius-lg);
+    box-shadow: var(--ecfp-shadow-card);
+    overflow: hidden;
+}
+
+.ecfp-adhoc-create-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    padding: 24px;
+    background: var(--ecfp-surface);
+}
+
+.ecfp-adhoc-create-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    flex: 1 1 360px;
+    min-width: 260px;
+}
+
+.ecfp-adhoc-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 200px;
+    flex: 1 1 220px;
+}
+
+.ecfp-adhoc-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ecfp-indigo-600);
+}
+
+.ecfp-adhoc-input {
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--ecfp-border);
+    border-radius: var(--ecfp-radius);
+    background: var(--ecfp-card-bg);
+    color: var(--ecfp-text);
+    font-size: 0.9rem;
+    font-weight: 700;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ecfp-adhoc-combobox {
+    display: block;
+    width: 100%;
+    --slds-c-input-color-border: var(--ecfp-border);
+    --slds-c-input-radius-border: var(--ecfp-radius);
+    --slds-c-input-color-background: var(--ecfp-card-bg);
+    --slds-c-input-text-color: var(--ecfp-text);
+    --slds-c-input-sizing-min-height: 46px;
+    --slds-c-input-shadow-focus: 0 0 0 3px var(--ecfp-indigo-50);
+    --slds-c-input-color-border-focus: var(--ecfp-indigo-300);
+    --slds-c-input-spacing-horizontal-start: 14px;
+    --slds-c-input-spacing-horizontal-end: 14px;
+    --slds-c-input-font-size: 0.9rem;
+    --slds-c-input-font-weight: 700;
+    --slds-c-icon-color-foreground-default: var(--ecfp-indigo-500);
+    --slds-c-icon-color-foreground: var(--ecfp-indigo-500);
+}
+
+.ecfp-adhoc-input::placeholder {
+    color: var(--ecfp-text-muted);
+    font-weight: 600;
+}
+
+.ecfp-adhoc-input:focus {
+    border-color: var(--ecfp-indigo-300);
+    box-shadow: 0 0 0 3px var(--ecfp-indigo-50);
+}
+
+/* ── Upload action column ── */
+.ecfp-adhoc-action {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.ecfp-adhoc-file-input {
+    display: none;
+}
+
+.ecfp-chunky-icon {
+    height: 56px;
+    width: auto;
+    display: block;
+    transition: transform 0.15s ease;
+}
+
+/* IDLE dropzone */
+.ecfp-adhoc-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 190px;
+    padding: 16px;
+    border: 2px dashed var(--ecfp-border);
+    border-radius: var(--ecfp-radius-lg);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.ecfp-adhoc-dropzone:hover:not(:disabled) {
+    background: var(--ecfp-indigo-50);
+    border-color: var(--ecfp-indigo-300);
+}
+
+.ecfp-adhoc-dropzone:hover:not(:disabled) .ecfp-chunky-icon {
+    transform: scale(1.05);
+}
+
+.ecfp-adhoc-dropzone:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ecfp-adhoc-dropzone-label {
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ecfp-text-muted);
+}
+
+.ecfp-adhoc-dropzone-label:empty {
+    display: none;
+}
+
+.ecfp-adhoc-dropzone:hover:not(:disabled) .ecfp-adhoc-dropzone-label {
+    color: var(--ecfp-indigo-500);
+}
+
+/* CREATING (spinner) state before inline upload renders */
+.ecfp-adhoc-creating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 190px;
+    padding: 24px 16px;
+}
+
+/* INLINE Advanced Upload (MAGIC UI rendered inside the ad-hoc tile) */
+.ecfp-adhoc-inline-upload {
+    flex: 1 1 100%;
+    width: 100%;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--ecfp-border);
+}
+
+.ecfp-adhoc-inline-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 14px;
+}
+
+/* UPLOADED success state */
+.ecfp-adhoc-success-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 240px;
+}
+
+.ecfp-adhoc-success-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    background: var(--ecfp-turq-50);
+    border: 1px solid var(--ecfp-turq-200);
+    border-radius: var(--ecfp-radius-lg);
+}
+
+.ecfp-adhoc-success-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.ecfp-adhoc-success-title {
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: var(--ecfp-turq-700);
+}
+
+.ecfp-adhoc-success-sub {
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ecfp-turq-600);
+}
+
+.ecfp-adhoc-success-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.ecfp-adhoc-btn-cancel,
+.ecfp-adhoc-btn-complete {
+    flex: 1 1 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 44px;
+    padding: 0 18px;
+    border-radius: var(--ecfp-radius);
+    font-size: 0.78rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+}
+
+.ecfp-adhoc-btn-cancel {
+    background: var(--ecfp-card-bg);
+    border: 1px solid var(--ecfp-border);
+    color: var(--ecfp-text-soft);
+}
+
+.ecfp-adhoc-btn-cancel:hover {
+    background: var(--ecfp-surface);
+}
+
+.ecfp-adhoc-btn-complete {
+    background: var(--ecfp-indigo-600);
+    border: 1px solid var(--ecfp-indigo-600);
+    color: #FFFFFF;
+}
+
+.ecfp-adhoc-btn-complete:hover {
+    background: var(--ecfp-indigo-700);
+}
+
+.ecfp-adhoc-btn-complete:active {
+    transform: translateY(1px);
+}
+
+.ecfp-adhoc-btn-complete lightning-icon {
+    --sds-c-icon-color-foreground-default:  #FFFFFF;
+    --slds-c-icon-color-foreground-default: #FFFFFF;
+    --sds-c-icon-color-foreground:          #FFFFFF;
+    --slds-c-icon-color-foreground:         #FFFFFF;
+}
+
+@media (max-width: 620px) {
+    .ecfp-adhoc-create-body {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ecfp-adhoc-action,
+    .ecfp-adhoc-dropzone,
+    .ecfp-adhoc-success-wrap {
+        width: 100%;
+    }
+}

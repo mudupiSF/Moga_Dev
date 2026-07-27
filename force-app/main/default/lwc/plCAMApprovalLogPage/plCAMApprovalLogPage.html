@@ -1,0 +1,539 @@
+<template>
+    <div class="form-layout alog-layout">
+        <section class="form-card alog-section-card" aria-label="Application actions">
+            <div class="form-body">
+                <div class="alog-action-bar">
+                    <template for:each={globalActionButtons} for:item="btn">
+                        <button key={btn.id} type="button"
+                            class="p4-secondary-btn p4-button-text alog-action-btn"
+                            data-action-id={btn.id}
+                            onclick={handleActionButtonClick}>
+                            <lightning-icon icon-name={btn.iconName} size="xx-small"
+                                class="alog-action-btn-icon" aria-hidden="true">
+                            </lightning-icon>
+                            <span>{btn.label}</span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <template lwc:if={showAssetActionsSection}>
+            <section class="form-card alog-section-card" aria-label="Offer actions">
+                <div class="form-body">
+                    <div class="alog-section-header">
+                        <span class="alog-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:product" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title">Offer Actions</h2>
+                    </div>
+                    <div class="alog-asset-accordion-panel">
+                        <div class="alog-asset-action-bar">
+                            <template for:each={assetActionButtons} for:item="action">
+                                <button key={action.id} type="button"
+                                    class="p4-secondary-btn p4-button-text alog-action-btn alog-asset-action-btn"
+                                    data-group-id={selectedLoanTermGroup.id}
+                                    data-action-id={action.id}
+                                    onclick={handleAssetActionClick}>
+                                    <lightning-icon icon-name={action.iconName} size="xx-small"
+                                        class="alog-action-btn-icon" aria-hidden="true">
+                                    </lightning-icon>
+                                    <span>{action.label}</span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+
+        <section class="form-card alog-section-card" aria-label="Forward logs">
+            <div class="form-body">
+                <h2 class="p4-section-title slds-m-bottom_small">Forward Logs</h2>
+
+                <div class="form-field-cell alog-forward-radio-wrap">
+                    <p class="p4-field-label-semibold">Do you want to forward this proposal?</p>
+                    <div class="form-field-value-col form-field-value-col--radio">
+                        <div class="form-radio-group form-radio-group--vertical" role="radiogroup" aria-label="Forward proposal">
+                            <label class="form-radio-label">
+                                <input
+                                    type="radio"
+                                    class="form-radio-input"
+                                    name="forwardProposal"
+                                    value="Yes"
+                                    checked={isForwardProposalYes}
+                                    disabled={isStagePast}
+                                    onchange={handleForwardProposalChange} />
+                                <span class="form-radio-circle"></span>
+                                <span class="form-radio-text">Yes</span>
+                            </label>
+                            <label class="form-radio-label">
+                                <input
+                                    type="radio"
+                                    class="form-radio-input"
+                                    name="forwardProposal"
+                                    value="No"
+                                    checked={isForwardProposalNo}
+                                    disabled={isStagePast}
+                                    onchange={handleForwardProposalChange} />
+                                <span class="form-radio-circle"></span>
+                                <span class="form-radio-text">No</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <template lwc:if={showForwardForm}>
+                    <div class="form-fields-grid alog-forward-panel slds-m-top_small">
+                        <div class="form-field-cell">
+                            <div class="form-field-label">Forward To</div>
+                            <lightning-combobox
+                                variant="label-hidden"
+                                label="Forward To"
+                                value={selectedForwardTo}
+                                options={forwardToOptions}
+                                placeholder="Select role"
+                                disabled={isStagePast}
+                                data-field="selectedForwardTo"
+                                onchange={handlePicklistChange}>
+                            </lightning-combobox>
+                        </div>
+                        <div class="form-field-cell">
+                            <div class="form-field-label">Remarks</div>
+                            <lightning-input
+                                type="text"
+                                variant="label-hidden"
+                                label="Remarks"
+                                value={remarks}
+                                placeholder="Enter remarks"
+                                disabled={isStagePast}
+                                data-field="remarks"
+                                onchange={handleInputChange}>
+                            </lightning-input>
+                        </div>
+                        <div class="form-field-cell slds-col slds-size_1-of-1">
+                            <div class="p4-btn-wrapper">
+                                <button
+                                    type="button"
+                                    class="p4-primary-btn"
+                                    disabled={isForwardDisabled}
+                                    onclick={handleForwardClick}>
+                                    Forward
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <div class="master-table-scroll alog-table-wrap slds-m-top_medium">
+                    <table class="master-table alog-forward-table">
+                        <thead>
+                            <tr class="master-table-header-row">
+                                <template for:each={forwardLogHeaders} for:item="header">
+                                    <th key={header.key} scope="col" class="master-th-cell">{header.label}</th>
+                                </template>
+                            </tr>
+                        </thead>
+                        <tbody class="master-table-body">
+                            <template lwc:if={processedForwardLogs.length}>
+                                <template for:each={processedForwardLogs} for:item="log">
+                                    <tr key={log.id} class="master-table-row">
+                                        <template for:each={log.cells} for:item="cell">
+                                            <td key={cell.key} class="master-td-cell"><span class="master-cell-text">{cell.value}</span></td>
+                                        </template>
+                                    </tr>
+                                </template>
+                            </template>
+                            <template lwc:else>
+                                <tr class="master-table-row">
+                                    <td colspan={forwardLogColspan}
+                                        class="master-td-cell master-table-empty-cell">
+                                        No forward log records.
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-card alog-section-card" aria-label="Approval history">
+            <div class="form-body">
+                <h2 class="p4-section-title slds-m-bottom_small">Approval History</h2>
+                <div class="master-table-scroll alog-table-wrap">
+                    <table class="master-table alog-history-table">
+                        <thead>
+                            <tr class="master-table-header-row">
+                                <template for:each={approvalHistoryHeaders} for:item="header">
+                                    <th key={header.key} scope="col" class="master-th-cell">{header.label}</th>
+                                </template>
+                            </tr>
+                        </thead>
+                        <tbody class="master-table-body">
+                            <template lwc:if={processedApprovalHistory.length}>
+                                <template for:each={processedApprovalHistory} for:item="log">
+                                    <tr key={log.id} class="master-table-row">
+                                        <template for:each={log.cells} for:item="cell">
+                                            <td key={cell.key} class="master-td-cell"><span class="master-cell-text">{cell.value}</span></td>
+                                        </template>
+                                    </tr>
+                                </template>
+                            </template>
+                            <template lwc:else>
+                                <tr class="master-table-row">
+                                    <td colspan={approvalHistoryColspan}
+                                        class="master-td-cell master-table-empty-cell">
+                                        No approval history records.
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-card alog-section-card" aria-label="Proposal approval conditions">
+            <div class="form-body">
+                <h2 class="p4-section-title slds-var-m-bottom_small">Proposal Approval Conditions</h2>
+                <div class="master-table-scroll master-table-scroll--interactive alog-table-wrap alog-conditions-table-wrap">
+                    <table class="master-table alog-conditions-table">
+                        <thead>
+                            <tr class="master-table-header-row">
+                                <template for:each={approvalConditionsHeaders} for:item="header">
+                                    <th key={header.key} scope="col" class="master-th-cell">{header.label}</th>
+                                </template>
+                            </tr>
+                        </thead>
+                        <tbody class="master-table-body">
+                            <template lwc:if={approvalConditions.length}>
+                                <template for:each={approvalConditions} for:item="condition">
+                                    <tr key={condition.id} class="master-table-row">
+                                        <td class="master-td-cell"><span class="master-cell-text">{condition.sno}</span></td>
+                                        <td class="master-td-cell"><span class="master-cell-text">{condition.approvalCondition}</span></td>
+                                        <td class="master-td-cell">
+                                            <template lwc:if={condition.isEditable}>
+                                                <lightning-combobox
+                                                    variant="label-hidden"
+                                                    label="Action"
+                                                    name="approvalConditionAction"
+                                                    value={condition.action}
+                                                    placeholder="Select Action"
+                                                    options={approvalConditionActionOptions}
+                                                    data-id={condition.id}
+                                                    disabled={isStagePast}
+                                                    data-field="action"
+                                                    onchange={handleConditionFieldChange}>
+                                                </lightning-combobox>
+                                            </template>
+                                            <template lwc:else>
+                                                <span class="master-cell-text">{condition.action}</span>
+                                            </template>
+                                        </td>
+                                        <td class="master-td-cell">
+                                            <template lwc:if={condition.isEditable}>
+                                                <lightning-input
+                                                    type="text"
+                                                    variant="label-hidden"
+                                                    label="Remarks"
+                                                    value={condition.remarks}
+                                                    placeholder="Enter remarks"
+                                                    data-id={condition.id}
+                                                    disabled={isStagePast}
+                                                    data-field="remarks"
+                                                    onchange={handleConditionFieldChange}>
+                                                </lightning-input>
+                                            </template>
+                                            <template lwc:else>
+                                                <span class="master-cell-text">{condition.remarks}</span>
+                                            </template>
+                                        </td>
+                                        <td class="master-td-cell">
+                                            <div class="p4-btn-wrapper alog-table-action">
+                                                <template lwc:if={condition.isEditable}>
+                                                    <button type="button" class="p4-primary-btn"
+                                                        data-id={condition.id}
+                                                        disabled={isStagePast}
+                                                        onclick={handleSubmitCondition}>
+                                                        Submit
+                                                    </button>
+                                                </template>
+                                                <template lwc:else>
+                                                    <button type="button" class="p4-secondary-btn" disabled>
+                                                        Submitted
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </template>
+                            <template lwc:else>
+                                <tr class="master-table-row">
+                                    <td colspan={approvalConditionsColspan}
+                                        class="master-td-cell master-table-empty-cell">
+                                        No approval condition records.
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-card alog-section-card alog-loan-terms-section" aria-label="Final loan terms">
+            <div class="form-body">
+                <div class="alog-section-header">
+                    <span class="alog-section-icon alog-section-icon--terms" aria-hidden="true">
+                        <lightning-icon icon-name="utility:money" size="xx-small"></lightning-icon>
+                    </span>
+                    <h2 class="p4-section-title">Final Loan Terms</h2>
+                </div>
+                <article class="cam-page-detail-panel">
+                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                        <template for:each={finalLoanTermsTableRows} for:item="field">
+                            <div key={field.id} class="cam-page-detail-row">
+                                <dt class="cam-page-detail-label">{field.label}</dt>
+                                <dd class="cam-page-detail-value">
+                                    <template lwc:if={field.isLoanAmount}>
+                                        <template lwc:if={canEditRestrictedFinalLoanTerms}>
+                                            <lightning-input
+                                                type="number"
+                                                variant="label-hidden"
+                                                label="Loan Amount"
+                                                value={modalLoanAmountEditable}
+                                                min="500000"
+                                                max="20000000"
+                                                step="10000"
+                                                onchange={handleInputChange}
+                                                data-field="loanAmountEditable"
+                                                data-in-modal="true">
+                                            </lightning-input>
+                                        </template>
+                                        <template lwc:else>
+                                            {field.valueDisplay}
+                                        </template>
+                                    </template>
+                                    <template lwc:elseif={field.isCrmIrr}>
+                                        <template lwc:if={canEditRestrictedFinalLoanTerms}>
+                                            <lightning-input
+                                                type="number"
+                                                variant="label-hidden"
+                                                label="CRM IRR"
+                                                value={modalCrmIRREditable}
+                                                step="0.01"
+                                                onchange={handleInputChange}
+                                                data-field="crmIRREditable"
+                                                data-in-modal="true">
+                                            </lightning-input>
+                                        </template>
+                                        <template lwc:else>
+                                            {field.valueDisplay}
+                                        </template>
+                                    </template>
+                                    <template lwc:elseif={field.isEmiCombobox}>
+                                        <template lwc:if={canEditRestrictedFinalLoanTerms}>
+                                            <lightning-combobox
+                                                variant="label-hidden"
+                                                label="1st EMI Due Date"
+                                                name="firstEMIDueDateModal"
+                                                value={modalFirstEmiDueDate}
+                                                placeholder="Select 1st EMI Due Date"
+                                                options={modalEmiDateOptions}
+                                                data-field="firstEmiDueDate"
+                                                data-in-modal="true"
+                                                onchange={handlePicklistChange}>
+                                            </lightning-combobox>
+                                        </template>
+                                        <template lwc:else>
+                                            {modalFirstEmiDueDateDisplay}
+                                        </template>
+                                    </template>
+                                    <template lwc:else>
+                                        {field.valueDisplay}
+                                    </template>
+                                </dd>
+                            </div>
+                        </template>
+                    </dl>
+                </article>
+            </div>
+        </section>
+
+        <template lwc:if={isCvoOrBe}>
+        <section class="form-card alog-section-card" aria-label="Decision">
+            <div class="form-body">
+                <div class="alog-section-header">
+                    <span class="alog-section-icon alog-section-icon--decision" aria-hidden="true">
+                        <lightning-icon icon-name="utility:choice" size="xx-small"></lightning-icon>
+                    </span>
+                    <h2 class="p4-section-title">Decision</h2>
+                </div>
+
+                <div class="form-field-cell">
+                    <lightning-radio-group
+                        name="approvalDecision"
+                        label="Decision"
+                        variant="label-hidden"
+                        options={decisionOptions}
+                        value={decision}
+                        disabled={isStagePast}
+                        data-field="decision"
+                        onchange={handlePicklistChange}>
+                    </lightning-radio-group>
+                </div>
+
+                <div class="form-field-cell slds-m-top_small">
+                    <label class="p4-field-label-semibold" for="decisionRemarks">Remarks</label>
+                    <lightning-input
+                        id="decisionRemarks"
+                        type="text"
+                        variant="label-hidden"
+                        label="Remarks"
+                        value={decisionRemarks}
+                        placeholder="Enter remarks"
+                        disabled={isStagePast}
+                        data-field="decisionRemarks"
+                        onchange={handleInputChange}>
+                    </lightning-input>
+                </div>
+
+                <div class="p4-btn-wrapper alog-footer-actions">
+                    <button type="button" class="p4-primary-btn"
+                        disabled={isStagePast}
+                        onclick={handleSubmitProposalStatus}>
+                        Submit
+                    </button>
+                    <button type="button" class="p4-secondary-btn alog-approve-offer-btn"
+                        disabled={isStagePast}
+                        onclick={handleApproveOffer}>
+                        Approve Offer
+                    </button>
+                </div>
+            </div>
+        </section>
+        </template>
+
+        <template lwc:if={isHigherAuthorityUser}>
+        <section class="form-card alog-section-card" aria-label="Proposal status">
+            <div class="form-body">
+                <div class="alog-section-header">
+                    <span class="alog-section-icon alog-section-icon--status" aria-hidden="true">
+                        <lightning-icon icon-name="utility:approval" size="xx-small"></lightning-icon>
+                    </span>
+                    <h2 class="p4-section-title">Proposal Status</h2>
+                </div>
+
+                <div class="form-field-cell">
+                    <lightning-radio-group
+                        name="proposalStatus"
+                        label="Proposal Status"
+                        variant="label-hidden"
+                        options={proposalStatusOptions}
+                        value={proposalStatus}
+                        disabled={isStagePast}
+                        data-field="proposalStatus"
+                        onchange={handlePicklistChange}>
+                    </lightning-radio-group>
+                </div>
+
+                <div class="form-field-cell slds-m-top_small">
+                    <label class="p4-field-label-semibold" for="finalRemark">Decision Remarks</label>
+                    <lightning-input
+                        id="finalRemark"
+                        type="text"
+                        variant="label-hidden"
+                        label="Decision Remarks"
+                        value={finalRemarkValue}
+                        placeholder="Enter remarks"
+                        disabled={isStagePast}
+                        data-field="finalRemarkValue"
+                        onchange={handleInputChange}>
+                    </lightning-input>
+                </div>
+
+                <div class="p4-btn-wrapper alog-footer-actions">
+                    <button type="button" class="p4-primary-btn"
+                        disabled={isStagePast}
+                        onclick={handleSubmitProposalStatus}>
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </section>
+        </template>
+
+        <template lwc:if={showCibilSection}>
+            <section class="form-card alog-section-card alog-cibil-section" aria-label="CIBIL validity">
+                <div class="form-body">
+                    <div class="alog-section-header">
+                        <span class="alog-section-icon alog-section-icon--cibil" aria-hidden="true">
+                            <lightning-icon icon-name="utility:warning" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title">CIBIL Validity</h2>
+                    </div>
+                    <p class="p4-help-text alog-cibil-message">
+                        The bureau report has expired. Solicit customer consent to re-generate the bureau report.
+                    </p>
+                    <div class="form-field-cell">
+                        <lightning-radio-group
+                            name="cibilValidity"
+                            label="CIBIL validity consent"
+                            variant="label-hidden"
+                            options={yesNoOptions}
+                            value={cibilValidityOption}
+                            disabled={isStagePast}
+                            onchange={handleCibilValidityChange}>
+                        </lightning-radio-group>
+                    </div>
+                </div>
+            </section>
+        </template>
+
+        <template lwc:if={showDynamicModal}>
+            <c-dynamic-component-modal
+                component-name={dynamicComponentName}
+                modal-header={dynamicModalHeader}
+                record-id={recordId}
+                component-props={dynamicComponentProps}
+                onclose={handleModalClose}
+                oninsurancepremium={handleInsurancePremiumReceived}
+                onotpverified={handleOtpVerified}>
+            </c-dynamic-component-modal>
+        </template>
+
+        <template lwc:if={showPdfRenderModal}>
+            <c-dynamic-component-modal
+                component-name="pDFforceRenderer"
+                modal-header={pdfRenderModalHeader}
+                record-id={pdfRenderDocumentChecklistId}
+                component-props={pdfRenderModalProps}
+                onclose={handlePdfRenderModalClose}>
+            </c-dynamic-component-modal>
+        </template>
+
+        <template lwc:if={showIntegrationModal}>
+            <c-integration-progress-modal
+                status={integrationStatus}
+                stages={integrationStages}
+                current-stage-index={integrationCurrentStageIndex}
+                success-message={integrationSuccessMessage}
+                error-message={integrationErrorMessage}
+                onclose={handleIntegrationModalClose}
+                ondone={handleIntegrationModalClose}
+                onretry={handleIntegrationRetry}>
+            </c-integration-progress-modal>
+        </template>
+        <template lwc:if={showNextButton}>
+            <div class="p4-footer alog-footer">
+                <div class="p4-btn-wrapper">
+                    <button type="button" class="p4-primary-btn" disabled={isNextDisabled} onclick={handleNextButton}>
+                        Next
+                    </button>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

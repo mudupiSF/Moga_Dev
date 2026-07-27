@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Applicant_Income__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Applicant Income</label>
+    <referenceTo>Applicant_Income__c</referenceTo>
+    <relationshipLabel>Investigations</relationshipLabel>
+    <relationshipName>Investigations</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

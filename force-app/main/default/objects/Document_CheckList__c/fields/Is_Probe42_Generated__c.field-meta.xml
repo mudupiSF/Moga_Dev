@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Probe42_Generated__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Marks a Document Checklist row whose file was auto-generated/attached by the Probe42 report flow</description>
+    <label>Is Probe42 Generated</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

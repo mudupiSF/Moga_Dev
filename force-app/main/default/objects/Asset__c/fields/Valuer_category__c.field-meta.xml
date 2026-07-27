@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Valuer_category__c</fullName>
+    <label>Valuer Category</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Empanelled</fullName>
+                <default>false</default>
+                <label>Empanelled</label>
+            </value>
+            <value>
+                <fullName>MFC</fullName>
+                <default>false</default>
+                <label>MFC</label>
+            </value>
+            <value>
+                <fullName>Adroit</fullName>
+                <default>false</default>
+                <label>Adroit</label>
+            </value>
+            <value>
+                <fullName>TVS Credit</fullName>
+                <default>false</default>
+                <label>TVS Credit</label>
+            </value>
+            <value>
+                <fullName>Car Dekho</fullName>
+                <default>false</default>
+                <label>Car Dekho</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

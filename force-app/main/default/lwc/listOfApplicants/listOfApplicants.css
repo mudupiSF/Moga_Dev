@@ -1,0 +1,462 @@
+:host {
+    display: block;
+    width: 100%;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    --p4-slate-50: #f8fafc;
+    --p4-slate-100: #f1f5f9;
+    --p4-slate-200: #e2e8f0;
+    --p4-slate-600: #475569;
+    --p4-slate-800: #1e293b;
+    --p4-slate-900: #0f172a;
+    --p4-teal-500: #14b8a6;
+    --tile-min-height: 8.5rem;
+    --p4-font-size-base: 0.875rem;
+    --p4-font-size-sm: 0.8125rem;
+    --p4-font-size-xs: 0.75rem;
+    --p4-font-weight-semibold: 600;
+    --p4-font-weight-normal: 400;
+}
+
+.list-wrapper {
+    width: 100%;
+    background: var(--p4-slate-50);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--p4-slate-100);
+}
+
+.card-header {
+    height: 72px;
+    min-height: 72px;
+    background: var(--p4-slate-900);
+    display: flex;
+    align-items: center;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 1rem;
+    width: 100%;
+}
+
+.header-icon-wrap {
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-icon {
+    --slds-c-icon-color-foreground-default: white;
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.header-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.025em;
+}
+
+.header-subtitle {
+    margin: 0;
+    font-size: 0.75rem;
+    color: rgba(199, 210, 254, 0.8);
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.applicants-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+    .applicants-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .applicants-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.applicant-card {
+    position: relative;
+    overflow: hidden;
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--p4-slate-100);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.applicant-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: var(--p4-slate-200);
+}
+
+.applicant-card.submitted {
+    background: linear-gradient(to bottom right, white, rgba(16, 185, 129, 0.05));
+    border: 2px solid var(--p4-slate-100);
+}
+
+.applicant-card.submitted:hover {
+    border-color: #10b981;
+}
+
+.applicant-card.pending {
+    background: linear-gradient(to bottom right, white, rgba(79, 70, 229, 0.05));
+    border: 2px solid var(--p4-slate-100);
+}
+
+.applicant-card.pending:hover {
+    border-color: #6366f1;
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.applicant-label-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.person-icon {
+    --slds-c-icon-color-foreground-default: var(--p4-teal-500);
+}
+
+.applicant-label {
+    font-size: var(--p4-font-size-base);
+    font-weight: var(--p4-font-weight-semibold);
+    color: var(--p4-slate-800);
+}
+
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.action-btn {
+    padding: 0.375rem;
+    background: var(--p4-slate-100);
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.action-btn:hover {
+    background: var(--p4-slate-200);
+}
+
+.eye-icon,
+.edit-icon,
+.trash-icon {
+    --slds-c-icon-color-foreground-default: var(--p4-slate-600);
+}
+
+.action-btn:hover .trash-icon {
+    --slds-c-icon-color-foreground-default: #dc2626;
+}
+
+/* Primary ON/OFF switch (mirrors the SUB toggle pill) */
+.primary-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    line-height: 1;
+}
+
+.primary-toggle .primary-toggle-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.primary-toggle.off {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+.primary-toggle.off .primary-toggle-dot {
+    background: #cbd5e1;
+}
+
+.primary-toggle.on {
+    background: rgba(20, 184, 166, 0.12);
+    border: 1px solid rgba(20, 184, 166, 0.5);
+    color: #0d9488;
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(20, 184, 166, 0.45);
+}
+
+.primary-toggle.on .primary-toggle-dot {
+    background: #14b8a6;
+    box-shadow: 0 0 5px rgba(20, 184, 166, 0.9);
+}
+
+.primary-toggle.on:hover {
+    background: rgba(20, 184, 166, 0.2);
+}
+
+/* sole member in scope: always Primary, not toggleable */
+.primary-toggle.locked {
+    cursor: default;
+    opacity: 0.85;
+}
+
+.applicant-name {
+    font-size: var(--p4-font-size-sm);
+    font-weight: var(--p4-font-weight-normal);
+    color: var(--p4-slate-800);
+    margin-bottom: 0.25rem;
+}
+
+.applicant-type {
+    font-size: var(--p4-font-size-xs);
+    font-style: italic;
+    color: var(--p4-slate-600);
+}
+
+.status-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0.25rem;
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.status-bar.submitted {
+    background: linear-gradient(to right, #10b981, #059669);
+}
+
+.status-bar.pending {
+    background: linear-gradient(to right, #6366f1, #4f46e5);
+}
+
+.status-icon {
+    padding: 0.375rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-icon.submitted {
+    background: rgba(16, 185, 129, 0.8);
+}
+
+.status-icon.submitted .person-icon {
+    --slds-c-icon-color-foreground-default: white;
+}
+
+.status-icon.pending {
+    background: rgba(79, 70, 229, 0.8);
+}
+
+.status-icon.pending .person-icon {
+    --slds-c-icon-color-foreground-default: white;
+}
+
+.label-with-status {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.status-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.status-badge.submitted {
+    color: #059669;
+}
+
+.status-badge.pending {
+    color: #4f46e5;
+}
+
+/* ── Selectable NI parent tile (reveals its sub-applicants below the grid) ── */
+.applicant-card.selectable {
+    cursor: pointer;
+    min-height: var(--tile-min-height);
+}
+
+.applicant-card.selectable:hover {
+    box-shadow: 0 2px 10px rgba(20, 184, 166, 0.18);
+}
+
+.applicant-card.selected {
+    border-color: #14b8a6;
+    box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.35);
+}
+
+.sub-expand-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.625rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--p4-slate-200, #e2e8f0);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--p4-slate-500, #64748b);
+}
+
+.applicant-card.selected .sub-expand-chevron {
+    transform: rotate(180deg);
+}
+
+.sub-expand-chevron {
+    transition: transform 0.15s ease;
+    --sds-c-icon-color-foreground-default: #14b8a6;
+}
+
+/* ── Individual sub-applicants rendered in a dedicated section below the grid ── */
+.sub-applicants-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--p4-slate-200, #e2e8f0);
+}
+
+.sub-applicants-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--p4-slate-600);
+    margin-bottom: 0.625rem;
+}
+
+.sub-applicants-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+    .sub-applicants-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .sub-applicants-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.sub-applicants-grid .applicant-card {
+    background: var(--p4-slate-50);
+    padding: 0.75rem;
+}
+
+/* "+" creation tile for adding an IN sub-applicant */
+.sub-add-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: var(--tile-min-height);
+    width: 100%;
+    background: #fff;
+    border: 2px dashed var(--p4-slate-300, #cbd5e1);
+    border-radius: 0.75rem;
+    color: var(--p4-slate-600, #475569);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.sub-add-tile:hover {
+    border-color: #14b8a6;
+    background: rgba(20, 184, 166, 0.06);
+    color: #0d9488;
+}
+
+.sub-add-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--p4-slate-100, #f1f5f9);
+    color: inherit;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.sub-add-tile:hover .sub-add-icon {
+    background: rgba(20, 184, 166, 0.15);
+}
+
+.sub-add-text {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.p4-footer-wrapper {
+    padding: 0 1.25rem 1.25rem;
+}
+
+.p4-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.p4-primary-btn {
+    background: #0176d3;
+    color: #fff;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.p4-primary-btn:hover {
+    background: #014486;
+}

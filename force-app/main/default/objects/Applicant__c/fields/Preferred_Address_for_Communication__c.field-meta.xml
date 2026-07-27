@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Preferred_Address_for_Communication__c</fullName>
+    <label>Preferred Address for Communication</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Office Address</fullName>
+                <default>false</default>
+                <label>Office Address</label>
+            </value>
+            <value>
+                <fullName>Registered Address</fullName>
+                <default>false</default>
+                <label>Registered Address</label>
+            </value>
+            <value>
+                <fullName>Permanent Address</fullName>
+                <default>false</default>
+                <label>Permanent Address</label>
+            </value>
+            <value>
+                <fullName>Current Address</fullName>
+                <default>false</default>
+                <label>Current Address</label>
+            </value>
+            <value>
+                <fullName>Current Residential Address</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Current Residential Address</label>
+            </value>
+            <value>
+                <fullName>Permanent Residential Address</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Permanent Residential Address</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

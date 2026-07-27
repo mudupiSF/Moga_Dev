@@ -1,0 +1,531 @@
+<template>
+    <div class="ecfp-shell">
+
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <!--  TOP BAR — Title + Search + Expand/Collapse All + Refresh     -->
+        <!--  Styled to match embedCustomFileUpload "Advanced Document     -->
+        <!--  Upload" header for visual consistency.                       -->
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <div class="ecfp-topbar">
+            <div class="ecfp-topbar-title">
+                <span class="ecfp-topbar-icon-pill">
+                    <lightning-icon icon-name="utility:file" size="small" variant="inverse" alternative-text="files"></lightning-icon>
+                </span>
+                <h2 class="ecfp-topbar-title-text">{headerTitle}</h2>
+            </div>
+
+            <div class="ecfp-topbar-controls">
+                <label class="ecfp-search">
+                    <span class="ecfp-search-icon">
+                        <lightning-icon icon-name="utility:search" size="x-small" variant="inverse" alternative-text="search"></lightning-icon>
+                    </span>
+                    <input
+                        type="text"
+                        class="ecfp-search-input"
+                        placeholder="Search checklists..."
+                        value={searchQuery}
+                        oninput={handleSearchInput}
+                    />
+                </label>
+
+                <!-- Upload mode: "+ New Ad-Hoc File" — sits before Collapse/Expand-All -->
+                <template if:true={showAdhocNewBtn}>
+                    <button class="ecfp-adhoc-new-btn" title="Create a new ad-hoc document" onclick={handleStartAdhoc} disabled={isCreatingAdHoc}>
+                        <lightning-icon icon-name="utility:add" size="xx-small" variant="inverse" alternative-text="New Ad-Hoc File"></lightning-icon>
+                        <span class="ecfp-adhoc-new-btn-label">New Ad-Hoc File</span>
+                    </button>
+                </template>
+
+                <!-- Preview mode: Applicant Type + Document Type filters (same slot) -->
+                <template if:true={showFilter}>
+                    <div class="ecfp-filter-controls">
+                        <div class="ecfp-filter-dropdown">
+                            <button class={applicantFilterToggleClass} title="Filter by Applicant Type" onclick={toggleApplicantFilter}>
+                                <span class="ecfp-filter-toggle-left">
+                                    <lightning-icon icon-name="utility:filterList" size="xx-small" variant="inverse" alternative-text="Filter"></lightning-icon>
+                                    <span class="ecfp-filter-toggle-text">{applicantTypeFilterLabel}</span>
+                                </span>
+                                <lightning-icon icon-name="utility:chevrondown" size="xx-small" variant="inverse" alternative-text="open"></lightning-icon>
+                            </button>
+                            <div class={applicantFilterMenuClass}>
+                                <template for:each={applicantTypeFilterOptions} for:item="opt">
+                                    <button key={opt.value} class={opt.cssClass} data-value={opt.value} onclick={selectApplicantFilter}>{opt.value}</button>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="ecfp-filter-dropdown">
+                            <button class={documentFilterToggleClass} title="Filter by Document Type" onclick={toggleDocumentFilter}>
+                                <span class="ecfp-filter-toggle-left">
+                                    <lightning-icon icon-name="utility:filterList" size="xx-small" variant="inverse" alternative-text="Filter"></lightning-icon>
+                                    <span class="ecfp-filter-toggle-text">{documentTypeFilterLabel}</span>
+                                </span>
+                                <lightning-icon icon-name="utility:chevrondown" size="xx-small" variant="inverse" alternative-text="open"></lightning-icon>
+                            </button>
+                            <div class={documentFilterMenuClass}>
+                                <template for:each={documentTypeFilterOptions} for:item="opt">
+                                    <button key={opt.value} class={opt.cssClass} data-value={opt.value} onclick={selectDocumentFilter}>{opt.value}</button>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <button class="ecfp-topbar-btn" title={toggleAllTitle} onclick={handleToggleAll}>
+                    <lightning-icon
+                        icon-name={toggleAllIcon}
+                        size="x-small"
+                        variant="inverse"
+                        alternative-text={toggleAllTitle}>
+                    </lightning-icon>
+                </button>
+
+                <button class="ecfp-topbar-btn ecfp-topbar-btn-refresh" title="Refresh" onclick={handleRefresh}>
+                    <lightning-icon icon-name="utility:refresh" size="x-small" variant="inverse" alternative-text="refresh"></lightning-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- ── Status Strip ─────────────────────────────────────────────── -->
+        <template if:true={statusMessage}>
+            <div class={statusClass}>
+                <lightning-icon icon-name={statusIcon} size="x-small" alternative-text="status"></lightning-icon>
+                <span>{statusMessage}</span>
+            </div>
+        </template>
+
+        <!-- ── Loading Spinner ──────────────────────────────────────────── -->
+        <template if:true={isLoading}>
+            <div class="ecfp-loading">
+                <lightning-spinner size="small" alternative-text="Loading checklists"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <!--  NEW AD-HOC FILE CREATION TILE                                -->
+        <!--  Shown only while creating. Full-width (same margin/width as a -->
+        <!--  checklist tile). No dark "ITR Files Checklist"-style header — -->
+        <!--  just the Doc Type / Applicant Type sub-header fields + upload. -->
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <template if:true={isCreatingAdHoc}>
+            <div class="ecfp-adhoc-create">
+                <div class="ecfp-adhoc-create-tile">
+                    <div class="ecfp-adhoc-create-body">
+
+                        <!-- Doc Type + context selector (Applicant Type / Asset) -->
+                        <div class="ecfp-adhoc-create-fields">
+                            <label class="ecfp-adhoc-field">
+                                <span class="ecfp-adhoc-label">Doc Type</span>
+                                <lightning-combobox
+                                    class="ecfp-adhoc-combobox"
+                                    variant="label-hidden"
+                                    value={adhocDocType}
+                                    options={adhocDocTypeOptions}
+                                    onchange={handleAdhocDocTypeChange}>
+                                </lightning-combobox>
+                            </label>
+
+                            <template if:true={showApplicantTypeField}>
+                                <label class="ecfp-adhoc-field">
+                                    <span class="ecfp-adhoc-label">Applicant Type</span>
+                                    <lightning-combobox
+                                        class="ecfp-adhoc-combobox"
+                                        variant="label-hidden"
+                                        value={adhocApplicantType}
+                                        placeholder="— Select —"
+                                        options={applicantTypeOptions}
+                                        onchange={handleAdhocApplicantTypeChange}>
+                                    </lightning-combobox>
+                                </label>
+                            </template>
+
+                            <template if:true={showAssetField}>
+                                <label class="ecfp-adhoc-field">
+                                    <span class="ecfp-adhoc-label">Asset</span>
+                                    <lightning-combobox
+                                        class="ecfp-adhoc-combobox"
+                                        variant="label-hidden"
+                                        value={adhocAssetId}
+                                        placeholder="— Select —"
+                                        options={assetOptions}
+                                        onchange={handleAdhocAssetChange}>
+                                    </lightning-combobox>
+                                </label>
+                            </template>
+                        </div>
+
+                        <!-- Upload action — Multi-File Upload icon → INLINE Advanced Upload -->
+                        <div class="ecfp-adhoc-action">
+
+                            <!-- IDLE: chunky multi-file upload icon -->
+                            <template if:true={adhocStatusIdle}>
+                                <button class="ecfp-adhoc-dropzone"
+                                        title="Multi-File Upload"
+                                        onclick={handleAdhocStartUpload}
+                                        disabled={adhocNotReady}>
+                                    <img src={adhocUploadIconUrl} class="ecfp-chunky-icon" alt="Upload files" />
+                                    <span class="ecfp-adhoc-dropzone-label">{adhocUploadLabel}</span>
+                                </button>
+                            </template>
+
+                            <!-- CREATING: brief spinner while the checklist is created -->
+                            <template if:true={adhocCreating}>
+                                <div class="ecfp-adhoc-creating">
+                                    <lightning-spinner size="small" alternative-text="Preparing upload"></lightning-spinner>
+                                    <span class="ecfp-adhoc-dropzone-label">Preparing upload…</span>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- UPLOADING: Advanced Document Upload (MAGIC UI) rendered INLINE -->
+                        <template if:true={adhocUploading}>
+                            <div class="ecfp-adhoc-inline-upload">
+                                <c-embed-custom-file-upload
+                                    record-id={adhocChecklistId}
+                                    max-files-allowed={adhocMaxFiles}
+                                    allowed-extensions={adhocAllowedTypes}
+                                    enable-video
+                                    onfilesuploaded={handleAdhocInlineUploaded}>
+                                </c-embed-custom-file-upload>
+                                <div class="ecfp-adhoc-inline-actions">
+                                    <button class="ecfp-adhoc-btn-cancel" onclick={handleAdhocInlineUploaded}>Show Preview</button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Headless service: idempotent Document_CheckList__c create -->
+            <c-embed-document-checklist></c-embed-document-checklist>
+        </template>
+
+        <!-- ── Empty State ──────────────────────────────────────────────── -->
+        <template if:true={showEmptyStateView}>
+            <div class="ecfp-empty">
+                <lightning-icon icon-name="utility:file" size="medium"></lightning-icon>
+                <p>{emptyStateText}</p>
+            </div>
+        </template>
+
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <!--  CHECKLISTS LIST                                              -->
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <template if:true={showChecklistList}>
+            <div class="ecfp-checklists">
+                <template for:each={visibleChecklists} for:item="cl">
+                    <div key={cl.id} class={cl.cardClass}>
+
+                        <!-- ── CHECKLIST HEADER BAR (dark indigo) ───────── -->
+                        <div class="ecfp-cl-header">
+                            <div class="ecfp-cl-header-title">
+                                <span class="ecfp-cl-icon">
+                                    <lightning-icon icon-name="utility:page" size="x-small" variant="inverse" alternative-text="checklist"></lightning-icon>
+                                </span>
+                                <h3>{cl.displayName}</h3>
+                            </div>
+
+                            <div class="ecfp-cl-header-actions">
+                                <!-- Transfer Ownership (placeholder for future workflow) -->
+                                <button
+                                    class="ecfp-cl-action ecfp-cl-action-transfer"
+                                    title="Transfer Ownership"
+                                    data-id={cl.id}
+                                    onclick={handleTransferOwnership}>
+                                    <lightning-icon icon-name="utility:user_role" size="x-small" variant="inverse" alternative-text="Transfer Ownership"></lightning-icon>
+                                </button>
+
+                                <!-- Delete All (inline SVG). White on dark indigo header.
+                                     Hover => RED + red glow ring. Hidden in preview-only mode. -->
+                                <template if:true={cl.showDeleteAll}>
+                                    <button
+                                        class="ecfp-cl-action ecfp-cl-action-delete-all"
+                                        title="Delete All Files"
+                                        data-id={cl.id}
+                                        onclick={handleDeleteAllRequest}>
+                                        <svg class="ecfp-special-icon" viewBox="0 0 24 24" fill="none"
+                                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                             stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                            <path d="M10 2h6a2 2 0 0 1 2 2v4" opacity="0.3"/>
+                                            <path d="M7 5h9a2 2 0 0 1 2 2v2" opacity="0.5"/>
+                                            <path d="M3 10h18"/>
+                                            <path d="M19 10v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V10"/>
+                                            <path d="M8 10V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3"/>
+                                            <line x1="10" y1="14" x2="10" y2="18"/>
+                                            <line x1="14" y1="14" x2="14" y2="18"/>
+                                        </svg>
+                                    </button>
+                                </template>
+
+                                <!-- Expand/Collapse — only when there ARE files (per spec) -->
+                                <template if:true={cl.hasFiles}>
+                                    <button
+                                        class={cl.expandBtnClass}
+                                        title={cl.expandBtnTitle}
+                                        data-id={cl.id}
+                                        onclick={handleToggleChecklist}>
+                                        <lightning-icon
+                                            icon-name={cl.expandBtnIcon}
+                                            size="x-small"
+                                            variant="inverse"
+                                            alternative-text={cl.expandBtnTitle}>
+                                        </lightning-icon>
+                                    </button>
+                                </template>
+                                <template if:false={cl.hasFiles}>
+                                    <span class="ecfp-cl-expand-placeholder" title="No files uploaded yet">
+                                        <lightning-icon icon-name="utility:add" size="x-small" variant="inverse" alternative-text="No files"></lightning-icon>
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- ── CHECKLIST SUB HEADER (Category | SubCategory) ──
+                              Mandatory / Advanced Upload checkboxes removed. -->
+                        <div class="ecfp-cl-subheader">
+                            <div class="ecfp-cl-subheader-meta">
+                                <span class="ecfp-cl-meta-label">Doc Type:</span>
+                                <span class="ecfp-cl-meta-value">{cl.displayCategory}</span>
+                                <span class="ecfp-cl-meta-pipe">|</span>
+                                <span class="ecfp-cl-meta-label">Applicant Type:</span>
+                                <span class="ecfp-cl-meta-value">{cl.displaySubCategory}</span>
+                            </div>
+                        </div>
+
+                        <!-- ── CHECKLIST BODY (file tiles) ─────────────── -->
+                        <template if:true={cl.isExpanded}>
+                            <div class="ecfp-cl-body">
+                                <!-- "In-flight" pre-tile progress bars for files mid-upload -->
+                                <template for:each={cl.inFlightUploads} for:item="up">
+                                    <div key={up.uid} class="ecfp-file-progress-row">
+                                        <div class="ecfp-file-progress-meta">
+                                            <span class="ecfp-file-progress-name">{up.fileName}</span>
+                                            <span class="ecfp-file-progress-pct">{up.pct}%</span>
+                                        </div>
+                                        <div class="ecfp-progress-track">
+                                            <div class="ecfp-progress-fill" style={up.style}></div>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- File Tiles -->
+                                <template for:each={cl.fileTiles} for:item="tile">
+                                    <div key={tile.id} class={tile.tileClass}>
+
+                                        <!-- Re-upload progress overlay (when re-uploading this tile) -->
+                                        <template if:true={tile.isReuploading}>
+                                            <div class="ecfp-tile-reupload-overlay">
+                                                <div class="ecfp-tile-reupload-card">
+                                                    <span class="ecfp-tile-reupload-label">Re-uploading {tile.title}…</span>
+                                                    <div class="ecfp-progress-track">
+                                                        <div class="ecfp-progress-fill" style={tile.reuploadStyle}></div>
+                                                    </div>
+                                                    <span class="ecfp-tile-reupload-pct">{tile.reuploadPct}%</span>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <!-- File Tile Header -->
+                                        <div class="ecfp-tile-header">
+                                            <button
+                                                class={tile.chevronClass}
+                                                title={tile.chevronTitle}
+                                                data-checklist-id={cl.id}
+                                                data-tile-id={tile.id}
+                                                onclick={handleToggleTile}>
+                                                <lightning-icon
+                                                    icon-name={tile.chevronIcon}
+                                                    size="x-small"
+                                                    alternative-text={tile.chevronTitle}>
+                                                </lightning-icon>
+                                            </button>
+
+                                            <div class="ecfp-tile-name-block">
+                                                <span class="ecfp-tile-name" title={tile.title}>{tile.title}</span>
+                                            </div>
+
+                                            <div class="ecfp-tile-spacer"></div>
+
+                                            <div class="ecfp-tile-actions">
+                                                <!-- Preview (eye) — highlighted = file uploaded -->
+                                                <button
+                                                    class={tile.previewBtnClass}
+                                                    title="Preview File"
+                                                    data-checklist-id={cl.id}
+                                                    data-tile-id={tile.id}
+                                                    onclick={handlePreviewClick}>
+                                                    <lightning-icon icon-name="utility:preview" size="x-small" alternative-text="Preview"></lightning-icon>
+                                                </button>
+
+                                                <!-- Re-upload (inline SVG). On LIGHT file tile bg:
+                                                     default => indigo, hover => turquoise + glow. -->
+                                                <button
+                                                    class="ecfp-action-btn ecfp-action-reupload"
+                                                    title="Re-Upload (New Version)"
+                                                    disabled={tile.reuploadDisabled}
+                                                    data-checklist-id={cl.id}
+                                                    data-tile-id={tile.id}
+                                                    onclick={handleReuploadClick}>
+                                                    <svg class="ecfp-special-icon ecfp-special-icon-sm" viewBox="0 0 24 24"
+                                                         fill="none" stroke="currentColor" stroke-width="2"
+                                                         stroke-linecap="round" stroke-linejoin="round"
+                                                         aria-hidden="true" focusable="false">
+                                                        <path d="M21 2v6h-6"/>
+                                                        <path d="M3 12a9 9 0 1 0 2.6-6.4L21 8"/>
+                                                        <path d="M12 17v-5"/>
+                                                        <path d="m9 14 3-3 3 3"/>
+                                                    </svg>
+                                                </button>
+
+                                                <!-- Delete -->
+                                                <template if:true={tile.isDeleting}>
+                                                    <div class="ecfp-action-btn ecfp-action-deleting">
+                                                        <lightning-spinner size="x-small" alternative-text="Deleting"></lightning-spinner>
+                                                    </div>
+                                                </template>
+                                                <template if:false={tile.isDeleting}>
+                                                    <button
+                                                        class="ecfp-action-btn ecfp-action-delete"
+                                                        title="Delete File"
+                                                        disabled={tile.deleteDisabled}
+                                                        data-checklist-id={cl.id}
+                                                        data-tile-id={tile.id}
+                                                        onclick={handleDeleteClick}>
+                                                        <lightning-icon icon-name="utility:delete" size="x-small" alternative-text="Delete"></lightning-icon>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <!-- File Tile Body (accordion expanded) -->
+                                        <template if:true={tile.isExpanded}>
+                                            <div class="ecfp-tile-body">
+                                                
+                                                <div class="ecfp-meta-row">
+                                                    <div class="ecfp-meta-cell">
+                                                        <span class="ecfp-meta-label">File Type</span>
+                                                        <span class="ecfp-meta-value ecfp-meta-value-strong">{tile.fileType}</span>
+                                                    </div>
+                                                    <div class="ecfp-meta-cell">
+                                                        <span class="ecfp-meta-label">File Size</span>
+                                                        <span class="ecfp-meta-value">{tile.size}</span>
+                                                    </div>
+                                                    <div class="ecfp-meta-cell">
+                                                        <span class="ecfp-meta-label">Created Date</span>
+                                                        <span class="ecfp-meta-value">{tile.createdDate}</span>
+                                                    </div>
+                                                    <div class="ecfp-meta-cell">
+                                                        <span class="ecfp-meta-label">Uploaded By</span>
+                                                        <span class="ecfp-meta-value">{tile.uploadedBy}</span>
+                                                    </div>
+                                                    <div class="ecfp-meta-cell">
+                                                        <span class="ecfp-meta-label">Version</span>
+                                                        <span class="ecfp-meta-value">{tile.version}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                    </div>
+                </template>
+            </div>
+
+            <!-- ═════════════════════════════════════════════════════════ -->
+            <!--  PAGINATION FOOTER (5 checklists per page)                -->
+            <!-- ═════════════════════════════════════════════════════════ -->
+            <div class="ecfp-pagination-bar">
+                <span class="ecfp-pagination-info">{paginationInfoLabel}</span>
+
+                <div class="ecfp-pagination-controls">
+                    <button
+                        class="ecfp-page-arrow"
+                        title="Previous Page"
+                        disabled={isFirstPage}
+                        onclick={handlePrevPage}>
+                        <lightning-icon icon-name="utility:chevronleft" size="x-small" alternative-text="prev"></lightning-icon>
+                    </button>
+
+                    <template for:each={pageNumbers} for:item="pn">
+                        <button
+                            key={pn.num}
+                            class={pn.btnClass}
+                            data-page={pn.num}
+                            onclick={handlePageClick}>
+                            {pn.num}
+                        </button>
+                    </template>
+
+                    <button
+                        class="ecfp-page-arrow"
+                        title="Next Page"
+                        disabled={isLastPage}
+                        onclick={handleNextPage}>
+                        <lightning-icon icon-name="utility:chevronright" size="x-small" alternative-text="next"></lightning-icon>
+                    </button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <!--  PREVIEW MODAL (preserved end-to-end from prior version)      -->
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <template if:true={showPreview}>
+            <c-embed-file-preview
+                content-version-id={previewFile.id}
+                content-document-id={previewFile.contentDocumentId}
+                file-name={previewFile.title}
+                file-extension={previewFile.ext}
+                icon-name={previewFile.iconName}
+                session-id={_sessionId}
+                vf-root={_vfRoot}
+                prevent-download={preventDownload}
+                can-download={previewFile.canDownload}
+                onclose={closePreview}>
+            </c-embed-file-preview>
+        </template>
+
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <!--  DELETE-ALL CONFIRM MODAL                                      -->
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <template if:true={showDeleteAllConfirm}>
+            <div class="ecfp-modal-overlay" onclick={cancelDeleteAll}>
+                <div class="ecfp-modal ecfp-modal-small" onclick={stopPropagation}>
+                    <div class="ecfp-modal-header">
+                        <div class="ecfp-modal-title">
+                            <lightning-icon icon-name="utility:warning" size="small" alternative-text="warning"></lightning-icon>
+                            <span>Delete All Files?</span>
+                        </div>
+                    </div>
+                    <div class="ecfp-modal-body ecfp-modal-body-padded">
+                        <p class="ecfp-confirm-text">
+                            All the files associated with this Document Checklist
+                            <strong>“{deleteAllChecklistName}”</strong>
+                            would be deleted. This action cannot be undone.
+                        </p>
+                    </div>
+                    <div class="ecfp-modal-footer">
+                        <button class="ecfp-btn-secondary" onclick={cancelDeleteAll}>No, Cancel</button>
+                        <button class="ecfp-btn-danger" onclick={confirmDeleteAll}>Yes, Delete All</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <!--  NATIVE FILE INPUT (hidden) — basic multi-upload mode          -->
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <input
+            type="file"
+            multiple
+            class="ecfp-hidden-file-input"
+            onchange={handleNativeFilesSelected}
+            lwc:ref="nativeFileInput"
+        />
+
+    </div>
+</template>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Pvt Ltd PV NI</label>
+    <protected>false</protected>
+    <values>
+        <field>Adhoc_Document_Count__c</field>
+        <value xsi:type="xsd:double">1.0</value>
+    </values>
+    <values>
+        <field>Adhoc_Documents__c</field>
+        <value xsi:type="xsd:string">GST Certificate,MSME Registration Certificate,Udyam Registration Certificate,Registration Certificate (Any),Shops &amp; Establishment Certificate,Tax / Service Tax / Professional Tax Authorization,Factory Registration Certificate,Certificate issued by State/Central/Local Authorities,Trade Licence,Import and Export Certificate</value>
+    </values>
+    <values>
+        <field>Entity_Code__c</field>
+        <value xsi:type="xsd:double">11.0</value>
+    </values>
+    <values>
+        <field>Entity_Type__c</field>
+        <value xsi:type="xsd:string">Pvt Ltd</value>
+    </values>
+    <values>
+        <field>Max_Beneficiary_Count__c</field>
+        <value xsi:type="xsd:double">10.0</value>
+    </values>
+    <values>
+        <field>Max_Guarantor_Count__c</field>
+        <value xsi:type="xsd:double">3.0</value>
+    </values>
+    <values>
+        <field>Max_Sub_Applicant_Count__c</field>
+        <value xsi:type="xsd:double">10.0</value>
+    </values>
+    <values>
+        <field>Min_Beneficiary_Count__c</field>
+        <value xsi:type="xsd:double">2.0</value>
+    </values>
+    <values>
+        <field>Min_Shareholding__c</field>
+        <value xsi:type="xsd:double">10.0</value>
+    </values>
+    <values>
+        <field>PAN_Fourth_Char__c</field>
+        <value xsi:type="xsd:string">C</value>
+    </values>
+    <values>
+        <field>Product_Type__c</field>
+        <value xsi:type="xsd:string">PV</value>
+    </values>
+    <values>
+        <field>Required_Documents__c</field>
+        <value xsi:type="xsd:string">PAN,GST Certificate,CIN Certificate,Certificate of Incorporation,Memorandum of Association,Articles of Association,Board Resolution,List of Directors,Beneficial Ownership Declaration</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,113 @@
+<template>
+    <div class="dashboard-container">
+        <!-- Loading State -->
+        <template if:true={isLoading}>
+            <div class="slds-align_absolute-center slds-var-p-around_large">
+                <lightning-spinner alternative-text="Loading dashboards..." size="medium"></lightning-spinner>
+                <p class="slds-text-heading_small slds-var-m-top_small">Loading your dashboards...</p>
+            </div>
+        </template>
+
+        <!-- Dashboard Cards Grid -->
+        <template if:true={hasConfigurations}>
+            <div class="slds-grid slds-wrap slds-gutters">
+                <template for:each={dashboardsWithData} for:item="dashboard">
+                    <div key={dashboard.id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2">
+                        <lightning-card title={dashboard.reportDescription} class="dashboard-card">
+                            <!-- Loading for individual card -->
+                            <template if:true={isLoading}>
+                                <div class="slds-align_absolute-center slds-var-p-around_medium">
+                                    <lightning-spinner alternative-text="Loading..." size="small"></lightning-spinner>
+                                </div>
+                            </template>
+
+                            <!-- Error Message -->
+                            <template if:true={dashboard.hasError}>
+                                <div class="slds-var-p-around_medium">
+                                    <div class="slds-text-color_error">
+                                        <lightning-icon icon-name="utility:error" size="small" class="slds-var-m-right_x-small"></lightning-icon>
+                                        Error loading data
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Data Display -->
+                            <template if:true={dashboard.hasData}>
+                                <template if:false={isLoading}>
+                                    <div class="slds-grid slds-wrap slds-gutters_small slds-var-p-around_small">
+                                        <template for:each={dashboard.data} for:item="dataItem">
+                                            <div key={dataItem.label} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                                                <div class="slds-box slds-box_small slds-text-align_center">
+                                                    <div class="slds-text-body_small slds-var-m-bottom_x-small">{dataItem.label}</div>
+                                                    <div class={dashboard.colorClass} style="font-size: 2.5rem; font-weight: bold;">
+                                                        {dataItem.value}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>
+
+                            <!-- No Data Message -->
+                            <template if:false={dashboard.hasData}>
+                                <template if:false={isLoading}>
+                                    <template if:false={dashboard.hasError}>
+                                        <div class="slds-align_absolute-center slds-var-p-around_medium">
+                                            <p class="slds-text-color_weak">No data available</p>
+                                        </div>
+                                    </template>
+                                </template>
+                            </template>
+
+                            <!-- Report Link in Footer -->
+                            <!--
+                            This is a clone component new: {dashboard.reportId}
+                            This is a clone component new1: JSON.stringyfy({dashboard.debugData})-->
+                            <template if:true={dashboard.showReportLink}>
+                                <div slot="footer" class="slds-text-align_center">
+                                    <a href="#" 
+                                       onclick={handleNavigateToReport} 
+                                       data-report-id={dashboard.reportId}
+                                       data-query-type={dashboard.queryType}
+                                       data-sobject-type={dashboard.sObjectType}
+                                       data-developer-name={dashboard.developerName}
+                                       class="slds-text-link"
+                                    >
+                                        <lightning-icon icon-name="utility:open" size="xx-small" class="slds-var-m-right_xx-small"></lightning-icon>
+                                        {dashboard.reportLabel}
+                                    </a>
+                                </div>
+                            </template>
+                        </lightning-card>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- No Data State -->
+        <template if:false={hasConfigurations}>
+            <template if:false={isLoading}>
+                <template if:false={error}>
+                    <div class="slds-align_absolute-center slds-var-p-around_xx-large">
+                        <lightning-icon icon-name="utility:info" size="small" class="slds-var-m-right_x-small"></lightning-icon>
+                        <p class="slds-text-body_regular">{noConfigurationMessage}</p>
+                    </div>
+                </template>
+            </template>
+        </template>
+
+        <!-- Error State -->
+        <template if:true={error}>
+            <div class="slds-align_absolute-center slds-var-p-around_large">
+                <div class="slds-text-color_error slds-text-align_center">
+                    <lightning-icon icon-name="utility:error" size="large" variant="error" class="slds-var-m-bottom_small"></lightning-icon>
+                    <p class="slds-text-heading_medium">Unable to load dashboards</p>
+                    <p class="slds-text-body_regular slds-var-m-top_small">
+                        Please refresh the page or contact your administrator.
+                    </p>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

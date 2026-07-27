@@ -1,0 +1,143 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <div class="kyc-container">
+
+        <!-- ═══ STEP 1: Aadhaar Number Input ═══ -->
+        <template if:true={isAadhaarStep}>
+            <div class="step-header">
+                <div class="step-badge">
+                    <lightning-icon icon-name="utility:identity" size="x-small"
+                        class="badge-icon"></lightning-icon>
+                </div>
+                <div class="step-header-text">
+                    <h3 class="step-title">Aadhaar Verification</h3>
+                    <p class="step-desc">Enter your 12-digit Aadhaar number to begin eKYC</p>
+                </div>
+            </div>
+
+            <template if:true={errorMessage}>
+                <div class="error-banner">
+                    <lightning-icon icon-name="utility:error" size="x-small"
+                        class="error-icon-sm"></lightning-icon>
+                    <span>{errorMessage}</span>
+                </div>
+            </template>
+
+            <div class="input-group">
+                <label class="input-label">Aadhaar Number</label>
+                <input type="text" class="text-input"
+                       placeholder="XXXX XXXX XXXX" maxlength="14"
+                       inputmode="numeric" value={formattedAadhaar}
+                       oninput={handleAadhaarInput} />
+            </div>
+
+            <button class="primary-btn" onclick={handleSendOtp} disabled={sendOtpDisabled}>
+                <template if:true={sendOtpLoading}>
+                    <span class="spinner-sm"></span>
+                </template>
+                <template if:false={sendOtpLoading}>
+                    <lightning-icon icon-name="utility:send" size="xx-small"
+                        class="icon-white"></lightning-icon>
+                    <span>Send OTP</span>
+                </template>
+            </button>
+        </template>
+
+        <!-- ═══ STEP 2: OTP Verification ═══ -->
+        <template if:true={isOtpStep}>
+            <div class="step-header">
+                <div class="step-badge">
+                    <lightning-icon icon-name="utility:phone_portrait" size="x-small"
+                        class="badge-icon"></lightning-icon>
+                </div>
+                <div class="step-header-text">
+                    <h3 class="step-title">Verify Aadhaar OTP</h3>
+                    <p class="step-desc">
+                        A 6-digit verification code has been sent to your Aadhaar-linked mobile number.
+                    </p>
+                </div>
+            </div>
+
+            <template if:true={errorMessage}>
+                <div class="error-banner">
+                    <lightning-icon icon-name="utility:error" size="x-small"
+                        class="error-icon-sm"></lightning-icon>
+                    <span>{errorMessage}</span>
+                </div>
+            </template>
+
+            <div class="otp-inputs">
+                <template for:each={otpSlots} for:item="slot">
+                    <input
+                        key={slot.key}
+                        type="tel"
+                        maxlength="1"
+                        class="otp-digit"
+                        data-index={slot.index}
+                        value={slot.value}
+                        oninput={handleOtpInput}
+                        onkeydown={handleOtpKeydown}
+                        onpaste={handleOtpPaste}
+                    />
+                </template>
+            </div>
+
+            <label class="terms-wrap">
+                <input type="checkbox" class="terms-cb" checked={isTermsAccepted}
+                    onchange={handleTermsChange} />
+                <span class="terms-text">
+                    I agree to the <a href="javascript:void(0)" class="terms-link"
+                        onclick={handleTermsClick}>Terms &amp; Conditions</a> and authorize Aadhaar eKYC verification.
+                </span>
+            </label>
+
+            <button class={verifyButtonClass} onclick={handleVerifyOtp} disabled={isVerifyDisabled}>
+                <template if:true={verifyLoading}>
+                    <span class="spinner-sm"></span>
+                </template>
+                <template if:false={verifyLoading}>
+                    <template if:true={isOtpVerified}>
+                        <lightning-icon icon-name="utility:success" size="xx-small"
+                            class="icon-white"></lightning-icon>
+                        <span>OTP Verified</span>
+                    </template>
+                    <template if:false={isOtpVerified}>
+                        <lightning-icon icon-name="utility:shield" size="xx-small"
+                            class="icon-white"></lightning-icon>
+                        <span>Verify OTP</span>
+                    </template>
+                </template>
+            </button>
+
+            <p class={resendClass} onclick={handleResendOtp}>{resendTimerDisplay}</p>
+        </template>
+
+        <!-- ═══ STEP 3: Success ═══ -->
+        <template if:true={isSuccessStep}>
+            <div class="result-content">
+                <div class="result-badge result-badge-success">
+                    <svg viewBox="0 0 24 24" class="result-svg">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                </div>
+                <h3 class="result-title">Thank You!</h3>
+                <p class="result-desc">Thank you for completing the KYC of your application.</p>
+            </div>
+        </template>
+
+        <!-- ═══ STEP 4: Error (terminal) ═══ -->
+        <template if:true={isErrorStep}>
+            <div class="result-content">
+                <div class="result-badge result-badge-error">
+                    <svg viewBox="0 0 24 24" class="result-svg">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                    </svg>
+                </div>
+                <h3 class="result-title">Verification Failed</h3>
+                <p class="result-desc">{generalError}</p>
+                <button class="secondary-btn" onclick={handleTryAgain}>Try Again</button>
+            </div>
+        </template>
+
+    </div>
+</template>

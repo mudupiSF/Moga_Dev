@@ -1,0 +1,296 @@
+<template>
+    <template lwc:if={isLoading}>
+        <lightning-spinner alternative-text="Loading income sources" size="small"></lightning-spinner>
+    </template>
+    <template lwc:if={hasIncomeSources}>
+        <div class="isc-section">
+            <template for:each={displayIncomeSources} for:item="source">
+                <div key={source.id} class={source.accordionItemClass}>
+                    <div class="isc-accordion-header">
+                        <button
+                            type="button"
+                            class={source.accordionTriggerClass}
+                            data-source-id={source.id}
+                            aria-expanded={source.isOpen}
+                            onclick={handleAccordionToggle}>
+                            <span class="isc-accordion-trigger-main">
+                                <span class="isc-accordion-icon-wrap">
+                                    <lightning-icon icon-name="utility:moneybag" size="x-small" class="isc-accordion-icon"></lightning-icon>
+                                </span>
+                                <span class="isc-accordion-text">
+                                    <span class="isc-accordion-label">{source.heading}</span>
+                                    <span class="isc-accordion-desc">Capture income source details</span>
+                                </span>
+                            </span>
+                            <lightning-icon icon-name={source.chevronIcon} size="x-small" class="isc-accordion-chevron"></lightning-icon>
+                        </button>
+                        <template lwc:if={source.showDeleteButton}>
+                            <button
+                                type="button"
+                                class="isc-delete-btn"
+                                data-source-id={source.id}
+                                onclick={handleDeleteIncomeSource}
+                                title="Delete income source">
+                                Delete
+                            </button>
+                        </template>
+                    </div>
+                    <template lwc:if={source.isOpen}>
+                        <div class="isc-accordion-panel">
+                            <div class="isc-accordion-content">
+                                <div class="isc-field-row">
+                                    <lightning-combobox
+                                        label="Income Source"
+                                        value={source.incomeSource}
+                                        options={source.incomeSourceOptions}
+                                        data-source-id={source.id}
+                                        onchange={handleIncomeSourceTypeChange}
+                                        placeholder="Select income source"
+                                        disabled={source.isIncomeSourceDisabled}
+                                        required>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="isc-primary-toggle-row">
+                                    <lightning-input
+                                        type="toggle"
+                                        label="Primary Income Source?"
+                                        checked={source.primaryIncomeSource}
+                                        message-toggle-active="Yes"
+                                        message-toggle-inactive="No"
+                                        data-source-id={source.id}
+                                        onchange={handlePrimaryToggle}
+                                        disabled={isReadOnly}>
+                                    </lightning-input>
+                                </div>
+
+                                <template lwc:if={source.showItrSection}>
+                                    <template for:each={source.itrSections} for:item="itr">
+                                        <div key={itr.id} class="isc-subsection">
+                                            <div class="isc-field-grid">
+                                                <lightning-combobox
+                                                    label="Assessment Year"
+                                                    value={itr.assessmentYear}
+                                                    options={assessmentYearOptions}
+                                                    data-source-id={source.id}
+                                                    data-section-id={itr.id}
+                                                    data-field="assessmentYear"
+                                                    onchange={handleItrFieldChange}
+                                                    disabled={isReadOnly}
+                                                    required>
+                                                </lightning-combobox>
+                                                <lightning-input
+                                                    type="date"
+                                                    label="ITR Last Year Date"
+                                                    value={itr.itrLastYearDate}
+                                                    data-source-id={source.id}
+                                                    data-section-id={itr.id}
+                                                    data-field="itrLastYearDate"
+                                                    onchange={handleItrFieldChange}
+                                                    disabled={isReadOnly}
+                                                    required>
+                                                </lightning-input>
+                                                <lightning-input
+                                                    type="number"
+                                                    label="Income (Last Year)"
+                                                    value={itr.incomeLastYear}
+                                                    data-source-id={source.id}
+                                                    data-section-id={itr.id}
+                                                    data-field="incomeLastYear"
+                                                    onchange={handleItrFieldChange}
+                                                    disabled={isReadOnly}
+                                                    required>
+                                                </lightning-input>
+                                                <lightning-input
+                                                    type="toggle"
+                                                    label="Do you have another ITR?"
+                                                    checked={itr.doYouHaveAnotherITR}
+                                                    message-toggle-active="Yes"
+                                                    message-toggle-inactive="No"
+                                                    data-source-id={source.id}
+                                                    data-section-id={itr.id}
+                                                    data-field="doYouHaveAnotherITR"
+                                                    onchange={handleItrFieldChange}
+                                                    disabled={isReadOnly}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+
+                                <template lwc:if={source.showFinancialSection}>
+                                    <div class="isc-subsection">
+                                        <div class="isc-field-grid">
+                                            <lightning-combobox
+                                                label="Financial Year"
+                                                value={source.financialYear}
+                                                options={financialYearOptions}
+                                                data-source-id={source.id}
+                                                data-field="financialYear"
+                                                onchange={handleFieldChange}
+                                                disabled={isReadOnly}>
+                                            </lightning-combobox>
+                                        </div>
+                                        <h4 class="isc-subsection-title">Profit &amp; Loss</h4>
+                                        <div class="isc-field-grid">
+                                            <lightning-input type="number" label="Total Income" value={source.totalIncome} data-source-id={source.id} data-field="totalIncome" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Total Expense" value={source.totalExpense} data-source-id={source.id} data-field="totalExpense" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="PBT" value={source.pbtValue} data-source-id={source.id} data-field="pbtValue" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="PAT" value={source.patValue} data-source-id={source.id} data-field="patValue" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Cash Profit" value={source.cashProfit} data-source-id={source.id} data-field="cashProfit" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                        </div>
+                                        <h4 class="isc-subsection-title">Liabilities</h4>
+                                        <div class="isc-field-grid">
+                                            <lightning-input type="number" label="Shareholder Funds" value={source.shareholderFunds} data-source-id={source.id} data-field="shareholderFunds" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Secured Loans" value={source.securedLoans} data-source-id={source.id} data-field="securedLoans" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Working Capital" value={source.workingCapital} data-source-id={source.id} data-field="workingCapital" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Unsecured Loans" value={source.unsecuredLoans} data-source-id={source.id} data-field="unsecuredLoans" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Current Liabilities" value={source.currentLiabilities} data-source-id={source.id} data-field="currentLiabilities" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Sundry Creditors" value={source.sundryCreditors} data-source-id={source.id} data-field="sundryCreditors" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                        </div>
+                                        <h4 class="isc-subsection-title">Assets</h4>
+                                        <div class="isc-field-grid">
+                                            <lightning-input type="number" label="Current Assets" value={source.currentAssets} data-source-id={source.id} data-field="currentAssets" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Sundry Debtors" value={source.sundryDebtors} data-source-id={source.id} data-field="sundryDebtors" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Fixed Assets" value={source.fixedAssets} data-source-id={source.id} data-field="fixedAssets" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Non Current Assets" value={source.nonCurrentAssets} data-source-id={source.id} data-field="nonCurrentAssets" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Cash and Bank Balances" value={source.cashAndBankBalances} data-source-id={source.id} data-field="cashAndBankBalances" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-radio-group
+                                                label="Do you have previous year financial entries?"
+                                                options={yesNoOptions}
+                                                value={source.financialAnotherEntry}
+                                                data-source-id={source.id}
+                                                data-field="financialAnotherEntry"
+                                                onchange={handleFieldChange}
+                                                disabled={isReadOnly}
+                                                required
+                                                type="radio">
+                                            </lightning-radio-group>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:if={source.showGstSection}>
+                                    <div class="isc-subsection">
+                                        <c-financial-performance-grid
+                                            data-source-id={source.id}
+                                            applicant-income-id={source.recordId}
+                                            is-read-only={isReadOnly}
+                                            record-id={recordId}
+                                            applicant-id={applicantId}
+                                            ongstsaved={handleGstSaved}
+                                            ongstdocumentchange={handleGstDocumentChange}>
+                                        </c-financial-performance-grid>
+                                    </div>
+                                </template>
+
+                                <template lwc:if={source.showAgricultureSection}>
+                                    <div class="isc-subsection">
+                                        <div class="isc-field-grid">
+                                            <lightning-combobox label="Property Area Unit" value={source.propertyAreaUnit} options={propertyAreaUnitOptions} data-source-id={source.id} data-field="propertyAreaUnit" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-combobox>
+                                            <lightning-input type="number" label="Property Area" value={source.propertyArea} data-source-id={source.id} data-field="propertyArea" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-combobox label="Crops Per Year" value={source.cropsPerYear} options={cropsPerYearOptions} data-source-id={source.id} data-field="cropsPerYear" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-combobox>
+                                            <lightning-input type="number" label="Yields Per Acre" value={source.yieldPerAcre} data-source-id={source.id} data-field="yieldPerAcre" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Price Per Unit" value={source.pricePerUnit} data-source-id={source.id} data-field="pricePerUnit" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Acre Unit" value={source.acreUnit} data-source-id={source.id} data-field="acreUnit" onchange={handleFieldChange} disabled={isReadOnly}></lightning-input>
+                                            <lightning-input type="number" label="Income" value={source.agriculturalIncome} data-source-id={source.id} data-field="agriculturalIncome" disabled></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <template lwc:if={source.showPropertySection}>
+                                    <div class="isc-subsection">
+                                        <div class="isc-field-grid">
+                                            <lightning-radio-group label="Type of Property" options={typeOfPropertyOptions} value={source.typeOfProperty} data-source-id={source.id} data-field="typeOfProperty" onchange={handleFieldChange} disabled={isReadOnly} required type="radio"></lightning-radio-group>
+                                            <lightning-combobox label="Property Area Unit" value={source.propertyAreaUnit} options={propertyAreaUnitOptions} data-source-id={source.id} data-field="propertyAreaUnit" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-combobox>
+                                            <lightning-input type="number" label="Property Area" value={source.propertyArea} data-source-id={source.id} data-field="propertyArea" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="text" label="Survey Number Address" value={source.surveyNumberAddress} data-source-id={source.id} data-field="surveyNumberAddress" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="number" label="Market Value" value={source.marketValue} data-source-id={source.id} data-field="marketValue" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-combobox label="Ownership" value={source.ownership} options={ownershipOptions} data-source-id={source.id} data-field="ownership" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-combobox>
+                                            <lightning-input type="number" label="Income from Property" value={source.incomeFromProperty} data-source-id={source.id} data-field="incomeFromProperty" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="text" label="Proof Given" value={source.proofGiven} data-source-id={source.id} data-field="proofGiven" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <template lwc:if={source.showBankingSection}>
+                                    <div class="isc-subsection">
+                                        <div class="isc-field-grid">
+                                            <lightning-input type="text" label="Bank Name" value={source.bankName} data-source-id={source.id} data-field="bankName" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="text" label="Account Number" value={source.accountNumber} data-source-id={source.id} data-field="accountNumber" onchange={handleFieldChange} disabled={isReadOnly} max-length="20" required></lightning-input>
+                                            <lightning-input type="text" label="Bank Branch Name" value={source.bankBranch} data-source-id={source.id} data-field="bankBranch" onchange={handleFieldChange} disabled={isReadOnly} required></lightning-input>
+                                            <lightning-input type="date" label="A/C opening Date" value={source.accountOpeningDate} data-source-id={source.id} data-field="accountOpeningDate" onchange={handleFieldChange} disabled={isReadOnly} max={maxAccountOpeningDate} required></lightning-input>
+                                            <lightning-input type="number" label={last3MonthsLabels.last3rdMonthDay1} value={source.last3MonthsValues.last3rdMonthDay1} data-source-id={source.id} data-balance-key="last3rdMonthDay1" onchange={handleFieldChange} disabled={isReadOnly} min="1" required></lightning-input>
+                                            <lightning-input type="number" label={last3MonthsLabels.last3rdMonthDay10} value={source.last3MonthsValues.last3rdMonthDay10} data-source-id={source.id} data-balance-key="last3rdMonthDay10" onchange={handleFieldChange} disabled={isReadOnly} min="1" required></lightning-input>
+                                            <lightning-input type="number" label={last3MonthsLabels.last3rdMonthDay20} value={source.last3MonthsValues.last3rdMonthDay20} data-source-id={source.id} data-balance-key="last3rdMonthDay20" onchange={handleFieldChange} disabled={isReadOnly} min="1" required></lightning-input>
+                                            <lightning-input type="number" label={last3MonthsLabels.last2ndMonthDay1} value={source.last3MonthsValues.last2ndMonthDay1} data-source-id={source.id} data-balance-key="last2ndMonthDay1" onchange={handleFieldChange} disabled={isReadOnly} min="1" required></lightning-input>
+                                            <lightning-input type="number" label={last3MonthsLabels.last2ndMonthDay10} value={source.last3MonthsValues.last2ndMonthDay10} data-source-id={source.id} data-balance-key="last2ndMonthDay10" onchange={handleFieldChange} disabled={isReadOnly} min="1" required></lightning-input>
+                                            <lightning-input type="number" label={last3MonthsLabels.last2ndMonthDay20} value={source.last3MonthsValues.last2ndMonthDay20} data-source-id={source.id} data-balance-key="last2ndMonthDay20" onchange={handleFieldChange} disabled={isReadOnly} min="1" required></lightning-input>
+                                            <lightning-input type="number" label={last3MonthsLabels.lastMonthDay1} value={source.last3MonthsValues.lastMonthDay1} data-source-id={source.id} data-balance-key="lastMonthDay1" onchange={handleFieldChange} disabled={isReadOnly} min="1" required></lightning-input>
+                                            <lightning-input type="number" label={last3MonthsLabels.lastMonthDay10} value={source.last3MonthsValues.lastMonthDay10} data-source-id={source.id} data-balance-key="lastMonthDay10" onchange={handleFieldChange} disabled={isReadOnly} min="1" required></lightning-input>
+                                            <lightning-input type="number" label={last3MonthsLabels.lastMonthDay20} value={source.last3MonthsValues.lastMonthDay20} data-source-id={source.id} data-balance-key="lastMonthDay20" onchange={handleFieldChange} disabled={isReadOnly} min="1" required></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <template lwc:if={source.showUploadButton}>
+                                    <div class="isc-upload-card">
+                                        <div class="isc-upload-header">
+                                            <lightning-icon icon-name="utility:upload" size="x-small" class="isc-upload-icon"></lightning-icon>
+                                            <span class="isc-upload-title">{source.uploadButtonLabel}</span>
+                                        </div>
+                                        <template lwc:if={source.documentUploaded}>
+                                            <div class="isc-file-chip">
+                                                <lightning-icon icon-name="utility:success" size="x-small"></lightning-icon>
+                                                <span title={source.documentFileName}>{source.documentFileName}</span>
+                                            </div>
+                                            <template lwc:if={source.showDocumentDelete}>
+                                                <button
+                                                    type="button"
+                                                    class="isc-upload-remove-btn"
+                                                    data-source-id={source.id}
+                                                    onclick={handleDocumentDelete}
+                                                    title="Remove file">
+                                                    Remove
+                                                </button>
+                                            </template>
+                                        </template>
+                                        <template lwc:if={source.showUploadInput}>
+                                            <lightning-file-upload
+                                                label=""
+                                                name={source.id}
+                                                record-id={recordId}
+                                                accept={incomeSourceAcceptedFormats}
+                                                data-source-id={source.id}
+                                                onuploadfinished={handleUploadFinished}
+                                                disabled={isReadOnly}>
+                                            </lightning-file-upload>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <template lwc:if={source.showSectionActions}>
+                                    <div class="isc-action-row">
+                                        <button lwc:if={source.showFinancialPerformanceGridButton}
+                                            type="button"
+                                            class="isc-primary-btn"
+                                            onclick={handleOpenFinancialPerformanceGrid}
+                                            disabled={isReadOnly}>
+                                            Open Financial Performance Grid
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="isc-primary-btn"
+                                            data-source-id={source.id}
+                                            onclick={handleSubmit}
+                                            disabled={isReadOnly}>
+                                            Submit
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </template>
+</template>

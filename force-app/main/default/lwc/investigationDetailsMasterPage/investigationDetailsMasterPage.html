@@ -1,0 +1,141 @@
+<template>
+    <div class="idm-page-layout">
+        <div class="idm-shell">
+            <div class="idm-card-header">
+                <div class="idm-header-overlay"></div>
+                <div class="idm-header-content">
+                    <div class="idm-header-icon-wrap">
+                        <lightning-icon icon-name="utility:file" size="small"
+                            class="idm-header-icon"></lightning-icon>
+                    </div>
+                    <div class="idm-header-text">
+                        <h1 class="idm-header-title">Investigation Reports</h1>
+                        <span class="idm-header-subtitle">Field investigation, financial verification, and AML screening reports for this application</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idm-body">
+                <div class="idm-accordion" role="presentation">
+                    <template for:each={menuSections} for:item="section">
+                        <div key={section.id} class={section.accordionItemClass}>
+                            <button type="button" class={section.accordionTriggerClass} data-section={section.id}
+                                aria-expanded={section.isExpanded} onclick={handleAccordionToggle}>
+                                <span class="idm-accordion-trigger-main">
+                                    <span class={section.iconWrapClass}>
+                                        <lightning-icon icon-name={section.icon} size="x-small"
+                                            class="idm-accordion-icon">
+                                        </lightning-icon>
+                                    </span>
+                                    <span class="idm-accordion-text">
+                                        <span class="idm-accordion-label">{section.countLabel}</span>
+                                        <span class="idm-accordion-desc">{section.description}</span>
+                                    </span>
+                                </span>
+                                <lightning-icon icon-name={section.chevronIcon} size="x-small"
+                                    class="idm-accordion-chevron">
+                                </lightning-icon>
+                            </button>
+
+                            <template lwc:if={section.isExpanded}>
+                                <div class="idm-accordion-panel">
+                                    <div class="idm-accordion-content">
+                                        <template lwc:if={section.hasRows}>
+                                            <div class="master-table-scroll">
+                                                <table class="master-table">
+                                                    <thead>
+                                                        <tr class="master-table-header-row">
+                                                            <th scope="col" class="master-th-cell master-th-index">#</th>
+                                                            <template for:each={section.tableColumns} for:item="column">
+                                                                <th key={column.key} scope="col" class="master-th-cell">
+                                                                    {column.label}
+                                                                </th>
+                                                            </template>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="master-table-body">
+                                                        <template for:each={section.displayRows} for:item="row">
+                                                            <tr key={row.id} class="master-table-row">
+                                                                <td class="master-td-cell master-td-index">{row.rowNumber}
+                                                                </td>
+                                                                <template for:each={row.cells} for:item="cell">
+                                                                    <td key={cell.key} class="master-td-cell">
+                                                                        <template lwc:if={cell.isLink}>
+                                                                            <template lwc:if={cell.hasLink}>
+                                                                                <a href="#" role="button"
+                                                                                    class="master-record-link"
+                                                                                    data-component-name={cell.componentName}
+                                                                                    data-verification-id={cell.verificationId}
+                                                                                    data-record-id={cell.recordId}
+                                                                                    data-is-fi-link={cell.isFiLink}
+                                                                                    onclick={handleRecordLinkClick}>
+                                                                                    {cell.value}
+                                                                                </a>
+                                                                            </template>
+                                                                            <template lwc:else>
+                                                                                <span
+                                                                                    class="master-cell-empty">{cell.value}</span>
+                                                                            </template>
+                                                                        </template>
+                                                                        <template lwc:elseif={cell.isStatus}>
+                                                                            <span
+                                                                                class={cell.statusClass}>{cell.value}</span>
+                                                                        </template>
+                                                                        <template lwc:else>
+                                                                            <span
+                                                                                class={cell.textClass}>{cell.value}</span>
+                                                                        </template>
+                                                                    </td>
+                                                                </template>
+                                                            </tr>
+                                                        </template>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <nav class="idm-pagination" aria-label={section.paginationAriaLabel}>
+                                                <button type="button" class="idm-page-btn" data-section={section.id}
+                                                    disabled={section.isPrevDisabled} aria-label="Previous page"
+                                                    onclick={handleSectionPrevPage}>
+                                                    <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                                        class="idm-page-btn-icon">
+                                                    </lightning-icon>
+                                                </button>
+                                                <span class="idm-page-label">{section.paginationLabel}</span>
+                                                <button type="button" class="idm-page-btn" data-section={section.id}
+                                                    disabled={section.isNextDisabled} aria-label="Next page"
+                                                    onclick={handleSectionNextPage}>
+                                                    <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                                        class="idm-page-btn-icon">
+                                                    </lightning-icon>
+                                                </button>
+                                            </nav>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="idm-empty-state" role="status">
+                                                <lightning-icon icon-name="utility:info" size="small"
+                                                    class="idm-empty-icon">
+                                                </lightning-icon>
+                                                <p class="idm-empty-text">{section.emptyMessage}</p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <div class="idm-footer-wrapper">
+            <div class="idm-footer">
+                <div class="idm-btn-wrapper">
+                    <button type="button" class="idm-primary-btn" onclick={handleNextButton}>
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

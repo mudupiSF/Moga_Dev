@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <description>This field is used to store what kind of TAT event record it is: if it is related to Stage, the value will be Stage; SubStage means a sub-stage change; Owner means a user (owner) change.</description>
+    <label>Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Stage</fullName>
+                <default>false</default>
+                <label>Stage</label>
+            </value>
+            <value>
+                <fullName>SubStage</fullName>
+                <default>false</default>
+                <label>SubStage</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

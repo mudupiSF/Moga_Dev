@@ -1,0 +1,1029 @@
+/*
+ * commonApplicationCreationAura.css
+ *
+ * .THIS targets the Aura component root element directly — this is what
+ * makes the full-screen overlay work reliably in Salesforce Lightning.
+ *
+ * Color tokens mirror borrowerMasterPage.css (bmp-*) so the two screens
+ * share the same visual language.
+ * Selection accent colour: #2c2b73 (used directly — no CSS custom properties).
+ */
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   OVERLAY  — .THIS IS the fixed full-screen backdrop
+   The previous rule used `display: contents` which silently disables
+   `position: fixed` and the centering/backdrop properties, so the card
+   was rendering inline in the Salesforce tab and not actually anchored
+   to the viewport. That broke max-height/scroll when DevTools was open.
+   Switching to `display: flex` restores the intended overlay behavior:
+   the card is centered, viewport-anchored, and properly capped in height.
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.THIS {
+    position: fixed;
+    top:    0;
+    left:   0;
+    right:  0;
+    bottom: 0;
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.52);
+    padding: 1.25rem;
+    font-family: "Salesforce Sans", -apple-system, BlinkMacSystemFont,
+                 "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    box-sizing: border-box;
+    overflow: hidden;          /* the card itself handles internal scroll */
+
+    max-height: 100vh;
+    max-height: 100dvh;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CARD CONTAINER
+   Must constrain its own height so its child card can scroll inside it.
+   Without max-height the flex parent could stretch this to viewport, but
+   the child card would then never overflow. We explicitly hand the height
+   budget to the card.
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.THIS .cac-container {
+    width: 100%;
+    max-width: 760px;
+
+    max-height: 100%;
+    max-height: calc(100vh - 2.5rem);
+    max-height: calc(100dvh - 2.5rem);
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;             /* allow shrink so the child can scroll */
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CARD  — mirrors .bmp-card
+   Cap to viewport with internal scroll so the form remains usable when the
+   page area is shortened (e.g. Chrome DevTools / Inspect Element open, or
+   short viewports). Header + action row are sticky inside the scroll area.
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.THIS .cac-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+
+    width: 100%;
+
+    max-height: 100%;
+    max-height: calc(100vh - 4rem);
+    max-height: calc(100dvh - 4rem);
+    min-height: 0;             /* allow it to shrink so internal scroll kicks in */
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Slim scrollbar — fits the design language without overpowering the card. */
+.THIS .cac-card::-webkit-scrollbar {
+    width: 8px;
+}
+.THIS .cac-card::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+.THIS .cac-card::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+.THIS .cac-card::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   MODAL HEADER  — mirrors .bmp-card-header + .bmp-header-overlay
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.THIS .cac-modal-hdr {
+    position: sticky;              /* pinned while the card body scrolls */
+    top: 0;
+    z-index: 5;
+    overflow: hidden;
+    height: 80px;
+    background: #0f172a;           /* bmp-slate-900 */
+    border-radius: 1rem 1rem 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.25rem;
+}
+
+/* gradient left-to-right overlay — identical to borrowerMasterPage headers */
+.THIS .cac-modal-hdr::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(49, 46, 129, 0.88), transparent);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Large watermark icon — absolutely positioned, background layer */
+.THIS .cac-modal-hdr::after {
+    content: '📋';
+    position: absolute;
+    right: 4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 5.5rem;
+    line-height: 1;
+    opacity: 0.09;
+    pointer-events: none;
+    z-index: 0;
+    filter: grayscale(1);
+}
+
+/* All direct children above watermark */
+.THIS .cac-modal-hdr-left,
+.THIS .cac-modal-close {
+    position: relative;
+    z-index: 1;
+}
+
+.THIS .cac-modal-hdr-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Small icon badge — foreground, clearly visible */
+.THIS .cac-modal-icon-wrap {
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.THIS .cac-modal-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.THIS .cac-modal-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.025em;
+    margin: 0;
+    padding: 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* Close / X button */
+.THIS .cac-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-family: inherit;
+    flex-shrink: 0;
+}
+.THIS .cac-modal-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   LOADING
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.THIS .cac-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 2rem;
+    gap: 0.875rem;
+}
+.THIS .cac-loading-text {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+    padding: 0;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ERROR BANNER
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.THIS .cac-error-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fff5f5;
+    border: 1px solid #fca5a5;
+    border-radius: 0.5rem;
+    padding: 0.625rem 1rem;
+    margin: 1rem 1.125rem 0;
+    color: #b91c1c;
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SECTIONS
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.THIS .cac-section {
+    padding: 1rem 1.125rem 0;
+}
+.THIS .cac-section-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.625rem;
+}
+.THIS .cac-section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4375rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #94a3b8;           /* bmp-slate-400 */
+}
+/* ─── Unified step-number circle (used by every section header).
+   Default = "unfilled" look (white bg, gray border, gray text).
+   Add the .cac-step-filled modifier once that section has a selected value
+   to flip it to the prominent dark slate look. Size stays constant so the
+   layout doesn't shift. */
+.THIS .cac-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;        /* slate-300 */
+    color: #64748b;                     /* slate-500 */
+    font-size: 0.6875rem;
+    font-weight: 900;
+    flex-shrink: 0;
+    box-shadow: none;
+    transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.THIS .cac-step.cac-step-filled {
+    background: #0f172a;                /* slate-900 */
+    border-color: #0f172a;
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+/* Legacy alias — keep the old class name working in case anything still
+   references it, mapped to the new "filled" look. */
+.THIS .cac-section-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 900;
+    color: #64748b;
+    flex-shrink: 0;
+}
+
+/* ─── Unified step-icon circle.
+   Two-tone system used across this screen:
+     • PRIMARY  = Indigo  → all structural strokes (borders, rings).
+     • SECONDARY = Turquoise → all fills, halos, hover washes.
+   State logic:
+     • Default = "unfilled" (white bg, slate ring, icon dimmed).
+     • .cac-step-icon-filled = data entered (turquoise fill + indigo
+       border + soft turquoise halo, icon at full brightness). */
+.THIS .cac-step-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;        /* slate-300 */
+    font-size: 0.9375rem;
+    line-height: 1;
+    flex-shrink: 0;
+    opacity: 0.55;
+    transition: background 0.22s, border-color 0.22s, opacity 0.22s,
+                transform 0.22s, box-shadow 0.22s;
+}
+.THIS .cac-step-icon.cac-step-icon-filled {
+    background: #cffafe;                /* cyan-100 — soft turquoise fill */
+    border-color: #4f46e5;              /* indigo-600 — primary border */
+    border-width: 2px;
+    opacity: 1;
+    box-shadow: 0 0 0 4px rgba(44, 218, 238, 0.18);   /* turquoise halo */
+    transform: scale(1.04);
+}
+.THIS .cac-chosen-badge {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #4f46e5;
+    background: #eef2ff;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PRODUCT TILES GRID — auto-fill so ≤4 tiles sit on one row
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.THIS .cac-product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.625rem;
+}
+
+/* ── Tile ──────────────────────────────────────────────────────────── */
+.THIS .cac-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.625rem;
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s, background 0.15s, box-shadow 0.2s, transform 0.15s;
+    box-shadow: none;
+}
+.THIS .cac-tile:hover {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+}
+.THIS .cac-tile.cac-tile-selected {
+    border-color: #2c2b73;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(44, 43, 115, 0.12);
+    transform: translateY(-1px);
+}
+
+/* Tile header row (icon + check) */
+.THIS .cac-tile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.THIS .cac-tile-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    background: transparent;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+.THIS .cac-tile-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    font-size: 0.5625rem;
+    color: transparent;
+    opacity: 0;
+    transition: opacity 0.2s, background 0.2s, border-color 0.2s, color 0.2s;
+    flex-shrink: 0;
+}
+.THIS .cac-tile-check.cac-tile-check-on {
+    background: #2c2b73;
+    border-color: #2c2b73;
+    color: white;
+    opacity: 1;
+}
+
+/* Tile name */
+.THIS .cac-tile-body { flex: 1; }
+.THIS .cac-tile-name {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #1e293b;       /* bmp-slate-800 */
+    margin: 0;
+    padding: 0;
+    line-height: 1.3;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SUB-PRODUCT CUSTOM DROPDOWN
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.THIS .cac-dd-wrap {
+    position: relative;
+}
+
+/* Trigger — styled like bmp-input */
+.THIS .cac-dd-trigger {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.75rem;
+    border: 2px solid #f1f5f9;    /* bmp-slate-100 */
+    background: #f8fafc;           /* bmp-slate-50  */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+.THIS .cac-dd-trigger:hover:not(:disabled) {
+    border-color: #e2e8f0;
+}
+.THIS .cac-dd-trigger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.THIS .cac-dd-trigger.cac-dd-open {
+    border-color: #6366f1;         /* bmp-indigo-500 */
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.10);
+    background: #ffffff;
+}
+
+/* Trigger left side */
+.THIS .cac-dd-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+}
+.THIS .cac-dd-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.375rem;
+    background: #e2e8f0;
+    font-size: 0.8125rem;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+.THIS .cac-dd-icon.cac-dd-icon-active {
+    background: #e0e7ff;           /* bmp-indigo-100 */
+}
+.THIS .cac-dd-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.THIS .cac-dd-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.THIS .cac-dd-placeholder {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #475569;
+}
+.THIS .cac-dd-placeholder.cac-dd-dim {
+    color: #94a3b8;
+}
+
+/* Chevron */
+.THIS .cac-chevron {
+    font-size: 1.125rem;
+    color: #94a3b8;
+    flex-shrink: 0;
+    transition: transform 0.22s, color 0.2s;
+    display: inline-block;
+    line-height: 1;
+}
+.THIS .cac-chevron.cac-chevron-up {
+    transform: rotate(180deg);
+    color: #334155;
+}
+
+/* Dropdown list */
+.THIS .cac-dd-list {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 4px);
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.13);
+    overflow: hidden;
+    z-index: 100;
+    max-height: 14rem;
+    overflow-y: auto;
+}
+.THIS .cac-dd-option {
+    width: 100%;
+    text-align: left;
+    padding: 0.625rem 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #f8fafc;
+    transition: background 0.12s;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+.THIS .cac-dd-option:last-child { border-bottom: none; }
+.THIS .cac-dd-option:hover { background: #f8fafc; }
+.THIS .cac-dd-option.cac-opt-selected { background: #eef2ff; }
+
+.THIS .cac-opt-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.0625rem;
+}
+.THIS .cac-opt-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+.THIS .cac-opt-name.cac-opt-name-active { color: #4f46e5; }
+.THIS .cac-opt-sub {
+    font-size: 0.6875rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+.THIS .cac-opt-check {
+    color: #4f46e5;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    flex-shrink: 0;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ACTION ROW  — mirrors .bmp-footer
+   Sticky at the bottom of the scrolling card so Cancel / Create Application
+   are always reachable, even with the inspector open or a short viewport.
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.THIS .cac-action-row {
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1.125rem 1.125rem;
+    border-top: 1px solid #f1f5f9;
+    margin-top: 1rem;
+    background: #ffffff;
+    /* Subtle lift so it visually separates from scrolled content above. */
+    box-shadow: 0 -6px 12px -8px rgba(15, 23, 42, 0.08);
+    border-radius: 0 0 1rem 1rem;
+}
+.THIS .cac-action-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Reset link */
+.THIS .cac-reset-btn {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s;
+    font-family: inherit;
+}
+.THIS .cac-reset-btn:hover { color: #475569; }
+.THIS .cac-reset-btn.cac-reset-hidden { opacity: 0; pointer-events: none; }
+
+/* Cancel */
+.THIS .cac-cancel-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.375rem;
+    border-radius: 0.5rem;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    color: #334155;
+    padding: 0 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-family: inherit;
+}
+.THIS .cac-cancel-btn:hover:not(:disabled) { background: #f8fafc; }
+.THIS .cac-cancel-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Confirm — inactive */
+.THIS .cac-confirm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    height: 2.375rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: #e2e8f0;
+    color: #94a3b8;
+    padding: 0 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: not-allowed;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+/* Confirm — active, mirrors .bmp-primary-btn */
+.THIS .cac-confirm-btn.cac-confirm-active {
+    background: #4f46e5;           /* bmp-indigo-600 */
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.22);
+}
+.THIS .cac-confirm-btn.cac-confirm-active:hover:not(:disabled) {
+    background: #4338ca;           /* bmp-indigo-700 */
+}
+.THIS .cac-confirm-btn.cac-confirm-active:active:not(:disabled) {
+    transform: scale(0.98);
+}
+.THIS .cac-confirm-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SUCCESS PANEL
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.THIS .cac-success {
+    padding: 2rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+}
+.THIS .cac-success-icon-wrap {
+    font-size: 2.5rem;
+    line-height: 1;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1rem;
+    background: #ecfdf5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.THIS .cac-success-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+.THIS .cac-success-title {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #0f172a;
+    margin: 0;
+    padding: 0;
+    letter-spacing: -0.02em;
+}
+.THIS .cac-success-sub {
+    font-size: 0.8125rem;
+    color: #64748b;
+    margin: 0;
+    padding: 0;
+}
+
+/* Summary card inside success */
+.THIS .cac-summary-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.125rem;
+    width: 100%;
+    max-width: 360px;
+    text-align: left;
+}
+.THIS .cac-summary-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.5rem 0;
+}
+.THIS .cac-summary-divider {
+    height: 1px;
+    background: #e2e8f0;
+}
+.THIS .cac-summary-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+    display: block;
+}
+.THIS .cac-summary-value {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1e293b;
+    display: block;
+}
+.THIS .cac-success-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESPONSIVE
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 500px) {
+    .THIS .cac-product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .THIS .cac-action-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.625rem;
+    }
+    .THIS .cac-action-right {
+        flex-direction: column;
+    }
+    .THIS .cac-confirm-btn,
+    .THIS .cac-cancel-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   PRODUCT TILES  —  cac-rx-* classes
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Section header (numbered step + uppercase tracking-wide title) */
+.THIS .cac-rx-section-hdr {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-left: 0.125rem;
+}
+/* Deprecated — kept only as a back-compat alias for the unified .cac-step.
+   New section headers should use .cac-step + conditional .cac-step-filled. */
+.THIS .cac-rx-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    color: #64748b;
+    font-size: 0.6875rem;
+    font-weight: 900;
+    flex-shrink: 0;
+}
+.THIS .cac-rx-step-title {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    color: #1e293b;          /* slate-800 */
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0;
+    padding: 0;
+}
+
+/* 4-up grid on desktop, 2-up on mobile (matches Tailwind: grid-cols-2 md:grid-cols-4) */
+.THIS .cac-rx-product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+@media (min-width: 720px) {
+    .THIS .cac-rx-product-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Individual tile — emulates rounded-[2rem] border-2 with hover lift + selected glow */
+.THIS .cac-rx-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    padding: 2rem 1rem;
+    border-radius: 2rem;
+    border: 2px solid #e2e8f0;       /* slate-200 */
+    background: #ffffff;
+    cursor: pointer;
+    overflow: hidden;
+    text-align: center;
+    font-family: inherit;
+    transition:
+        border-color 0.3s,
+        transform   0.3s,
+        box-shadow  0.3s,
+        background  0.3s;
+}
+.THIS .cac-rx-tile:hover {
+    border-color: #a5b4fc;           /* indigo-300 — primary border on hover */
+    background: #f0fdff;             /* very pale turquoise wash — secondary fill */
+    box-shadow: 0 10px 18px -6px rgba(15, 23, 42, 0.12);
+    transform: translateY(-2px);
+}
+.THIS .cac-rx-tile-selected {
+    border-color: #4f46e5;           /* indigo-600 — primary border */
+    background: #ffffff;
+    box-shadow:
+        0 0 0 4px rgba(44, 218, 238, 0.18),   /* turquoise halo — secondary fill */
+        0 20px 30px -10px rgba(79, 70, 229, 0.18);
+    transform: scale(1.02);
+    z-index: 1;
+}
+
+/* Check pill (top-right when selected).
+   Border-less fill chip — uses the turquoise secondary as both pill bg
+   and the ✓ tick fill, per the "fill = turquoise" rule. */
+.THIS .cac-rx-tile-check-pill {
+    position: absolute;
+    top: 0.875rem;
+    right: 0.875rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    background: #cffafe;             /* cyan-100 — soft turquoise fill */
+    color: #0891b2;                  /* cyan-600 — readable tick mark */
+    font-size: 0.75rem;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* Emoji + product code + name */
+.THIS .cac-rx-tile-emoji {
+    font-size: 3rem;                 /* text-6xl ≈ 3rem in this layout */
+    line-height: 1;
+    margin-bottom: 0.875rem;
+    transition: transform 0.4s, filter 0.4s;
+    filter: grayscale(50%);
+}
+.THIS .cac-rx-tile-selected .cac-rx-tile-emoji {
+    transform: scale(1.1);
+    filter: drop-shadow(0 4px 6px rgba(15, 23, 42, 0.18));
+}
+.THIS .cac-rx-tile:hover .cac-rx-tile-emoji {
+    transform: scale(1.08);
+    filter: grayscale(0%);
+}
+
+/* Big text — friendly product name (Personal Loan / Two Wheeler / Four Wheeler / Commercial Vehicles).
+   Slightly smaller than the React text-2xl to keep the longer names from
+   crowding the tile edges, and wraps naturally for multi-word names. */
+.THIS .cac-rx-tile-code {
+    font-size: 1.25rem;              /* text-xl */
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #1e293b;                  /* slate-800 */
+    line-height: 1.15;
+    text-align: center;
+    padding: 0 0.25rem;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+.THIS .cac-rx-tile-selected .cac-rx-tile-code {
+    color: #1e1b4b;                  /* indigo-950 — near-black with indigo undertone */
+}
+
+/* Small text — short code (PL / 2W / 4W / CV). */
+.THIS .cac-rx-tile-name {
+    margin-top: 0.4rem;
+    font-size: 0.625rem;             /* text-[10px] */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #94a3b8;                  /* slate-400 */
+    line-height: 1.2;
+}
+.THIS .cac-rx-tile-selected .cac-rx-tile-name {
+    color: #6366f1;                  /* indigo-500 — matches primary border accent */
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   CASCADING RADIO CARDS  —  cac-radio-* classes
+   Used for: Number of Vehicles, Customer Type, Vehicle Type, Segment,
+             Sub-Product.
+   Styled in MOGA DEV's existing palette (indigo accent) — based on
+   IBL_SIT's screenshot layout but using project tokens.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.THIS .cac-section-emoji {
+    font-size: 0.9rem;
+    line-height: 1;
+    margin-left: 0.125rem;
+}
+
+.THIS .cac-radio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+.THIS .cac-radio-grid-3col {
+    grid-template-columns: repeat(3, 1fr);
+}
+@media (max-width: 540px) {
+    .THIS .cac-radio-grid,
+    .THIS .cac-radio-grid-3col {
+        grid-template-columns: 1fr;
+    }
+}
+
+.THIS .cac-radio-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.625rem;
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: border-color 0.18s, background 0.15s, box-shadow 0.18s;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 2.75rem;
+}
+.THIS .cac-radio-card:hover {
+    border-color: #a5b4fc;           /* indigo-300 — primary border on hover */
+    background: #f0fdff;             /* very pale turquoise wash — secondary fill */
+}
+.THIS .cac-radio-card-selected {
+    border-color: #4f46e5;           /* indigo-600 — primary border */
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(44, 218, 238, 0.18);   /* turquoise halo — secondary fill */
+}
+
+/* Outer ring radio dot */
+.THIS .cac-radio-dot {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 9999px;
+    border: 2px solid #cbd5e1;
+    background: #ffffff;
+    flex-shrink: 0;
+    position: relative;
+    transition: border-color 0.18s;
+}
+.THIS .cac-radio-dot-on {
+    border-color: #4f46e5;           /* indigo-600 — primary ring */
+}
+.THIS .cac-radio-dot-on::after {
+    content: '';
+    position: absolute;
+    inset: 2.5px;
+    border-radius: 9999px;
+    background: #06b6d4;             /* cyan-500 — turquoise inner fill */
+}
+
+.THIS .cac-radio-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.3;
+}
+.THIS .cac-radio-card-selected .cac-radio-label {
+    color: #1e1b4b;                  /* indigo-950 — matches selected tile text */
+}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Overall Loan Dashboard</masterLabel>
+    <description>Mobile-optimized dashboard component that displays metrics from Dashboard Configuration records based on user's persona. Features responsive design, touch-friendly interface, and mobile-specific optimizations.</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+  
+        <!-- Community Support -->
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <!-- Desktop/Tablet Configuration -->
+        <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage">
+            <property name="widgetTab" type="String" label="Widget Area" 
+                      description="Filter by WidgetArea__c field (LoanTab, StageTab, or AgeTab). Leave empty to show all." 
+                      datasource="LoanTab,StageTab,AgeTab" 
+                      required="false"/>
+        </targetConfig>
+        <!-- Community Configuration -->
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="widgetTab" type="String" label="Widget Area" 
+                      description="Filter dashboards by area" 
+                      datasource="LoanTab,StageTab,AgeTab" 
+                      required="false"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

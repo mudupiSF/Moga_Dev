@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Repayment_Method__c</fullName>
+    <label>Repayment Method</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>e-NACH</fullName>
+                <default>false</default>
+                <label>e-NACH</label>
+            </value>
+            <value>
+                <fullName>e-SIGN</fullName>
+                <default>false</default>
+                <label>e-SIGN</label>
+            </value>
+            <value>
+                <fullName>ACH</fullName>
+                <default>false</default>
+                <label>ACH</label>
+            </value>
+            <value>
+                <fullName>SI</fullName>
+                <default>false</default>
+                <label>SI</label>
+            </value>
+            <value>
+                <fullName>IES</fullName>
+                <default>false</default>
+                <label>IES</label>
+            </value>
+            <value>
+                <fullName>Cash</fullName>
+                <default>false</default>
+                <label>Cash</label>
+            </value>
+            <value>
+                <fullName>UPI Autopay</fullName>
+                <default>false</default>
+                <label>UPI Autopay</label>
+            </value>
+            <value>
+                <fullName>Null</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Null</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

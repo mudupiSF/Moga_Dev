@@ -1,0 +1,118 @@
+<template>
+    <template if:false={item.isHidden}>
+        <li class={activeClass} role="presentation">
+            <!-- Parent menu item with icon -->
+            <template if:true={isTopLevel}>
+                <div class={menuItemClass} onclick={handleItemClick} data-id={item.id}>
+                    <div class="menu-item-indicator">
+                        <template if:true={isCompleted}>
+                            <span class="completed-circle">
+                                <svg class="check-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8 12.5l3 3 5-6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </template>
+                        <template if:false={isCompleted}>
+                            <template if:true={isCurrentStage}>
+                                <span class="active-circle"></span>
+                            </template>
+                            <template if:false={isCurrentStage}>
+                                <template if:true={isEnabled}>
+                                    <span class="enabled-circle"></span>
+                                </template>
+                                <template if:false={isEnabled}>
+                                    <span class="pending-circle"></span>
+                                </template>
+                            </template>
+                        </template>
+                    </div>
+                    <div class="menu-item-body">
+                        <span class="menu-label">{item.label}</span>
+                        <template if:true={item.subItems}>
+                            <div class="chevron-container" onclick={handleChevronClick}>
+                                <lightning-icon 
+                                    icon-name={item.expandIconName} 
+                                    size="x-small" 
+                                    class="expand-icon"
+                                    data-id={item.id}>
+                                </lightning-icon>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Sub menu item with home icon for Multi Grid Applicant View -->
+            <template if:false={isTopLevel}>
+                <div class={menuItemClass} onclick={handleItemClick} data-id={item.id}>
+                    <div class="menu-item-indicator">
+                        <template if:true={isCompleted}>
+                            <span class="completed-circle">
+                                <svg class="check-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8 12.5l3 3 5-6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </template>
+                        <template if:false={isCompleted}>
+                            <template if:true={isCurrentStage}>
+                                <span class="active-circle"></span>
+                            </template>
+                            <template if:false={isCurrentStage}>
+                                <template if:true={isEnabled}>
+                                    <span class="enabled-circle"></span>
+                                </template>
+                                <template if:false={isEnabled}>
+                                    <span class="pending-circle"></span>
+                                </template>
+                            </template>
+                        </template>
+                    </div>
+                    <span class="menu-label">{item.label}</span>
+                    <template if:true={showSubToggle}>
+                        <button type="button" class={subToggleClass} title="Add sub-applicant" onclick={handleSubToggleClick}>
+                            <span class="sub-toggle-dot"></span>
+                            <span class="sub-toggle-text">SUB</span>
+                            <template if:true={subToggleEnabled}>
+                                <svg class="sub-toggle-arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </template>
+                        </button>
+                    </template>
+                    <template if:true={showHomeIcon}>
+                        <button type="button" class="home-icon-btn" title="Back to applicant list" onclick={handleHomeClick}>
+                            <lightning-icon icon-name="utility:home" size="x-small" class="home-icon"></lightning-icon>
+                        </button>
+                    </template>
+                    <template if:true={item.subItems}>
+                        <div class="chevron-container" onclick={handleChevronClick}>
+                            <lightning-icon 
+                                icon-name={item.expandIconName} 
+                                size="x-small" 
+                                class="expand-icon"
+                                data-id={item.id}>
+                            </lightning-icon>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- Recursive sub-items -->
+            <template if:true={item.subItems}>
+                <ul class={item.submenuClass} role="tablist">
+                    <template for:each={item.subItems} for:item="subItem">
+                        <c-stage-menu-item
+                            key={subItem.key}
+                            index={childIndex}
+                            item={subItem}
+                            active-tab-id={activeTabId}
+                            is-top-level="false"
+                            onmenuselect={handleMenuSelect}
+                            ontoggle={handleToggle}>
+                        </c-stage-menu-item>
+                    </template>
+                </ul>
+            </template>
+        </li>
+    </template>
+</template>

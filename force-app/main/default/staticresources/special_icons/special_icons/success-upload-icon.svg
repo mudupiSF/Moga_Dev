@@ -1,0 +1,28 @@
+<?xml version="1.0" standalone="no"?>
+<svg id="success-svg" viewBox="150 0 350 250" xmlns="http://www.w3.org/2000/svg">
+            
+            <!-- Enlarged Background Heart Symbol (Width of Icon) -->
+            <path d="M 325 60 C 225 -20, 175 120, 325 200 C 475 120, 425 -20, 325 60 Z" fill="#E4F6FD"/>
+            
+            <!-- Background Dots -->
+            <circle cx="470" cy="180" r="10" fill="#E4F6FD"/>
+            <circle cx="420" cy="155" r="5" fill="#D0EBF7"/>
+            <circle cx="450" cy="80" r="5" fill="#E4F6FD"/>
+
+            <!-- Background Clouds (Dimmed Color) -->
+            <path d="M 440 170 A 15 15 0 0 1 465 160 A 20 20 0 0 1 500 170 Z" fill="#D0EBF7"/>
+            <path d="M 240 170 A 15 15 0 0 1 260 150 A 20 20 0 0 1 290 170 Z" fill="#D0EBF7"/>
+
+            <!-- Cloud (Moved to BACK, filled with Heart color) -->
+            <path d="M 240 220 A 20 20 0 0 1 255 195 A 30 30 0 0 1 305 185 A 25 25 0 0 1 345 205 A 20 20 0 0 1 360 220 Z" fill="#E4F6FD"/>
+
+            <!-- Main Document Outline & Fill (Moved to FRONT) -->
+            <path d="M 440 85 V 180 A 20 20 0 0 1 420 200 H 280 A 20 20 0 0 1 260 180 V 80 A 20 20 0 0 1 280 60 H 410 C 410 85, 430 85, 440 85 Z" fill="#FFFFFF" stroke="#273C48" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+            
+            <!-- Document Folded Flap -->
+            <path d="M 410 60 C 425 60, 440 70, 440 85 C 430 85, 410 85, 410 60 Z" fill="#FFFFFF" stroke="#273C48" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- Green Checkmark Badge -->
+            <circle cx="350" cy="135" r="32" fill="#3DE14E"/>
+            <path d="M 335 135 L 345 145 L 365 120" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>

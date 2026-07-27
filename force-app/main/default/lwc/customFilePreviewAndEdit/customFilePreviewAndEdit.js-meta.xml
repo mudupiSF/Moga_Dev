@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__FlowScreen</target>
+        <target>lightning__Tab</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <supportedFormFactors>
+                <supportedFormFactor type="Large" />
+                <supportedFormFactor type="Small" />
+            </supportedFormFactors>
+            <property name="validatorClass"    type="String"  label="File Validator Apex Class"    description="Apex class implementing FileValidator; leave blank to skip" />
+            <property name="preventDownload"   type="Boolean" label="Prevent Download"             default="false" description="Block downloads; validator.downloadable() is still called when set to false" />
+        </targetConfig>
+        <targetConfig targets="lightning__AppPage">
+            <supportedFormFactors>
+                <supportedFormFactor type="Large" />
+                <supportedFormFactor type="Small" />
+            </supportedFormFactors>
+            <property name="recordId"          type="String"  label="Record ID" />
+            <property name="validatorClass"    type="String"  label="File Validator Apex Class"    description="Apex class implementing FileValidator; leave blank to skip" />
+            <property name="preventDownload"   type="Boolean" label="Prevent Download"             default="false" />
+        </targetConfig>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="recordId"          type="String"  label="Record ID"                   role="inputOnly" />
+            <property name="validatorClass"    type="String"  label="File Validator Apex Class"    role="inputOnly" />
+            <property name="preventDownload"   type="Boolean" label="Prevent Download"             default="false" role="inputOnly" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

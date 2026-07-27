@@ -1,0 +1,53 @@
+---
+description: MANDATORY Salesforce Lightning record-page anatomy for all wireframes (global header → app nav → record header with compact-layout highlights → body of standard/custom layouts + LWCs). Apply whenever creating or updating wireframes, Figma frames, or spec screen mockups.
+globs:
+alwaysApply: false
+---
+
+# Wireframe Convention — Real Salesforce Record-Page Anatomy
+
+When producing ANY wireframe (Figma via `/speckit-wireframe`, ASCII in `wireframes.md`, or a spec
+screen mockup), reproduce the **real Salesforce Lightning Experience record-page structure** top-to-bottom
+so mockups are reality-oriented. Do NOT invent a generic app-shell.
+
+## Required top-to-bottom structure
+
+1. **Global header bar** (org-branded):
+   - Left: product/company **logo** (use the customer's brand or a neutral placeholder).
+   - Center: **global search** box.
+   - Right: utility icons — favorites ⭐, App Launcher (waffle), setup gear ⚙, help ?, notifications 🔔, user avatar.
+
+2. **App navigation bar**:
+   - **App name** (e.g., `Sales App`) + object **tabs** (Accounts, Contacts, Opportunities …).
+   - Show the **open record tab(s)** with the object icon + record name and a close ✕ (console-style when applicable).
+
+3. **Record header / highlights panel** (this is the key ask):
+   - Small colored **object icon** + **object type label** (e.g., "Account", "Opportunity").
+   - **Record name** as the H1 title.
+   - **Compact Layout highlights row** — a horizontal strip of key–value pairs (label on top, value below)
+     taken from the object's **Compact Layout**. Use 5–7 real fields from the target org.
+     - *Account example:* Account Number · Type · Industry · Rating · Region · Phone.
+   - **Action buttons**, right-aligned: standard actions (**Follow**, **Edit**, **Delete**, **▾** overflow)
+     plus any **custom quick actions** relevant to the record.
+
+4. **Body** — below the header, clearly label the composition each block comes from:
+   - Optional **`lightning-path`** (Path) for lifecycle objects (Status/Stage).
+   - **Tabs** (Related · Details · custom tabs) OR a 2/3-column **region layout**.
+   - Tag every content block with its source:
+     - `[Standard: Details]` — field sections from the page/compact layout (Dynamic Forms field sections OK).
+     - `[Standard: Related List]` — related list (name the child object).
+     - `[LWC: componentName]` — a custom Lightning Web Component (always name it).
+   - Right sidebar for supporting cards (Activity, Files, etc.) where appropriate.
+
+5. **Utility bar** (bottom) only if the flow needs it (e.g., logger, phone).
+
+## Rules
+
+- Always render the **compact-layout highlights row** with **real API field labels** — never omit it.
+- **Label each body region** as `[Standard: …]` or `[LWC: …]` so reviewers see what is config vs custom.
+- Prefer **standard/declarative** layouts first; introduce an LWC only where the spec calls for one
+  (consistent with the constitution's platform-first / minimal-customization principles).
+- Keep field **labels/API names** consistent with the spec's data model — inspect the org's real
+  object/field metadata; never invent fields.
+- In Figma, build the header with the org's **SLDS 2 Components – Web** library (global nav, buttons, badges);
+  build the highlights row and layout regions from SLDS spacing/color tokens.

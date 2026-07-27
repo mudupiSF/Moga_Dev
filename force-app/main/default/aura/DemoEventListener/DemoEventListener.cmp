@@ -1,0 +1,38 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global">
+  <lightning:empApi aura:id="empApi" />
+  <aura:attribute name="channel" type="String" default="/event/Notification__e" />
+  <aura:attribute name="subscription" type="Map" />
+  <aura:attribute name="title" type="String" default="Some title" />
+  <aura:attribute name="icon" type="String" default="custom:custom9" />
+  <aura:attribute name="height" type="String" default="300" />
+  <aura:attribute name="replayId" type="Integer" default=""/>
+
+  <aura:attribute name="log" type="Map" />
+
+  <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+  <aura:handler event="aura:locationChange" action="{!c.destroyCmp}" />
+
+  <lightning:card iconName="{!v.icon}">
+    <aura:set attribute="title">
+      {! v.title }
+    </aura:set>
+    <div class="slds-p-around_small">
+        <textarea id="{!globalId + '-textarea'}" class="slds-textarea" readonly="true" style="{!'height:' + v.height + 'px;'}">
+          {!v.log}
+        </textarea>
+      <div class="slds-clearfix">
+        <div class="slds-float_left">
+            <span onkeypress="{!c.handleReplayChange}">
+            <div class="slds-form_horizontal">
+            <lightning:input type="number" name="replayId" label="Replay ID:" class="replay" value="{!v.replayId}"/>
+            </div>
+          </span>
+        </div>
+        <div class="slds-float_right">
+          <lightning:button variant="brand" label="Clear" title="Clear" onclick="{! c.handleClear }" />
+        </div>
+      </div>
+    </div>
+  </lightning:card>
+
+</aura:component>

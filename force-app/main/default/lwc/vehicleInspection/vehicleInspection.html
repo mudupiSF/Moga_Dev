@@ -1,0 +1,293 @@
+<template>
+    <div class="bmp-page-layout">
+        <template if:true={isLoading}>
+            <div class="bmp-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <div class="bmp-card">
+            <div class="bmp-card-header">
+                <div class="bmp-header-overlay"></div>
+                <div class="bmp-header-content">
+                    <div class="bmp-header-icon-wrap">
+                        <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                    </div>
+                    <div class="bmp-header-text">
+                        <h1 class="bmp-header-title">Vehicle Inspection</h1>
+                        <p class="bmp-header-subtitle">Engine, Chassis and Registration Details</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bmp-card-body">
+                <div class="bmp-fields-grid">
+
+                    <!-- Engine number (from Asset__c) -->
+                    <div class="bmp-field-wrap">
+                        <div class="bmp-info-cell">
+                            <div class="bmp-info-cell-header">
+                                <span class="bmp-info-label">Engine number</span>
+                            </div>
+                            <div class="bmp-info-value-wrap"><p class="bmp-info-value">{fieldValues.engineNumber}</p></div>
+                        </div>
+                    </div>
+
+                    <!-- Engine number captured Initially -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">Engine number captured Initially <span class="vi-required-indicator">*</span></div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-input data-field="engineNumberCapturedInitially" type="text"
+                                        value={fieldValues.engineNumberCapturedInitially}
+                                        label="Engine number captured Initially" variant="label-hidden" required
+                                        onchange={handleFieldChange}></lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Engine number captured Initially</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{fieldValues.engineNumberCapturedInitially}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Chassis number (from Asset__c) -->
+                    <div class="bmp-field-wrap">
+                        <div class="bmp-info-cell">
+                            <div class="bmp-info-cell-header">
+                                <span class="bmp-info-label">Chassis number</span>
+                            </div>
+                            <div class="bmp-info-value-wrap"><p class="bmp-info-value">{fieldValues.chassisNumber}</p></div>
+                        </div>
+                    </div>
+
+                    <!-- Chassis number captured Initially -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">Chassis number captured Initially <span class="vi-required-indicator">*</span></div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-input data-field="chassisNumberCapturedInitially" type="text"
+                                        value={fieldValues.chassisNumberCapturedInitially}
+                                        label="Chassis number captured Initially" variant="label-hidden" required
+                                        onchange={handleFieldChange}></lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Chassis number captured Initially</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{fieldValues.chassisNumberCapturedInitially}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Vehicle registration number (from Asset__c) -->
+                    <div class="bmp-field-wrap">
+                        <div class="bmp-info-cell">
+                            <div class="bmp-info-cell-header">
+                                <span class="bmp-info-label">Vehicle registration number</span>
+                            </div>
+                            <div class="bmp-info-value-wrap"><p class="bmp-info-value">{fieldValues.vehicleRegistrationNumber}</p></div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle registration Number Captured Initially -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">Vehicle registration Number Captured Initially <span class="vi-required-indicator">*</span></div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-input data-field="vehicleRegistrationNumberCapturedInitially" type="text"
+                                        value={fieldValues.vehicleRegistrationNumberCapturedInitially}
+                                        label="Vehicle registration Number Captured Initially" variant="label-hidden" required
+                                        onchange={handleFieldChange}></lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Vehicle registration Number Captured Initially</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{fieldValues.vehicleRegistrationNumberCapturedInitially}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Location of Vehicle Inspection -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">Location of Vehicle Inspection <span class="vi-required-indicator">*</span></div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-combobox
+                                        data-field="locationOfVehicleInspection"
+                                        value={fieldValues.locationOfVehicleInspection}
+                                        label="Location of Vehicle Inspection"
+                                        variant="label-hidden"
+                                        placeholder="Select location"
+                                        options={locationOptions}
+                                        required
+                                        onchange={handleComboboxChange}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Location of Vehicle Inspection</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{fieldValues.locationOfVehicleInspection}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Capture Vehicle Image -->
+                    <div class="bmp-field-wrap vi-file-upload-wrap">
+                        <div class="form-file-upload-wrap">
+                            <label class="form-field-editable-label">
+                                Capture Vehicle Image
+                                <span class="form-field-required-indicator" title="Required">*</span>
+                            </label>
+                            <template lwc:if={assetImageDocumentUploaded}>
+                                <span class="slds-text-body_small slds-text-color_success">Uploaded</span>
+                            </template>
+                            <template lwc:else>
+                                <span class="slds-text-body_small slds-text-color_weak">Pending</span>
+                            </template>
+
+                            <template lwc:if={assetImageDocumentUploaded}>
+                                <div class="form-file-uploaded-bar">
+                                    <lightning-icon
+                                        icon-name="utility:success"
+                                        size="x-small"
+                                        class="form-file-success-icon"
+                                        alternative-text="Uploaded">
+                                    </lightning-icon>
+                                    <p class="form-file-selected-name">{assetImageDisplayFileName}</p>
+                                    <button
+                                        type="button"
+                                        class="form-file-action-btn"
+                                        onclick={handleAssetImagePreview}
+                                        title="Preview">
+                                        <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                    </button>
+                                    <template lwc:if={showAssetImageDocumentActions}>
+                                        <button
+                                            type="button"
+                                            class="form-file-action-btn"
+                                            onclick={handleAssetImageDelete}
+                                            title="Delete">
+                                            <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                        </button>
+                                    </template>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <template lwc:if={showAssetImageDocumentActions}>
+                                    <lightning-file-upload
+                                        label="Upload Vehicle Image"
+                                        name="assetImageUpload"
+                                        accept={acceptedVehicleImageFormats}
+                                        record-id={documentUploadRecordId}
+                                        onuploadfinished={handleAssetImageUploadFinished}
+                                        multiple="false"
+                                        disabled={isAssetImageUploadDisabled}>
+                                    </lightning-file-upload>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Operations -->
+        <template lwc:if={isOperationsVehicleInspectionOpsMode}>
+            <div class="bmp-card">
+                <c-operations-section-header
+                    subtitle="Verify vehicle inspection document and acceptance">
+                </c-operations-section-header>
+                <div class="bmp-card-body">
+                    <div class="bmp-fields-grid">
+                        <template for:each={operationsFieldRows} for:item="field">
+                            <div key={field.key} class={field.wrapClass}>
+                                <template lwc:if={field.showAsReadOnly}>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header">
+                                            <span class="bmp-info-label">{field.label}</span>
+                                        </div>
+                                        <div class="bmp-info-value-wrap">
+                                            <p class="bmp-info-value">{field.displayValue}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="bmp-field-cell vi-field-editable">
+                                        <div class="bmp-field-label">
+                                            {field.label}
+                                            <template lwc:if={field.isRequired}>
+                                                <span class="vi-required-indicator">*</span>
+                                            </template>
+                                        </div>
+                                        <div class="bmp-field-value-col">
+                                            <template lwc:if={field.isPicklist}>
+                                                <lightning-combobox
+                                                    data-key={field.key}
+                                                    value={field.value}
+                                                    label={field.label}
+                                                    variant="label-hidden"
+                                                    placeholder="Select"
+                                                    options={field.options}
+                                                    required={field.isRequired}
+                                                    onchange={handleOperationsFieldChange}>
+                                                </lightning-combobox>
+                                            </template>
+                                            <template lwc:else>
+                                                <lightning-input
+                                                    type="text"
+                                                    data-key={field.key}
+                                                    value={field.value}
+                                                    label={field.label}
+                                                    variant="label-hidden"
+                                                    required={field.isRequired}
+                                                    oninput={handleOperationsFieldChange}
+                                                    onchange={handleOperationsFieldChange}>
+                                                </lightning-input>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template lwc:if={openPreviewModal}>
+            <c-file-previewer
+                content-document-id={assetImageContentDocumentId}
+                file-type={assetImageFileType}
+                onclose={handlePreviewClose}>
+            </c-file-previewer>
+        </template>
+
+        <div class="p4-footer-wrapper">
+            <div class="p4-footer">
+                <div class="p4-btn-wrapper">
+                    <button
+                        type="button"
+                        class={nextButtonClass}
+                        onclick={handleNextButton}
+                        disabled={isNextDisabled}
+                        aria-disabled={isNextDisabled}>
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Networth_Type__c</fullName>
+    <label>Networth Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Total Value of Immovable Property</fullName>
+                <default>false</default>
+                <label>Total Value of Immovable Property</label>
+            </value>
+            <value>
+                <fullName>Total Value of Other Assets</fullName>
+                <default>false</default>
+                <label>Total Value of Other Assets</label>
+            </value>
+            <value>
+                <fullName>Total Liabilities</fullName>
+                <default>false</default>
+                <label>Total Liabilities</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

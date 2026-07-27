@@ -1,0 +1,534 @@
+<template>
+    <div class="form-layout">
+
+        <template lwc:if={isPageLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- SECTION 1 — Applicable documents -->
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:info" size="small" class="form-header-icon"></lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">Additional Documents</h1>
+                        <p class="form-header-subtitle">Select applicable documents for this application</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-body">
+                <p class="slds-var-m-bottom_medium slds-text-body_small slds-text-color_weak">
+                    Please check if any of the below documents are applicable for the application.
+                    Upload the same if applicable.
+                </p>
+
+                <template lwc:if={hasConditionalSections}>
+                    <div class="form-fields-grid slds-var-m-top_medium">
+                        <template for:each={conditionalSections} for:item="sec">
+                            <div key={sec.key} class="form-field-wrap">
+                                <div class="form-field-editable-section">
+                                    <lightning-input
+                                        type="checkbox"
+                                        label={sec.label}
+                                        name={sec.key}
+                                        data-key={sec.key}
+                                        checked={sec.userSelected}
+                                        onchange={handleCheckboxChange}
+                                        disabled={isReadOnly}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <p class="slds-var-m-top_medium slds-text-align_center slds-text-body_small slds-text-color_weak">
+                        No optional documents are configured for this application.
+                    </p>
+                </template>
+            </div>
+        </div>
+
+        <!-- SECTION 2 — Document upload -->
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:upload" size="small" class="form-header-icon"></lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">Document Upload</h1>
+                        <p class="form-header-subtitle">Upload, preview, and complete details for each document</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-body">
+                <p class="slds-var-m-bottom_medium slds-text-body_small slds-text-color_weak">
+                    Upload the required additional documents for your application. You can view and delete documents as needed.
+                </p>
+
+                <template lwc:if={hasUploadSections}>
+                    <lightning-accordion allow-multiple-sections-open class="slds-var-m-top_medium">
+
+                        <template for:each={uploadSections} for:item="s">
+                            <lightning-accordion-section key={s.key} name={s.key} label={s.label}>
+                                <div class="slds-var-p-vertical_x-small">
+                                    <div class="form-fields-grid">
+                                        <div class="form-field-wrap">
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">
+                                                    Upload Document
+                                                    <template lwc:if={s.required}>
+                                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                                    </template>
+                                                </label>
+                                                <div class="form-file-upload-wrap">
+                                                    <template lwc:if={s.isUploaded}>
+                                                        <span class="slds-text-body_small slds-text-color_success">{s.status}</span>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <span class="slds-text-body_small slds-text-color_weak">{s.status}</span>
+                                                    </template>
+
+                                                    <template lwc:if={s.hasFile}>
+                                                        <div class="form-file-uploaded-bar">
+                                                            <lightning-icon
+                                                                icon-name="utility:success"
+                                                                size="x-small"
+                                                                class="form-file-success-icon"
+                                                                alternative-text="Uploaded">
+                                                            </lightning-icon>
+                                                            <p class="form-file-selected-name">{s.fileName}</p>
+                                                            <button
+                                                                type="button"
+                                                                class="form-file-action-btn"
+                                                                data-key={s.key}
+                                                                onclick={handlePreviewClick}
+                                                                title="Preview">
+                                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                            </button>
+                                                            <template lwc:if={showDocumentDelete}>
+                                                                <button
+                                                                    type="button"
+                                                                    class="form-file-action-btn"
+                                                                    data-key={s.key}
+                                                                    onclick={handleDeleteClick}
+                                                                    title="Delete">
+                                                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                                </button>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <template lwc:if={showDocumentActions}>
+                                                            <lightning-file-upload
+                                                                data-key={s.key}
+                                                                label="Upload Document"
+                                                                accept={acceptedFormats}
+                                                                record-id={s.documentChecklistId}
+                                                                onuploadfinished={handleUploadFinished}
+                                                                disabled={isReadOnly}>
+                                                            </lightning-file-upload>
+                                                        </template>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <template lwc:if={s.hasFields}>
+                                            <template for:each={s.fields} for:item="field">
+                                                <div key={field.api} class="form-field-wrap">
+                                                    <template lwc:if={isFieldEditable}>
+                                                        <div class="form-field-editable-section">
+                                                            <label class="form-field-editable-label">
+                                                                {field.label}
+                                                                <template lwc:if={field.required}>
+                                                                    <span class="form-field-required-indicator" title="Required">*</span>
+                                                                </template>
+                                                            </label>
+                                                            <div class="form-field-editable-input-wrap">
+                                                                <template lwc:if={field.typeIsPicklist}>
+                                                                    <template lwc:if={field.isRadioGroup}>
+                                                                        <lightning-radio-group
+                                                                            name={field.api}
+                                                                            options={field.options}
+                                                                            value={field.value}
+                                                                            data-section={s.key}
+                                                                            data-api={field.api}
+                                                                            onchange={handleFieldChange}
+                                                                            disabled={isReadOnly}
+                                                                            variant="label-hidden">
+                                                                        </lightning-radio-group>
+                                                                    </template>
+                                                                    <template lwc:else>
+                                                                        <lightning-combobox
+                                                                            name={field.api}
+                                                                            options={field.options}
+                                                                            value={field.value}
+                                                                            data-section={s.key}
+                                                                            data-api={field.api}
+                                                                            onchange={handleFieldChange}
+                                                                            disabled={isReadOnly}
+                                                                            variant="label-hidden"
+                                                                            placeholder="Select an option">
+                                                                        </lightning-combobox>
+                                                                    </template>
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <lightning-input
+                                                                        type={field.type}
+                                                                        name={field.api}
+                                                                        value={field.value}
+                                                                        data-section={s.key}
+                                                                        data-api={field.api}
+                                                                        onchange={handleFieldChange}
+                                                                        disabled={isReadOnly}
+                                                                        variant="label-hidden">
+                                                                    </lightning-input>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <div class="form-info-cell">
+                                                            <div class="form-info-cell-header">
+                                                                <span class="form-info-label">{field.label}</span>
+                                                            </div>
+                                                            <div class="form-info-value-wrap">
+                                                                <p class="form-info-value">{field.displayValue}</p>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </template>
+                                    </div>
+                                </div>
+                            </lightning-accordion-section>
+                        </template>
+
+                    </lightning-accordion>
+                </template>
+                <template lwc:else>
+                    <p class="slds-var-m-top_medium slds-text-align_center slds-text-body_small slds-text-color_weak">
+                        No document sections are available for this application.
+                    </p>
+                </template>
+            </div>
+        </div>
+
+        <!-- SECTION 3 — Security Mandate -->
+        <template lwc:if={showSecurityMandateSection}>
+            <div class="form-card">
+                <template lwc:if={isAdditionalDocsOpsView}>
+                    <c-operations-section-header
+                        subtitle="Verify additional documents and acceptance">
+                    </c-operations-section-header>
+                </template>
+                <template lwc:else>
+                    <div class="form-header">
+                        <div class="form-header-overlay"></div>
+                        <div class="form-header-content ad-header-with-action">
+                            <div class="ad-header-left">
+                                <div class="form-header-icon-wrap">
+                                    <lightning-icon icon-name="utility:shield" size="small" class="form-header-icon"></lightning-icon>
+                                </div>
+                                <div class="form-header-text">
+                                    <h1 class="form-header-title">Security Mandate</h1>
+                                    <p class="form-header-subtitle">Capture security cheque and mandate details</p>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                class="ad-add-row-btn"
+                                onclick={handleAddSecurityRow}
+                                disabled={isReadOnly}
+                                aria-label="Add security mandate row"
+                                title="Add security mandate row">
+                                <span class="ad-add-row-icon">+</span>
+                                <span>Add Row</span>
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+                <div class="form-body">
+                    <template lwc:if={showSecurityMandateTable}>
+                        <div class="ad-table-wrapper">
+                            <div class="ad-table">
+                                <div class="ad-table-head">
+                                    <div class="ad-th">
+                                        Upload Cheque
+                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="ad-th">
+                                        Cheque Number
+                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="ad-th">
+                                        Bank Name
+                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="ad-th">MICR Code</div>
+                                    <template lwc:if={showSecurityMandateOpsColumns}>
+                                        <div class="ad-th">
+                                            Document Verified
+                                            <span class="form-field-required-indicator" title="Required">*</span>
+                                        </div>
+                                        <div class="ad-th">
+                                            Remarks
+                                            <span class="form-field-required-indicator" title="Required">*</span>
+                                        </div>
+                                    </template>
+                                    <div class="ad-th ad-th-actions">Actions</div>
+                                </div>
+                                <template for:each={securityMandateRows} for:item="row" for:index="index">
+                                    <div key={row.id} class={row.rowClass}>
+                                        <div class="ad-td ad-td-upload">
+                                            <div class="ad-dv-file-card">
+                                                <template lwc:if={row.showUploadBtn}>
+                                                    <button
+                                                        type="button"
+                                                        class="dv-upload-btn ad-dv-upload-btn"
+                                                        data-index={index}
+                                                        onclick={handleSecurityRowChunkyUpload}
+                                                        title="Upload Cheque">
+                                                        <img src={chunkyUploadIconUrl} class="dv-upload-icon ad-dv-upload-icon" alt="Upload" />
+                                                        <span class="dv-upload-btn-text">Select Files</span>
+                                                    </button>
+                                                </template>
+                                                <template lwc:if={row.showEmptyPlaceholder}>
+                                                    <p class="dv-file-empty">No file uploaded</p>
+                                                </template>
+                                                <template lwc:if={row.isUploaded}>
+                                                    <div class="dv-file-row dv-file-row--single ad-dv-file-row--compact">
+                                                        <div class="dv-file-row-left">
+                                                            <span class="dv-file-check">
+                                                                <lightning-icon icon-name="utility:success" size="x-small" variant="inverse" alternative-text="Uploaded"></lightning-icon>
+                                                            </span>
+                                                            <div class="dv-file-meta">
+                                                                <span class="dv-file-name" title={row.fileName}>{row.fileName}</span>
+                                                                <span class="dv-file-status">Uploaded</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="dv-file-row-actions">
+                                                            <button
+                                                                type="button"
+                                                                class="dv-file-action dv-file-action--preview"
+                                                                data-index={index}
+                                                                data-content-version-id={row.contentVersionId}
+                                                                data-file-name={row.fileName}
+                                                                data-file-extension={row.fileExtension}
+                                                                onclick={handleSecurityRowPreviewClick}
+                                                                title="Preview">
+                                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                            </button>
+                                                            <template lwc:if={row.canDeleteFile}>
+                                                                <button
+                                                                    type="button"
+                                                                    class="dv-file-action dv-file-action--danger"
+                                                                    data-index={index}
+                                                                    onclick={handleSecurityRowDeleteFile}
+                                                                    title="Delete">
+                                                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                                </button>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div class="ad-td">
+                                            <template lwc:if={isFieldEditable}>
+                                                <lightning-input
+                                                    type="text"
+                                                    label="Cheque Number"
+                                                    name="chequeNumber"
+                                                    value={row.chequeNumber}
+                                                    data-index={index}
+                                                    onchange={handleSecurityRowFieldChange}
+                                                    readonly={isReadOnly}
+                                                    required
+                                                    variant="label-hidden"
+                                                    placeholder="Enter Cheque No."
+                                                    class="ad-table-input">
+                                                </lightning-input>
+                                            </template>
+                                            <template lwc:else>
+                                                <span class="ad-readonly-value">{row.chequeNumber}</span>
+                                            </template>
+                                        </div>
+                                        <div class="ad-td">
+                                            <template lwc:if={isFieldEditable}>
+                                                <lightning-input
+                                                    type="text"
+                                                    label="Bank Name"
+                                                    name="bankName"
+                                                    value={row.bankName}
+                                                    data-index={index}
+                                                    onchange={handleSecurityRowFieldChange}
+                                                    readonly={isReadOnly}
+                                                    required
+                                                    variant="label-hidden"
+                                                    placeholder="Enter Bank Name"
+                                                    class="ad-table-input">
+                                                </lightning-input>
+                                            </template>
+                                            <template lwc:else>
+                                                <span class="ad-readonly-value">{row.bankName}</span>
+                                            </template>
+                                        </div>
+                                        <div class="ad-td">
+                                            <template lwc:if={isFieldEditable}>
+                                                <lightning-input
+                                                    type="text"
+                                                    label="MICR Code"
+                                                    name="micrCode"
+                                                    value={row.micrCode}
+                                                    data-index={index}
+                                                    onchange={handleSecurityRowFieldChange}
+                                                    readonly={isReadOnly}
+                                                    variant="label-hidden"
+                                                    placeholder="Enter MICR Code"
+                                                    class="ad-table-input">
+                                                </lightning-input>
+                                            </template>
+                                            <template lwc:else>
+                                                <span class="ad-readonly-value">{row.micrCode}</span>
+                                            </template>
+                                        </div>
+                                        <template lwc:if={showSecurityMandateOpsColumns}>
+                                            <div class="ad-td">
+                                                <template lwc:if={isAdditionalDocsOpsRemarksEditable}>
+                                                    <template lwc:if={row.isUploaded}>
+                                                        <lightning-combobox
+                                                            name="documentVerified"
+                                                            value={row.documentVerified}
+                                                            options={documentVerifiedOptions}
+                                                            data-index={index}
+                                                            onchange={handleSecurityOpsFieldChange}
+                                                            variant="label-hidden"
+                                                            placeholder="Select">
+                                                        </lightning-combobox>
+                                                    </template>
+                                                </template>
+                                                <template lwc:else>
+                                                    <span class="ad-readonly-value">{row.documentVerified}</span>
+                                                </template>
+                                            </div>
+                                            <div class="ad-td">
+                                                <template lwc:if={isAdditionalDocsOpsRemarksEditable}>
+                                                    <template lwc:if={row.isUploaded}>
+                                                        <lightning-textarea
+                                                            name="remarks"
+                                                            value={row.remarks}
+                                                            data-index={index}
+                                                            onchange={handleSecurityOpsFieldChange}
+                                                            variant="label-hidden"
+                                                            placeholder="Enter remarks">
+                                                        </lightning-textarea>
+                                                    </template>
+                                                </template>
+                                                <template lwc:else>
+                                                    <span class="ad-readonly-value">{row.remarks}</span>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <div class="ad-td ad-td-actions">
+                                            <button
+                                                type="button"
+                                                class="ad-row-delete-btn"
+                                                data-index={index}
+                                                onclick={handleDeleteSecurityRow}
+                                                disabled={isReadOnly}
+                                                title="Delete row"
+                                                aria-label="Delete row">
+                                                <lightning-icon
+                                                    icon-name="utility:delete"
+                                                    size="x-small"
+                                                    alternative-text="Delete row">
+                                                </lightning-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="slds-text-body_small slds-text-color_weak slds-var-m-top_small">
+                            No security mandate rows added. Click <strong>Add Row</strong> to capture cheque details.
+                        </p>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        <template lwc:if={showStandaloneOperationsHeader}>
+            <div class="form-card">
+                <c-operations-section-header
+                    subtitle="Verify additional documents and acceptance">
+                </c-operations-section-header>
+            </div>
+        </template>
+
+        <!-- ══ FOOTER — NEXT (disabled via isNextDisabled) ═══════════════════ -->
+        <div class="form-footer-wrapper">
+            <div class="form-footer">
+                <div class="form-btn-wrapper">
+                    <button type="button"
+                        class="form-primary-btn p4-button-text"
+                        onclick={handleNextButton}
+                        disabled={isNextDisabled}>
+                        Next
+                        <lightning-icon
+                            icon-name="utility:forward"
+                            size="x-small"
+                            class="form-btn-icon">
+                        </lightning-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <template lwc:if={openPreviewModal}>
+            <c-file-previewer
+                content-document-id={previewContentDocumentId}
+                file-type={previewFileType}
+                record-id={recordId}
+                onclose={handleFilePreviewClose}>
+            </c-file-previewer>
+        </template>
+
+        <template lwc:if={showMagicUpload}>
+            <div class="dv-modal-overlay" onmousedown={handleOverlayMouseDown} onclick={handleOverlayClick}>
+                <div class="dv-modal" onclick={stopPropagationDv}>
+                    <div class="dv-modal-head">
+                        <span class="dv-modal-title">Advanced Document Upload</span>
+                        <button type="button" class="dv-modal-close" onclick={handleMagicUploadClose} title="Close">&#10005;</button>
+                    </div>
+                    <div class="dv-modal-body">
+                        <c-embed-custom-file-upload
+                            record-id={activeUploadChecklistId}
+                            max-files-allowed={activeMaxFiles}
+                            allowed-extensions={activeAllowedTypes}
+                            enable-compression
+                            allow-merge
+                            enable-video
+                            onfilesuploaded={handleSecurityMagicUploadComplete}>
+                        </c-embed-custom-file-upload>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+    </div>
+</template>

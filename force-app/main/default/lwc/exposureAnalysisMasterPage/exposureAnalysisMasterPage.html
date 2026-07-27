@@ -1,0 +1,289 @@
+<template>
+    <div class="form-layout">
+        <template if:true={isLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Exposure details -->
+        <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <lightning-icon icon-name="utility:table" size="small" variant="inverse"></lightning-icon>
+                        <div class="form-header-text">
+                            <h2 class="form-header-title">{exposureSectionTitle}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body table-section-body">
+                    <template if:true={hasExposureRows}>
+                        <div class="master-table-scroll exposure-table-scroll">
+                            <table class="master-table exposure-table">
+                                <thead>
+                                    <tr class="master-table-header-row">
+                                        <th scope="col" class="master-th-cell">{labels.colExposureType}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colDealStage}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colDealNo}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colDealDate}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colProduct}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colStatus}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colFinanceAmt}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colSoh}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colOverDue}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colCurrentDemand}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colLien}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="master-table-body">
+                                    <template for:each={exposureRows} for:item="row">
+                                        <tr key={row.id} class="master-table-row">
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.exposureType}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.dealStage}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.dealNo}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.dealDate}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.product}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.status}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.financeAmt}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.soh}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.overDue}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.currentDemand}</span></td>
+                                            <td class="master-td-cell">
+                                                <template if:true={row.hasLien}>
+                                                    <button
+                                                        type="button"
+                                                        class="slds-button slds-button_neutral slds-button_stretch"
+                                                        data-id={row.id}
+                                                        onclick={handleViewLien}>
+                                                        {labels.btnViewLien}
+                                                    </button>
+                                                </template>
+                                                <template if:false={row.hasLien}>
+                                                    <span class="master-cell-text">{labels.lienNotAvailable}</span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </template>
+                    <template if:false={hasExposureRows}>
+                        <p class="p4-help-text">{labels.emptyExposure}</p>
+                    </template>
+                </div>
+            </div>
+
+            <!-- External exposure (no overflow clip — combobox dropdown must render above table) -->
+            <div class="form-card external-exposure-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <lightning-icon icon-name="utility:record" size="small" variant="inverse"></lightning-icon>
+                        <div class="form-header-text">
+                            <h2 class="form-header-title">{labels.sectionExternalExposure}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body table-section-body external-exposure-body">
+                    <template if:true={hasExternalExposureRows}>
+                        <div class="master-table-scroll master-table-scroll--interactive">
+                            <table class="master-table external-exposure-table">
+                                <thead>
+                                    <tr class="master-table-header-row">
+                                        <th scope="col" class="master-th-cell">{labels.colAccountType}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colOwnership}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colHighCredit}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colCurrentBalance}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colAmountOverdue}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colReasonOverdue}</th>
+                                        <th scope="col" class="master-th-cell">{labels.colFinancier}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="master-table-body">
+                                    <template for:each={externalExposureRows} for:item="row">
+                                        <tr key={row.id} class="master-table-row">
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.accountType}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.ownership}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.highCredit}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.currentBalance}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.amountOverdue}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.reasonForOverdue}</span></td>
+                                            <td class="master-td-cell"><span class="master-cell-text">{row.financierName}</span></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </template>
+                    <template if:false={hasExternalExposureRows}>
+                        <p class="p4-help-text">{labels.emptyExternalExposure}</p>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <lightning-icon icon-name="utility:metrics" size="small" variant="inverse"></lightning-icon>
+                        <div class="form-header-text">
+                            <h2 class="form-header-title">{labels.sectionSummary}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="form-fields-grid two-col-grid">
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">{labels.summaryCurrent}</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{summary.currentExposure}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">{labels.summaryBorrower}</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{summary.existingBorrowerExposure}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">{labels.summaryGuarantor}</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{summary.existingGuarantorExposure}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">{labels.summaryTotal}</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{summary.totalExposure}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">{labels.summaryFoir}</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{summary.foirPercent}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p4-footer-wrapper">
+                <div class="p4-footer">
+                    <div class="p4-btn-wrapper">
+                        <button
+                            type="button"
+                            class="p4-primary-btn p4-button-text"
+                            disabled={isNextDisabled}
+                            onclick={handleNext}>
+                            {labels.btnNext}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        <template if:true={showLienModal}>
+            <section class="slds-backdrop slds-backdrop_open" role="presentation"></section>
+            <section class="slds-modal slds-fade-in-open" role="dialog" aria-modal="true" aria-labelledby="lien-modal-title">
+                <div class="slds-modal__container lien-modal-container">
+                    <div class="form-card">
+                        <div class="form-header">
+                            <div class="form-header-overlay"></div>
+                            <div class="form-header-content lien-modal-header">
+                                <div class="lien-modal-header-main">
+                                    <lightning-icon
+                                        icon-name="utility:link"
+                                        size="small"
+                                        variant="inverse">
+                                    </lightning-icon>
+                                    <div class="form-header-text">
+                                        <h2 id="lien-modal-title" class="form-header-title">{labels.modalLienTitle}</h2>
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    class="slds-button slds-button_icon lien-modal-close"
+                                    title="Close"
+                                    onclick={handleCloseLienModal}>
+                                    <lightning-icon
+                                        icon-name="utility:close"
+                                        size="small"
+                                        variant="inverse"
+                                        alternative-text="Close">
+                                    </lightning-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-body table-section-body lien-modal-body">
+                            <template if:true={hasLienRows}>
+                                <div class="master-table-scroll">
+                                    <table class="master-table lien-table">
+                                        <thead>
+                                            <tr class="master-table-header-row">
+                                                <th scope="col" class="master-th-cell">{labels.colLienNo}</th>
+                                                <th scope="col" class="master-th-cell">{labels.colLienType}</th>
+                                                <th scope="col" class="master-th-cell">{labels.colSourceDealNo}</th>
+                                                <th scope="col" class="master-th-cell">{labels.colLienMarkingPeriod}</th>
+                                                <th scope="col" class="master-th-cell">{labels.colLienMakerDate}</th>
+                                                <th scope="col" class="master-th-cell">{labels.colLienRequestBy}</th>
+                                                <th scope="col" class="master-th-cell">{labels.colLienMarkingReason}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="master-table-body">
+                                            <template for:each={lienRows} for:item="lien">
+                                                <tr key={lien.id} class="master-table-row">
+                                                    <td class="master-td-cell"><span class="master-cell-text">{lien.lienNo}</span></td>
+                                                    <td class="master-td-cell"><span class="master-cell-text">{lien.lienType}</span></td>
+                                                    <td class="master-td-cell"><span class="master-cell-text">{lien.sourceDealNo}</span></td>
+                                                    <td class="master-td-cell"><span class="master-cell-text">{lien.lienMarkingPeriod}</span></td>
+                                                    <td class="master-td-cell"><span class="master-cell-text">{lien.lienMakerDate}</span></td>
+                                                    <td class="master-td-cell"><span class="master-cell-text">{lien.lienRequestBy}</span></td>
+                                                    <td class="master-td-cell"><span class="master-cell-text">{lien.lienMarkingReason}</span></td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+                            <template if:false={hasLienRows}>
+                                <p class="p4-help-text">{labels.emptyLien}</p>
+                            </template>
+                        </div>
+                        <div class="p4-footer lien-modal-footer">
+                            <div class="p4-btn-wrapper">
+                                <button
+                                    type="button"
+                                    class="p4-secondary-btn p4-button-text"
+                                    onclick={handleCloseLienModal}>
+                                    {labels.btnClose}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+    </div>
+</template>

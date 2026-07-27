@@ -1,0 +1,139 @@
+.signature-modal {
+  z-index: 9001;
+}
+
+.signature-container {
+  width: 800px;
+  max-width: 95vw;
+}
+
+.signature-header {
+  text-align: left;
+  padding: 1rem 1.5rem;
+}
+
+.signature-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.signature-body {
+  padding: 1rem 1.5rem 0.5rem;
+}
+
+.signature-tabs {
+  border-bottom: 1px solid #d8dde6;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.tab-link {
+  border: none;
+  background: transparent;
+  color: #0176d3;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-link_active {
+  color: #f59e0b;
+  border-bottom-color: #f59e0b;
+}
+
+.preview-label {
+  font-size: 1.05rem;
+}
+
+.preview-panel {
+  border: 1px solid #d8dde6;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.preview-signature {
+  border: 2px solid #1f4f8f;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  min-height: 5rem;
+}
+
+.preview-title {
+  font-size: 0.8rem;
+  color: #181818;
+  /* font-weight: 700; */
+  padding-bottom: 50px;
+}
+
+.preview-name {
+  font-size: 2rem;
+  font-family: "Brush Script MT", "Segoe Script", cursive;
+  line-height: 1.1;
+}
+
+.preview-name1 {
+  font-size: 2rem;
+  font-family: "Lucida Handwriting", "Apple Chancery", cursive;
+  line-height: 1.1;
+}
+
+.preview-name2 {
+  font-size: 2rem;
+  font-family: "Snell Roundhand", "Bradley Hand", cursive;
+  line-height: 1.1;
+}
+
+.preview-id {
+  color: #5c5c5c;
+  font-size: 0.85rem;
+}
+
+.preview-initials {
+  border: 2px solid #1f4f8f;
+  border-radius: 0.75rem;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.initials-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.initials-value {
+  font-size: 2rem;
+  font-family: "Brush Script MT", "Segoe Script", cursive;
+  line-height: 1;
+}
+
+.change-style-link {
+  color: #0176d3;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+.consent-text {
+  color: #3e3e3c;
+}
+
+.signature-footer {
+  text-align: left;
+  padding: 1rem 1.5rem;
+}
+
+:host {
+  display: block;
+}
+
+.hidden-canvas {
+  display: none;
+}

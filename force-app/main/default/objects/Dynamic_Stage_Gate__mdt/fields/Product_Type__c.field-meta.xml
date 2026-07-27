@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product_Type__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Product Type</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Loan Against Property</fullName>
+                <default>true</default>
+                <label>Loan Against Property</label>
+            </value>
+            <value>
+                <fullName>Internal Bank Transfer</fullName>
+                <default>false</default>
+                <label>Internal Bank Transfer</label>
+            </value>
+            <value>
+                <fullName>External Bank Transfer</fullName>
+                <default>false</default>
+                <label>External Bank Transfer</label>
+            </value>
+            <value>
+                <fullName>Un-Secured Personal Loan</fullName>
+                <default>false</default>
+                <label>Un-Secured Personal Loan</label>
+            </value>
+            <value>
+                <fullName>Tractor</fullName>
+                <default>false</default>
+                <label>Tractor</label>
+            </value>
+            <value>
+                <fullName>Two Wheeler</fullName>
+                <default>false</default>
+                <label>Two Wheeler</label>
+            </value>
+            <value>
+                <fullName>Four Wheeler</fullName>
+                <default>false</default>
+                <label>Four Wheeler</label>
+            </value>
+            <value>
+                <fullName>Commercial Vehicles</fullName>
+                <default>false</default>
+                <label>Commercial Vehicles</label>
+            </value>
+            <value>
+                <fullName>Commercial Equipments</fullName>
+                <default>false</default>
+                <label>Commercial Equipments</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

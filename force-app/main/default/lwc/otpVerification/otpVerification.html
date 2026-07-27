@@ -1,0 +1,85 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <div class="otp-screen" onintegrationprogressupdate={handleIntegrationProgressUpdate}>
+        <template lwc:if={showGuestOtpSpinner}>
+            <div class="otp-loading-wrap">
+                <span class="otp-loading-spinner"></span>
+                <p class="otp-loading-text">Sending verification code…</p>
+            </div>
+        </template>
+
+        <template lwc:if={showOtpInputs}>
+        <!-- Dynamic Header -->
+        <div class="otp-header">
+            <div class="otp-type-badge">
+                <template if:true={isMobileOtp}>
+                    <lightning-icon icon-name="utility:phone_portrait" size="x-small"
+                        class="badge-icon"></lightning-icon>
+                </template>
+                <template if:true={isEmailOtp}>
+                    <lightning-icon icon-name="utility:email" size="x-small"
+                        class="badge-icon"></lightning-icon>
+                </template>
+            </div>
+            <div class="otp-header-text">
+                <h3 class="otp-title">{displayTitle}</h3>
+                <p class="otp-desc">{otpDescription}</p>
+            </div>
+        </div>
+
+        <!-- 6-Digit OTP Input -->
+        <div class="otp-inputs">
+            <template for:each={otpSlots} for:item="slot">
+                <input
+                    key={slot.key}
+                    type="tel"
+                    maxlength="1"
+                    class="otp-digit"
+                    data-index={slot.index}
+                    value={slot.value}
+                    oninput={handleOtpInput}
+                    onkeydown={handleOtpKeydown}
+                    onpaste={handleOtpPaste}
+                />
+            </template>
+        </div>
+
+        <template lwc:if={inlineErrorMessage}>
+            <p class="otp-inline-error">{inlineErrorMessage}</p>
+        </template>
+
+        <!-- Terms & Conditions -->
+        <label class="terms-wrap">
+            <input type="checkbox" class="terms-cb" checked={isTermsAccepted}
+                onchange={handleTermsChange} />
+            <span class="terms-text">
+                I agree to the <a href="javascript:void(0)" class="terms-link" onclick={handleTermsClick}>Terms &amp; Conditions</a> and authorize OTP verification.
+            </span>
+        </label>
+        <button class="otp-verify-btn" onclick={handleVerifyOtp} disabled={isVerifyDisabled}>
+            <template if:true={otpLoading}>
+                <span class="spinner-sm"></span>
+            </template>
+            <template if:false={otpLoading}>
+                <lightning-icon icon-name="utility:shield" size="xx-small"
+                    class="icon-white"></lightning-icon>
+                <span>Verify OTP</span>
+            </template>
+        </button>
+        <p class={resendClass} onclick={handleResendOtp}>{resendTimerDisplay}</p>
+        </template>
+    </div>
+
+    <template lwc:if={showIntegrationProgressModal}>
+        <c-integration-progress-modal
+            status={integrationProgressModalStatus}
+            header={integrationProgressModalHeader}
+            current-stage-index={integrationProgressModalCurrentStageIdx}
+            stages={integrationProgressModalStages}
+            error-message={integrationProgressModalErrorMessage}
+            onclose={handleIntegrationProgressModalClose}
+            onretry={handleIntegrationProgressModalRetry}
+            ondone={handleIntegrationProgressModalDone}>
+        </c-integration-progress-modal>
+    </template>
+</template>

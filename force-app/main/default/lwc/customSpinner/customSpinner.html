@@ -1,0 +1,34 @@
+<template>
+    <section class="overlay" role="dialog" aria-modal="true" aria-label={alternativeText}>
+        <div class="backdrop"></div>
+        <div class="content">
+            <!-- Messages (next to spinner) -->
+            <div class="messages" role="log" aria-live="polite">
+                <template if:true={hasMessages}>
+                    <template for:each={messages} for:item="msg">
+                        <div key={msg.id} class={msg.rowClass}>
+                            <template if:true={msg.icon}>
+                                <span class="messageIcon" aria-hidden="true">{msg.icon}</span>
+                            </template>
+                            <span class="messageText">{msg.text}</span>
+                        </div>
+                    </template>
+                </template>
+            </div>
+
+            <!-- Spinner (big + centered) -->
+            <div class="spinnerPane">
+                <template if:true={isCssMode}>
+                    <div class="loader-container" lwc:dom="manual"></div>
+                </template>
+                <template if:true={isLightningMode}>
+                    <lightning-spinner
+                        alternative-text={alternativeText}
+                        size={lightningSize}
+                        variant={lightningVariant}
+                    ></lightning-spinner>
+                </template>
+            </div>
+        </div>
+    </section>
+</template>

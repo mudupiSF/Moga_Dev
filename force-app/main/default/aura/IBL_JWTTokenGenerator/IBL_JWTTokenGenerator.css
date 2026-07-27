@@ -1,0 +1,22 @@
+.THIS .slds-spinner_container {  
+	z-index: 10000;
+	position: fixed;   
+}
+.THIS .expand {
+    width:500px;
+    word-break: break-all;
+}
+
+/* Large Textarea for Encryption/Decryption Input */
+.THIS .large-textarea textarea {
+    min-height: 400px !important;
+    height: 400px !important;
+}
+
+/*
+.THIS uiOutputCheckbox img.checked {
+    border-color: rgb(0, 178, 0);
+    box-shadow: 0 0 3px #006A00; 
+    background-color: rgb(0, 178, 0); 
+}
+*/

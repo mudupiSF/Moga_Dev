@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Document Upload</masterLabel>
+    <description>Generic document upload card for Document_CheckList__c flows. Pass application, applicant, document type, and checklist Id via @api attributes.</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage">
+            <property name="label" type="String" label="Document Label" description="Card title, e.g. Pay Slip (Month 1)" />
+            <property name="subtitle" type="String" label="Subtitle" description="Helper text when no file is uploaded" default="PDF, JPG up to 10MB" />
+            <property name="required" type="Boolean" label="Required" default="false" />
+            <property name="documentChecklistId" type="String" label="Document Checklist Id" description="Document_CheckList__c Id used as lightning-file-upload record-id" />
+            <property name="applicationId" type="String" label="Application Id" description="Application__c Id for auto-link on upload" />
+            <property name="applicantId" type="String" label="Applicant Id" description="Applicant__c Id for auto-link on upload" />
+            <property name="documentType" type="String" label="Document Type" description="Document_Type__c value for auto-link on upload" />
+            <property name="uploaded" type="Boolean" label="Uploaded" default="false" />
+            <property name="verified" type="Boolean" label="Verified" default="false" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

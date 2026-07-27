@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <label>Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Borrower Exposure</fullName>
+                <default>false</default>
+                <label>Borrower Exposure</label>
+            </value>
+            <value>
+                <fullName>Bank Exposure</fullName>
+                <default>false</default>
+                <label>Bank Exposure</label>
+            </value>
+            <value>
+                <fullName>Additional Customer</fullName>
+                <default>false</default>
+                <label>Additional Customer</label>
+            </value>
+            <value>
+                <fullName>Co-Borrower Exposure</fullName>
+                <default>false</default>
+                <label>Co-Borrower Exposure</label>
+            </value>
+            <value>
+                <fullName>Family Exposure</fullName>
+                <default>false</default>
+                <label>Family Exposure</label>
+            </value>
+            <value>
+                <fullName>Existing Borrower Exposure</fullName>
+                <default>false</default>
+                <label>Existing Borrower Exposure</label>
+            </value>
+            <value>
+                <fullName>Guarantor Exposure</fullName>
+                <default>false</default>
+                <label>Guarantor Exposure</label>
+            </value>
+            <value>
+                <fullName>Existing Beneficiary Exposure</fullName>
+                <default>false</default>
+                <label>Existing Beneficiary Exposure</label>
+            </value>
+            <value>
+                <fullName>External Exposure</fullName>
+                <default>false</default>
+                <label>External Exposure</label>
+            </value>
+            <value>
+                <fullName>Closed</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Closed</label>
+            </value>
+            <value>
+                <fullName>Current</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Current</label>
+            </value>
+            <value>
+                <fullName>Existing</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Existing</label>
+            </value>
+            <value>
+                <fullName>Non Bandhan Exposure</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Non Bandhan Exposure</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,412 @@
+<template>
+    <lightning-card title="RPSV2" icon-name="custom:custom63">
+        <div class="slds-p-around_medium">
+            <!-- Calculation Mode Section -->
+            <div class="slds-grid slds-wrap slds-gutters">
+                <div class="slds-col slds-size_1-of-1">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">1. Calculation Method</h3>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <lightning-combobox
+                        label="Calculation Mode"
+                        value={calculationMode}
+                        name="calculationMode"
+                        options={calculationModeOptions}
+                        onchange={handleCalculationModeChange}
+                        disabled={calculationModeDisabled}
+                        required
+                    ></lightning-combobox>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <lightning-combobox
+                        label="Days in Year"
+                        value={daysInYearMethod}
+                        options={daysInYearOptions}
+                        onchange={handleDaysInYearMethodChange}
+                        disabled={daysCalculationDisabled}
+                        required
+                    ></lightning-combobox>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <lightning-combobox
+                        label="Days in Month"
+                        value={daysInMonthMethod}
+                        options={daysInMonthOptions}
+                        onchange={handleDaysInMonthMethodChange}
+                        disabled={daysCalculationDisabled}
+                        required
+                    ></lightning-combobox>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-p-top_small">
+                    <lightning-input
+                        type="checkbox"
+                        label="Accurate (Carry Forward Interest)"
+                        checked={accurateInterest}
+                        onchange={handleAccurateInterestChange}
+                    ></lightning-input>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-p-top_small">
+                    <lightning-input
+                        type="checkbox"
+                        label="First Month Pre-EMI consider 31 Day for EMI and then prorate"
+                        checked={firstMonthPreEmi30days}
+                        onchange={handleFirstMonthPreEmi30daysChange}
+                    ></lightning-input>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-p-top_small">
+                    <lightning-input
+                        type="checkbox"
+                        label="Treat first month as Pre-EMI irrespective"
+                        checked={treatFirstMonthAsPreEmi}
+                        onchange={handleTreatFirstMonthAsPreEmiChange}
+                    ></lightning-input>
+                </div>
+            </div>
+
+            <!-- Basic Loan Details Section -->
+            <div class="slds-grid slds-wrap slds-gutters slds-m-top_medium">
+                <div class="slds-col slds-size_1-of-1">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">2. Basic Loan Details</h3>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <lightning-input
+                        type="number"
+                        name="principal"
+                        label="Principal Amount"
+                        value={principal}
+                        onchange={handlePrincipalChange}
+                        disabled={principalDisabled}
+                        required
+                        min="1"
+                        step="1"
+                    ></lightning-input>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <lightning-input
+                        type="number"
+                        name="interestRate"
+                        label="Interest Rate (% p.a.)"
+                        value={irr}
+                        onchange={handleIRRChange}
+                        disabled={interestRateDisabled}
+                        required
+                        min="0.1"
+                        max="50"
+                        step="0.01"
+                        formatter="decimal"
+                    ></lightning-input>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <lightning-input
+                        type="number"
+                        name="tenure"
+                        label="Tenure (Months)"
+                        value={tenure}
+                        onchange={handleTenureChange}
+                        disabled={tenureDisabled}
+                        required
+                        min="1"
+                        max="360"
+                    ></lightning-input>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <lightning-input
+                        type="date" 
+                        name="loanDate"
+                        label="Loan Disbursement Date"
+                        value={loanDate}
+                        onchange={handleLoanDateChange}
+                        disabled={loanDateDisabled}
+                        required
+                    ></lightning-input>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <template lwc:if={dayOfMonthOptionsOverride}>
+                        <lightning-combobox
+                            label="Day of Month for EMI"
+                            name="day"
+                            value={day}
+                            options={dayOfMonthOptionsOverrideValue}
+                            onchange={handleDayChange}
+                            disabled={dayDisabled}
+                            required
+                        ></lightning-combobox>
+                    </template>
+                    <template lwc:else>
+                        <lightning-combobox
+                            label="Day of Month for EMI"
+                            name="day"
+                            value={day}
+                            options={dayOfMonthOptions}
+                            onchange={handleDayChange}
+                            disabled={dayDisabled}
+                            required
+                        ></lightning-combobox>
+                    </template>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <lightning-input
+                        type="date"
+                        name="firstEMIDate"
+                        label="First EMI Date (Auto-calculated)"
+                        value={repaymentDate}
+                        onchange={handleRepaymentDateChange}
+                        disabled={firstEMIDateDisabled}
+                        required
+                    ></lightning-input>
+                </div>
+
+                <template lwc:if={overrideDefaultFlow}>
+                </template>
+                <template lwc:else>
+                    <template if:true={showProrateMessage}>
+                        <div class="slds-col slds-size_1-of-1">
+                            <div class="slds-box slds-theme_warning slds-m-top_small">
+                                <p class="slds-text-body_regular slds-m-bottom_small">
+                                    <strong>First EMI Calculation:</strong><br/>
+                                    {prorateInterestMessage}
+                                </p>
+                                <lightning-input
+                                    type="checkbox"
+                                    label="Override Prorate - Calculate Complete EMI for First Installment"
+                                    checked={overrideProrateInterest}
+                                    onchange={handleOverrideProrateChange}
+                                ></lightning-input>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                
+            </div>
+
+            <!-- Repayment Configuration Section -->
+            <div class="slds-grid slds-wrap slds-gutters slds-m-top_medium">
+                <div class="slds-col slds-size_1-of-1">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">3. Repayment Configuration</h3>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <lightning-combobox
+                        label="Repayment Type"
+                        name="repaymentType"
+                        value={repaymentType}
+                        options={repaymentTypeOptions}
+                        onchange={handleRepaymentTypeChange}
+                        disabled={repaymentTypeDisabled}
+                        required
+                    ></lightning-combobox>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <lightning-combobox
+                        label="Payment Frequency"
+                        name="frequency"
+                        value={frequency}
+                        options={frequencyOptions}
+                        onchange={handleFrequencyChange}
+                        disabled={frequencyDisabled}
+                        required
+                    ></lightning-combobox>
+                </div>
+            </div>
+
+            <!-- Pre-EMI Section -->
+            <div class="slds-grid slds-wrap slds-gutters slds-m-top_medium">
+                <div class="slds-col slds-size_1-of-1">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">4. Pre-EMI Details (Optional)</h3>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <lightning-combobox
+                        label="Pre-EMI Type"
+                        name="preEmiType"
+                        value={preEmiType}
+                        options={preEmiTypeOptions}
+                        onchange={handlePreEmiTypeChange}
+                        disabled={preEmiTypeDisabled}
+                    ></lightning-combobox>
+                </div>
+
+                <template if:true={showPreEmiMonthsInput}>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                        <lightning-input
+                            type="number"
+                            name="preEmiMonths"
+                            label="Pre-EMI Period (Months)"
+                            value={preEmiMonths}
+                            onchange={handlePreEmiMonthsChange}
+                            disabled={preEmiMonthsDisabled}
+                            min="0"
+                            required
+                        ></lightning-input>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Moratorium Section -->
+            <div class="slds-grid slds-wrap slds-gutters slds-m-top_medium">
+                <div class="slds-col slds-size_1-of-1">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">5. Moratorium Details (Optional)</h3>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                    <lightning-input
+                        type="number"
+                        name="moratoriumMonths"
+                        label="Moratorium Period (Months)"
+                        value={moratoriumMonths}
+                        onchange={handleMoratoriumMonthsChange}
+                        disabled={moratoriumMonthsDisabled}
+                        min="0"
+                        max="60"
+                    ></lightning-input>
+                </div>
+
+                <template if:true={showMoratoriumFields}>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                        <lightning-combobox
+                            label="Moratorium Payment Type"
+                            name="moratoriumInterestPayment"
+                            value={moratoriumInterestPayment}
+                            options={moratoriumPaymentOptions}
+                            onchange={handleMoratoriumPaymentChange}
+                            disabled={moratoriumInterestPaymentDisabled}
+                        ></lightning-combobox>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                        <lightning-combobox
+                            label="Interest Capitalization Type"
+                            name="capitalizationType"
+                            value={capitalizationType}
+                            options={capitalizationTypeOptions}
+                            onchange={handleCapitalizationTypeChange}
+                            disabled={capitalizationTypeDisabled}
+                        ></lightning-combobox>
+                    </div>
+
+                    <template if:true={showPartialAmount}>
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                            <lightning-input
+                                type="number"
+                                name="moratoriumPartialAmount"
+                                label="Partial Payment Amount"
+                                value={moratoriumPartialAmount}
+                                onchange={handleMoratoriumPartialAmountChange}
+                                disabled={moratoriumPartialAmountDisabled}
+                                min="0"
+                                step="1"
+                            ></lightning-input>
+                        </div>
+                    </template>
+                </template>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="slds-grid slds-gutters slds-m-top_large">
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning-button
+                        variant="brand"
+                        name="calculateSchedule"
+                        label="Calculate Schedule"
+                        onclick={handleCalculate}
+                        disabled={isLoading}
+                        class="slds-m-right_small"
+                    ></lightning-button>
+
+                    <template lwc:if={overrideDefaultFlow}>
+                        <lightning-button
+                            variant="brand"
+                            label="Save"
+                            icon-name="utility:save"
+                            onclick={handleSave}
+                            disabled={isLoading}
+                            class="slds-m-right_small"
+                        ></lightning-button>
+                    </template>
+                    
+                    <template lwc:if={removeResetButton}>
+                    </template>
+                    <template lwc:else>
+                        <lightning-button
+                            variant="neutral"
+                            label="Reset"
+                            onclick={handleReset}
+                            disabled={isLoading}
+                            class="slds-m-right_small"
+                        ></lightning-button>
+                    </template>
+                    
+                    <template if:true={showResults}>
+                        <lightning-button
+                            variant="success"
+                            label="Export to Excel"
+                            icon-name="utility:download"
+                            onclick={handleExportToExcel}
+                            disabled={isLoading}
+                            class="slds-m-right_small"
+                        ></lightning-button>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <div class="slds-m-top_medium">
+                    <lightning-spinner alternative-text="Calculating..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Results Section -->
+            <template if:true={showResults}>
+                <div class="slds-m-top_large">
+                    <h3 class="slds-text-heading_small slds-m-bottom_medium">
+                        Repayment Schedule ({scheduleData.length} Installments)
+                    </h3>
+
+                    <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+                        <p class="slds-text-title_bold slds-m-bottom_x-small">EMI Formula</p>
+                        <p class="slds-text-body_regular" style="white-space: pre-line; font-family: monospace; font-size: 0.85rem;">{emiFormulaText}</p>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <template for:each={displayTableColumns} for:item="col">
+                                        <th key={col.key} class={col.alignClass} scope="col">
+                                            <div class="slds-truncate" title={col.label}>{col.label}</div>
+                                        </th>
+                                    </template>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={tableRowsWithCells} for:item="row">
+                                    <tr key={row.rowKey}>
+                                        <template for:each={row.cells} for:item="cell">
+                                            <td key={cell.key} class={cell.alignClass}>
+                                                <div class="slds-truncate" title={cell.value}>{cell.value}</div>
+                                            </td>
+                                        </template>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

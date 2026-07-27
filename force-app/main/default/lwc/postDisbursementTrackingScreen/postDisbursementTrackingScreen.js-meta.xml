@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Post Disbursement Tracking Screen</masterLabel>
+    <description>Post-disbursement PDD register, security perfection, and onboarding tracking.</description>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__UrlAddressable</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightningCommunity__Default">
+            <property name="recordId" type="String" default="{!recordId}" label="Record Id"
+                description="Application__c record Id." />
+            <property name="currentViewId" type="String" label="Current View Id"
+                description="Stage menu item id for losnextstage navigation." />
+            <property name="stagePhrase" type="String" label="Stage Phrase"
+                description="Stage phrase for losnextstage navigation." />
+            <property name="tab" type="String" label="Tab"
+                description="Current step tab label used as currentLoanStageComplete." />
+            <property name="applicationLineItemId" type="String" label="Application Line Item Id"
+                description="Application line item context used for per-asset detail flows." />
+            <property name="assetId" type="String" label="Asset Id"
+                description="Asset context used for per-asset detail flows." />
+            <property name="isStagePast" type="Boolean" label="Is Stage Past"
+                description="When true, the screen is read-only after navigating away from a completed step." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

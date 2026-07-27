@@ -1,0 +1,115 @@
+<template>
+    <article class={cardClass}>
+        <div class="doc-upload-card__header">
+            <div class={iconWrapClass}>
+                <template lwc:if={showUploadedState}>
+                    <lightning-icon
+                        icon-name="utility:success"
+                        size="x-small"
+                        class="doc-upload-card__icon doc-upload-card__icon--success"
+                        alternative-text="Uploaded">
+                    </lightning-icon>
+                </template>
+                <template lwc:else>
+                    <lightning-icon
+                        icon-name={iconName}
+                        size="x-small"
+                        class="doc-upload-card__icon"
+                        alternative-text="Document">
+                    </lightning-icon>
+                </template>
+            </div>
+
+            <div class="doc-upload-card__meta">
+                <div class="doc-upload-card__title-row">
+                    <h3 class="doc-upload-card__title">{label}</h3>
+                    <template lwc:if={required}>
+                        <span class="doc-upload-card__required" title="Required">*</span>
+                    </template>
+                </div>
+
+                <template lwc:if={showUploadedState}>
+                    <p class="doc-upload-card__file-name">{displayFileName}</p>
+                    <template lwc:if={displayFileSize}>
+                        <p class="doc-upload-card__file-size">{displayFileSize}</p>
+                    </template>
+                </template>
+                <template lwc:else>
+                    <p class="doc-upload-card__subtitle">{subtitle}</p>
+                </template>
+            </div>
+        </div>
+
+        <template lwc:if={showUploadZone}>
+            <div class="doc-upload-card__body">
+                <div class="doc-upload-card__dropzone">
+                    <lightning-icon
+                        icon-name="utility:upload"
+                        size="x-small"
+                        class="doc-upload-card__dropzone-icon"
+                        alternative-text="Upload">
+                    </lightning-icon>
+                    <span class="doc-upload-card__dropzone-label">
+                        <template lwc:if={isLinking}>Uploading…</template>
+                        <template lwc:else>Upload File</template>
+                    </span>
+                    <lightning-file-upload
+                        class="doc-upload-card__file-input"
+                        label="Upload File"
+                        name={uploadInputName}
+                        accept={acceptedFormats}
+                        record-id={documentChecklistId}
+                        onuploadfinished={handleUploadFinished}
+                        multiple={multipleUpload}
+                        disabled={isUploadDisabled}
+                        variant="label-hidden">
+                    </lightning-file-upload>
+                </div>
+            </div>
+        </template>
+
+        <template lwc:if={showUploadedState}>
+            <div class="doc-upload-card__footer">
+                <template lwc:if={showVerifiedBadge}>
+                    <span class="doc-upload-card__verified">{verifiedLabel}</span>
+                </template>
+                <template lwc:else>
+                    <span class="doc-upload-card__verified doc-upload-card__verified--placeholder"></span>
+                </template>
+
+                <div class="doc-upload-card__actions">
+                    <template lwc:if={showPreviewAction}>
+                        <button
+                            type="button"
+                            class="doc-upload-card__action doc-upload-card__action--preview"
+                            onclick={handlePreview}
+                            disabled={isInteractionDisabled}
+                            title="Preview">
+                            <lightning-icon icon-name="utility:preview" size="xx-small"></lightning-icon>
+                            <span>Preview</span>
+                        </button>
+                    </template>
+                    <template lwc:if={showDeleteAction}>
+                        <button
+                            type="button"
+                            class="doc-upload-card__action doc-upload-card__action--delete"
+                            onclick={handleDelete}
+                            disabled={isDeleteDisabled}
+                            title="Delete">
+                            <lightning-icon icon-name="utility:delete" size="xx-small"></lightning-icon>
+                            <span>Delete</span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        <template lwc:if={openPreviewModal}>
+            <c-file-previewer
+                content-document-id={previewContentDocumentId}
+                file-type={previewFileType}
+                onclose={handlePreviewClose}>
+            </c-file-previewer>
+        </template>
+    </article>
+</template>

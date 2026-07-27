@@ -1,0 +1,115 @@
+@import 'c/commonStyles';
+
+:host,
+.form-layout {
+  overflow: visible;
+}
+
+.form-layout {
+  position: relative;
+  padding: 0.5rem;
+}
+
+/* Loading overlay — same pattern as viabilityCheck */
+.form-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.65);
+  z-index: 2;
+  border-radius: 1rem;
+}
+
+/* Subtitle in dark header (vehicleDetailsMasterPage pattern) */
+.form-header-subtitle {
+  margin: 0;
+  font-size: 0.75rem;
+  color: rgba(199, 210, 254, 0.85);
+}
+
+/* Two fields per row (summary + lien modal) */
+.two-col-grid.form-fields-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* External exposure: combobox dropdown must not be clipped by overflow */
+.external-exposure-card.form-card,
+.external-exposure-card .form-body,
+.external-exposure-body {
+  overflow: visible;
+}
+
+/* Wide table min-widths */
+.exposure-table {
+  min-width: 56rem;
+}
+
+.external-exposure-table {
+  min-width: 64rem;
+}
+
+.external-exposure-card .external-exposure-table td,
+.external-exposure-card .external-exposure-table th {
+  overflow: visible;
+  vertical-align: top;
+}
+
+.external-exposure-card .external-exposure-table tbody tr:focus-within {
+  position: relative;
+  z-index: 3;
+}
+
+.external-exposure-body {
+  padding-bottom: 1rem;
+}
+
+.table-section-body {
+  padding-top: 0.75rem;
+}
+
+/* Lien modal — form-card inside SLDS modal shell */
+.lien-modal-container {
+  max-width: min(72rem, 96vw);
+  width: 96%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.lien-modal-body {
+  padding-top: 0.75rem;
+}
+
+.lien-table {
+  min-width: 56rem;
+}
+
+.lien-modal-container .form-card {
+  overflow: hidden;
+}
+
+.lien-modal-header {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.lien-modal-header-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.lien-modal-close {
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.lien-modal-footer {
+  border-top: 1px solid var(--p4-slate-100, #f1f5f9);
+  box-shadow: none;
+  position: static;
+}

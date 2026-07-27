@@ -1,0 +1,374 @@
+<template>
+    <template lwc:if={isNavigating}>
+        <div class="lad-nav-loading-overlay">
+            <lightning-spinner alternative-text={navigationLoadingLabel} size="large"></lightning-spinner>
+            <span class="vehicle-detail-loading-text">{navigationLoadingLabel}&hellip;</span>
+        </div>
+    </template>
+
+    <template lwc:if={showVehicleDetails}>
+        <div class="vehicle-detail-view">
+            <template lwc:if={showBackToLineItemsButton}>
+                <button type="button" class="back-to-assets-btn" onclick={handleBackToAssets}>
+                    <lightning-icon icon-name="utility:chevronleft" size="x-small"></lightning-icon>
+                    <span>{detailBackButtonLabel}</span>
+                </button>
+            </template>
+
+            <template lwc:if={isLoadingVehicleDetail}>
+                <div class="vehicle-detail-loading">
+                    <lightning-spinner alternative-text={detailLoadingLabel} size="medium"></lightning-spinner>
+                    <span class="vehicle-detail-loading-text">{detailLoadingLabel}&hellip;</span>
+                </div>
+            </template>
+
+            <template lwc:elseif={hasActiveComponent}>
+                <lwc:component
+                    key={detailInstanceKey}
+                    lwc:is={activeComponentCtor}
+                    lwc:spread={detailComponentProps}
+                    ondetailcomplete={handleDetailComplete}
+                    onshowtoast={handleShowToast}>
+                </lwc:component>
+            </template>
+        </div>
+    </template>
+
+    <template lwc:if={showInvoiceAssetsTable}>
+        <div class="form-layout">
+            <button type="button" class="back-to-assets-btn invoice-asset-back-btn" onclick={handleBackToLineItems}>
+                <lightning-icon icon-name="utility:chevronleft" size="x-small"></lightning-icon>
+                <span>Back to Line Items</span>
+            </button>
+        <section class="form-card lad-asset-card">
+
+            <header class="form-header lad-asset-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content lad-asset-header-content">
+                    <div class="lad-asset-header-left">
+                        <div class="form-header-icon-wrap" aria-hidden="true">
+                            <lightning-icon
+                                icon-name="utility:travel_and_places"
+                                size="small"
+                                variant="inverse"
+                                class="form-header-icon">
+                            </lightning-icon>
+                        </div>
+                        <div class="form-header-text lad-asset-header-text">
+                            <h1 class="form-header-title">{childAssetSectionTitle}</h1>
+                            <p class="form-header-subtitle lad-asset-subtitle">{childAssetPickerDescription}</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="asset-body asset-body-table">
+                <template lwc:if={hasChildAssetRows}>
+                    <div class="invoice-asset-table-wrapper">
+                        <table class="invoice-asset-table" aria-label={childAssetTableAriaLabel}>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Asset ID</th>
+                                    <th scope="col">Make</th>
+                                    <th scope="col">Model</th>
+                                    <th scope="col">Variant</th>
+                                    <th scope="col" class="invoice-asset-table-status-col">Status</th>
+                                    <th scope="col" class="invoice-asset-table-action-col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={childAssetRows} for:item="row">
+                                    <tr key={row.rowKey} class="invoice-asset-table-row">
+                                        <td data-label="Type">
+                                            <span class={row.typeBadgeClass}>{row.type}</span>
+                                        </td>
+                                        <td data-label="Asset ID" class="invoice-asset-table-id">{row.id}</td>
+                                        <td data-label="Make" class="invoice-asset-table-make">{row.make}</td>
+                                        <td data-label="Model" class="invoice-asset-table-text" title={row.model}>{row.model}</td>
+                                        <td data-label="Variant" class="invoice-asset-table-text" title={row.variant}>{row.variant}</td>
+                                        <td data-label="Status" class="invoice-asset-table-status-col">
+                                            <div class={row.statusIconClass} title={row.statusTitle}>
+                                                <lightning-icon icon-name={row.statusIconName} size="x-small"></lightning-icon>
+                                            </div>
+                                        </td>
+                                        <td data-label="Action" class="invoice-asset-table-action-col">
+                                            <button
+                                                type="button"
+                                                class="footer-action-btn"
+                                                title={row.actionTitle}
+                                                data-line-item-id={row.lineItemId}
+                                                data-asset-id={row.assetId}
+                                                data-is-view-only={row.isViewOnly}
+                                                data-is-open-disabled={row.isOpenDisabled}
+                                                onclick={handleOpenAsset}
+                                                disabled={row.isOpenDisabled}>
+                                                <lightning-icon icon-name={row.actionIconName} size="x-small"></lightning-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+            </div>
+        </section>
+        </div>
+    </template>
+
+    <template lwc:if={showAssetList}>
+    <div class="form-layout">
+    <section class="form-card lad-asset-card">
+        <header class="form-header lad-asset-header">
+            <div class="form-header-overlay"></div>
+            <div class="form-header-content lad-asset-header-content">
+                <div class="lad-asset-header-left">
+                    <div class="form-header-icon-wrap" aria-hidden="true">
+                        <lightning-icon
+                            icon-name="utility:travel_and_places"
+                            size="small"
+                            variant="inverse"
+                            class="form-header-icon">
+                        </lightning-icon>
+                    </div>
+                    <div class="form-header-text lad-asset-header-text">
+                        <h1 class="form-header-title">{headerTitle}</h1>
+                    </div>
+                </div>
+                <template lwc:if={showAssetActions}>
+                    <button type="button" class="add-asset-btn" onclick={handleAddAsset} disabled={isAddAssetDisabled}>
+                        <lightning-icon icon-name="utility:add" size="x-small" class="add-icon"></lightning-icon>
+                        <span>Add Asset</span>
+                    </button>
+                </template>
+            </div>
+        </header>
+
+        <div class="legend-bar">
+            <div class="legend-item">
+                <span class="legend-label">New Vehicles :</span>
+                <span class="legend-count">{newAssetsCount}</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-label">Used Vehicles :</span>
+                <span class="legend-count">{usedAssetsCount}</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-label">Refinance Vehicles :</span>
+                <span class="legend-count">{refinanceAssetsCount}</span>
+            </div>
+            <span class="legend-divider"></span>
+            <div class="legend-item">
+                <span class="legend-label">Total Vehicles :</span>
+                <span class="legend-count legend-count-total">{totalAssetsCount}</span>
+            </div>
+        </div>
+
+        <div class="asset-body">
+            <template lwc:if={hasAssets}>
+                <div class="asset-grid">
+                    <template for:each={paginatedAssets} for:item="asset">
+                        <article key={asset.id} class="asset-card">
+                            <div class="card-subheader">
+                                <span class={asset.typeBadgeClass}>{asset.type}</span>
+                                <div class={asset.statusIconClass} title={asset.statusTitle}>
+                                    <lightning-icon icon-name={asset.statusIconName} size="x-small"></lightning-icon>
+                                </div>
+                            </div>
+
+                            <div class="card-id-header">
+                                <div class="card-id-left">
+                                    <div class="card-id-icon-wrap">
+                                        <lightning-icon icon-name="utility:travel_and_places" size="x-small" class="card-car-icon"></lightning-icon>
+                                    </div>
+                                    <h3 class="card-id">{asset.id}</h3>
+                                </div>
+                                <span class="card-asset-count">No. of Assets: {asset.assetCount}</span>
+                            </div>
+
+                            <div class="card-content">
+                                <div class="make-block">
+                                    <span class="field-label">Make</span>
+                                    <span class="make-value">{asset.make}</span>
+                                </div>
+
+                                <div class="mmv-block">
+                                    <div class="mmv-card model-card">
+                                        <span class="mmv-label">Model</span>
+                                        <span class="mmv-value" title={asset.model}>{asset.model}</span>
+                                    </div>
+                                    <div class="mmv-card variant-card">
+                                        <span class="mmv-label">Variant</span>
+                                        <span class="mmv-value" title={asset.variant}>{asset.variant}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <footer class="card-footer">
+                                <button
+                                    type="button"
+                                    class="footer-action-btn"
+                                    title={asset.actionTitle}
+                                    data-line-item-id={asset.lineItemId}
+                                    data-asset-id={asset.assetId}
+                                    data-is-view-only={asset.isViewOnly}
+                                    data-is-open-disabled={asset.isOpenDisabled}
+                                    onclick={handleOpenAsset}
+                                    disabled={asset.isOpenDisabled}>
+                                    <lightning-icon icon-name={asset.actionIconName} size="x-small"></lightning-icon>
+                                </button>
+                                <template lwc:if={asset.showCloneButton}>
+                                    <button
+                                        type="button"
+                                        class={asset.cloneButtonClass}
+                                        title="Clone New Assets"
+                                        data-line-item-id={asset.lineItemId}
+                                        onclick={handleToggleClonePanel}>
+                                        <lightning-icon icon-name="utility:copy" size="x-small"></lightning-icon>
+                                    </button>
+                                </template>
+                                <!-- <button type="button" class="footer-action-btn" title="Bulk Copy" disabled>
+                                    <lightning-icon icon-name="utility:copy_to_clipboard" size="x-small"></lightning-icon>
+                                </button>
+                                <button type="button" class="footer-action-btn" title="Single Copy" disabled>
+                                    <lightning-icon icon-name="utility:file" size="x-small"></lightning-icon>
+                                </button> -->
+                                <template lwc:if={showAssetActions}>
+                                    <button
+                                        type="button"
+                                        class="footer-action-btn delete-btn"
+                                        title="Delete Asset"
+                                        data-line-item-id={asset.lineItemId}
+                                        data-asset-id={asset.assetId}
+                                        data-display-id={asset.id}
+                                        onclick={handleDeleteAssetClick}
+                                        disabled={asset.isDeleteDisabled}>
+                                        <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                    </button>
+                                </template>
+                            </footer>
+
+                            <template lwc:if={asset.showClonePanel}>
+                                <div class="clone-panel">
+                                    <div class="clone-panel-divider"></div>
+                                    <div class="clone-panel-row">
+                                        <label class="clone-panel-label" for={asset.cloneInputId}>Add Vehicle:</label>
+                                        <input
+                                            id={asset.cloneInputId}
+                                            type="number"
+                                            class="clone-quantity-input"
+                                            placeholder="Enter Quantity"
+                                            min="1"
+                                            data-line-item-id={asset.lineItemId}
+                                            value={asset.cloneQuantity}
+                                            oninput={handleCloneQuantityChange} />
+                                        <button
+                                            type="button"
+                                            class="clone-submit-btn"
+                                            title="Submit"
+                                            data-line-item-id={asset.lineItemId}
+                                            onclick={handleCloneSubmit}
+                                            disabled={asset.isCloneSubmitDisabled}>
+                                            <lightning-icon icon-name="utility:send" size="x-small"></lightning-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </article>
+                    </template>
+                </div>
+            </template>
+
+            <template lwc:else>
+                <div class="empty-state">
+                    No assets available in the current pipeline. Click "Add Asset" to begin.
+                </div>
+            </template>
+        </div>
+
+        <template lwc:if={showPagination}>
+            <footer class="pagination-footer">
+                <span class="pagination-text">
+                    Showing page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
+                </span>
+                <div class="pagination-controls">
+                    <button type="button" class="nav-btn" onclick={handlePreviousPage} disabled={isFirstPage}>
+                        <lightning-icon icon-name="utility:chevronleft" size="x-small"></lightning-icon>
+                    </button>
+                    <div class="page-numbers">
+                        <template for:each={pageNumbers} for:item="pageItem">
+                            <button
+                                key={pageItem.page}
+                                type="button"
+                                class={pageItem.buttonClass}
+                                data-page={pageItem.page}
+                                onclick={handlePageClick}>
+                                {pageItem.page}
+                            </button>
+                        </template>
+                    </div>
+                    <button type="button" class="nav-btn" onclick={handleNextPage} disabled={isLastPage}>
+                        <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                    </button>
+                </div>
+            </footer>
+        </template>
+
+        <footer class="stage-footer">
+            <button
+                type="button"
+                class={nextButtonClass}
+                onclick={handleNextButton}
+                disabled={isNextDisabled}
+                aria-disabled={isNextDisabled}>
+                Next
+            </button>
+        </footer>
+    </section>
+    </div>
+    </template>
+
+    <template lwc:if={showDeleteModal}>
+        <section class="delete-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+            <div class="delete-modal">
+                <div class="delete-modal-body">
+                    <div class="delete-modal-icon-wrap">
+                        <lightning-icon icon-name="utility:warning" size="small" class="delete-modal-icon"></lightning-icon>
+                    </div>
+                    <h3 id="delete-modal-title" class="delete-modal-title">Remove Asset Verification?</h3>
+                    <p class="delete-modal-text">
+                        Are you sure you want to delete the asset file
+                        <span class="delete-modal-asset-id">{pendingDeleteDisplayId}</span>?
+                        This will permanently remove this vehicle from the current field audit workspace.
+                    </p>
+                    <p class="delete-modal-warning">
+                        <lightning-icon icon-name="utility:info" size="xx-small" class="delete-modal-info-icon"></lightning-icon>
+                        This action cannot be undone
+                    </p>
+                </div>
+                <div class="delete-modal-footer">
+                    <button type="button" class="delete-modal-cancel-btn" onclick={handleCloseDeleteModal} disabled={isDeletingLineItem}>
+                        Cancel, Keep It
+                    </button>
+                    <button type="button" class="delete-modal-confirm-btn" onclick={handleConfirmDelete} disabled={isConfirmDeleteDisabled}>
+                        Yes, Delete Asset
+                    </button>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template lwc:if={showIntegrationModal}>
+        <c-integration-progress-modal
+            status={integrationStatus}
+            stages={integrationStages}
+            current-stage-index={integrationCurrentStageIndex}
+            success-message={integrationSuccessMessage}
+            error-message={integrationErrorMessage}
+            onclose={handleIntegrationModalClose}
+            ondone={handleIntegrationModalClose}
+            onretry={handleIntegrationRetry}>
+        </c-integration-progress-modal>
+    </template>
+</template>

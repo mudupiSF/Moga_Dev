@@ -1,0 +1,129 @@
+<template>
+    <template if:true={modalOpen}>
+        <!-- <section class="slds-modal slds-fade-in-open signature-modal" role="dialog" aria-modal="true"
+        aria-labelledby="signature-modal-title">
+        <div class="slds-modal__container signature-container">
+            <header class="slds-modal__header signature-header">
+                <lightning-button-icon icon-name="utility:close" size="medium" alternative-text="Close"
+                    class="slds-modal__close"></lightning-button-icon>
+                <h2 id="signature-modal-title" class="slds-modal__title slds-hyphenate">Accept and Sign</h2>
+            </header> -->
+
+        <div class="slds-modal__content signature-body" id="signature-modal-content">
+            <p class="slds-text-body_regular slds-m-bottom_medium">Confirm your name, initials, and signature.</p>
+
+            <div class="slds-grid slds-gutters slds-m-bottom_medium">
+                <div class="slds-col slds-size_8-of-12">
+                    <lightning-input type="text" label="Full Name" value={fullName}
+                        onchange={handleNameChange}></lightning-input>
+                </div>
+            </div>
+
+            <lightning-tabset active-tab-value={activeTab}>
+                <lightning-tab label="Select Style" value="style" onactive={handleStyleTabActive}>
+                    <div class="slds-m-bottom_x-small preview-label">Preview</div>
+                    <div class="preview-panel">
+                        <fieldset class="slds-form-element" role="radiogroup">
+                            <div class="slds-form-element__control">
+                                <div class="slds-visual-picker slds-visual-picker_medium">
+                                    <input type="radio" id="visual-picker-95" name="example-unique-name-37"
+                                        value="visual-picker-95" data-style="style1" checked
+                                        onchange={handleStyleChange} />
+                                    <label for="visual-picker-95">
+                                        <span
+                                            class="slds-visual-picker__figure slds-visual-picker__text slds-align_absolute-center">
+                                            <span>
+                                                <span class="slds-text-heading_large">
+                                                    <div>
+                                                        <div class="preview-title">Brush Script MT</div>
+                                                        <div class="preview-name">{fullName}</div>
+                                                    </div>
+                                                </span>
+                                            </span>
+                                        </span>
+                                        <span class="slds-icon_container slds-visual-picker__text-check">
+                                            <lightning-icon icon-name="utility:check" size="small"
+                                                variant="inverse"></lightning-icon>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="slds-visual-picker slds-visual-picker_medium">
+                                    <input type="radio" id="visual-picker-96" name="example-unique-name-37"
+                                        value="visual-picker-96" data-style="style2" onchange={handleStyleChange} />
+                                    <label for="visual-picker-96">
+                                        <span
+                                            class="slds-visual-picker__figure slds-visual-picker__text slds-align_absolute-center">
+                                            <span>
+                                                <span class="slds-text-heading_large">
+                                                    <div>
+                                                        <div class="preview-title">Lucida Handwriting</div>
+                                                        <div class="preview-name1">{fullName}</div>
+                                                    </div>
+                                                </span>
+                                            </span>
+                                        </span>
+
+                                        <span class="slds-icon_container slds-visual-picker__text-check">
+                                            <lightning-icon icon-name="utility:check" size="small"
+                                                variant="inverse"></lightning-icon>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="slds-visual-picker slds-visual-picker_medium">
+                                    <input type="radio" id="visual-picker-97" name="example-unique-name-37"
+                                        value="visual-picker-97" data-style="style3" onchange={handleStyleChange} />
+                                    <label for="visual-picker-97">
+                                        <span
+                                            class="slds-visual-picker__figure slds-visual-picker__text slds-align_absolute-center">
+                                            <span>
+                                                <span class="slds-text-heading_large">
+                                                    <div>
+                                                        <div class="preview-title">Snell Roundhand</div>
+                                                        <div class="preview-name2">{fullName}</div>
+                                                    </div>
+                                                </span>
+                                            </span>
+                                        </span>
+                                        <span class="slds-icon_container slds-visual-picker__text-check">
+                                            <lightning-icon icon-name="utility:check" size="small"
+                                                variant="inverse"></lightning-icon>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </lightning-tab>
+                <lightning-tab label="Draw" value="draw" onactive={handleDrawTabActive}>
+                    <canvas data-id="drawCanvas" width="750" height="200"></canvas>
+                    <div class="footer-buttons">
+                        <button class="signFooterButton" onclick={handleClear}>Clear</button>
+                    </div>
+                </lightning-tab>
+
+            </lightning-tabset>
+
+
+
+            <p class="slds-text-body_small slds-m-top_medium consent-text">
+               <b>Note:</b> By signing below, you acknowledge that this is a simple electronic signature (an image-based stamp).
+                This process does not provide the document encryption, tamper-evident sealing, or independent audit
+                trails offered by dedicated e-signature platforms (e.g., DocuSign).
+                Use this for internal approvals only; not intended for high-value legal deeds or regulated contracts.
+            </p>
+            <lightning-button variant="brand" label="Accept and Sign" onclick={handleAcceptAndSign}></lightning-button>
+        </div>
+
+        <!-- <footer class="slds-modal__footer signature-footer">
+                <lightning-button variant="brand" label="Accept and Sign" onclick={handleAcceptAndSign}></lightning-button>
+                <lightning-button variant="neutral" label="Cancel" class="slds-m-left_small"></lightning-button>
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div> -->
+    </template>
+    <template if:false={modalOpen}>
+        <img src={signatureImageUrl} alt="Signature" />
+    </template>
+    <canvas data-id="typedCanvas" width="750" height="200" class="hidden-canvas"></canvas>
+</template>

@@ -1,0 +1,477 @@
+<template>
+    <div class="ecfu-shell">
+
+        <!-- ── Dark Navy Header ──────────────────────────────────────────── -->
+        <div class="ecfu-header">
+            <div class="ecfu-header-left">
+                <span class="ecfu-header-icon-pill">
+                    <lightning-icon icon-name="utility:upload" size="small" variant="inverse" alternative-text="Upload"></lightning-icon>
+                </span>
+                <h2 class="ecfu-header-title">Advanced Document Upload</h2>
+            </div>
+            <button class="ecfu-header-refresh" title="Reset" onclick={handleRefresh}>
+                <lightning-icon icon-name="utility:refresh" size="x-small" variant="inverse" alternative-text="Reset"></lightning-icon>
+            </button>
+        </div>
+
+        <!-- ── Body ─────────────────────────────────────────────────────── -->
+        <div class="ecfu-body">
+
+            <!-- Input / Output action tiles -->
+            <div class="ecfu-io-wrap">
+
+                <!-- INPUT AREA -->
+                <div class="ecfu-input-area">
+                    <div class="ecfu-tile-grid">
+
+                        <!-- Upload File tile with hover-revealed Max Files box -->
+                        <template if:true={showUploadFileTile}>
+                            <div class="ecfu-upload-tile-wrap">
+                                <button class="ecfu-tile"
+                                        data-action="upload"
+                                        onclick={handleTileClick}
+                                        title="Browse files from this device">
+                                    <span class="ecfu-tile-icon-pill">
+                                        <lightning-icon icon-name="utility:upload" size="small" variant="standard" alternative-text="Upload File"></lightning-icon>
+                                    </span>
+                                    <span class="ecfu-tile-label">Upload File</span>
+                                    <div class="ecfu-maxfiles-box">
+                                        <span class="ecfu-maxfiles-label">Max Files:</span>
+                                        <span class="ecfu-maxfiles-value">{maxFilesLabel}</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </template>
+
+                        <!-- Camera / Video / Merge tiles -->
+                        <template for:each={secondaryInputTiles} for:item="tile">
+                            <button key={tile.id}
+                                    class={tile.cssClass}
+                                    data-action={tile.id}
+                                    disabled={tile.disabled}
+                                    onclick={handleTileClick}
+                                    title={tile.title}>
+                                <span class="ecfu-tile-icon-pill">
+                                    <lightning-icon icon-name={tile.iconName} size="small" variant={tile.iconVariant} alternative-text={tile.label}></lightning-icon>
+                                </span>
+                                <span class="ecfu-tile-label">{tile.label}</span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- DIVIDER -->
+                <div class="ecfu-io-divider"></div>
+
+                <!-- OUTPUT AREA -->
+                <div class="ecfu-output-area">
+                    <button class={uploadAllTileClass}
+                            data-action="all"
+                            disabled={uploadAllDisabled}
+                            onclick={handleTileClick}
+                            title="Upload selected file(s) to the record">
+                        <span class="ecfu-tile-icon-pill">
+                            <lightning-icon icon-name="utility:upload" size="small" variant="inverse" alternative-text="Upload All"></lightning-icon>
+                        </span>
+                        <span class="ecfu-tile-label">{uploadAllLabel}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Upload progress -->
+            <template if:true={isUploading}>
+                <div>
+                    <div class="ecfu-progress-wrap">
+                        <div class="ecfu-progress-fill" style={progressStyle}></div>
+                    </div>
+                    <div class="ecfu-progress-label">{progressLabel}</div>
+                </div>
+            </template>
+
+            <!-- Gallery Section -->
+            <template if:true={showPreviewGrid}>
+                <div class="ecfu-section">
+                    <div class="ecfu-section-header">
+                        <span class="ecfu-section-icon-pill">
+                            <lightning-icon icon-name="utility:file" size="xx-small" alternative-text="Files"></lightning-icon>
+                        </span>
+                        <h3 class="ecfu-section-title">Uploaded Documents &amp; Media</h3>
+                        <div class="ecfu-filter-controls">
+                            <span class="ecfu-filter-caption">Filter:</span>
+                            <div class="ecfu-filter-dropdown">
+                                <button class={filterToggleClass} onclick={toggleFilterMenu} title="Filter files">
+                                    <span class="ecfu-filter-toggle-left">
+                                        <lightning-icon icon-name="utility:filterList" size="xx-small" alternative-text="Filter"></lightning-icon>
+                                        <span class="ecfu-filter-toggle-text">{activeFilter}</span>
+                                    </span>
+                                    <lightning-icon icon-name="utility:chevrondown" size="xx-small" alternative-text="open"></lightning-icon>
+                                </button>
+                                <div class={filterMenuClass}>
+                                    <template for:each={filterOptions} for:item="opt">
+                                        <button key={opt.value}
+                                                class={opt.cssClass}
+                                                data-value={opt.value}
+                                                onclick={selectFilter}>
+                                            {opt.value}
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                            <button class="ecfu-filter-add" title="Add filter category" disabled>
+                                <lightning-icon icon-name="utility:add" size="xx-small" alternative-text="Add filter"></lightning-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="ecfu-gallery-grid">
+                        <template for:each={filteredFiles} for:item="file">
+                            <div key={file.id} class={file.cardClass}>
+
+                                <!-- Selection checkbox (top-left) -->
+                                <button class={file.checkClass}
+                                        data-id={file.id}
+                                        onclick={toggleGallerySelection}
+                                        title="Select">
+                                    <span class="ecfu-card-check-icon">&#10003;</span>
+                                </button>
+
+                                <!-- Hover actions (top-right) -->
+                                <div class="ecfu-card-actions">
+                                    <template if:true={file.isImage}>
+                                        <button class="ecfu-card-action-btn"
+                                                data-id={file.id}
+                                                onclick={openEditModal}
+                                                title="Edit">
+                                            <lightning-icon icon-name="utility:edit" size="xx-small" alternative-text="Edit"></lightning-icon>
+                                        </button>
+                                    </template>
+                                    <button class="ecfu-card-action-btn ecfu-card-action-btn--danger"
+                                            data-id={file.id}
+                                            onclick={removeFile}
+                                            title="Delete">
+                                        <lightning-icon icon-name="utility:delete" size="xx-small" alternative-text="Delete"></lightning-icon>
+                                    </button>
+                                </div>
+
+                                <!-- Media preview area -->
+                                <div class="ecfu-card-media" data-id={file.id} onclick={toggleGallerySelection}>
+                                    <template if:true={file.isImage}>
+                                        <canvas class="ecfu-card-canvas" data-id={file.id}></canvas>
+                                    </template>
+                                    <template if:false={file.isImage}>
+                                        <div class="ecfu-card-doc-placeholder">
+                                            <lightning-icon icon-name={file.iconName} size="large" alternative-text={file.displayName}></lightning-icon>
+                                            <span class="ecfu-card-doc-name">{file.displayName}</span>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Details panel -->
+                                <div class="ecfu-card-details">
+                                    <input type="text"
+                                           class="ecfu-card-filename"
+                                           value={file.customName}
+                                           placeholder="File name"
+                                           data-id={file.id}
+                                           onchange={handleCustomNameChange} />
+
+                                    <div class="ecfu-card-meta-row">
+                                        <span class="ecfu-card-size">{file.sizeLabel}</span>
+
+                                        <template if:true={file.hasTags}>
+                                            <button class={file.tagsBtnClass}
+                                                    data-id={file.id}
+                                                    onclick={toggleTagsExpand}
+                                                    title="Show tags">
+                                                <span class="ecfu-tags-btn-icon" aria-hidden="true">
+                                                    <!--
+                                                        Inline tag SVG (instead of <lightning-icon>):
+                                                        SLDS `utility:tag` was not painting through the
+                                                        shadow-DOM color cascade in this org's bundle —
+                                                        chevrondown rendered fine but tag stayed invisible
+                                                        regardless of `--sds-c-icon-color-foreground-default`
+                                                        / `--slds-c-icon-color-foreground-default` overrides.
+                                                        Using inline SVG with `fill="currentColor"` lets the
+                                                        button's `color` property (slate-600 default,
+                                                        indigo-700 expanded) drive the fill directly —
+                                                        bulletproof, no SLDS variable plumbing required.
+                                                    -->
+                                                    <svg viewBox="0 0 24 24" fill="currentColor" focusable="false">
+                                                        <path d="M21.41 11.58l-9-9C12.04 2.21 11.53 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .53.21 1.04.59 1.41l9 9c.78.78 2.05.78 2.83 0l7-7c.78-.78.78-2.05-.01-2.83zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"></path>
+                                                    </svg>
+                                                </span>
+                                                <span class="ecfu-tags-btn-label">{file.tagsCountLabel}</span>
+                                                <span class="ecfu-tags-btn-caret">
+                                                    <lightning-icon icon-name="utility:chevrondown" size="xx-small" alternative-text="toggle"></lightning-icon>
+                                                </span>
+                                            </button>
+                                        </template>
+                                    </div>
+
+                                    <!-- Expanded tag drawer -->
+                                    <div class={file.tagsDrawerClass}>
+                                        <div class="ecfu-tags-drawer-inner">
+                                            <template for:each={file.tags} for:item="tag">
+                                                <span key={tag.label} class={tag.cssClass} title={tag.label}>
+                                                    <span class="ecfu-tag-icon">&bull;</span>
+                                                    {tag.label}
+                                                </span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Status message -->
+            <template if:true={statusMessage}>
+                <div class={statusClass}>
+                    <lightning-icon icon-name={statusIcon} size="xx-small" alternative-text="status"></lightning-icon>
+                    <span>{statusMessage}</span>
+                </div>
+            </template>
+        </div>
+
+        <!-- ── Hidden inputs ────────────────────────────────────────────── -->
+        <input type="file" multiple class="ecfu-hidden-input" data-id="fileInput" onchange={handleFileSelect} />
+        <input type="file" accept="video/*" class="ecfu-hidden-input" data-id="videoInput" onchange={handleVideoSelect} />
+
+        <!-- ══════════════════════════════════════════════════════════════
+             MODALS
+             ══════════════════════════════════════════════════════════════ -->
+
+        <!-- ── Video Upload Confirm Modal ──────────────────────────────── -->
+        <template if:true={showVideoModal}>
+            <div class="ecfu-modal-overlay">
+                <div class="ecfu-modal ecfu-modal--md">
+                    <div class="ecfu-modal-head">
+                        <div class="ecfu-modal-head-left">
+                            <lightning-icon icon-name="utility:video" size="x-small"></lightning-icon>
+                            <span>Upload Video</span>
+                        </div>
+                        <button class="ecfu-modal-close" onclick={closeVideoModal}>&#10005;</button>
+                    </div>
+                    <div class="ecfu-modal-body">
+                        <div class="ecfu-video-info-row">
+                            <strong>{videoFileName}</strong>
+                        </div>
+                        <div class="ecfu-video-info-row">
+                            <span>Size: <strong>{videoOriginalSize}</strong></span>
+                            <template if:true={videoIsLarge}>
+                                <span class="ecfu-video-large-badge">&#9888; &gt;50 MB &middot; multipart upload</span>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="ecfu-modal-foot">
+                        <button class="ecfu-btn ecfu-btn--secondary" onclick={closeVideoModal}>Cancel</button>
+                        <button class="ecfu-btn ecfu-btn--primary" onclick={confirmVideoUpload}>Upload</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ── Take Video Modal (recorder) ─────────────────────────────── -->
+        <template if:true={showVideoRecorder}>
+            <div class="ecfu-modal-overlay">
+                <div class="ecfu-modal ecfu-modal--lg">
+                    <div class="ecfu-modal-head">
+                        <div class="ecfu-modal-head-left">
+                            <lightning-icon icon-name="utility:record" size="x-small"></lightning-icon>
+                            <span>Take Video</span>
+                            <template if:true={isRecording}>
+                                <span class="ecfu-rec-badge">&#9679; REC {recDurationLabel}</span>
+                            </template>
+                        </div>
+                        <button class="ecfu-modal-close" onclick={stopVideoRecorder}>&#10005;</button>
+                    </div>
+
+                    <div class="ecfu-modal-body">
+                        <div class="ecfu-recorder-viewport">
+                            <video class="ecfu-recorder-feed" data-id="recPreviewEl" autoplay playsinline muted></video>
+                        </div>
+
+                        <template if:false={isRecording}>
+                            <button class="ecfu-btn ecfu-btn--pill-record" onclick={startRecording}>
+                                <span style="display:inline-block;width:10px;height:10px;background:#f43f5e;border-radius:9999px;"></span>
+                                Start Recording
+                            </button>
+                        </template>
+                        <template if:true={isRecording}>
+                            <button class="ecfu-btn ecfu-btn--pill-stop" onclick={stopRecording}>
+                                <span style="display:inline-block;width:10px;height:10px;background:#ffffff;border-radius:2px;"></span>
+                                Stop Recording
+                            </button>
+                        </template>
+
+                        <template if:true={recVideoReady}>
+                            <div class="ecfu-rec-playback-wrap">
+                                <video class="ecfu-rec-playback" src={recPlaybackSrc} controls playsinline></video>
+                                <span class="ecfu-rec-size">{recVideoSize}</span>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="ecfu-modal-foot">
+                        <button class="ecfu-btn ecfu-btn--secondary" onclick={stopVideoRecorder}>Cancel</button>
+                        <template if:true={recVideoReady}>
+                            <button class="ecfu-btn ecfu-btn--ghost-indigo" onclick={retakeVideo}>Retake</button>
+                            <button class="ecfu-btn ecfu-btn--primary" onclick={useRecordedVideo}>Use This Video</button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ── Camera Modal ────────────────────────────────────────────── -->
+        <template if:true={showCamera}>
+            <div class="ecfu-modal-overlay">
+                <div class="ecfu-modal ecfu-modal--lg">
+                    <div class="ecfu-modal-head">
+                        <div class="ecfu-modal-head-left">
+                            <lightning-icon icon-name="utility:photo" size="x-small"></lightning-icon>
+                            <span>Camera</span>
+                        </div>
+                        <button class="ecfu-modal-close" onclick={stopCamera}>&#10005;</button>
+                    </div>
+
+                    <div class="ecfu-modal-body">
+                        <div class="ecfu-camera-viewport">
+                            <video class="ecfu-camera-feed" data-id="videoEl" autoplay playsinline muted></video>
+                        </div>
+                        <button class="ecfu-btn ecfu-btn--pill-record" onclick={capturePhoto}>
+                            <lightning-icon icon-name="utility:photo" size="x-small" variant="inverse" alternative-text="Capture"></lightning-icon>
+                            Capture
+                        </button>
+                    </div>
+
+                    <!-- Captured strip -->
+                    <div class="ecfu-captured-strip">
+                        <template if:true={noCapturedPhotos}>
+                            <span class="ecfu-captured-empty">No photos captured</span>
+                        </template>
+                        <template for:each={capturedPhotos} for:item="photo">
+                            <div key={photo.id} class="ecfu-captured-tile">
+                                <img src={photo.dataUrl} alt="captured" />
+                                <button class="ecfu-captured-del" data-id={photo.id} onclick={deleteCapturedPhoto}>&#10005;</button>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="ecfu-modal-foot ecfu-modal-foot--split">
+                        <template if:false={restrictGallery}>
+                            <button class="ecfu-btn ecfu-btn--turq" onclick={openFilePicker}>
+                                <lightning-icon icon-name="utility:image" size="xx-small" variant="inverse"></lightning-icon>
+                                Pick from Gallery
+                            </button>
+                        </template>
+                        <button class="ecfu-btn ecfu-btn--primary" onclick={addCapturedToFiles} disabled={noCapturedPhotos}>
+                            Add {capturedPhotos.length} Photo(s)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ── Edit Modal ──────────────────────────────────────────────── -->
+        <template if:true={showEditModal}>
+            <div class="ecfu-modal-overlay">
+                <div class="ecfu-modal ecfu-modal--xl">
+                    <div class="ecfu-modal-head">
+                        <div class="ecfu-modal-head-left">
+                            <lightning-icon icon-name="utility:edit" size="x-small"></lightning-icon>
+                            <span>Edit &mdash; {editFileName}</span>
+                        </div>
+                        <button class="ecfu-modal-close" onclick={closeEditModal}>&#10005;</button>
+                    </div>
+
+                    <div class="ecfu-edit-body">
+                        <canvas class="ecfu-edit-canvas" data-id="editCanvas"></canvas>
+                    </div>
+
+                    <template if:true={editMaskActive}>
+                        <div class="ecfu-mask-hint">Paint over sensitive areas (Aadhaar, PAN, etc.) &mdash; release to apply</div>
+                    </template>
+
+                    <div class="ecfu-edit-toolbar">
+                        <button class="ecfu-btn ecfu-btn--tool" onclick={editRotateLeft}>&#8634; Rotate Left</button>
+                        <button class="ecfu-btn ecfu-btn--tool" onclick={editRotateRight}>&#8635; Rotate Right</button>
+                        <template if:true={enableCompression}>
+                            <button class="ecfu-btn ecfu-btn--tool" onclick={editCompress}>&#9112; Compress</button>
+                        </template>
+                        <button class={editMaskBtnClass} onclick={editToggleMask}>&#9986; {editMaskLabel}</button>
+                        <template if:true={editHasMasks}>
+                            <button class="ecfu-btn ecfu-btn--tool ecfu-btn--tool-danger" onclick={editClearMasks}>&#10005; Clear Masks</button>
+                        </template>
+                    </div>
+
+                    <div class="ecfu-modal-foot">
+                        <button class="ecfu-btn ecfu-btn--primary" onclick={closeEditModal}>&#10003; Done</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ── Merge to PDF Modal ──────────────────────────────────────── -->
+        <template if:true={showMergeModal}>
+            <div class="ecfu-modal-overlay">
+                <div class="ecfu-modal ecfu-modal--xl">
+                    <div class="ecfu-modal-head">
+                        <div class="ecfu-modal-head-left">
+                            <lightning-icon icon-name="utility:merge" size="x-small"></lightning-icon>
+                            <div>
+                                <div style="font-weight:900;font-size:15px;color:var(--ecfu-slate-800);">Select Images to Merge</div>
+                                <div class="ecfu-merge-hint">Click to select &middot; Use arrows to reorder</div>
+                            </div>
+                        </div>
+                        <button class="ecfu-modal-close" onclick={closeMergeModal}>&#10005;</button>
+                    </div>
+
+                    <div class="ecfu-merge-body">
+                        <template for:each={imageFilesForMerge} for:item="mf">
+                            <div key={mf.id}
+                                 class={mf.mergeCardClass}
+                                 data-id={mf.id}
+                                 draggable="true"
+                                 onclick={toggleMergeSelect}
+                                 ondragstart={mergeDragStart}
+                                 ondragover={mergeDragOver}
+                                 ondrop={mergeDrop}
+                                 ondragend={mergeDragEnd}>
+
+                                <div class="ecfu-merge-image-wrap">
+                                    <img src={mf.mergeDataUrl} alt={mf.displayName} />
+                                    <div class="ecfu-merge-check">
+                                        <span class="ecfu-merge-check-dot"></span>
+                                    </div>
+                                    <div class="ecfu-merge-order">{mf.mergeOrder}</div>
+                                </div>
+
+                                <div class="ecfu-merge-name">{mf.customName}</div>
+
+                                <div class="ecfu-merge-reorder">
+                                    <button class="ecfu-merge-arrow" data-id={mf.id} onclick={mergeMoveLeft}  disabled={mf.isFirst}>&#8592;</button>
+                                    <button class="ecfu-merge-arrow" data-id={mf.id} onclick={mergeMoveRight} disabled={mf.isLast}>&#8594;</button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="ecfu-modal-foot ecfu-modal-foot--split">
+                        <span class={mergeCountClass}>{mergeSelectedLabel}</span>
+                        <div style="display:flex;gap:10px;">
+                            <button class="ecfu-btn ecfu-btn--secondary" onclick={closeMergeModal}>Cancel</button>
+                            <button class="ecfu-btn ecfu-btn--primary" onclick={doMergePDF} disabled={mergeDisabled}>
+                                <lightning-icon icon-name="utility:merge" size="xx-small" variant="inverse"></lightning-icon>
+                                {mergeLabel}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+    </div>
+</template>

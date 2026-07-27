@@ -1,0 +1,226 @@
+<template>
+    <div class="fg-page">
+    <template lwc:if={showPageToast}>
+        <div class={pageToastClass} role="status" aria-live="polite">
+            <span class="slds-assistive-text">{pageToastVariant}</span>
+            <div class="fg-page-toast__body">
+                <template lwc:if={pageToastTitle}>
+                    <p class="fg-page-toast__title">{pageToastTitle}</p>
+                </template>
+                <p class="fg-page-toast__message">{pageToastMessage}</p>
+            </div>
+            <button type="button" class="fg-page-toast__close" title="Dismiss" onclick={handleDismissPageToast}>×</button>
+        </div>
+    </template>
+    <lightning-spinner lwc:if={isLoading} class="slds-is-fixed" alternative-text="Loading" size="large" variant="brand">
+    </lightning-spinner>
+    <div class="fg-stack">
+        <section class="fg-toolbar-card fg-toolbar-card--centered slds-p-around_medium">
+            <lightning-button class="fg-primary-btn" variant="brand" label="Download Blank Template File"
+                onclick={downloadFile}></lightning-button>
+        </section>
+        <section class="fg-stack__section">
+            <div class="fg-upload-card">
+                <template lwc:if={excelLibraryLoaded}>
+                    <div class="fg-upload-header">
+                        <lightning-icon icon-name="utility:upload" size="x-small" class="fg-upload-icon"></lightning-icon>
+                        <span class="fg-upload-title">Upload Financial Performance Excel File</span>
+                    </div>
+                    <template lwc:if={excelFileUploaded}>
+                        <div class="fg-file-chip">
+                            <lightning-icon icon-name="utility:success" size="x-small"></lightning-icon>
+                            <span title={excelFileName}>{excelFileName}</span>
+                        </div>
+                        <button
+                            type="button"
+                            class="fg-upload-remove-btn"
+                            onclick={handleExcelFileRemove}
+                            title="Remove file">
+                            Remove
+                        </button>
+                    </template>
+                    <template lwc:else>
+                        <lightning-input
+                            class="fg-upload-input"
+                            type="file"
+                            label=""
+                            variant="label-hidden"
+                            accept=".xlsx,.xls"
+                            onchange={handleExcelFileChange}>
+                        </lightning-input>
+                    </template>
+                    <p class="fg-upload-hint">Upload an Excel file (.xlsx or .xls) using the blank template.</p>
+                </template>
+                <template lwc:else>
+                    <p class="fg-upload-hint">Loading Excel parser…</p>
+                </template>
+            </div>
+        </section>
+        <section class="fg-stack__section">
+            <div if:false={hasFYRecords} class="fg-alert-banner" role="alert">
+                <h2>{errorMessage}</h2>
+            </div>
+            <div class="fg-grid-card">
+                <div class="slds-p-around_medium fg-grid-card__body">
+                    <div class="fg-table-scroll">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped">
+                        <thead>
+                            <tr>
+                                <th class="column-border">Section</th>
+                                <template for:each={yearsWithFlags} for:item="year">
+                                    <th class="column-border" key={year.label}>{year.label}</th>
+                                </template>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={sectionsWithFlags} for:item="section">
+                                <template if:true={section.isSection}>
+                                    <tr key={section.sectionGapKey}>
+                                        <td colspan="1" style="border:none!important;background:white;height:16px;padding:0;margin:0"></td>
+                                    </tr>
+                                    <tr key={section.sectionKey}>
+                                        <td colspan="1" class="section-row column-border">
+                                            {section.MasterLabel}
+                                        </td>
+                                    </tr>
+                                </template>
+                                <template if:true={section.isPnl}>
+                                    <tr key={section.pnlKey}>
+                                        <td class="column-border fg-data-cell">{section.MasterLabel}</td>
+                                        <template for:each={yearsWithFlags} for:item="year">
+                                            <td key={year.label} class="column-border fg-data-cell" data-field-api={section.Field_API_Name__c} data-year={year.label}>
+                                                <lightning-combobox data-field-api={section.Field_API_Name__c} data-year={year.label} options={section.options} data-field-label={section.MasterLabel} onchange={handleInputChange}></lightning-combobox>
+                                            </td>
+                                        </template>
+                                    </tr>
+                                </template>
+                                <template if:true={section.showSignerRow}>
+                                    <tr key={section.signerKey}>
+                                        <td class="column-border fg-data-cell">{section.MasterLabel}</td>
+                                        <template for:each={yearsWithFlags} for:item="year">
+                                            <td key={year.label} class="column-border fg-data-cell">
+                                                <template if:true={year.showSigning}>
+                                                    <lightning-input data-field-api={section.Field_API_Name__c} data-field-label={section.MasterLabel} data-year={year.label} type="text" message-when-value-missing="This field is required" onchange={handleInputChange}></lightning-input>
+                                                </template>
+                                            </td>
+                                        </template>
+                                    </tr>
+                                </template>
+                                <template if:true={section.showUdinRow}>
+                                    <tr key={section.udinKey}>
+                                        <td class="column-border fg-data-cell">{section.MasterLabel}</td>
+                                        <template for:each={yearsWithFlags} for:item="year">
+                                            <td key={year.label} class="column-border fg-data-cell">
+                                                <template if:true={year.showSigning}>
+                                                    <lightning-input data-field-api={section.Field_API_Name__c} data-field-label={section.MasterLabel} data-year={year.label} type="text" message-when-value-missing="This field is required" onchange={handleInputChange}></lightning-input>
+                                                </template>
+                                            </td>
+                                        </template>
+                                    </tr>
+                                </template>
+                                <template if:true={section.isDefaultRow}>
+                                    <tr key={section.defaultKey}>
+                                        <td class="column-border fg-data-cell">{section.MasterLabel}</td>
+                                        <template for:each={yearsWithFlags} for:item="year">
+                                            <td key={year.label} class="column-border fg-data-cell" data-field-api={section.Field_API_Name__c} data-year={year.label}>
+                                                <lightning-input data-field-api={section.Field_API_Name__c} data-field-label={section.MasterLabel} data-year={year.label} type={section.Datatype__c} onchange={handleInputChange}></lightning-input>
+                                            </td>
+                                        </template>
+                                    </tr>
+                                </template>
+                            </template>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div class="fg-actions" role="group" aria-label="Grid actions">
+                        <lightning-button class="fg-action-btn" label="Save" variant="brand" onclick={handleSave}></lightning-button>
+                        <lightning-button class="fg-action-btn" label="Close" variant="brand" onclick={handleClose}></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <template if:true={hasFYRecords}>
+            <section class="fg-stack__section fg-stack__section--spaced">
+                <div class="fg-grid-card fg-grid-card--dropdown">
+                    <div class="slds-p-around_medium fg-grid-card__body">
+                        <div class="fg-gst-year-section">
+                            <h2 class="fg-gst-year-section__title">Select Financial Year to Enter GST Details</h2>
+                            <lightning-combobox
+                                class="fg-gst-year-combobox"
+                                label="Select Financial Year to Enter GST Details"
+                                options={gstYears}
+                                name="GST Details Year"
+                                variant="label-hidden"
+                                value={gstDetailsYearValue}
+                                onchange={handleGSTYearSelection}>
+                            </lightning-combobox>
+                        </div>
+                        <div lwc:if={showGSTDetails} class="container">
+                            <div class="table-container">
+                                <div class="fg-section-title slds-m-around_medium">Form 26 AS Credits (Rs. In Lakhs)</div>
+                                <div class="fg-subsection-title slds-m-around_medium">{selectedYearLabel}</div>
+                                <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="column-border">Name of the Client</th>
+                                            <th class="column-border">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={clients} for:item="client">
+                                            <tr key={client.Id}>
+                                                <td class="column-border fg-data-cell">
+                                                    <lightning-input type="text" value={client.Name_of_the_Client__c} onchange={handleClientNameChange} data-id={client.Id} data-field="name"></lightning-input>
+                                                </td>
+                                                <td class="column-border fg-data-cell">
+                                                    <lightning-input type="number" value={client.Amount__c} onchange={handleform26Change} data-id={client.Id} data-field="amount"></lightning-input>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                        <tr>
+                                            <td class="column-border fg-total-row">Total</td>
+                                            <td class="column-border fg-total-row">{form26Total}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="slds-grid slds-wrap slds-size_1-of-1 slds-align_absolute-center">
+                                    <lightning-button variant="brand" class="slds-m-top_medium" label="Add Client" onclick={handleAddClient}></lightning-button>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <div class="fg-section-title slds-m-around_medium">GSTR 3B Details (Rs. In Lakhs)</div>
+                                <div class="fg-subsection-title slds-m-around_medium">{selectedYearLabel}</div>
+                                <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="column-border">Month</th>
+                                            <th class="column-border">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={gst3rRecords} for:item="gst">
+                                            <tr key={gst.Month__c}>
+                                                <td class="column-border fg-data-cell">{gst.Month__c}</td>
+                                                <td class="column-border fg-data-cell">
+                                                    <lightning-input type="number" value={gst.Amount__c} data-month={gst.Month__c} onchange={handleGstMonthValueChange}></lightning-input>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                        <tr>
+                                            <td class="column-border fg-total-row">Total</td>
+                                            <td class="column-border fg-total-row">{gstrTotal}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div lwc:if={showGSTDetails} class="fg-actions fg-actions--gst" role="group" aria-label="GST save">
+                            <lightning-button class="fg-action-btn" variant="brand" label="Save" onclick={saveGSTRRecords}></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+    </div>
+    </div>
+</template>

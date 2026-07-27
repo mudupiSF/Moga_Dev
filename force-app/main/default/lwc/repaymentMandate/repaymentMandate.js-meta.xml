@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Repayment Mandate</masterLabel>
+    <description>Repayment mandate setup for loan applications</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightning__AppPage,lightning__HomePage">
+            <property name="recordId" type="String" label="Record Id" description="Application__c record Id"/>
+            <property name="applicantId" type="String" label="Applicant Id" description="Applicant record Id"/>
+            <property name="currentViewId" type="String" label="Current View Id" description="Stage menu item id for losnextstage navigation"/>
+            <property name="tab" type="String" label="Stage Tab" description="Stage tab label (e.g. Repayment Mandate)"/>
+            <property name="stagePhrase" type="String" label="Stage Phrase" description="Stage phrase for losnextstage navigation"/>
+            <property name="isStagePast" type="Boolean" label="Is Stage Past" description="When true, stage is read-only"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

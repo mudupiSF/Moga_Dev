@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Current_years_in_Employment_Business__c</fullName>
+    <label>Current years in Employment/Business</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>&lt;1 Year</fullName>
+                <default>false</default>
+                <label>&lt;1 Year</label>
+            </value>
+            <value>
+                <fullName>B/W 1 - 2</fullName>
+                <default>false</default>
+                <label>B/W 1 - 2</label>
+            </value>
+            <value>
+                <fullName>B/W 2 - 3</fullName>
+                <default>false</default>
+                <label>B/W 2 - 3</label>
+            </value>
+            <value>
+                <fullName>&gt;3 Year</fullName>
+                <default>false</default>
+                <label>&gt;3 Year</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sub_Type__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Sub Type</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Property Details NOT Finalized</fullName>
+                <default>true</default>
+                <label>Property Details NOT Finalized</label>
+            </value>
+            <value>
+                <fullName>Property Details Finalized</fullName>
+                <default>false</default>
+                <label>Property Details Finalized</label>
+            </value>
+            <value>
+                <fullName>Admission Details NOT Finalized</fullName>
+                <default>false</default>
+                <label>Admission Details NOT Finalized</label>
+            </value>
+            <value>
+                <fullName>Admission Details Finalized</fullName>
+                <default>false</default>
+                <label>Admission Details Finalized</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,104 @@
+<template>
+    <div class="form-layout">
+
+        <template lwc:if={isLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading application overview" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <div class="form-card app-overview-card">
+            <div class="form-header app-overview-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content app-overview-header-content">
+                    <div class="app-overview-header-left">
+                        <div class="form-header-icon-wrap" aria-hidden="true">
+                            <lightning-icon
+                                icon-name="utility:display_text"
+                                size="small"
+                                variant="inverse"
+                                class="form-header-icon">
+                            </lightning-icon>
+                        </div>
+                        <div class="form-header-text app-overview-header-text">
+                            <!-- <h1 class="form-header-title">{headerTitle}</h1> -->
+                            <h1 class="form-header-title">Application Overview</h1>
+                            <p class="form-header-subtitle app-overview-subtitle">{headerSubtitle}</p>
+                        </div>
+                    </div>
+
+                    <div class="app-overview-actions" role="group" aria-label="Application actions">
+                        <div class="app-overview-action-group">
+                            <button
+                                type="button"
+                                class="app-overview-icon-btn"
+                                data-action="revoke"
+                                title="Revoke"
+                                aria-label="Revoke"
+                                onclick={handleIconClick}>
+                                <lightning-icon icon-name="utility:undo" size="x-small" variant="inverse" class="app-overview-icon-btn-icon"></lightning-icon>
+                            </button>
+                            <button
+                                type="button"
+                                class="app-overview-icon-btn"
+                                data-action="withdraw"
+                                title="Withdraw"
+                                aria-label="Withdraw"
+                                onclick={handleIconClick}>
+                                <lightning-icon icon-name="utility:close" size="x-small" variant="inverse" class="app-overview-icon-btn-icon"></lightning-icon>
+                            </button>
+                            <button
+                                type="button"
+                                class="app-overview-icon-btn"
+                                data-action="transfer"
+                                title="Transfer"
+                                aria-label="Transfer"
+                                onclick={handleIconClick}>
+                                <lightning-icon icon-name="utility:change_record_type" size="x-small" variant="inverse" class="app-overview-icon-btn-icon"></lightning-icon>
+                            </button>
+                        </div>
+
+                        <span class="app-overview-action-divider" aria-hidden="true"></span>
+
+                        <div class="app-overview-action-group">
+                            <button
+                                type="button"
+                                class="app-overview-icon-btn"
+                                data-action="upload"
+                                title="Upload Document"
+                                aria-label="Upload Document"
+                                onclick={handleIconClick}>
+                                <lightning-icon icon-name="utility:upload" size="x-small" variant="inverse" class="app-overview-icon-btn-icon"></lightning-icon>
+                            </button>
+                            <button
+                                type="button"
+                                class="app-overview-icon-btn"
+                                data-action="view"
+                                title="View Document"
+                                aria-label="View Document"
+                                onclick={handleIconClick}>
+                                <lightning-icon icon-name="utility:preview" size="x-small" variant="inverse" class="app-overview-icon-btn-icon"></lightning-icon>
+                            </button>
+                            <c-query-indicator
+                                record-id={recordId}
+                                variant="header"
+                                onviewqueries={handleViewQueriesClick}
+                                oncreatequery={handleCreateQueryClick}>
+                            </c-query-indicator>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <template lwc:if={showDynamicModal}>
+        <c-dynamic-component-modal
+            component-name={dynamicModalComponentName}
+            record-id={recordId}
+            modal-header={dynamicModalHeader}
+            component-props={dynamicModalComponentProps}
+            onclose={handleDynamicModalClose}>
+        </c-dynamic-component-modal>
+    </template>
+</template>

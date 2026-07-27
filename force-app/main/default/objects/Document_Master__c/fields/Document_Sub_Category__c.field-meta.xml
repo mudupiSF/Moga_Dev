@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Document_Sub_Category__c</fullName>
+    <label>Document Sub-Category</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Null</fullName>
+                <default>false</default>
+                <label>Null</label>
+            </value>
+            <value>
+                <fullName>Aadhaar Card</fullName>
+                <default>false</default>
+                <label>Aadhaar Card</label>
+            </value>
+            <value>
+                <fullName>PAN</fullName>
+                <default>false</default>
+                <label>PAN</label>
+            </value>
+            <value>
+                <fullName>Driving Licence</fullName>
+                <default>false</default>
+                <label>Driving Licence</label>
+            </value>
+            <value>
+                <fullName>Voter Id Card</fullName>
+                <default>false</default>
+                <label>Voter Id Card</label>
+            </value>
+            <value>
+                <fullName>Passport</fullName>
+                <default>false</default>
+                <label>Passport</label>
+            </value>
+            <value>
+                <fullName>Form 60</fullName>
+                <default>false</default>
+                <label>Form 60</label>
+            </value>
+            <value>
+                <fullName>OD Receipt</fullName>
+                <default>false</default>
+                <label>OD Receipt</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>IT Return or Saral</fullName>
+                <default>false</default>
+                <label>IT Return or Saral</label>
+            </value>
+            <value>
+                <fullName>Salary Slip</fullName>
+                <default>false</default>
+                <label>Salary Slip</label>
+            </value>
+            <value>
+                <fullName>Form 16</fullName>
+                <default>false</default>
+                <label>Form 16</label>
+            </value>
+            <value>
+                <fullName>Bank Statement - Borrower</fullName>
+                <default>false</default>
+                <label>Bank Statement - Borrower</label>
+            </value>
+            <value>
+                <fullName>Bank Statement - Co-Borrower</fullName>
+                <default>false</default>
+                <label>Bank Statement - Co-Borrower</label>
+            </value>
+            <value>
+                <fullName>Passbook - Borrower</fullName>
+                <default>false</default>
+                <label>Passbook - Borrower</label>
+            </value>
+            <value>
+                <fullName>Passbook - Co-Borrower</fullName>
+                <default>false</default>
+                <label>Passbook - Co-Borrower</label>
+            </value>
+            <value>
+                <fullName>Financials Analysis</fullName>
+                <default>false</default>
+                <label>Financials Analysis</label>
+            </value>
+            <value>
+                <fullName>GST Certificate</fullName>
+                <default>false</default>
+                <label>GST Certificate</label>
+            </value>
+            <value>
+                <fullName>Updated RC Document</fullName>
+                <default>false</default>
+                <label>Updated RC Document</label>
+            </value>
+            <value>
+                <fullName>RTO</fullName>
+                <default>false</default>
+                <label>RTO</label>
+            </value>
+            <value>
+                <fullName>Vahan Extract</fullName>
+                <default>false</default>
+                <label>Vahan Extract</label>
+            </value>
+            <value>
+                <fullName>Performa Invoice / Tax Invoice</fullName>
+                <default>false</default>
+                <label>Performa Invoice / Tax Invoice</label>
+            </value>
+            <value>
+                <fullName>IHM Receipt</fullName>
+                <default>false</default>
+                <label>IHM Receipt</label>
+            </value>
+            <value>
+                <fullName>Dealer Payment Request (DPR)</fullName>
+                <default>false</default>
+                <label>Dealer Payment Request (DPR)</label>
+            </value>
+            <value>
+                <fullName>Cancelled NOC</fullName>
+                <default>false</default>
+                <label>Cancelled NOC</label>
+            </value>
+            <value>
+                <fullName>Agreement Booklet / Agreement Copy</fullName>
+                <default>false</default>
+                <label>Agreement Booklet / Agreement Copy</label>
+            </value>
+            <value>
+                <fullName>Agreement Wrapper Page</fullName>
+                <default>false</default>
+                <label>Agreement Wrapper Page</label>
+            </value>
+            <value>
+                <fullName>1st Schedule</fullName>
+                <default>false</default>
+                <label>1st Schedule</label>
+            </value>
+            <value>
+                <fullName>2nd Schedule</fullName>
+                <default>false</default>
+                <label>2nd Schedule</label>
+            </value>
+            <value>
+                <fullName>DPN (Demand Promissory Note)</fullName>
+                <default>false</default>
+                <label>DPN (Demand Promissory Note)</label>
+            </value>
+            <value>
+                <fullName>POA (Power of Attorney)</fullName>
+                <default>false</default>
+                <label>POA (Power of Attorney)</label>
+            </value>
+            <value>
+                <fullName>ACH Mandate</fullName>
+                <default>false</default>
+                <label>ACH Mandate</label>
+            </value>
+            <value>
+                <fullName>Security PDC (Cheques)</fullName>
+                <default>false</default>
+                <label>Security PDC (Cheques)</label>
+            </value>
+            <value>
+                <fullName>Cancelled Cheque</fullName>
+                <default>false</default>
+                <label>Cancelled Cheque</label>
+            </value>
+            <value>
+                <fullName>Utility bill in the name of company</fullName>
+                <default>false</default>
+                <label>Utility bill in the name of company</label>
+            </value>
+            <value>
+                <fullName>Government GO</fullName>
+                <default>false</default>
+                <label>Government GO</label>
+            </value>
+            <value>
+                <fullName>Authorization letter from Central/State Govt dept. Head</fullName>
+                <default>false</default>
+                <label>Authorization letter from Central/State Govt dept. Head</label>
+            </value>
+            <value>
+                <fullName>Print-out of authorized signatory on Govt website</fullName>
+                <default>false</default>
+                <label>Print-out of authorized signatory on Govt website</label>
+            </value>
+            <value>
+                <fullName>Controlling person declaration</fullName>
+                <default>false</default>
+                <label>Controlling person declaration</label>
+            </value>
+            <value>
+                <fullName>RM declaration</fullName>
+                <default>false</default>
+                <label>RM declaration</label>
+            </value>
+            <value>
+                <fullName>DARPAN Certificate</fullName>
+                <default>false</default>
+                <label>DARPAN Certificate</label>
+            </value>
+            <value>
+                <fullName>DARPAN Id - Customer Declaration</fullName>
+                <default>false</default>
+                <label>DARPAN Id - Customer Declaration</label>
+            </value>
+            <value>
+                <fullName>DARPAN Id - Acknowledgement Copy</fullName>
+                <default>false</default>
+                <label>DARPAN Id - Acknowledgement Copy</label>
+            </value>
+            <value>
+                <fullName>DARPAN Id - Deferral Approval</fullName>
+                <default>false</default>
+                <label>DARPAN Id - Deferral Approval</label>
+            </value>
+            <value>
+                <fullName>RCU Report</fullName>
+                <default>false</default>
+                <label>RCU Report</label>
+            </value>
+            <value>
+                <fullName>Fund Utilisation letter for Refinance</fullName>
+                <default>false</default>
+                <label>Fund Utilisation letter for Refinance</label>
+            </value>
+            <value>
+                <fullName>Partnership Deed</fullName>
+                <default>false</default>
+                <label>Partnership Deed</label>
+            </value>
+            <value>
+                <fullName>Partnership Registration Cert / Letter</fullName>
+                <default>false</default>
+                <label>Partnership Registration Cert / Letter</label>
+            </value>
+            <value>
+                <fullName>List of Partners</fullName>
+                <default>false</default>
+                <label>List of Partners</label>
+            </value>
+            <value>
+                <fullName>LLP Agreement</fullName>
+                <default>false</default>
+                <label>LLP Agreement</label>
+            </value>
+            <value>
+                <fullName>Memorandum of Association</fullName>
+                <default>false</default>
+                <label>Memorandum of Association</label>
+            </value>
+            <value>
+                <fullName>Articles of Association</fullName>
+                <default>false</default>
+                <label>Articles of Association</label>
+            </value>
+            <value>
+                <fullName>Certificate of Commencement of Business</fullName>
+                <default>false</default>
+                <label>Certificate of Commencement of Business</label>
+            </value>
+            <value>
+                <fullName>Certificate of Incorporation</fullName>
+                <default>false</default>
+                <label>Certificate of Incorporation</label>
+            </value>
+            <value>
+                <fullName>Board Resolution</fullName>
+                <default>false</default>
+                <label>Board Resolution</label>
+            </value>
+            <value>
+                <fullName>List of Directors</fullName>
+                <default>false</default>
+                <label>List of Directors</label>
+            </value>
+            <value>
+                <fullName>Trust Deed / Bye Law</fullName>
+                <default>false</default>
+                <label>Trust Deed / Bye Law</label>
+            </value>
+            <value>
+                <fullName>List of Trustees / Office Bearers</fullName>
+                <default>false</default>
+                <label>List of Trustees / Office Bearers</label>
+            </value>
+            <value>
+                <fullName>List of Co-Parceners</fullName>
+                <default>false</default>
+                <label>List of Co-Parceners</label>
+            </value>
+            <value>
+                <fullName>HUF Deed / Letter</fullName>
+                <default>false</default>
+                <label>HUF Deed / Letter</label>
+            </value>
+            <value>
+                <fullName>Shops &amp; Establishment Certificate</fullName>
+                <default>false</default>
+                <label>Shops &amp; Establishment Certificate</label>
+            </value>
+            <value>
+                <fullName>Udyam Registration Certificate</fullName>
+                <default>false</default>
+                <label>Udyam Registration Certificate</label>
+            </value>
+            <value>
+                <fullName>Sales Tax Registration Certificate</fullName>
+                <default>false</default>
+                <label>Sales Tax Registration Certificate</label>
+            </value>
+            <value>
+                <fullName>MSME Registration Certificate</fullName>
+                <default>false</default>
+                <label>MSME Registration Certificate</label>
+            </value>
+            <value>
+                <fullName>Udyog Aadhaar Reg Certificate</fullName>
+                <default>false</default>
+                <label>Udyog Aadhaar Reg Certificate</label>
+            </value>
+            <value>
+                <fullName>Registration Certificate (Any)</fullName>
+                <default>false</default>
+                <label>Registration Certificate (Any)</label>
+            </value>
+            <value>
+                <fullName>Tax / Service Tax / Professional Tax Authorization</fullName>
+                <default>false</default>
+                <label>Tax / Service Tax / Professional Tax Authorization</label>
+            </value>
+            <value>
+                <fullName>Factory Registration Certificate</fullName>
+                <default>false</default>
+                <label>Factory Registration Certificate</label>
+            </value>
+            <value>
+                <fullName>Certificate issued by State/Central/Local Authorities</fullName>
+                <default>false</default>
+                <label>Certificate issued by State/Central/Local Authorities</label>
+            </value>
+            <value>
+                <fullName>Trade Licence</fullName>
+                <default>false</default>
+                <label>Trade Licence</label>
+            </value>
+            <value>
+                <fullName>Import and Export Certificate</fullName>
+                <default>false</default>
+                <label>Import and Export Certificate</label>
+            </value>
+            <value>
+                <fullName>Beneficial Ownership Declaration</fullName>
+                <default>false</default>
+                <label>Beneficial Ownership Declaration</label>
+            </value>
+            <value>
+                <fullName>Linkage Proof</fullName>
+                <default>false</default>
+                <label>Linkage Proof</label>
+            </value>
+            <value>
+                <fullName>Other Documents</fullName>
+                <default>false</default>
+                <label>Other Documents</label>
+            </value>
+            <value>
+                <fullName>Registration Certificate</fullName>
+                <default>false</default>
+                <label>Registration Certificate</label>
+            </value>
+            <value>
+                <fullName>Practice Licence</fullName>
+                <default>false</default>
+                <label>Practice Licence</label>
+            </value>
+            <value>
+                <fullName>Latest ITR (last 3 years)</fullName>
+                <default>false</default>
+                <label>Latest ITR (last 3 years)</label>
+            </value>
+            <value>
+                <fullName>Business Registration / Shop Act Licence</fullName>
+                <default>false</default>
+                <label>Business Registration / Shop Act Licence</label>
+            </value>
+            <value>
+                <fullName>GST Returns (last 12 months)</fullName>
+                <default>false</default>
+                <label>GST Returns (last 12 months)</label>
+            </value>
+            <value>
+                <fullName>Bank Statements (last 6 months)</fullName>
+                <default>false</default>
+                <label>Bank Statements (last 6 months)</label>
+            </value>
+            <value>
+                <fullName>MCA Master Data</fullName>
+                <default>false</default>
+                <label>MCA Master Data</label>
+            </value>
+            <value>
+                <fullName>MCA Report</fullName>
+                <default>false</default>
+                <label>MCA Report</label>
+            </value>
+            <value>
+                <fullName>Director Native Report</fullName>
+                <default>false</default>
+                <label>Director Native Report</label>
+            </value>
+            <value>
+                <fullName>Bank Balance</fullName>
+                <default>false</default>
+                <label>Bank Balance</label>
+            </value>
+            <value>
+                <fullName>Property Income</fullName>
+                <default>false</default>
+                <label>Property Income</label>
+            </value>
+            <value>
+                <fullName>Agricultural Income</fullName>
+                <default>false</default>
+                <label>Agricultural Income</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

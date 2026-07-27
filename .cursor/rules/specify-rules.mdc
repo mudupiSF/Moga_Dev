@@ -1,0 +1,25 @@
+---
+description: Moga Dev SpecKit context and delivery gates
+alwaysApply: true
+---
+
+# Moga Dev SpecKit Context
+
+- Treat `.specify/memory/constitution.md` as the architecture and process authority.
+- Before specifying, planning, testing, or implementing, read the relevant files in
+  `.specify/memory/` and inspect the applicable Salesforce metadata and existing code.
+- Use real API names from `force-app/main/default`; never invent objects, fields, statuses,
+  integrations, product combinations, approval limits, or mandatory-document rules.
+- Record conflicts among approved requirements, repository behavior, metadata, and observed
+  org behavior as discrepancies. Ask for resolution instead of silently choosing a source.
+- Keep secrets, tokens, OTP values, personal data, bureau payloads, and full PAN/Aadhaar values
+  out of source, specifications, logs, tests, screenshots, and dashboard data.
+- Use the workflow `/speckit-specify` → `/speckit-clarify` as needed → `/speckit-plan` →
+  `/speckit-tasks` → `/speckit-analyze` → `/speckit-implement`.
+- Do not treat an integration handler, mock, or stub as evidence of production readiness.
+- Update `docs/progress-tracker.json` only for identified epics/stories with traceable evidence.
+
+<!-- SPECKIT START -->
+For additional context about technologies, project structure, shell commands, and other
+important information, read the current plan when one exists under `specs/<feature>/plan.md`.
+<!-- SPECKIT END -->

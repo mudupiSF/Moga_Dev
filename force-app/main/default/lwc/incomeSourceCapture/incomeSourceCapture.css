@@ -1,0 +1,304 @@
+:host {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.isc-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+    overflow: visible;
+}
+
+.isc-accordion-item {
+    border: 1px solid #dbe3ee;
+    border-radius: 0.875rem;
+    background: #ffffff;
+    overflow: visible;
+    transition: border-color 0.2s ease;
+}
+
+.isc-accordion-item:not(.isc-accordion-item-open) {
+    overflow: hidden;
+}
+
+.isc-accordion-item-open {
+    position: relative;
+    z-index: 2;
+    border-color: #4f46e5;
+    overflow: visible;
+}
+
+.isc-accordion-item:not(.isc-accordion-item-open) .isc-accordion-header {
+    border-radius: 0.875rem;
+    overflow: hidden;
+}
+
+.isc-accordion-item-open .isc-accordion-header {
+    border-radius: 0.875rem 0.875rem 0 0;
+    overflow: hidden;
+}
+
+.isc-accordion-item-open .isc-accordion-panel {
+    border-radius: 0 0 0.875rem 0.875rem;
+    background: #ffffff;
+}
+
+.isc-accordion-header {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+}
+
+.isc-accordion-header .isc-accordion-trigger {
+    flex: 1;
+    min-width: 0;
+}
+
+.isc-delete-btn {
+    align-self: center;
+    background: #ffffff;
+    border: 1px solid #fecaca;
+    border-radius: 999px;
+    color: #dc2626;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+    padding: 0.4rem 0.75rem;
+}
+
+.isc-delete-btn:hover {
+    background: #fef2f2;
+}
+
+.isc-accordion-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border: none;
+    background: #f8fafc;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s ease;
+}
+
+.isc-accordion-trigger:hover {
+    background: #f1f5f9;
+}
+
+.isc-accordion-trigger-open {
+    background: #eef2ff;
+    border-bottom: 1px solid #e0e7ff;
+}
+
+.isc-accordion-trigger-main {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.isc-accordion-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.65rem;
+    flex-shrink: 0;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+}
+
+.isc-accordion-icon {
+    --slds-c-icon-color-foreground-default: #4f46e5;
+}
+
+.isc-accordion-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.isc-accordion-label {
+    color: #16325c;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.isc-accordion-desc {
+    color: #64748b;
+    font-size: 0.75rem;
+    line-height: 1.3;
+}
+
+.isc-accordion-chevron {
+    --slds-c-icon-color-foreground-default: #64748b;
+    flex-shrink: 0;
+}
+
+.isc-accordion-panel {
+    background: #ffffff;
+    overflow: visible;
+}
+
+.isc-accordion-content {
+    padding: 1rem;
+    box-sizing: border-box;
+    width: 100%;
+    overflow: visible;
+}
+
+.isc-field-row {
+    max-width: 24rem;
+    margin-bottom: 1rem;
+    overflow: visible;
+    position: relative;
+}
+
+.isc-field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    overflow: visible;
+}
+
+.isc-primary-toggle-row {
+    margin-bottom: 1rem;
+}
+
+.isc-subsection {
+    margin-top: 0.5rem;
+    overflow: visible;
+}
+
+.isc-subsection-title {
+    margin: 1rem 0 0.75rem;
+    color: #16325c;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.isc-upload-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.85rem;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 24rem;
+    margin: 1rem auto 0;
+    text-align: center;
+}
+
+.isc-upload-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.isc-upload-card lightning-file-upload {
+    width: 100%;
+}
+
+.isc-upload-icon {
+    --slds-c-icon-color-foreground-default: #2563eb;
+}
+
+.isc-upload-title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #16325c;
+}
+
+.isc-file-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid #a7f3d0;
+    background: #f0fdf4;
+    color: #166534;
+    border-radius: 999px;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.isc-upload-remove-btn {
+    display: inline-block;
+    margin-top: 0.5rem;
+    background: #ffffff;
+    border: 1px solid #fecaca;
+    border-radius: 999px;
+    color: #dc2626;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+}
+
+.isc-upload-remove-btn:hover {
+    background: #fef2f2;
+}
+
+.isc-action-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 0.875rem;
+    border-top: 1px solid #eef2f7;
+}
+
+.isc-action-row .isc-primary-btn {
+    flex: 0 0 auto;
+}
+
+.isc-primary-btn {
+    background: #4f46e5;
+    border: 1px solid #4f46e5;
+    border-radius: 999px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+}
+
+.isc-primary-btn:hover:not(:disabled) {
+    background: #4338ca;
+    border-color: #4338ca;
+}
+
+.isc-primary-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.isc-upload-check {
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .isc-field-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Acre_Category__c</fullName>
+    <label>Acre Category</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>&gt; 2.47 acres to 4.94 acres - individual</fullName>
+                <default>false</default>
+                <label>&gt; 2.47 acres to 4.94 acres - individual</label>
+            </value>
+            <value>
+                <fullName>upto 2.47 acres - individual</fullName>
+                <default>false</default>
+                <label>upto 2.47 acres - individual</label>
+            </value>
+            <value>
+                <fullName>Tenant Farmers/ Sharecroppers/ Oral lessees - no own land</fullName>
+                <default>false</default>
+                <label>Tenant Farmers/ Sharecroppers/ Oral lessees - no own land</label>
+            </value>
+            <value>
+                <fullName>Other (Medium and Large) - &gt; 4.94 acres - individual</fullName>
+                <default>false</default>
+                <label>Other (Medium and Large) - &gt; 4.94 acres - individual</label>
+            </value>
+            <value>
+                <fullName>Other borrowers engaged in agriculture and allied activities</fullName>
+                <default>false</default>
+                <label>Other borrowers engaged in agriculture and allied activities</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

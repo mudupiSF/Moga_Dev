@@ -1,0 +1,196 @@
+<template>
+    <div class="fpae-container">
+
+        <!-- Header -->
+        <div class="fpae-header">
+            <lightning-icon icon-name="utility:file" size="small"></lightning-icon>
+            <span class="fpae-title">Files</span>
+            <template if:true={isLoading}>
+                <lightning-spinner size="small" alternative-text="Loading"></lightning-spinner>
+            </template>
+            <button class="fpae-btn-refresh" title="Refresh" onclick={handleRefresh}>&#8635;</button>
+        </div>
+
+        <!-- Status message -->
+        <template if:true={statusMessage}>
+            <div class={statusClass}>
+                <lightning-icon icon-name={statusIcon} size="x-small" alternative-text="status"></lightning-icon>
+                {statusMessage}
+            </div>
+        </template>
+
+        <!-- Empty state -->
+        <template if:true={isEmpty}>
+            <div class="fpae-empty">
+                <lightning-icon icon-name="utility:file" size="large" style="--lwc-colorTextIconDefault:#b0b8c4"></lightning-icon>
+                <p>No files attached to this record.</p>
+            </div>
+        </template>
+
+        <!-- File table -->
+        <template if:false={isEmpty}>
+            <div class="fpae-table-wrap">
+                <table class="fpae-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Size</th>
+                            <th>Created Date</th>
+                            <th>Uploaded By</th>
+                            <th>Ver</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={fileRows} for:item="f">
+                            <tr key={f.id} class="fpae-trow">
+                                <td class="fpae-td-name" data-id={f.id} onclick={handleFileClick}>
+                                    <div class="fpae-name-cell">
+                                        <lightning-icon icon-name={f.iconName} size="x-small" alternative-text={f.fileType}></lightning-icon>
+                                        <span class="fpae-row-name" title={f.title}>{f.title}</span>
+                                    </div>
+                                </td>
+                                <td class="fpae-td-center">
+                                    <span class="fpae-type-badge">{f.fileType}</span>
+                                </td>
+                                <td class="fpae-td-center">{f.size}</td>
+                                <td class="fpae-td-center">{f.createdDate}</td>
+                                <td class="fpae-td-user">{f.uploadedBy}</td>
+                                <td class="fpae-td-center">{f.version}</td>
+                                <td class="fpae-td-actions">
+                                    <template if:true={f.canEdit}>
+                                        <button class="fpae-btn fpae-btn-icon" title="Upload New Version" data-id={f.id} onclick={handleUploadNewVersion}>
+                                            <lightning-icon icon-name="utility:upload" size="x-small" alternative-text="New version"></lightning-icon>
+                                        </button>
+                                    </template>
+                                    <template if:true={f.canDelete}>
+                                        <template if:true={f.isDeleting}>
+                                            <div class="fpae-btn fpae-btn-icon fpae-deleting">
+                                                <lightning-spinner size="x-small" alternative-text="Deleting"></lightning-spinner>
+                                            </div>
+                                        </template>
+                                        <template if:false={f.isDeleting}>
+                                            <button class="fpae-btn fpae-btn-icon fpae-btn-danger" title="Delete" data-id={f.id} onclick={handleDelete}>
+                                                <lightning-icon icon-name="utility:delete" size="x-small" alternative-text="Delete"></lightning-icon>
+                                            </button>
+                                        </template>
+                                    </template>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <template if:true={showPagination}>
+                <div class="fpae-pagination">
+                    <button class="fpae-page-btn" onclick={handlePrevPage} disabled={isFirstPage}>&#8592; Prev</button>
+                    <span class="fpae-page-label">{pageLabel}</span>
+                    <button class="fpae-page-btn" onclick={handleNextPage} disabled={isLastPage}>Next &#8594;</button>
+                </div>
+            </template>
+            <template if:false={showPagination}>
+                <div class="fpae-row-count">{pageLabel}</div>
+            </template>
+        </template>
+
+        <!-- ── Preview Modal ── -->
+        <template if:true={showPreview}>
+            <div class="fpae-modal-overlay" onclick={handleOverlayClick}>
+                <div class="fpae-modal" onclick={stopPropagation}>
+
+                    <!-- Modal header -->
+                    <div class="fpae-modal-header">
+                        <div class="fpae-modal-title">
+                            <lightning-icon icon-name={previewFile.iconName} size="small" alternative-text="file"></lightning-icon>
+                            <span>{previewFile.title}</span>
+                        </div>
+                        <div class="fpae-modal-header-actions">
+                            <template if:true={previewFile.canDownload}>
+                                <button class="fpae-btn fpae-btn-secondary" onclick={handleDownload}>
+                                    <lightning-icon icon-name="utility:download" size="x-small" alternative-text="Download"></lightning-icon>
+                                    Download
+                                </button>
+                            </template>
+                            <button class="fpae-btn fpae-btn-icon" title="Close" onclick={closePreview}>&#10005;</button>
+                        </div>
+                    </div>
+
+                    <!-- Viewer area — child component swapped by file type -->
+                    <div class="fpae-modal-body">
+                        <template if:true={previewFile.isPdf}>
+                            <c-preview-p-d-f-v2
+                                content-version-id={previewFile.id}
+                                session-id={_sessionId}
+                                vf-root={_vfRoot}
+                                file-name={previewFile.title}
+                                onclose={closePreview}>
+                            </c-preview-p-d-f-v2>
+                        </template>
+                        <template if:true={previewFile.isImage}>
+                            <c-preview-images
+                                content-version-id={previewFile.id}
+                                session-id={_sessionId}
+                                vf-root={_vfRoot}
+                                file-name={previewFile.title}
+                                onclose={closePreview}>
+                            </c-preview-images>
+                        </template>
+                        <template if:true={previewFile.isExcel}>
+                            <c-preview-excel
+                                content-version-id={previewFile.id}
+                                session-id={_sessionId}
+                                vf-root={_vfRoot}
+                                file-name={previewFile.title}
+                                onclose={closePreview}>
+                            </c-preview-excel>
+                        </template>
+                        <template if:true={previewFile.isDocx}>
+                            <c-preview-docx
+                                content-version-id={previewFile.id}
+                                session-id={_sessionId}
+                                vf-root={_vfRoot}
+                                file-name={previewFile.title}
+                                onclose={closePreview}>
+                            </c-preview-docx>
+                        </template>
+                        <template if:true={previewFile.isVideo}>
+                            <c-preview-video
+                                content-document-id={previewFile.contentDocumentId}
+                                content-version-id={previewFile.id}
+                                vf-root={_vfRoot}
+                                session-id={_sessionId}
+                                file-name={previewFile.title}
+                                onclose={closePreview}>
+                            </c-preview-video>
+                        </template>
+                        <template if:true={previewFile.isOther}>
+                            <div class="fpae-unsupported">
+                                <lightning-icon icon-name="utility:file" size="large"></lightning-icon>
+                                <p>Preview not available for this file type.</p>
+                                <template if:false={preventDownload}>
+                                    <button class="fpae-btn fpae-btn-primary" onclick={handleDownload}>
+                                        <lightning-icon icon-name="utility:download" size="x-small" alternative-text="Download"></lightning-icon>
+                                        Download to View
+                                    </button>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                </div>
+            </div>
+        </template>
+
+        <!-- Upload progress bar -->
+        <template if:true={isUploading}>
+            <div class="fpae-progress-wrap">
+                <div class="fpae-progress-fill" style={progressStyle}></div>
+                <span class="fpae-progress-label">{progressLabel}</span>
+            </div>
+        </template>
+
+    </div>
+</template>

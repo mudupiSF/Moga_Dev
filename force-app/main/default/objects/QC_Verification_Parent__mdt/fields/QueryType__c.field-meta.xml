@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>QueryType__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>QueryType</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>DedicatedQuery</fullName>
+                <default>true</default>
+                <label>DedicatedQuery</label>
+            </value>
+            <value>
+                <fullName>ChildQuery</fullName>
+                <default>false</default>
+                <label>ChildQuery</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

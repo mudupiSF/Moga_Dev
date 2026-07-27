@@ -1,0 +1,229 @@
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.doc-upload-card {
+    background: #ffffff;
+    border: 1px solid var(--form-slate-200, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    min-width: 0;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.doc-upload-card--uploaded {
+    border-color: var(--form-slate-200, #e2e8f0);
+}
+
+.doc-upload-card--disabled {
+    opacity: 0.72;
+}
+
+.doc-upload-card__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.doc-upload-card__icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.5rem;
+    background: var(--form-indigo-50, #eef2ff);
+    flex-shrink: 0;
+}
+
+.doc-upload-card__icon-wrap--success {
+    background: #ecfdf5;
+}
+
+.doc-upload-card__icon {
+    --slds-c-icon-color-foreground-default: var(--form-indigo-600, #4f46e5);
+}
+
+.doc-upload-card__icon--success {
+    --slds-c-icon-color-foreground-default: #059669;
+}
+
+.doc-upload-card__meta {
+    min-width: 0;
+    flex: 1;
+}
+
+.doc-upload-card__title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.doc-upload-card__title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--form-slate-900, #0f172a);
+    line-height: 1.35;
+}
+
+.doc-upload-card__required {
+    color: #ef4444;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.35;
+    flex-shrink: 0;
+}
+
+.doc-upload-card__subtitle {
+    margin: 0.25rem 0 0;
+    font-size: 0.75rem;
+    color: var(--form-slate-500, #64748b);
+    line-height: 1.4;
+}
+
+.doc-upload-card__file-name {
+    margin: 0.25rem 0 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #059669;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.doc-upload-card__file-size {
+    margin: 0.125rem 0 0;
+    font-size: 0.6875rem;
+    color: var(--form-slate-500, #64748b);
+    line-height: 1.3;
+}
+
+.doc-upload-card__body {
+    min-width: 0;
+}
+
+.doc-upload-card__dropzone {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.625rem 0.875rem;
+    border: 1.5px dashed var(--form-slate-300, #cbd5e1);
+    border-radius: 0.625rem;
+    background: var(--form-slate-50, #f8fafc);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.doc-upload-card__dropzone:hover {
+    background: #f1f5f9;
+    border-color: var(--form-indigo-400, #818cf8);
+}
+
+.doc-upload-card__dropzone-icon {
+    --slds-c-icon-color-foreground-default: var(--form-indigo-600, #4f46e5);
+    flex-shrink: 0;
+}
+
+.doc-upload-card__dropzone-label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--form-indigo-600, #4f46e5);
+    line-height: 1;
+    pointer-events: none;
+}
+
+.doc-upload-card__file-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0.001;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.doc-upload-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--form-slate-100, #f1f5f9);
+    min-width: 0;
+}
+
+.doc-upload-card__verified {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #059669;
+    line-height: 1.2;
+    flex-shrink: 0;
+}
+
+.doc-upload-card__verified--placeholder {
+    visibility: hidden;
+}
+
+.doc-upload-card__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.doc-upload-card__action {
+    appearance: none;
+    border: none;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.doc-upload-card__action:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.doc-upload-card__action--preview {
+    color: var(--form-indigo-600, #4f46e5);
+}
+
+.doc-upload-card__action--preview lightning-icon {
+    --slds-c-icon-color-foreground-default: var(--form-indigo-600, #4f46e5);
+}
+
+.doc-upload-card__action--preview:hover:not(:disabled) {
+    color: var(--form-indigo-700, #4338ca);
+}
+
+.doc-upload-card__action--delete {
+    color: #e11d48;
+}
+
+.doc-upload-card__action--delete lightning-icon {
+    --slds-c-icon-color-foreground-default: #e11d48;
+}
+
+.doc-upload-card__action--delete:hover:not(:disabled) {
+    color: #be123c;
+}

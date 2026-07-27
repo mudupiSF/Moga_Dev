@@ -1,0 +1,66 @@
+<template>
+    <div class="fpg-root">
+        <template lwc:if={isLoading}>
+            <lightning-spinner alternative-text="Loading GST details" size="small"></lightning-spinner>
+        </template>
+
+        <div class="fpg-year-section">
+            <lightning-combobox
+                class="fpg-year-combobox"
+                label="Financial Year"
+                value={selectedFinancialYear}
+                options={financialYearOptions}
+                onchange={handleFinancialYearChange}
+                disabled={isBusy}>
+            </lightning-combobox>
+        </div>
+
+        <div class="fpg-table-container">
+            <div class="fpg-section-title">GSTR 3B Details (Rs. In Lakhs)</div>
+            <div class="fpg-subsection-title">{selectedYearLabel}</div>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                    <tr>
+                        <th class="fpg-column-border">Month</th>
+                        <th class="fpg-column-border">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={monthRows} for:item="row">
+                        <tr key={row.month}>
+                            <td class="fpg-column-border fpg-data-cell fpg-month-cell">{row.month}</td>
+                            <td class="fpg-column-border fpg-data-cell">
+                                <lightning-input
+                                    type="number"
+                                    variant="label-hidden"
+                                    label={row.month}
+                                    value={row.amount}
+                                    data-month={row.month}
+                                    onchange={handleAmountChange}
+                                    disabled={isReadOnly}
+                                    step="0.01"
+                                    min="0">
+                                </lightning-input>
+                            </td>
+                        </tr>
+                    </template>
+                    <tr>
+                        <td class="fpg-column-border fpg-total-row">Total</td>
+                        <td class="fpg-column-border fpg-total-row">{gstrTotal}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <template lwc:if={showSaveButton}>
+            <div class="fpg-actions">
+                <lightning-button
+                    variant="brand"
+                    label={saveLabel}
+                    onclick={handleSave}
+                    disabled={isBusy}>
+                </lightning-button>
+            </div>
+        </template>
+    </div>
+</template>

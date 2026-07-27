@@ -1,0 +1,41 @@
+<template>
+    <lightning-card title="MMV Record Picker Demo" icon-name="standard:search">
+        <div class="slds-var-p-around_medium">
+            <lightning-select label="Product" options={productOptions} value={selectedProduct} onchange={handleProductChange}></lightning-select>
+        </div>
+        <div class="slds-var-p-around_medium">
+            <lightning-select label="Vehicle Type" options={vehicleTypeOptions} value={selectedVehicleType} onchange={handleVehicleTypeChange}></lightning-select>
+        </div>
+        <div class="slds-var-p-around_medium">
+            <c-mmv-record-picker
+                label="Make"
+                name="make"
+                placeholder="Search makes..."
+                search-field-api-name="Make__c"
+                onselectmake={handleSelectMake}
+            >
+            </c-mmv-record-picker>
+        </div>
+        <div class="slds-var-p-around_medium">
+            <c-mmv-record-picker
+                label="Model"
+                name="model"
+                placeholder="Search models..."
+                search-field-api-name="Model__c"
+                onselectmodel={handleSelectModel}
+            >
+            </c-mmv-record-picker>
+        </div>
+        <div class="slds-var-p-around_medium">
+            <c-mmv-record-picker
+                label="Variant"
+                name="variant"
+                vehicle-type={selectedVehicleType}
+                placeholder="Search variants..."
+                search-field-api-name="Variant__c"
+                onselectvariant={handleSelectVariant}
+            >
+            </c-mmv-record-picker>
+        </div>
+    </lightning-card>
+</template>

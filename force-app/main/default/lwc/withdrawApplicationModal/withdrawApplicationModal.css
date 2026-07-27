@@ -1,0 +1,13 @@
+@import 'c/commonStyles';
+
+.withdraw-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.withdraw-modal-description {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #475569;
+}

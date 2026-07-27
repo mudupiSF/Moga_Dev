@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Skip from BH for PV</label>
+    <protected>false</protected>
+    <values>
+        <field>Current_Level__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Current_Role__c</field>
+        <value xsi:type="xsd:string">BH</value>
+    </values>
+    <values>
+        <field>Product_Type__c</field>
+        <value xsi:type="xsd:string">Passenger Vehicles</value>
+    </values>
+    <values>
+        <field>Skip_To_Level__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Skip_To_Role__c</field>
+        <value xsi:type="xsd:string">SH</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,305 @@
+<template>
+    <div class="lt-page-layout">
+        <template if:true={isLoading}>
+            <div class="lt-loading-overlay">
+                <lightning-spinner alternative-text="Loading invoice" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Invoice -->
+        <div class="lt-card">
+            <div class="lt-card-header">
+                <div class="lt-header-overlay"></div>
+                <div class="lt-header-content">
+                    <div class="lt-header-icon-wrap">
+                        <lightning-icon icon-name="utility:upload" size="small" class="lt-header-icon"></lightning-icon>
+                    </div>
+                    <div class="lt-header-text">
+                        <h1 class="lt-header-title">Invoice</h1>
+                        <p class="lt-header-subtitle">Upload and verify invoice document</p>
+                    </div>
+                </div>
+            </div>
+            <div class="lt-card-body">
+                <div class="form-file-upload-wrap inv-file-upload-wrap">
+                    <label class="form-field-editable-label">
+                        Upload Invoice
+                        <span class="form-field-required-indicator" title="Required">*</span>
+                    </label>
+                    <template lwc:if={invoiceDocumentUploaded}>
+                        <span class="slds-text-body_small slds-text-color_success">Uploaded</span>
+                    </template>
+                    <template lwc:else>
+                        <span class="slds-text-body_small slds-text-color_weak">Pending</span>
+                    </template>
+
+                    <template lwc:if={invoiceDocumentUploaded}>
+                        <div class="form-file-uploaded-bar">
+                            <lightning-icon
+                                icon-name="utility:success"
+                                size="x-small"
+                                class="form-file-success-icon"
+                                alternative-text="Uploaded">
+                            </lightning-icon>
+                            <p class="form-file-selected-name">{invoiceDisplayFileName}</p>
+                            <button
+                                type="button"
+                                class="form-file-action-btn"
+                                onclick={handleInvoicePreview}
+                                title="Preview">
+                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                            </button>
+                            <template lwc:if={showInvoiceDocumentActions}>
+                                <button
+                                    type="button"
+                                    class="form-file-action-btn"
+                                    onclick={handleInvoiceDelete}
+                                    title="Delete">
+                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                </button>
+                            </template>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <template lwc:if={showInvoiceDocumentActions}>
+                            <lightning-file-upload
+                                label="Upload Invoice"
+                                name="invoiceUpload"
+                                accept={acceptedInvoiceFormats}
+                                record-id={documentUploadRecordId}
+                                onuploadfinished={handleInvoiceUploadFinished}
+                                multiple="false"
+                                disabled={isInvoiceUploadDisabled}>
+                            </lightning-file-upload>
+                        </template>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice details -->
+        <div class="lt-card">
+            <div class="lt-card-header">
+                <div class="lt-header-overlay"></div>
+                <div class="lt-header-content">
+                    <div class="lt-header-icon-wrap">
+                        <lightning-icon icon-name="utility:contract_doc" size="small" class="lt-header-icon"></lightning-icon>
+                    </div>
+                    <div class="lt-header-text">
+                        <h1 class="lt-header-title">Invoice details</h1>
+                        <p class="lt-header-subtitle">Capture invoice and vehicle pricing details</p>
+                    </div>
+                </div>
+            </div>
+            <div class="lt-card-body">
+                <p class="inv-subsection-title">Asset details</p>
+                <div class="lt-fields-grid">
+                    <template for:each={assetDetailFieldRows} for:item="field">
+                        <div key={field.key} class={field.wrapClass}>
+                            <template lwc:if={field.showAsReadOnly}>
+                                <div class="lt-info-cell lt-info-cell-readonly">
+                                    <div class="lt-info-cell-header">
+                                        <span class="lt-info-label">{field.label}</span>
+                                    </div>
+                                    <div class="lt-info-value-wrap">
+                                        <p class="lt-info-value">{field.displayValue}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="lt-field-cell inv-field-editable">
+                                    <div class="lt-field-label">
+                                        {field.label}
+                                        <template lwc:if={field.isRequired}>
+                                            <span class="inv-required-indicator">*</span>
+                                        </template>
+                                    </div>
+                                    <div class="lt-field-value-col">
+                                        <lightning-input
+                                            type="text"
+                                            data-key={field.key}
+                                            value={field.value}
+                                            label={field.label}
+                                            variant="label-hidden"
+                                            required={field.isRequired}
+                                            oninput={handleFieldInput}
+                                            onchange={handleFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="lt-fields-grid inv-details-grid">
+                    <template for:each={invoiceDetailFieldRows} for:item="field">
+                        <div key={field.key} class={field.wrapClass}>
+                            <template lwc:if={field.showAsReadOnly}>
+                                <div class="lt-info-cell lt-info-cell-readonly">
+                                    <div class="lt-info-cell-header">
+                                        <span class="lt-info-label">{field.label}</span>
+                                    </div>
+                                    <div class="lt-info-value-wrap">
+                                        <p class="lt-info-value">{field.displayValue}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="lt-field-cell inv-field-editable">
+                                    <div class="lt-field-label">
+                                        {field.label}
+                                        <template lwc:if={field.isRequired}>
+                                            <span class="inv-required-indicator">*</span>
+                                        </template>
+                                    </div>
+                                    <div class="lt-field-value-col">
+                                        <template lwc:if={field.isPicklist}>
+                                            <lightning-combobox
+                                                data-key={field.key}
+                                                value={field.value}
+                                                label={field.label}
+                                                variant="label-hidden"
+                                                placeholder="Select"
+                                                options={field.options}
+                                                required={field.isRequired}
+                                                onchange={handleFieldChange}>
+                                            </lightning-combobox>
+                                        </template>
+                                        <template lwc:elseif={field.isDate}>
+                                            <lightning-input
+                                                type="date"
+                                                data-key={field.key}
+                                                value={field.value}
+                                                label={field.label}
+                                                variant="label-hidden"
+                                                required={field.isRequired}
+                                                onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </template>
+                                        <template lwc:elseif={field.isNumber}>
+                                            <input
+                                                type="number"
+                                                class="lt-field-input"
+                                                data-key={field.key}
+                                                value={field.value}
+                                                step="0.01"
+                                                required={field.isRequired}
+                                                oninput={handleFieldInput}
+                                                onchange={handleFieldChange} />
+                                        </template>
+                                        <template lwc:else>
+                                            <input
+                                                type="text"
+                                                class="lt-field-input"
+                                                data-key={field.key}
+                                                value={field.value}
+                                                required={field.isRequired}
+                                                oninput={handleFieldInput}
+                                                onchange={handleFieldChange} />
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Operations -->
+        <template lwc:if={isOperationsInvoiceOpsMode}>
+        <div class="lt-card">
+            <c-operations-section-header
+                subtitle="Verify invoice document and acceptance">
+            </c-operations-section-header>
+            <div class="lt-card-body">
+                <div class="lt-fields-grid">
+                    <template for:each={operationsFieldRows} for:item="field">
+                        <div key={field.key} class={field.wrapClass}>
+                            <template lwc:if={field.showAsReadOnly}>
+                                <div class="lt-info-cell lt-info-cell-readonly">
+                                    <div class="lt-info-cell-header">
+                                        <span class="lt-info-label">{field.label}</span>
+                                    </div>
+                                    <div class="lt-info-value-wrap">
+                                        <p class="lt-info-value">{field.displayValue}</p>
+                                    </div>
+                                </div>
+                            </template>
+                                <template lwc:else>
+                                <div class="lt-field-cell inv-field-editable">
+                                    <div class="lt-field-label">
+                                        {field.label}
+                                        <template lwc:if={field.isRequired}>
+                                            <span class="inv-required-indicator">*</span>
+                                        </template>
+                                    </div>
+                                    <div class="lt-field-value-col">
+                                        <template lwc:if={field.isPicklist}>
+                                            <lightning-combobox
+                                                data-key={field.key}
+                                                value={field.value}
+                                                label={field.label}
+                                                variant="label-hidden"
+                                                placeholder="Select"
+                                                options={field.options}
+                                                required={field.isRequired}
+                                                onchange={handleFieldChange}>
+                                            </lightning-combobox>
+                                        </template>
+                                        <template lwc:else>
+                                            <lightning-input
+                                                type="text"
+                                                data-key={field.key}
+                                                value={field.value}
+                                                label={field.label}
+                                                variant="label-hidden"
+                                                required={field.isRequired}
+                                                oninput={handleFieldInput}
+                                                onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+        </template>
+
+        <div class="p4-footer-wrapper">
+            <div class="p4-footer">
+                <div class="p4-btn-wrapper">
+                    <button
+                        type="button"
+                        class={nextButtonClass}
+                        disabled={isNextDisabled}
+                        aria-disabled={isNextDisabled}
+                        onclick={handleNextButton}>
+                        <span class="inv-action-btn-inner">
+                            <template if:true={isSaving}>
+                                <lightning-spinner
+                                    alternative-text="Saving"
+                                    size="x-small"
+                                    class="inv-action-btn-spinner">
+                                </lightning-spinner>
+                            </template>
+                            <span>Next</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <template lwc:if={openPreviewModal}>
+        <c-file-previewer
+            content-document-id={invoiceContentDocumentId}
+            file-type={invoiceFileType}
+            onclose={handlePreviewClose}>
+        </c-file-previewer>
+    </template>
+</template>

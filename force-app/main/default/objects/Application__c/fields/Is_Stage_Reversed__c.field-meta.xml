@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Stage_Reversed__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>True when application stage has been reversed (revoke / stage reversal).</description>
+    <label>Is Stage Reversed</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

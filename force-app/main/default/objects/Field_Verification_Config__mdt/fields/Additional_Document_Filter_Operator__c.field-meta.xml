@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Additional_Document_Filter_Operator__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Additional Document Filter Operator</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>EQUALS</fullName>
+                <default>true</default>
+                <label>EQUALS</label>
+            </value>
+            <value>
+                <fullName>EQUALS IGNORE CASE</fullName>
+                <default>false</default>
+                <label>EQUALS IGNORE CASE</label>
+            </value>
+            <value>
+                <fullName>LIKE</fullName>
+                <default>false</default>
+                <label>LIKE</label>
+            </value>
+            <value>
+                <fullName>LEADING LIKE</fullName>
+                <default>false</default>
+                <label>LEADING LIKE</label>
+            </value>
+            <value>
+                <fullName>LAGGING LIKE</fullName>
+                <default>false</default>
+                <label>LAGGING LIKE</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

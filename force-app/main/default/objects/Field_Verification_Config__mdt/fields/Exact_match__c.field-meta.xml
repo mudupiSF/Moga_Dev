@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Exact_match__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>if this is checked , this value is compared against integration value as exact match. But when unchecked , We can do fuzzy match</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Exact match</label>
+    <type>Checkbox</type>
+</CustomField>

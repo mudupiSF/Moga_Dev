@@ -1,0 +1,89 @@
+:host {
+    --fpg-border: #d8dde6;
+    --fpg-border-strong: #c9ced8;
+    --fpg-brand-soft: #eef2ff;
+    --fpg-brand-border: #c7d2fe;
+    --fpg-surface: #ffffff;
+    --fpg-surface-muted: #f8fafc;
+    --fpg-text: #16325c;
+    --fpg-text-muted: #5c6b7a;
+    display: block;
+}
+
+.fpg-root {
+    width: 100%;
+}
+
+.fpg-year-section {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.fpg-year-combobox {
+    display: inline-block;
+    width: 100%;
+    max-width: 20rem;
+    text-align: left;
+}
+
+.fpg-table-container {
+    width: 100%;
+    max-width: 36rem;
+    margin: 0 auto;
+    border: 1px solid var(--fpg-border-strong);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    background: var(--fpg-surface-muted);
+}
+
+.fpg-section-title {
+    text-align: center;
+    color: var(--fpg-text);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+
+.fpg-subsection-title {
+    text-align: center;
+    color: var(--fpg-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem;
+}
+
+.fpg-column-border {
+    border-right: 1px solid var(--fpg-border);
+    border-left: 1px solid var(--fpg-border);
+    border-bottom: 1px solid var(--fpg-border);
+    text-align: center;
+    color: var(--fpg-text);
+}
+
+thead th.fpg-column-border {
+    background: var(--fpg-brand-soft);
+    color: #312e81;
+    font-weight: 700;
+    border-color: var(--fpg-brand-border);
+}
+
+.fpg-data-cell {
+    background: var(--fpg-surface) !important;
+}
+
+.fpg-month-cell {
+    text-align: left;
+    padding-left: 0.75rem;
+}
+
+.fpg-total-row {
+    background: var(--fpg-brand-soft) !important;
+    color: #312e81;
+    font-weight: 700;
+}
+
+.fpg-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}

@@ -1,0 +1,190 @@
+<template>
+    <div class="form-layout">
+        <template if:true={isLoading}>
+            <div class="lt-loading-overlay">
+                <lightning-spinner alternative-text="Loading loan terms" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Final Terms - Scheme -->
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:contract_doc" size="small" class="form-header-icon"></lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Scheme</h1>
+                            <p class="form-header-subtitle">Select scheme for pay-in and pay-out derivation</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnlyMode}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Scheme Code</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{selectedSchemeLabel}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        Scheme Code
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <lightning-combobox
+                                            value={selectedSchemeId}
+                                            label="Scheme"
+                                            variant="label-hidden"
+                                            placeholder="Select scheme"
+                                            options={schemeOptions}
+                                            onchange={handleSchemeChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Terms - Pay-In -->
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:contract_doc" size="small" class="lt-header-icon"></lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Pay-In</h1>
+                            <p class="form-header-subtitle">Review and update pay-in values</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <template for:each={payInFieldRows} for:item="field">
+                            <div key={field.key} class="form-field-wrap">
+                                <template lwc:if={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">{field.label}</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{field.displayValue}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">{field.label}</div>
+                                        <div class="form-field-value-col">
+                                            <template lwc:if={field.isPicklist}>
+                                                <lightning-combobox
+                                                    data-key={field.key}
+                                                    value={field.value}
+                                                    label={field.label}
+                                                    variant="label-hidden"
+                                                    options={stampingPaidByOptions}
+                                                    onchange={handlePayInFieldChange}>
+                                                </lightning-combobox>
+                                            </template>
+                                            <template lwc:else>
+                                                <input
+                                                    type={field.inputType}
+                                                    class="slds-input"
+                                                    data-key={field.key}
+                                                    value={field.value}
+                                                    onchange={handlePayInFieldChange} />
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Terms - Pay-Out -->
+            <template lwc:if={showPayOut}>
+                <div class="lt-card">
+                    <div class="lt-card-header">
+                        <div class="lt-header-overlay"></div>
+                        <div class="lt-header-content">
+                            <div class="lt-header-icon-wrap">
+                                <lightning-icon icon-name="utility:contract_doc" size="small" class="lt-header-icon"></lightning-icon>
+                            </div>
+                            <div class="lt-header-text">
+                                <h1 class="lt-header-title">Pay-Out</h1>
+                                <p class="lt-header-subtitle">Review and update pay-out values</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lt-card-body">
+                        <div class="lt-fields-grid">
+                            <template for:each={payOutFieldRows} for:item="field">
+                                <div key={field.key} class="lt-field-wrap">
+                                    <template lwc:if={isReadOnlyMode}>
+                                        <div class="lt-info-cell lt-info-cell-readonly">
+                                            <div class="lt-info-cell-header">
+                                                <span class="lt-info-label">{field.label}</span>
+                                            </div>
+                                            <div class="lt-info-value-wrap">
+                                                <p class="lt-info-value">{field.displayValue}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="lt-field-cell">
+                                            <div class="lt-field-label">{field.label}</div>
+                                            <div class="lt-field-value-col">
+                                                <input
+                                                    type={field.inputType}
+                                                    class="lt-field-input"
+                                                    data-key={field.key}
+                                                    value={field.value}
+                                                    onchange={handlePayOutFieldChange} />
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+        <div class="p4-footer-wrapper">
+            <div class="p4-footer">
+                <div class="p4-btn-wrapper">
+                    <button
+                        type="button"
+                        class={nextButtonClass}
+                        disabled={isNextDisabled}
+                        aria-disabled={isNextDisabled}
+                        onclick={handleNextButton}>
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <template if:true={showIntegrationModal}>
+            <c-integration-progress-modal
+                status={integrationStatus}
+                stages={integrationStages}
+                current-stage-index={integrationCurrentStageIndex}>
+            </c-integration-progress-modal>
+        </template>
+    </div>
+</template>

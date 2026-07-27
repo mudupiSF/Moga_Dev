@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Persona__c</fullName>
+    <label>Persona</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Agency</fullName>
+                <default>false</default>
+                <label>Agency</label>
+            </value>
+            <value>
+                <fullName>Credit</fullName>
+                <default>false</default>
+                <label>Credit</label>
+            </value>
+            <value>
+                <fullName>CPA</fullName>
+                <default>false</default>
+                <label>CPA</label>
+            </value>
+            <value>
+                <fullName>FCU Agency</fullName>
+                <default>false</default>
+                <label>FCU Agency</label>
+            </value>
+            <value>
+                <fullName>FCU Sampler</fullName>
+                <default>false</default>
+                <label>FCU Sampler</label>
+            </value>
+            <value>
+                <fullName>FCU Manager</fullName>
+                <default>false</default>
+                <label>FCU Manager</label>
+            </value>
+            <value>
+                <fullName>FCU Support Staff</fullName>
+                <default>false</default>
+                <label>FCU Support Staff</label>
+            </value>
+            <value>
+                <fullName>OPS Maker</fullName>
+                <default>false</default>
+                <label>OPS Maker</label>
+            </value>
+            <value>
+                <fullName>OPS Checker</fullName>
+                <default>false</default>
+                <label>OPS Checker</label>
+            </value>
+            <value>
+                <fullName>RE</fullName>
+                <default>false</default>
+                <label>RE</label>
+            </value>
+            <value>
+                <fullName>Sales</fullName>
+                <default>false</default>
+                <label>Sales</label>
+            </value>
+            <value>
+                <fullName>Underwriter</fullName>
+                <default>false</default>
+                <label>Underwriter</label>
+            </value>
+            <value>
+                <fullName>RO</fullName>
+                <default>false</default>
+                <label>RO</label>
+            </value>
+            <value>
+                <fullName>OPS Manager</fullName>
+                <default>false</default>
+                <label>OPS Manager</label>
+            </value>
+            <value>
+                <fullName>FCU Agency Persona</fullName>
+                <default>false</default>
+                <label>FCU Agency Persona</label>
+            </value>
+            <value>
+                <fullName>FCU Manager Persona</fullName>
+                <default>false</default>
+                <label>FCU Manager Persona</label>
+            </value>
+            <value>
+                <fullName>FCU Internal</fullName>
+                <default>false</default>
+                <label>FCU Internal</label>
+            </value>
+            <value>
+                <fullName>HL CCPA</fullName>
+                <default>false</default>
+                <label>HL CCPA</label>
+            </value>
+            <value>
+                <fullName>FCU Sampler Persona</fullName>
+                <default>false</default>
+                <label>FCU Sampler Persona</label>
+            </value>
+            <value>
+                <fullName>HL Underwriter</fullName>
+                <default>false</default>
+                <label>HL Underwriter</label>
+            </value>
+            <value>
+                <fullName>HL ACM</fullName>
+                <default>false</default>
+                <label>HL ACM</label>
+            </value>
+            <value>
+                <fullName>OPS CPA</fullName>
+                <default>false</default>
+                <label>OPS CPA</label>
+            </value>
+            <value>
+                <fullName>HL SM</fullName>
+                <default>false</default>
+                <label>HL SM</label>
+            </value>
+            <value>
+                <fullName>HL ASM</fullName>
+                <default>false</default>
+                <label>HL ASM</label>
+            </value>
+            <value>
+                <fullName>HL RSM</fullName>
+                <default>false</default>
+                <label>HL RSM</label>
+            </value>
+            <value>
+                <fullName>HL RBM</fullName>
+                <default>false</default>
+                <label>HL RBM</label>
+            </value>
+            <value>
+                <fullName>HL NBM</fullName>
+                <default>false</default>
+                <label>HL NBM</label>
+            </value>
+            <value>
+                <fullName>HL RO</fullName>
+                <default>false</default>
+                <label>HL RO</label>
+            </value>
+            <value>
+                <fullName>HL STL</fullName>
+                <default>false</default>
+                <label>HL STL</label>
+            </value>
+            <value>
+                <fullName>HL DSA</fullName>
+                <default>false</default>
+                <label>HL DSA</label>
+            </value>
+            <value>
+                <fullName>HL HDT</fullName>
+                <default>false</default>
+                <label>HL HDT</label>
+            </value>
+            <value>
+                <fullName>HL BH</fullName>
+                <default>false</default>
+                <label>HL BH</label>
+            </value>
+            <value>
+                <fullName>HL NSM</fullName>
+                <default>false</default>
+                <label>HL NSM</label>
+            </value>
+            <value>
+                <fullName>CA</fullName>
+                <default>false</default>
+                <label>CA</label>
+            </value>
+            <value>
+                <fullName>CEO</fullName>
+                <default>false</default>
+                <label>CEO</label>
+            </value>
+            <value>
+                <fullName>HL CPA</fullName>
+                <default>false</default>
+                <label>HL CPA</label>
+            </value>
+            <value>
+                <fullName>HL FI</fullName>
+                <default>false</default>
+                <label>HL FI</label>
+            </value>
+            <value>
+                <fullName>SBB CPC Operations</fullName>
+                <default>false</default>
+                <label>SBB CPC Operations</label>
+            </value>
+            <value>
+                <fullName>HL CRO</fullName>
+                <default>false</default>
+                <label>HL CRO</label>
+            </value>
+            <value>
+                <fullName>HL Legal Agency</fullName>
+                <default>false</default>
+                <label>HL Legal Agency</label>
+            </value>
+            <value>
+                <fullName>HL Technical Agency</fullName>
+                <default>false</default>
+                <label>HL Technical Agency</label>
+            </value>
+            <value>
+                <fullName>HL Legal Manager</fullName>
+                <default>false</default>
+                <label>HL Legal Manager</label>
+            </value>
+            <value>
+                <fullName>HL Technical Manager</fullName>
+                <default>false</default>
+                <label>HL Technical Manager</label>
+            </value>
+            <value>
+                <fullName>Auditor</fullName>
+                <default>false</default>
+                <label>Auditor</label>
+            </value>
+            <value>
+                <fullName>SBB CENTRAL OPERATION CPU LOAN TEAM</fullName>
+                <default>false</default>
+                <label>SBB CENTRAL OPERATION CPU LOAN TEAM</label>
+            </value>
+            <value>
+                <fullName>SBB Central Operations</fullName>
+                <default>false</default>
+                <label>SBB Central Operations</label>
+            </value>
+            <value>
+                <fullName>Vendor CPA</fullName>
+                <default>false</default>
+                <label>Vendor CPA</label>
+            </value>
+            <value>
+                <fullName>Audit</fullName>
+                <default>false</default>
+                <label>Audit</label>
+            </value>
+            <value>
+                <fullName>Vendor</fullName>
+                <default>false</default>
+                <label>Vendor</label>
+            </value>
+            <value>
+                <fullName>FI External Agency User</fullName>
+                <default>false</default>
+                <label>FI External Agency User</label>
+            </value>
+            <value>
+                <fullName>Legal External Agency User</fullName>
+                <default>false</default>
+                <label>Legal External Agency User</label>
+            </value>
+            <value>
+                <fullName>Technical External Agency User</fullName>
+                <default>false</default>
+                <label>Technical External Agency User</label>
+            </value>
+            <value>
+                <fullName>PD External Agency User</fullName>
+                <default>false</default>
+                <label>PD External Agency User</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

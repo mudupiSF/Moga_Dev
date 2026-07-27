@@ -1,0 +1,65 @@
+@import "c/commonStyles";
+
+.eqd-spinner {
+    min-height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.searchable-dropdown .dropdown-list {
+    position: slds-is-absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 7000;
+    margin-top: slds-var-m-top_xxx-small;
+}
+
+.searchable-dropdown .dropdown-option {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    font-size: slds-text-body_regular;
+    border-bottom: 1px solid #f3f3f3;
+}
+
+.searchable-dropdown .dropdown-option:hover {
+    background-color: #f3f3f3;
+}
+
+.searchable-dropdown .dropdown-option:last-child {
+    border-bottom: none;
+}
+
+.user-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+}
+
+.user-links .user-link {
+    white-space: nowrap;
+}
+
+.user-links .user-link:not(:last-child)::after {
+    content: "|";
+    margin-left: 0.5rem;
+    color: #dddbda;
+}
+
+@media screen and (max-width: 768px) {
+    .user-links {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .user-links .user-link:not(:last-child)::after {
+        display: none;
+    }
+}

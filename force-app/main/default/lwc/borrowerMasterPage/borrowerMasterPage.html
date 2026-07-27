@@ -1,0 +1,1102 @@
+<template>
+    <div class="bmp-page-layout"
+        onopendynamiccomponentmodal={handleOpenDynamicComponentModal}
+        onintegrationprogressupdate={handleIntegrationProgressUpdate} >
+
+        <!-- ══ LOADING OVERLAY ══════════════════════════════════════════════ -->
+        <template if:true={isLoading}>
+            <div class="bmp-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ══ SECTION 1 — APPLICATION DETAILS (fully static) ═══════════════ -->
+        <div class="bmp-card">
+            <div class="bmp-card-header">
+                <div class="bmp-header-overlay"></div>
+                <div class="bmp-header-content">
+                    <div class="bmp-header-icon-wrap">
+                        <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                    </div>
+                    <div class="bmp-header-text">
+                        <h1 class="bmp-header-title">Application Details</h1>
+                        <p class="bmp-header-subtitle">Select product and applicant details</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bmp-card-body">
+                <div class="bmp-fields-grid">
+
+                    <!-- Product Type -->
+                    <div class="bmp-field-wrap">
+                        <div class="bmp-info-cell">
+                            <div class="bmp-info-cell-header"><span class="field-emoji info-emoji">📦</span><span class="bmp-info-label">Product Type</span></div>
+                            <div class="bmp-info-value-wrap"><p class="bmp-info-value">{productTypeLabel}</p></div>
+                        </div>
+                        <!--<template if:true={isLeadDetailsStage}>
+                            <div class="bmp-field-cell">
+                                <div class="bmp-field-label">
+                                    <span class="field-emoji info-emoji">📦</span>
+                                    Product Type
+                                    <span class="bmp-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-combobox
+                                        value={productType}
+                                        label="Product Type"
+                                        variant="label-hidden"
+                                        options={productTypeOptions}
+                                        placeholder="Select product type"
+                                        onchange={handleProductTypeChange}
+                                        disabled={isProductTypeReadonly}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:true={isNotLeadDetailsStage}>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="field-emoji info-emoji">📦</span><span class="bmp-info-label">Product Type</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{productType}</p></div>
+                            </div>
+                        </template>-->
+                    </div>
+
+                    <!-- Number of Vehicles -->
+                    <div class="bmp-field-wrap">
+                        <template if:true={numberOfVehicleUIROBehaviour}>
+                            <div class="bmp-field-cell">
+                                <div class="bmp-field-label">
+                                    Number of Vehicles
+                                    <span class="bmp-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="bmp-field-value-col">
+                                    <div class="bmp-radio-group">
+                                        <label class="bmp-radio-label">
+                                            <input type="radio" class="bmp-radio-input"
+                                                name="numberOfVehicles" value="Single"
+                                                checked={isNumberOfVehiclesSingle}
+                                                disabled={isNumberOfVehiclesReadonly}
+                                                onchange={handleNumberOfVehiclesChange} />
+                                            <span class="bmp-radio-circle"></span>
+                                            <span class="bmp-radio-text">Single Vehicle</span>
+                                        </label>
+                                        <label class="bmp-radio-label">
+                                            <input type="radio" class="bmp-radio-input"
+                                                name="numberOfVehicles" value="Multiple"
+                                                checked={isNumberOfVehiclesMultiple}
+                                                disabled={isNumberOfVehiclesReadonly}
+                                                onchange={handleNumberOfVehiclesChange} />
+                                            <span class="bmp-radio-circle"></span>
+                                            <span class="bmp-radio-text">Multiple Vehicles</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:true={isNotLeadDetailsStage}>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Number of Vehicles</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{numberOfVehicles}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Vehicle Type (Two Wheeler only) -->
+                    <template if:true={showVehicleTypeField}>
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <span class="bmp-field-emoji">{productTypeEmoji}</span>
+                                        Vehicle Type
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-radio-group">
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="vehicleType" value="New"
+                                                    checked={isVehicleTypeNew}
+                                                    onchange={handleVehicleTypeChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">New</span>
+                                            </label>
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="vehicleType" value="Refinance"
+                                                    checked={isVehicleTypeRefinance}
+                                                    onchange={handleVehicleTypeChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">Refinance</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="field-emoji info-emoji">{productTypeEmoji}</span><span class="bmp-info-label">Vehicle Type</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{vehicleType}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- Application Type -->
+                    <div class="bmp-field-wrap">
+                        <template if:true={isLeadDetailsStage}>
+                            <div class="bmp-field-cell">
+                                <div class="bmp-field-label">
+                                    <span class="field-emoji info-emoji">👤</span>
+                                    Application Type
+                                    <span class="bmp-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="bmp-field-value-col">
+                                    <div class="bmp-radio-group">
+                                        <label class="bmp-radio-label">
+                                            <input type="radio" class="bmp-radio-input"
+                                                name="applicationType" value="Individual"
+                                                checked={isApplicationTypeIndividual}
+                                                disabled={isApplicationTypeReadonly}
+                                                onchange={handleApplicationTypeChange} />
+                                            <span class="bmp-radio-circle"></span>
+                                            <span class="bmp-radio-text">Individual</span>
+                                        </label>
+                                        <label class="bmp-radio-label">
+                                            <input type="radio" class="bmp-radio-input"
+                                                name="applicationType" value="Non-Individual"
+                                                checked={isApplicationTypeNonIndividual}
+                                                disabled={isApplicationTypeReadonly}
+                                                onchange={handleApplicationTypeChange} />
+                                            <span class="bmp-radio-circle"></span>
+                                            <span class="bmp-radio-text">Non-Individual</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:true={isNotLeadDetailsStage}>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="field-emoji info-emoji">👤</span><span class="bmp-info-label">Application Type</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{applicationType}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- NI Fields: Customer Type / Applicant Type / Entity Name -->
+                    <template if:true={showNIFields}>
+
+                        <!-- Customer Type -->
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <span class="bmp-field-emoji">👥</span>
+                                        Customer Type
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            value={customerType}
+                                            label="Customer Type"
+                                            variant="label-hidden"
+                                            options={customerTypeOptions}
+                                            placeholder="Select Customer Type"
+                                            onchange={handleCustomerTypeChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Customer Type</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{customerType}</p></div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Applicant Type (Entity Type) -->
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <span class="field-emoji info-emoji">📋</span>
+                                        Applicant Type (Entity Type)
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            value={applicantType}
+                                            label="Applicant Type"
+                                            variant="label-hidden"
+                                            options={applicantTypeOptionsComputed}
+                                            placeholder="Select Applicant Type"
+                                            onchange={handleApplicantTypeChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="field-emoji info-emoji">📋</span><span class="bmp-info-label">Applicant Type (Entity Type)</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{applicantType}</p></div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Entity Name -->
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <span class="field-emoji info-emoji">🏢</span>
+                                        Entity Name
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-editable-input-wrap">
+                                            <input type="text"
+                                                class="bmp-input"
+                                                value={entityName}
+                                                placeholder="Enter entity name"
+                                                oninput={handleEntityNameChange} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="field-emoji info-emoji">🏢</span><span class="bmp-info-label">Entity Name</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{entityName}</p></div>
+                                </div>
+                            </template>
+                        </div>
+
+                    </template>
+
+                    <!-- Segment (Two Wheeler + New only) -->
+                    <template if:true={showSegmentField}>
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <span class="bmp-field-emoji">⚙️</span>
+                                        Segment
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            value={segment}
+                                            label="Segment"
+                                            variant="label-hidden"
+                                            options={segmentOptions}
+                                            placeholder="Select Segment"
+                                            onchange={handleSegmentChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="field-emoji info-emoji">⚙️</span><span class="bmp-info-label">Segment</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{segment}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                </div>
+            </div>
+        </div>
+        <!-- END Application Details -->
+
+        <!-- ══ SECTION 2 — LOAN BASIC INFO ══════════════════════════════════ -->
+        <template if:true={showLoanBasicInfo}>
+            <div class="bmp-card">
+                <div class="bmp-card-header">
+                    <div class="bmp-header-overlay"></div>
+                    <div class="bmp-header-content">
+                        <div class="bmp-header-icon-wrap">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                        </div>
+                        <div class="bmp-header-text">
+                            <h1 class="bmp-header-title">Loan Basic Info</h1>
+                            <p class="bmp-header-subtitle">Update application information</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bmp-card-body">
+                    <div class="bmp-fields-grid">
+                        <!-- ── Account (lookup: editable in Lead Details stage, else readonly) ── -->
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        Account
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-record-picker
+                                            value={lbiAccountId}
+                                            label="Account"
+                                            variant="label-hidden"
+                                            object-api-name="Account"
+                                            placeholder="Search Account..."
+                                            display-info={lbiAccountDisplayInfo}
+                                            matching-info={lbiAccountMatchingInfo}
+                                            onchange={handleLbiAccountIdChange}>
+                                        </lightning-record-picker>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Account</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{lbiAccountName}</p></div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- ── Lead Number (always readonly) ── -->
+                        <div class="bmp-field-wrap">
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Lead Number</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{lbiLeadNumber}</p></div>
+                            </div>
+
+                            
+                        </div>   
+                        
+                        <!-- ── Purpose of Purchase (picklist: editable in Lead Details stage, else readonly) ── -->
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">Purpose of Purchase</div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            value={lbiPurposeOfPurchase}
+                                            label="Purpose of Purchase"
+                                            variant="label-hidden"
+                                            options={lbiPurposeOfPurchaseOptions}
+                                            placeholder="Select Purpose of Purchase"
+                                            onchange={handleLbiPurposeOfPurchaseChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Purpose of Purchase</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{lbiPurposeOfPurchase}</p></div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- ── Agent Branch Name (always readonly) ── -->
+                        <div class="bmp-field-wrap">
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Agent Branch Name</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{lbiAgentBranchName}</p></div>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+            </div>
+        </template>
+        <!-- END Loan Basic Info -->
+
+        <!-- ══ SECTION 3 — LOAN DETAIL ═══════════════════════════════════════ -->
+        <template if:true={showLoanDetail}>
+            <div class="bmp-card">
+                <div class="bmp-card-header">
+                    <div class="bmp-header-overlay"></div>
+                    <div class="bmp-header-content">
+                        <div class="bmp-header-icon-wrap">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                        </div>
+                        <div class="bmp-header-text">
+                            <h1 class="bmp-header-title">Loan Detail</h1>
+                            <p class="bmp-header-subtitle">Loan and vehicle details</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bmp-card-body">
+                    <div class="bmp-fields-grid">
+                        <!-- ── Segment (readonly, visible for Two Wheeler product only) ── -->
+                        <template if:true={showLdSegment}>
+                            <div class="bmp-field-wrap">
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header">
+                                        <span class="bmp-info-label">Segment</span>
+                                    </div>
+                                    <div class="bmp-info-value-wrap">
+                                        <p class="bmp-info-value">{ldSegment}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- ── Required Loan Amount (always editable currency) ── -->
+                        <div class="bmp-field-wrap">
+                            <div class="bmp-editable-section">
+                                <label class="bmp-editable-label">
+                                    Required Loan Amount (₹)
+                                    <span class="bmp-required-indicator" title="Required">*</span>
+                                </label>
+                                <div class="bmp-editable-input-wrap">
+                                    <input type="number" step="0.01" inputmode="decimal"
+                                        class="bmp-input"
+                                        value={ldRequiredLoanAmount}
+                                        data-key="requiredLoanAmount"
+                                        data-section="loanDetail"
+                                        placeholder="Enter required loan amount"
+                                        oninput={handleGenericInput} />
+                                    <span class="bmp-editable-badge">Editable</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <!-- END Loan Detail -->
+
+        <!-- ══ SECTION 4 — PROFESSIONAL DETAIL ══════════════════════════════ -->
+        <template if:true={showProfessionalDetail}>
+            <div class="bmp-card">
+                <div class="bmp-card-header">
+                    <div class="bmp-header-overlay"></div>
+                    <div class="bmp-header-content">
+                        <div class="bmp-header-icon-wrap">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                        </div>
+                        <div class="bmp-header-text">
+                            <h1 class="bmp-header-title">Professional Detail</h1>
+                            <p class="bmp-header-subtitle">Employment and income details</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bmp-card-body">
+                    <div class="bmp-fields-grid">
+                        <!-- ── Profile Type (picklist: editable in Lead Details stage, else readonly) ── -->
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <span class="field-emoji info-emoji">👤</span>
+                                        Profile Type
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            value={pdProfileType}
+                                            label="Profile Type"
+                                            variant="label-hidden"
+                                            options={pdProfileTypeOptions}
+                                            placeholder="Select Profile Type"
+                                            onchange={handlePdProfileTypeChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="field-emoji info-emoji">👤</span><span class="bmp-info-label">Profile Type</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{pdProfileType}</p></div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- ── Income Available (radio: Yes / No) ── -->
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <span class="field-emoji info-emoji">💰</span>
+                                        Income Available
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-radio-group">
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="pdIncomeAvailable" value="Yes"
+                                                    checked={isPdIncomeAvailableYes}
+                                                    onchange={handlePdIncomeAvailableChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">Yes</span>
+                                            </label>
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="pdIncomeAvailable" value="No"
+                                                    checked={isPdIncomeAvailableNo}
+                                                    onchange={handlePdIncomeAvailableChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="field-emoji info-emoji">💰</span><span class="bmp-info-label">Income Available</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{pdIncomeAvailable}</p></div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- ── Annual Income (currency: visible when incomeAvailable = Yes) ── -->
+                        <template if:true={showPdAnnualIncome}>
+                            <div class="bmp-field-wrap">
+                                <template if:true={isLeadDetailsStage}>
+                                    <div class="bmp-editable-section">
+                                        <span class="bmp-field-emoji">₹</span>
+                                        Annual Income (₹)
+                                        <div class="bmp-editable-input-wrap">
+                                            <input type="number" step="0.01" inputmode="decimal"
+                                                class="bmp-input"
+                                                value={pdAnnualIncome}
+                                                placeholder="Enter annual income"
+                                                oninput={handlePdAnnualIncomeInput} />
+                                            <span class="bmp-editable-badge">Editable</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={isNotLeadDetailsStage}>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><span class="field-emoji info-emoji">₹</span><span class="bmp-info-label">Annual Income</span></div>
+                                        <div class="bmp-info-value-wrap"><p class="bmp-info-value">{pdAnnualIncome}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <!-- ── Evaluation Type (picklist: visible for Non-Individual only) ── -->
+                        <template if:true={showPdEvaluationType}>
+                            <div class="bmp-field-wrap">
+                                <template if:true={isLeadDetailsStage}>
+                                    <div class="bmp-field-cell">
+                                        <div class="bmp-field-label">Evaluation Type</div>
+                                        <div class="bmp-field-value-col">
+                                            <lightning-combobox
+                                                value={pdEvaluationType}
+                                                label="Evaluation Type"
+                                                variant="label-hidden"
+                                                options={pdEvaluationTypeOptions}
+                                                placeholder="Select Evaluation Type"
+                                                onchange={handlePdEvaluationTypeChange}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={isNotLeadDetailsStage}>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><span class="bmp-info-label">Evaluation Type</span></div>
+                                        <div class="bmp-info-value-wrap"><p class="bmp-info-value">{pdEvaluationType}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <!-- END Professional Detail -->
+
+        <!-- ══ SECTION 5 — DOCUMENT VERIFICATION ════════════════════════════ -->
+        <template if:true={showDocumentVerification}>
+            <div class="bmp-card">
+                <div class="bmp-card-header">
+                    <div class="bmp-header-overlay"></div>
+                    <div class="bmp-header-content">
+                        <div class="bmp-header-icon-wrap">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                        </div>
+                        <div class="bmp-header-text">
+                            <h1 class="bmp-header-title">Document Verification</h1>
+                            <p class="bmp-header-subtitle">Document verification details</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bmp-card-body">
+                    <div class="bmp-fields-grid">
+                        <!-- ── Is PAN Available (radio: conditionally readonly when annualIncome > 4L) ── -->
+                        <div class="bmp-field-wrap">
+                            <template if:true={isNotIsPanAvailableReadonly}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">Is PAN Available</div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-radio-group">
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="dvIsPanAvailable" value="Yes"
+                                                    checked={isDvIsPanAvailableYes}
+                                                    onchange={handleDvIsPanAvailableChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">Yes</span>
+                                            </label>
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="dvIsPanAvailable" value="No"
+                                                    checked={isDvIsPanAvailableNo}
+                                                    onchange={handleDvIsPanAvailableChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isIsPanAvailableReadonly}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Is PAN Available</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{dvIsPanAvailable}</p></div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- ── PAN Card file upload (visible when isPanAvailable = Yes) ── -->
+                        <template if:true={showDvPanCard}>
+                            <div class="bmp-field-wrap">
+                                <template if:true={isLeadDetailsStage}>
+                                    <div class="bmp-field-cell">
+                                        <div class="bmp-field-label">
+                                            PAN Card
+                                            <span class="bmp-required-indicator" title="Required">*</span>
+                                        </div>
+                                        <div class="bmp-field-value-col">
+                                            <div class="bmp-file-upload-wrap">
+                                                <lightning-file-upload
+                                                    name="panCardUploadElement"
+                                                    accept=".pdf,.jpg,.jpeg,.png"
+                                                    record-id={recordId}
+                                                    label=""
+                                                    onuploadfinished={handleDvPanCardUpload}>
+                                                </lightning-file-upload>
+                                                <template if:true={dvPanCardFileName}>
+                                                    <div class="bmp-file-uploaded-bar">
+                                                        <span class="bmp-file-selected-name">{dvPanCardFileName}</span>
+                                                        <template if:true={dvPanCardContentDocumentId}>
+                                                            <button type="button" class="bmp-file-action-btn"
+                                                                data-content-document-id={dvPanCardContentDocumentId}
+                                                                data-file-type={dvPanCardFileType}
+                                                                onclick={handleFilePreviewClick}
+                                                                title="Preview file">
+                                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                            </button>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={isNotLeadDetailsStage}>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><span class="bmp-info-label">PAN Card</span></div>
+                                        <div class="bmp-info-value-wrap">
+                                            <div class="bmp-info-value-with-action-row">
+                                                <p class="bmp-info-value">{dvPanCardFileName}</p>
+                                                <template if:true={dvPanCardContentDocumentId}>
+                                                    <button type="button" class="bmp-file-action-btn"
+                                                        data-content-document-id={dvPanCardContentDocumentId}
+                                                        data-file-type={dvPanCardFileType}
+                                                        onclick={handleFilePreviewClick}
+                                                        title="Preview file">
+                                                        <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                    </button>
+                                                </template>
+                                                <lightning-icon icon-name="utility:attach" size="x-small" class="bmp-info-file-icon" title="File attached"></lightning-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <!-- ── Form 60 file upload (visible when isPanAvailable = No) ── -->
+                        <template if:true={showDvForm60}>
+                            <div class="bmp-field-wrap">
+                                <template if:true={isLeadDetailsStage}>
+                                    <div class="bmp-field-cell">
+                                        <div class="bmp-field-label">
+                                            Form 60
+                                            <span class="bmp-required-indicator" title="Required">*</span>
+                                        </div>
+                                        <div class="bmp-field-value-col">
+                                            <div class="bmp-file-upload-wrap">
+                                                <lightning-file-upload
+                                                    name="form60UploadElement"
+                                                    accept=".pdf,.jpg,.jpeg,.png"
+                                                    record-id={recordId}
+                                                    label=""
+                                                    onuploadfinished={handleDvForm60Upload}>
+                                                </lightning-file-upload>
+                                                <template if:true={dvForm60FileName}>
+                                                    <div class="bmp-file-uploaded-bar">
+                                                        <span class="bmp-file-selected-name">{dvForm60FileName}</span>
+                                                        <template if:true={dvForm60ContentDocumentId}>
+                                                            <button type="button" class="bmp-file-action-btn"
+                                                                data-content-document-id={dvForm60ContentDocumentId}
+                                                                data-file-type={dvForm60FileType}
+                                                                onclick={handleFilePreviewClick}
+                                                                title="Preview file">
+                                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                            </button>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={isNotLeadDetailsStage}>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><span class="bmp-info-label">Form 60</span></div>
+                                        <div class="bmp-info-value-wrap">
+                                            <div class="bmp-info-value-with-action-row">
+                                                <p class="bmp-info-value">{dvForm60FileName}</p>
+                                                <template if:true={dvForm60ContentDocumentId}>
+                                                    <button type="button" class="bmp-file-action-btn"
+                                                        data-content-document-id={dvForm60ContentDocumentId}
+                                                        data-file-type={dvForm60FileType}
+                                                        onclick={handleFilePreviewClick}
+                                                        title="Preview file">
+                                                        <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                    </button>
+                                                </template>
+                                                <lightning-icon icon-name="utility:attach" size="x-small" class="bmp-info-file-icon" title="File attached"></lightning-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <!-- ── Extracted PAN fields (visible after upload or when data already exists) ── -->
+                        <template if:true={showDvExtractedPanFields}>
+
+                            <!-- First Name -->
+                            <div class="bmp-field-wrap">
+                                <template if:true={isLeadDetailsStage}>
+                                    <div class="bmp-editable-section">
+                                        <label class="bmp-editable-label">First Name</label>
+                                        <div class="bmp-editable-input-wrap">
+                                            <input type="text" class="bmp-input"
+                                                value={dvExtractedFirstName}
+                                                placeholder="Extracted from PAN"
+                                                oninput={handleDvExtractedFirstNameInput} />
+                                            <span class="bmp-editable-badge">Editable</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={isNotLeadDetailsStage}>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><span class="bmp-info-label">First Name</span></div>
+                                        <div class="bmp-info-value-wrap"><p class="bmp-info-value">{dvExtractedFirstName}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="bmp-field-wrap">
+                                <template if:true={isLeadDetailsStage}>
+                                    <div class="bmp-editable-section">
+                                        <label class="bmp-editable-label">Last Name</label>
+                                        <div class="bmp-editable-input-wrap">
+                                            <input type="text" class="bmp-input"
+                                                value={dvExtractedLastName}
+                                                placeholder="Extracted from PAN"
+                                                oninput={handleDvExtractedLastNameInput} />
+                                            <span class="bmp-editable-badge">Editable</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={isNotLeadDetailsStage}>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><span class="bmp-info-label">Last Name</span></div>
+                                        <div class="bmp-info-value-wrap"><p class="bmp-info-value">{dvExtractedLastName}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Date of Birth -->
+                            <div class="bmp-field-wrap">
+                                <template if:true={isLeadDetailsStage}>
+                                    <div class="bmp-editable-section">
+                                        <label class="bmp-editable-label">Date of Birth</label>
+                                        <div class="bmp-editable-input-wrap">
+                                            <input type="date" class="bmp-input"
+                                                value={dvExtractedDateOfBirth}
+                                                placeholder="Extracted from PAN"
+                                                oninput={handleDvExtractedDateOfBirthInput} />
+                                            <span class="bmp-editable-badge">Editable</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={isNotLeadDetailsStage}>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><span class="bmp-info-label">Date of Birth</span></div>
+                                        <div class="bmp-info-value-wrap"><p class="bmp-info-value">{dvExtractedDateOfBirth}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- PAN Card Number (textWithAction — Verify button) -->
+                            <div class="bmp-field-wrap">
+                                <template if:true={isLeadDetailsStage}>
+                                    <div class="bmp-field-cell">
+                                        <div class="bmp-field-label">PAN Card Number</div>
+                                        <div class="bmp-field-value-col">
+                                            <div class="bmp-input-with-action-wrap">
+                                                <input type="text" class="bmp-action-input"
+                                                    value={dvExtractedPanCardNumber}
+                                                    placeholder="Extracted from PAN"
+                                                    maxlength="10"
+                                                    oninput={handleDvExtractedPanCardNumberInput} />
+                                                <div class="bmp-input-with-action-btn-wrap">
+                                                    <button type="button" class="bmp-action-btn"
+                                                        disabled={dvPanVerifyDisabled}
+                                                        onclick={handleDvPanVerifyClick}>
+                                                        {dvPanVerifyActionLabel}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={isNotLeadDetailsStage}>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><span class="bmp-info-label">PAN Card Number</span></div>
+                                        <div class="bmp-info-value-wrap">
+                                            <div class="bmp-info-value-with-action-row">
+                                                <p class="bmp-info-value">{dvExtractedPanCardNumber}</p>
+                                                <span class="bmp-info-action-label">{dvPanVerifyActionLabel}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                        </template>
+                        <!-- pancardVerificationStatus is internal state only (hidden=true) — not rendered -->
+                    </div>
+                    <!-- PAN income warning note -->
+                    <template if:true={_showPancardNote}>
+                        <div class="bmp-status-note">
+                            <lightning-icon icon-name={_pancardNoteIcon} size="small" class="bmp-status-icon"></lightning-icon>
+                            <p class="bmp-status-text">{_pancardNoteMsg}</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+        <!-- END Document Verification -->
+
+        <!-- ══ SECTION 6 — CONTACT INFO ══════════════════════════════════════ -->
+        <template if:true={showContactInfo}>
+            <div class="bmp-card">
+                <div class="bmp-card-header">
+                    <div class="bmp-header-overlay"></div>
+                    <div class="bmp-header-content">
+                        <div class="bmp-header-icon-wrap">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                        </div>
+                        <div class="bmp-header-text">
+                            <h1 class="bmp-header-title">Contact Info</h1>
+                            <p class="bmp-header-subtitle">Contact information</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bmp-card-body">
+                    <div class="bmp-fields-grid">
+                        <!-- ── Marital Status (picklist) ── -->
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">Marital Status</div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            value={ciMaritalStatus}
+                                            label="Marital Status"
+                                            variant="label-hidden"
+                                            options={ciMaritalStatusOpts}
+                                            placeholder="Select marital status"
+                                            class="bmp-combobox"
+                                            onchange={handleCiMaritalStatusChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Marital Status</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{ciMaritalStatus}</p></div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- ── Residence Country (picklist) ── -->
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">Residence Country</div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            value={ciResidenceCountry}
+                                            label="Residence Country"
+                                            variant="label-hidden"
+                                            options={ciResidenceCountryOpts}
+                                            placeholder="Select residence country"
+                                            class="bmp-combobox"
+                                            onchange={handleCiResidenceCountryChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Residence Country</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{ciResidenceCountry}</p></div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- ── Mobile Number (textWithAction — Verify) ── -->
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        Mobile Number
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-input-with-action-wrap">
+                                            <input type="text" class="bmp-action-input"
+                                                value={ciContactNumber}
+                                                placeholder="Enter mobile number"
+                                                maxlength="10"
+                                                inputmode="numeric"
+                                                oninput={handleCiContactNumberInput} />
+                                            <div class="bmp-input-with-action-btn-wrap">
+                                                <button type="button" class="bmp-action-btn"
+                                                    disabled={ciContactVerifyDisabled}
+                                                    onclick={handleCiContactVerifyClick}>
+                                                    {ciContactVerifyLabel}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Mobile Number</span></div>
+                                    <div class="bmp-info-value-wrap">
+                                        <div class="bmp-info-value-with-action-row">
+                                            <p class="bmp-info-value">{ciContactNumber}</p>
+                                            <span class="bmp-info-action-label">{ciContactVerifyLabel}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- ── Email Address (textWithAction — Verify) ── -->
+                        <div class="bmp-field-wrap">
+                            <template if:true={isLeadDetailsStage}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        Email Address
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-input-with-action-wrap">
+                                            <input type="text" class="bmp-action-input"
+                                                value={ciEmail}
+                                                placeholder="Enter email"
+                                                maxlength="80"
+                                                oninput={handleCiEmailInput} />
+                                            <div class="bmp-input-with-action-btn-wrap">
+                                                <button type="button" class="bmp-action-btn"
+                                                    disabled={ciEmailVerifyDisabled}
+                                                    onclick={handleCiEmailVerifyClick}>
+                                                    {ciEmailVerifyLabel}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={isNotLeadDetailsStage}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Email Address</span></div>
+                                    <div class="bmp-info-value-wrap">
+                                        <div class="bmp-info-value-with-action-row">
+                                            <p class="bmp-info-value">{ciEmail}</p>
+                                            <span class="bmp-info-action-label">{ciEmailVerifyLabel}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <!-- END Contact Info -->
+
+        <!-- ══ INTEGRATION PROGRESS MODAL ═══════════════════════════════════ -->
+        <template if:true={showIntegrationProgressModal}>
+            <c-integration-progress-modal
+                status={integrationProgressModalStatus}
+                current-stage-index={integrationProgressModalCurrentStageIdx}
+                stages={integrationProgressModalStages}
+                error-message={integrationProgressModalErrorMessage}
+                onclose={handleIntegrationProgressModalClose}
+                onretry={handleIntegrationProgressModalRetry}
+                ondone={handleIntegrationProgressModalDone}>
+            </c-integration-progress-modal>
+        </template>
+        <!-- END INTEGRATION PROGRESS MODAL -->
+        <!-- ══ DYNAMIC COMPONENT MODAL ═══════════════════════════════════ -->
+        <template if:true={showDynamicComponentModal}>
+            <c-dynamic-component-modal
+                component-name={dynamicComponentName}
+                record-id={recordId}
+                component-props={dynamicComponentProps}
+                onclose={handleDynamicComponentModalClose}>
+            </c-dynamic-component-modal>
+        </template>
+        
+
+        <!-- ══ STICKY FOOTER — NEXT BUTTON ═══════════════════════════════════ -->
+        <div class="bmp-footer-wrapper">
+            <div class="bmp-footer">
+                <div class="bmp-btn-wrapper">
+                    <button type="button"
+                        class={nextButtonClass}
+                        onclick={handleNextButton}
+                        disabled={isNextDisabled}
+                        aria-disabled={isNextDisabled}>
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ── File previewer (lazy-mounted on eye-icon click) ────────────────── -->
+    <template if:true={showFilePreviewer}>
+        <c-file-previewer
+            content-document-id={previewContentDocumentId}
+            file-type={previewFileType}
+            record-id={recordId}
+            onclose={handleFilePreviewClose}>
+        </c-file-previewer>
+    </template>
+
+</template>

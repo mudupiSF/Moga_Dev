@@ -1,0 +1,988 @@
+/* Tab-based styling with side-by-side documents */
+
+.qc-root {
+    --qc-primary: #5b3cc4;
+    --qc-accent: #0ea5a3;
+    --qc-surface-tint: #f6f3ff;
+}
+
+.kpi-strip {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.kpi-pill {
+    background: var(--qc-surface-tint);
+    color: var(--qc-primary);
+    border: 1px solid color-mix(in srgb, var(--qc-primary) 20%, #ffffff);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+}
+
+/* Ensure Lightning card doesn't interfere with tab scrolling */
+/* Let Lightning card flow naturally within tab context */
+lightning-card {
+    height: auto;
+    min-height: 0;
+}
+
+lightning-card .slds-card__body {
+    overflow: visible;
+}
+
+/* Filter bar */
+.filter-bar {
+    background-color: var(--qc-surface-tint);
+    border-bottom: 2px solid var(--qc-primary);
+}
+
+.filter-controls-row {
+    flex-wrap: nowrap;
+}
+
+.filter-control-col {
+    flex: 1 1 0;
+    min-width: 220px;
+}
+
+.mismatch-filter-col {
+    flex: 2 1 520px;
+    min-width: 520px;
+}
+
+.mismatch-filter-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.mismatch-filter-label {
+    color: #181818;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.mismatch-filter-inline lightning-radio-group {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.filter-action-col {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding-bottom: 0.15rem;
+    min-width: max-content;
+}
+
+/* Save button highlight */
+.save-button-container {
+    text-align: center;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #fff4e0 0%, #fffaf0 100%);
+    border-radius: 6px;
+    border: 2px solid var(--qc-accent);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Field-Document Container */
+.field-document-container {
+    border-left: 4px solid var(--qc-primary);
+    background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+}
+
+/* Document Preview */
+.document-preview-container {
+    border: 2px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 0.5rem;
+    background: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.document-preview {
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Zoom wrapper - zoom + rotation applied here; overflow visible so rotated content isn't clipped */
+.zoom-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+.preview-image {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    image-rendering: -webkit-optimize-contrast; /* Better quality rendering for photos */
+    image-rendering: auto; /* Default for photos - smooth rendering */
+}
+
+/* Table styling */
+.slds-table th {
+    background-color: #0176d3;
+    color: white;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0.75rem;
+}
+
+.slds-table td {
+    vertical-align: top;
+    padding: 0.5rem;
+}
+
+.slds-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Applicant section */
+.applicant-section {
+    background: linear-gradient(135deg, #e8f4ff 0%, #f5f9ff 100%);
+    border-left: 4px solid #0176d3;
+}
+
+/* Child record boxes (Address, Employment, Income) */
+.child-record {
+    background: linear-gradient(135deg, #fff4e0 0%, #fffaf0 100%);
+    border-left: 4px solid #ff9a00;
+}
+
+.child-record h4 {
+    color: #ff9a00;
+}
+
+/* Compact textarea */
+lightning-textarea {
+    --slds-c-textarea-sizing-min-height: 50px;
+}
+
+/* Radio group compact */
+lightning-radio-group {
+    --slds-c-radio-group-spacing-block-start: 0.25rem;
+}
+
+/* Status badges */
+lightning-badge {
+    font-size: 0.75rem;
+}
+
+/* Tab styling */
+lightning-tabset {
+    --slds-c-tabs-item-color-border: #0176d3;
+}
+
+/* Nested tabs (scoped variant) */
+lightning-tabset[variant="scoped"] {
+    margin-top: 1rem;
+}
+
+/* Modal document preview - scale with zoom */
+.modal-preview-image {
+    max-width: none;
+    max-height: none;
+    width: auto;
+    height: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    image-rendering: -webkit-optimize-contrast; /* Better quality rendering for photos */
+    image-rendering: auto; /* Default for photos - smooth rendering */
+}
+
+/* Document preview hover effect */
+.document-preview:hover {
+    box-shadow: 0 2px 8px rgba(1, 118, 211, 0.3);
+    border: 2px solid #0176d3;
+}
+
+/* Hide API field names (keep in DOM for future use) */
+.field-api-name {
+    display: none;
+}
+
+/* Responsive Styles */
+
+/* Main container - removed fixed height to work properly in Lightning tab context */
+/* The tab itself will handle scrolling, so we don't need to constrain height here */
+.main-content-container {
+    overflow-x: hidden;
+    /* Remove any height constraints - let content flow naturally within tab */
+}
+
+/* Field-Document Container - Responsive Grid */
+.field-document-container {
+    border-left: 4px solid #0176d3;
+    background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+    margin-bottom: 1rem;
+}
+
+.field-document-container .slds-grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.field-document-container .field-details-col {
+    flex: 1 1 100%;
+    min-width: 0;
+    padding-right: 0;
+    margin-bottom: 1rem;
+}
+
+.field-document-container .document-preview-col {
+    flex: 1 1 100%;
+    min-width: 0;
+}
+
+/* Bucket layout height controls */
+.bucket-row {
+    align-items: stretch;
+    flex-wrap: nowrap;
+}
+
+.bucket-row-600 {
+    height: 600px;
+}
+
+.bucket-row-400 {
+    height: 400px;
+}
+
+.bucket-row-800 {
+    height: 800px;
+}
+
+.bucket-row-1000 {
+    height: 1000px;
+}
+
+.bucket-row-1200 {
+    height: 1200px;
+}
+
+.bucket-fields-pane {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.5rem;
+    flex: 0 0 40%;
+    max-width: 40%;
+    margin-bottom: 0;
+}
+
+.bucket-preview-pane {
+    height: 100%;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 0 0 60%;
+    max-width: 60%;
+}
+
+.bucket-height-control {
+    width: 180px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Ensure bucket preview content uses remaining height correctly */
+.bucket-preview-pane .document-preview-container {
+    flex: 1;
+    min-height: 0;
+}
+
+.bucket-preview-pane .document-preview {
+    height: 100%;
+    max-height: none;
+}
+
+/* Enforce bucket side-by-side layout against later responsive overrides */
+.field-document-container .slds-grid.bucket-row {
+    display: flex;
+    flex-wrap: nowrap !important;
+}
+
+.field-document-container .field-details-col.bucket-fields-pane {
+    flex: 0 0 40% !important;
+    max-width: 40% !important;
+    min-width: 40% !important;
+}
+
+.field-document-container .document-preview-col.bucket-preview-pane {
+    flex: 0 0 60% !important;
+    max-width: 60% !important;
+    min-width: 60% !important;
+}
+
+.field-document-container .document-preview-col.bucket-preview-pane .document-preview-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.field-document-container .document-preview-col.bucket-preview-pane .document-preview {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    max-height: none
+}
+
+.excel-preview-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #fff;
+}
+
+/* Document Preview - Responsive Heights */
+/* Adjusted max-height to work better in tab context */
+.document-preview {
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow: auto;
+    /* Reduced max-height to prevent excessive scrolling within tab */
+    max-height: 400px;
+}
+
+.document-preview img,
+.document-preview iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Filter Bar - Responsive */
+/* Adjusted sticky positioning to work within Lightning tab context */
+.filter-bar {
+    background-color: #f3f3f3;
+    border-bottom: 2px solid #0176d3;
+    /* Removed sticky positioning to prevent UI issues in tab context */
+    /* position: sticky; */
+    /* top: 0; */
+    z-index: 100;
+    padding: 0.75rem;
+}
+
+.filter-bar .slds-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-bar .slds-col {
+    flex: 1 1 100%;
+    min-width: 0;
+}
+
+/* Buttons - Responsive Stacking */
+.button-group-responsive {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.button-group-responsive lightning-button {
+    flex: 0 0 auto;
+    min-width: auto;
+}
+
+/* Tabs - Scrollable */
+/* Ensure tabset doesn't interfere with parent tab scrolling */
+lightning-tabset {
+    --slds-c-tabs-item-color-border: #0176d3;
+    overflow-x: auto;
+    overflow-y: visible;
+    /* Let parent Lightning tab handle vertical scrolling */
+}
+
+lightning-tabset .slds-tabs_default__nav {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+/* Tab Content - Scrollable */
+/* Adjusted to work within Lightning tab context - let parent handle scrolling */
+.tab-content-scrollable {
+    overflow-x: hidden;
+    padding: 1rem;
+    /* Remove fixed max-height to prevent component from moving upward in tab */
+    /* Lightning tab will handle the scroll container */
+}
+
+/* Modal - Responsive */
+.slds-modal__container {
+    max-width: 95vw;
+    width: 95vw;
+    max-height: 95vh;
+    margin: 1rem auto;
+}
+
+.slds-modal__content {
+    max-height: calc(95vh - 120px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Warning Messages - Responsive */
+.slds-notify {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Responsive Breakpoints */
+
+/* Large Desktop (1366px and above) */
+@media (min-width: 1366px) {
+    .field-document-container .field-details-col {
+        flex: 0 0 40%;
+        max-width: 40%;
+        padding-right: 1rem;
+    }
+    
+    .field-document-container .document-preview-col {
+        flex: 0 0 60%;
+        max-width: 60%;
+    }
+    
+    .document-preview {
+        max-height: 65vh;
+    }
+    
+    .filter-bar .slds-col {
+        flex: 0 0 33.333%;
+        max-width: 33.333%;
+    }
+
+    .filter-bar .mismatch-filter-col {
+        flex: 0 0 50%;
+        max-width: 50%;
+        min-width: 560px;
+    }
+    
+    .button-group-responsive {
+        flex-wrap: nowrap;
+    }
+}
+
+/* Medium Desktop (1024px - 1365px) */
+@media (min-width: 1024px) and (max-width: 1365px) {
+    .field-document-container .field-details-col {
+        flex: 0 0 45%;
+        max-width: 45%;
+        padding-right: 1rem;
+    }
+    
+    .field-document-container .document-preview-col {
+        flex: 0 0 55%;
+        max-width: 55%;
+    }
+    
+    .document-preview {
+        max-height: 60vh;
+    }
+
+    .filter-bar .mismatch-filter-col {
+        flex: 0 0 65%;
+        max-width: 65%;
+        min-width: 480px;
+    }
+}
+
+/* Tablet (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .field-document-container .field-details-col {
+        flex: 0 0 50%;
+        max-width: 50%;
+        padding-right: 1rem;
+    }
+    
+    .field-document-container .document-preview-col {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    
+    .document-preview {
+        max-height: 55vh;
+    }
+    
+    .filter-bar .slds-col {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .filter-bar .mismatch-filter-col {
+        flex: 0 0 100%;
+        max-width: 100%;
+        min-width: 100%;
+    }
+
+    .mismatch-filter-inline {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .mismatch-filter-inline lightning-radio-group {
+        flex: 1 1 100%;
+    }
+}
+
+/* Mobile (below 768px) */
+@media (max-width: 767px) {
+    /* Stack field details and document preview vertically */
+    .field-document-container .field-details-col {
+        flex: 1 1 100%;
+        max-width: 100%;
+        padding-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .field-document-container .document-preview-col {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    
+    .document-preview {
+        max-height: 50vh;
+        min-height: 300px;
+    }
+    
+    /* Stack filter inputs */
+    .filter-bar .slds-col {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .filter-bar .mismatch-filter-col {
+        min-width: 100%;
+    }
+
+    .mismatch-filter-inline {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .mismatch-filter-inline lightning-radio-group {
+        flex: 1 1 100%;
+    }
+    
+    /* Stack buttons vertically */
+    .button-group-responsive {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .button-group-responsive lightning-button {
+        width: 100%;
+        min-width: 100%;
+    }
+    
+    .save-button-container {
+        flex-direction: column;
+    }
+    
+    /* Smaller text on mobile */
+    .slds-text-heading_medium {
+        font-size: 1rem;
+    }
+    
+    .slds-text-heading_small {
+        font-size: 0.875rem;
+    }
+    
+    /* Compact spacing */
+    .slds-p-around_medium {
+        padding: 0.5rem;
+    }
+    
+    .slds-m-bottom_small {
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Modal adjustments */
+    .slds-modal__container {
+        max-width: 100vw;
+        width: 100vw;
+        max-height: 100vh;
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    .slds-modal__content {
+        max-height: calc(100vh - 100px);
+        padding: 0.75rem;
+    }
+    
+    /* Tab navigation - horizontal scroll */
+    lightning-tabset .slds-tabs_default__nav {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    lightning-tab {
+        flex: 0 0 auto;
+        min-width: 120px;
+    }
+    
+    /* Compact document controls */
+    .document-controls {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+    
+    .document-controls lightning-button-icon {
+        flex: 0 0 auto;
+    }
+}
+
+/* Very Small Mobile (below 480px) */
+@media (max-width: 479px) {
+    .document-preview {
+        max-height: 40vh;
+        min-height: 250px;
+    }
+    
+    .slds-modal__content {
+        padding: 0.5rem;
+    }
+    
+    lightning-textarea {
+        --slds-c-textarea-sizing-min-height: 40px;
+    }
+    
+    .field-document-container {
+        padding: 0.5rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .filter-bar,
+    .button-group-responsive,
+    lightning-button {
+        display: none;
+    }
+    
+    .field-document-container {
+        page-break-inside: avoid;
+    }
+}
+
+/* Accessibility - Focus Styles */
+.field-document-container:focus-within {
+    outline: 2px solid #0176d3;
+    outline-offset: 2px;
+}
+
+/* Smooth Scrolling */
+/* Removed main-content-container and tab-content-scrollable from smooth scroll 
+   to prevent conflicts with Lightning tab scrolling */
+.slds-modal__content {
+    scroll-behavior: smooth;
+}
+
+/* Scrollbar Styling */
+.main-content-container::-webkit-scrollbar,
+.tab-content-scrollable::-webkit-scrollbar,
+.slds-modal__content::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.main-content-container::-webkit-scrollbar-track,
+.tab-content-scrollable::-webkit-scrollbar-track,
+.slds-modal__content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.main-content-container::-webkit-scrollbar-thumb,
+.tab-content-scrollable::-webkit-scrollbar-thumb,
+.slds-modal__content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.main-content-container::-webkit-scrollbar-thumb:hover,
+.tab-content-scrollable::-webkit-scrollbar-thumb:hover,
+.slds-modal__content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Send Back Modal Form Styling */
+.slds-modal__content .slds-form {
+    padding: 0;
+}
+
+.slds-modal__content .slds-form-element {
+    margin-bottom: 0;
+}
+
+.slds-modal__content .slds-form-element__label {
+    font-weight: 600;
+    color: #080707;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.slds-modal__content .slds-grid {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.slds-modal__content .slds-grid:last-of-type {
+    margin-bottom: 0;
+}
+
+.slds-modal__content .slds-col {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+/* Ensure form fields are properly aligned and full width */
+.slds-modal__content lightning-combobox,
+.slds-modal__content lightning-input-field {
+    width: 100%;
+    display: block;
+}
+
+/* Form element alignment */
+.slds-modal__content .slds-form-element {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Modal footer button alignment */
+.slds-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.slds-modal__footer-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Tablet breakpoint - ensure fields stack properly */
+@media (max-width: 1023px) and (min-width: 768px) {
+    .slds-modal__content .slds-form .slds-col {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    
+    /* On tablet, stack Stage and Sub Stage vertically */
+    .slds-modal__content .slds-form .slds-grid:first-of-type .slds-col {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+}
+
+/* Modal form responsive - Mobile */
+@media (max-width: 767px) {
+    /* Modal container adjustments */
+    .slds-modal__container {
+        max-width: 100vw;
+        width: 100vw;
+        max-height: 100vh;
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    /* Modal content adjustments */
+    .slds-modal__content {
+        max-height: calc(100vh - 120px);
+        padding: 1rem 0.75rem;
+        overflow-y: auto;
+    }
+    
+    /* Form grid - stack all columns vertically on mobile */
+    .slds-modal__content .slds-form .slds-grid {
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .slds-modal__content .slds-form .slds-grid:last-of-type {
+        margin-bottom: 0;
+    }
+    
+    /* Force all columns to full width on mobile */
+    .slds-modal__content .slds-form .slds-col {
+        flex: 1 1 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding-left: 0;
+        padding-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .slds-modal__content .slds-form .slds-col:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Form elements */
+    .slds-modal__content .slds-form-element {
+        margin-bottom: 0;
+        width: 100%;
+    }
+    
+    /* Ensure form fields are full width on mobile */
+    .slds-modal__content lightning-combobox,
+    .slds-modal__content lightning-input-field {
+        width: 100%;
+        min-width: 100%;
+    }
+    
+    /* Modal header adjustments */
+    .slds-modal__header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .slds-modal__header h2 {
+        font-size: 1.125rem;
+        line-height: 1.5;
+    }
+    
+    /* Modal footer adjustments */
+    .slds-modal__footer {
+        padding: 0.75rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .slds-modal__footer-actions {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+    }
+    
+    .slds-modal__footer button {
+        width: 100%;
+        margin: 0;
+    }
+}
+
+/* Very small mobile devices */
+@media (max-width: 479px) {
+    .slds-modal__content {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .slds-modal__content .slds-form .slds-grid {
+        margin-bottom: 0.875rem;
+    }
+    
+    .slds-modal__content .slds-form-element {
+        margin-bottom: 0;
+    }
+    
+    .slds-modal__header,
+    .slds-modal__footer {
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .slds-modal__header h2 {
+        font-size: 1rem;
+    }
+    
+    .slds-modal__header,
+    .slds-modal__footer {
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* Hide filePreview button when used in modal */
+.file-preview-hidden-button lightning-button {
+    display: none !important;
+}
+
+/* Ensure filePreview modal is scrollable and properly displayed */
+.file-preview-hidden-button c-show-file-preview {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+/* Ensure the viewer container is scrollable and doesn't overlay our modal */
+.file-preview-hidden-button .viewer-container1 {
+    overflow: auto !important;
+    max-height: calc(85vh - 120px) !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Ensure our modal stays on top of filePreview's viewer */
+.slds-modal.slds-fade-in-open {
+    z-index: 10001 !important;
+}
+
+.slds-modal__container {
+    z-index: 10002 !important;
+}
+
+.slds-modal__header {
+    z-index: 10003 !important;
+    position: relative;
+}
+
+.slds-modal__footer {
+    z-index: 10003 !important;
+    position: relative;
+}
+
+/* Ensure filePreview's viewer doesn't overlay our modal header/footer */
+.file-preview-hidden-button [id^="viewer"] {
+    z-index: 1 !important;
+    position: relative !important;
+}
+
+/* Fixed Height Strategy: Tall enough to fit the dropdown inside */
+.allow-dropdown-overflow {     /* Fixed height creates space for the dropdown */
+    overflow: visible !important;
+    position: relative;         /* Prevent horizontal scroll */
+    z-index: 9999 !important;
+}
+
+.allow-overflow{
+    overflow-y:  visible!important;   /* Standard scrolling */
+    height: 450px !important;
+}
+
+/* Mobile adjustment: Use available screen height instead of fixed pixel height */
+@media (max-width: 767px) {
+    .allow-dropdown-overflow {
+       overflow: visible !important;
+    }
+}

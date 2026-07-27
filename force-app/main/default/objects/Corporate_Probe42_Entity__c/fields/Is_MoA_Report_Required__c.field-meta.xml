@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_MoA_Report_Required__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>When TRUE, generate the heavy MoA (~170 KB base64 image) PDF at runtime. When FALSE, skip it to protect the 200 MB storage limit.</description>
+    <label>Is MoA Report Required?</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

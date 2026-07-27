@@ -1,0 +1,72 @@
+<template>
+    <template if:true={hasDocuments}>
+        <div class="preview-shell">
+            <div class="toolbar slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
+                <template if:true={hasMultipleDocuments}>
+                    <div class="slds-grid slds-grid_vertical-align-center">
+                        <lightning-button-group>
+                            <lightning-button-icon icon-name="utility:chevronleft" onclick={handlePrevDoc} disabled={disablePrevDoc} alternative-text="Previous"></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:chevronright" onclick={handleNextDoc} disabled={disableNextDoc} alternative-text="Next"></lightning-button-icon>
+                        </lightning-button-group>
+                        <span class="slds-m-left_small">{documentCounterLabel}</span>
+                    </div>
+                </template>
+                <lightning-button-group>
+                    <lightning-button-icon icon-name="utility:zoomin" onclick={handleZoomIn} alternative-text="Zoom in"></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:zoomout" onclick={handleZoomOut} alternative-text="Zoom out"></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:rotate" onclick={handleRotateLeft} alternative-text="Rotate left"></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:forward" onclick={handleRotateRight} alternative-text="Rotate right"></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:refresh" onclick={handleResetView} alternative-text="Reset view"></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:download" onclick={handleDownload} alternative-text="Download"></lightning-button-icon>
+                </lightning-button-group>
+                <span>{currentZoomLabel}</span>
+            </div>
+            <div class="preview-container" onclick={handleOpenFullScreen} title="Click to open full preview">
+                <div class="wrapper">
+                    <img src={currentDocument.previewUrl} alt={modalTitle} class="preview-image" />
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large" aria-modal="true">
+            <div class="slds-modal__container modal-width">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={handleCloseFullScreen}>
+                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                    </button>
+                    <h2 class="slds-text-heading_medium">{modalTitle}</h2>
+                </header>
+                <div class="slds-modal__content modal-content">
+                    <div class="toolbar slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
+                        <template if:true={hasMultipleDocuments}>
+                            <div class="slds-grid slds-grid_vertical-align-center">
+                                <lightning-button-group>
+                                    <lightning-button-icon icon-name="utility:chevronleft" onclick={handlePrevDoc} disabled={disablePrevDoc} alternative-text="Previous"></lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:chevronright" onclick={handleNextDoc} disabled={disableNextDoc} alternative-text="Next"></lightning-button-icon>
+                                </lightning-button-group>
+                                <span class="slds-m-left_small">{documentCounterLabel}</span>
+                            </div>
+                        </template>
+                        <lightning-button-group>
+                            <lightning-button-icon icon-name="utility:zoomin" onclick={handleZoomIn} alternative-text="Zoom in"></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:zoomout" onclick={handleZoomOut} alternative-text="Zoom out"></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:rotate" onclick={handleRotateLeft} alternative-text="Rotate left"></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:forward" onclick={handleRotateRight} alternative-text="Rotate right"></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:refresh" onclick={handleResetView} alternative-text="Reset view"></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:download" onclick={handleDownload} alternative-text="Download"></lightning-button-icon>
+                        </lightning-button-group>
+                        <span>{currentZoomLabel}</span>
+                    </div>
+                    <div class="modal-preview">
+                        <div class="wrapper">
+                            <img src={currentDocument.previewUrl} alt={modalTitle} class="preview-image" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

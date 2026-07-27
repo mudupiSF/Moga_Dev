@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Encrypt_Request__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set this to true if we need to encrypt the request prior invoking the API</description>
+    <label>Encrypt Request?</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

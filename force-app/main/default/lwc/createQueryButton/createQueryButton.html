@@ -1,0 +1,15 @@
+<template>
+    <lightning-button variant="brand" label="Create Query" onclick={handleCreateQuery}>
+        <lightning-icon icon-name="utility:new" variant="bare" alternative-text="Create Query"></lightning-icon>
+    </lightning-button>
+    <template if:true={showDynamicModal}>
+        <c-dynamic-component-modal
+            component-name={dynamicModalComponentName}
+            record-id={recordId}
+            modal-header={dynamicModalHeader}
+            component-props={dynamicModalComponentProps}
+            onclose={handleDynamicModalClose}
+        >
+        </c-dynamic-component-modal>
+    </template>
+</template>

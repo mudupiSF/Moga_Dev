@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Application_Line_Item__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Application Line Item</label>
+    <referenceTo>Application_Line_Item__c</referenceTo>
+    <relationshipLabel>Invoice Details</relationshipLabel>
+    <relationshipName>Invoice_Details_Application_Line_Item</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

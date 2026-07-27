@@ -1,0 +1,35 @@
+<template>
+    <div class={rootClass}>
+        <template if:true={showCreateQueryButton}>
+            <button
+                type="button"
+                class={buttonClass}
+                title="Create Query"
+                aria-label="Create Query"
+                onclick={handleCreateQuery}>
+                <lightning-icon
+                    icon-name="utility:case"
+                    size="x-small"
+                    variant="inverse"
+                    class={iconClass}>
+                </lightning-icon>
+            </button>
+        </template>
+        <button
+            type="button"
+            class={buttonClass}
+            title="View Queries"
+            aria-label="View Queries"
+            onclick={handleViewQueriesClick}>
+            <lightning-icon
+                icon-name="utility:question"
+                size="x-small"
+                variant="inverse"
+                class={iconClass}>
+            </lightning-icon>
+            <template if:true={showQueriesNumber}>
+                <span class={badgeClass}>{queriesIndicatorLabel}</span>
+            </template>
+        </button>
+    </div>
+</template>

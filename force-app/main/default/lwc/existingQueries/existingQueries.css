@@ -1,0 +1,46 @@
+@import "c/commonStyles";
+
+.eq-spinner {
+    min-height: 10rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.query-list {
+    border: 1px solid #d8dde6;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.query-list table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.query-list thead th {
+    background: #f3f2f2;
+    color: #3e3e3c;
+    font-weight: 700;
+    border-bottom: 1px solid #d8dde6;
+}
+
+.query-list tbody td {
+    border-bottom: 1px solid #ecebea;
+    vertical-align: top;
+}
+
+.query-list tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.query-row {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.query-row:hover {
+    background-color: #f8f9fb;
+}

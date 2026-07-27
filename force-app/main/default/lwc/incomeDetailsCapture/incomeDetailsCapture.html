@@ -1,0 +1,282 @@
+<template>
+    <div class="id-page-layout">
+        <template lwc:if={isLoading}>
+            <div class="id-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+        <div class="id-shell">
+            <div class="card-header">
+                <div class="header-overlay"></div>
+                <div class="header-content">
+                    <div class="header-icon-wrap">
+                        <lightning-icon icon-name="utility:money" size="small" class="header-icon"></lightning-icon>
+                    </div>
+                    <div class="header-text">
+                        <h1 class="header-title">{headerTitle}</h1>
+                        <template lwc:if={headerSubtitle}>
+                            <span class="header-subtitle">{headerSubtitle}</span>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <div class="id-body">
+                <div class="id-method-row">
+                    <div class="id-method-grid">
+                        <template for:each={methodOptions} for:item="method">
+                            <button
+                                key={method.key}
+                                type="button"
+                                class={method.className}
+                                data-method={method.key}
+                                onclick={handleMethodSelect}
+                                disabled={method.isDisabled}>
+                                <div class="id-method-top">
+                                    <div class="id-method-label-wrap">
+                                        <lightning-icon icon-name={method.iconName} size="x-small" class="id-method-icon"></lightning-icon>
+                                        <span class="id-method-label">{method.label}</span>
+                                    </div>
+                                    <template lwc:if={method.isPrimary}>
+                                        <span class="id-method-active-pill">Verified</span>
+                                    </template>
+                                </div>
+                                <p class="id-method-description">{method.description}</p>
+                            </button>
+                        </template>
+                    </div>
+                    <button
+                        type="button"
+                        class="id-add-income-source-btn"
+                        onclick={handleAddIncomeSource}
+                        disabled={isAddIncomeSourceDisabled}>
+                        Add Income Source
+                    </button>
+                </div>
+
+                <template lwc:if={isMobileVerificationSelected}>
+                    <div class={mobileVerificationPanelClass}>
+                        <button
+                            type="button"
+                            class={mobileVerificationPanelTriggerClass}
+                            aria-expanded={isMobileVerificationPanelOpen}
+                            onclick={handleMobileVerificationPanelToggle}>
+                            <span class="id-panel-trigger-main">
+                                <h3 class="id-panel-title">Verify using mobile number</h3>
+                                <span class={mobileStatusClass}>{mobileVerificationForm.status}</span>
+                            </span>
+                            <lightning-icon icon-name={mobileVerificationChevronIcon} size="x-small" class="id-panel-chevron"></lightning-icon>
+                        </button>
+                        <template lwc:if={isMobileVerificationPanelOpen}>
+                            <div class="id-panel-body">
+                                <p class="id-info-paragraph">
+                                    Upon initiating verification, the customer will receive an SMS containing a secure link to provide their consent. Once consent is granted, the Bank will receive the customer's income details through the account aggregation process via the Signzy system.
+                                </p>
+                                <div class="id-verification-field-row">
+                                    <lightning-input
+                                        type="tel"
+                                        label="Customer Mobile Number"
+                                        value={mobileVerificationForm.mobileNumber}
+                                        data-group="mobileVerification"
+                                        data-field="mobileNumber"
+                                        onchange={handleInputChange}
+                                        placeholder="+91 000 000 0000"
+                                        disabled={isReadOnlyScreen}>
+                                    </lightning-input>
+                                    <div class="id-send-link-wrap">
+                                        <button
+                                            type="button"
+                                            class="id-primary-btn id-send-link-btn"
+                                            onclick={handleSendMobileLink}
+                                            disabled={isSendMobileLinkDisabled}>
+                                            <lightning-icon icon-name="utility:send" size="x-small" class="id-send-link-icon"></lightning-icon>
+                                            Send Link
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <template lwc:if={isBankStatementSelected}>
+                    <div class={bankStatementPanelClass}>
+                        <button
+                            type="button"
+                            class={bankStatementPanelTriggerClass}
+                            aria-expanded={isBankStatementPanelOpen}
+                            onclick={handleBankStatementPanelToggle}>
+                            <span class="id-panel-trigger-main">
+                                <h3 class="id-panel-title">Upload bank statement</h3>
+                                <span class={bankStatusClass}>{bankStatementForm.status}</span>
+                            </span>
+                            <lightning-icon icon-name={bankStatementChevronIcon} size="x-small" class="id-panel-chevron"></lightning-icon>
+                        </button>
+                        <template lwc:if={isBankStatementPanelOpen}>
+                            <div class="id-panel-body">
+                                <p class="id-info-paragraph">
+                                    A secure upload link will be sent to the customer via SMS. The customer uploads their bank statement PDF directly through the secure link.
+                                </p>
+                                <div class="id-verification-field-row">
+                                    <lightning-input
+                                        type="tel"
+                                        label="Customer Mobile Number"
+                                        value={bankStatementForm.mobileNumber}
+                                        data-group="bankStatement"
+                                        data-field="mobileNumber"
+                                        onchange={handleInputChange}
+                                        placeholder="+27 000 000 0000"
+                                        disabled={isReadOnlyScreen}>
+                                    </lightning-input>
+                                    <div class="id-send-link-wrap">
+                                        <button
+                                            type="button"
+                                            class="id-primary-btn id-send-link-btn"
+                                            onclick={handleSendBankLink}
+                                            disabled={isSendBankLinkDisabled}>
+                                            <lightning-icon icon-name="utility:send" size="x-small" class="id-send-link-icon"></lightning-icon>
+                                            Send Link
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- <div class="id-direct-upload-section">
+                                    <p class="id-direct-upload-label">Or upload directly</p>
+                                    <template lwc:if={hasBankStatementDocument}>
+                                        <div class="id-file-card">
+                                            <div class="id-file-info">
+                                                <lightning-icon icon-name="utility:success" size="x-small" class="id-file-success-icon"></lightning-icon>
+                                                <span class="id-file-name" title={bankStatementDocumentName}>{bankStatementDocumentName}</span>
+                                            </div>
+                                            <template lwc:if={showBankStatementDocumentDelete}>
+                                                <button type="button" class="id-file-delete-btn" onclick={handleBankStatementDocumentDelete} title="Remove file">
+                                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                    <span class="slds-assistive-text">Remove file</span>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </template>
+                                    <template lwc:if={showBankStatementUploadInput}>
+                                        <div class="id-dropzone">
+                                            <lightning-file-upload
+                                                label=""
+                                                name="bankStatementDocument"
+                                                record-id={recordId}
+                                                accept={bankStatementAcceptedFormats}
+                                                onuploadfinished={handleBankStatementUploadFinished}>
+                                            </lightning-file-upload>
+                                            <p class="id-dropzone-hint">Or drop files</p>
+                                        </div>
+                                    </template>
+                                </div> -->
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <div class={declaredIncomePanelClass}>
+                    <template lwc:if={isDeclaredIncomeSelected}>
+                        <button
+                            type="button"
+                            class={declaredIncomePanelTriggerClass}
+                            aria-expanded={isDeclaredIncomePanelOpen}
+                            onclick={handleDeclaredIncomePanelToggle}>
+                            <span class="id-panel-trigger-main">
+                                <h3 class="id-panel-title">Capture declared income</h3>
+                                <span class={declaredStatusClass}>{declaredIncomeForm.status}</span>
+                            </span>
+                            <lightning-icon icon-name={declaredIncomeChevronIcon} size="x-small" class="id-panel-chevron"></lightning-icon>
+                        </button>
+                        <template lwc:if={isDeclaredIncomePanelOpen}>
+                        <div class="id-panel-body">
+                            <p class="id-info-paragraph">
+                                Capture the customer's declared consolidated yearly income for assessment.
+                            </p>
+                            <div class="id-field-grid">
+                                <lightning-input
+                                    type="number"
+                                    label="Consolidated Yearly Income"
+                                    value={declaredIncomeForm.consolidatedYearlyIncome}
+                                    data-group="declaredIncome"
+                                    data-field="consolidatedYearlyIncome"
+                                    onchange={handleInputChange}
+                                    placeholder="Enter yearly income"
+                                    disabled={isDeclaredIncomeLocked}>
+                                </lightning-input>
+                                <div class="id-declared-upload-section">
+                                    <div class="id-upload-card">
+                                        <div class="id-upload-header">
+                                            <div class="id-upload-title-wrap">
+                                                <lightning-icon icon-name="utility:upload" size="x-small" class="id-upload-title-icon"></lightning-icon>
+                                                <span class="id-upload-title">Upload Bank Statement</span>
+                                            </div>
+                                        </div>
+                                        <template lwc:if={hasDeclaredIncomeDocument}>
+                                            <div class="id-file-card">
+                                                <div class="id-file-info">
+                                                    <lightning-icon icon-name="utility:success" size="x-small" class="id-file-success-icon"></lightning-icon>
+                                                    <span class="id-file-name" title={declaredIncomeDocumentName}>{declaredIncomeDocumentName}</span>
+                                                </div>
+                                                <template lwc:if={showDeclaredIncomeDocumentDelete}>
+                                                    <button type="button" class="id-file-delete-btn" onclick={handleDeclaredIncomeDocumentDelete} title="Remove file">
+                                                        <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                        <span class="slds-assistive-text">Remove file</span>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template lwc:if={showDeclaredIncomeUploadInput}>
+                                            <lightning-file-upload
+                                                label=""
+                                                name="declaredIncomeDocument"
+                                                record-id={recordId}
+                                                accept={declaredIncomeAcceptedFormats}
+                                                onuploadfinished={handleDeclaredIncomeUploadFinished}>
+                                            </lightning-file-upload>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                            <template lwc:if={showDeclaredIncomeSave}>
+                                <div class="id-action-row">
+                                    <button type="button" class="id-primary-btn" data-action="saveDeclaredIncome" onclick={handleMethodAction} disabled={isSaveDeclaredIncomeDisabled}>Save</button>
+                                </div>
+                            </template>
+                        </div>
+                        </template>
+                    </template>
+                </div>
+
+                <c-income-source-capture
+                    record-id={recordId}
+                    applicant-id={applicantId}
+                    is-stage-past={isStagePast}>
+                </c-income-source-capture>
+
+                <template lwc:if={showNetworthAndFleetSection}>
+                    <div class="id-networth-section">
+                        <c-networth-and-fleet-details-capture
+                            record-id={recordId}
+                            applicant-id={applicantId}
+                            is-stage-past={isStagePast}>
+                        </c-networth-and-fleet-details-capture>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <div class="id-footer-wrapper">
+            <div class="id-footer">
+                <div class="id-btn-wrapper">
+                    <template lwc:if={showShowOfferButton}>
+                        <button type="button" class="id-primary-btn" onclick={handleShowOffer} disabled={isShowOfferButtonDisabled}>
+                            Show Offer
+                        </button>
+                    </template>
+                    <button type="button" class={nextButtonClass} onclick={handleNextButton}>
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

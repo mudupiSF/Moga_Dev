@@ -1,0 +1,216 @@
+<template>
+    <div class="office-card">
+        <div class="office-card-header">
+            <div class="office-header-overlay"></div>
+            <div class="office-header-content">
+                <div class="office-header-icon-wrap">
+                    <lightning-icon icon-name="utility:office_365" size="small" class="office-header-icon"></lightning-icon>
+                </div>
+                <div class="office-header-text">
+                    <h1 class="office-header-title">Office Address Details</h1>
+                    <p class="office-header-subtitle">Provide the applicant's primary work address</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="office-card-body">
+            <div class="office-fields-grid">
+
+                <!-- Address Line 1 -->
+                <div class="office-field-wrap office-field-wrap-full">
+                    <template lwc:if={isReadOnlyScreen}>
+                        <div class="office-info-cell">
+                            <div class="office-info-cell-header"><span class="office-info-label">Address Line 1</span></div>
+                            <p class="office-info-value">{addressLine1}</p>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="office-field-cell">
+                            <div class="office-field-label">
+                                Address Line 1
+                                <span class="office-required-indicator" title="Required">*</span>
+                            </div>
+                            <div class="office-field-value-col">
+                                <input type="text" class="office-input"
+                                    value={addressLine1}
+                                    placeholder="Enter address line 1"
+                                    maxlength="255"
+                                    oninput={handleAddressLine1Input} />
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Address Line 2 -->
+                <div class="office-field-wrap office-field-wrap-full">
+                    <template lwc:if={isReadOnlyScreen}>
+                        <div class="office-info-cell">
+                            <div class="office-info-cell-header"><span class="office-info-label">Address Line 2</span></div>
+                            <p class="office-info-value">{addressLine2}</p>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="office-field-cell">
+                            <div class="office-field-label">Address Line 2</div>
+                            <div class="office-field-value-col">
+                                <input type="text" class="office-input"
+                                    value={addressLine2}
+                                    placeholder="Enter address line 2"
+                                    maxlength="255"
+                                    oninput={handleAddressLine2Input} />
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Address Line 3 -->
+                <div class="office-field-wrap office-field-wrap-full">
+                    <template lwc:if={isReadOnlyScreen}>
+                        <div class="office-info-cell">
+                            <div class="office-info-cell-header"><span class="office-info-label">Address Line 3</span></div>
+                            <p class="office-info-value">{addressLine3}</p>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="office-field-cell">
+                            <div class="office-field-label">Address Line 3</div>
+                            <div class="office-field-value-col">
+                                <input type="text" class="office-input"
+                                    value={addressLine3}
+                                    placeholder="Enter address line 3"
+                                    maxlength="255"
+                                    oninput={handleAddressLine3Input} />
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Pin Code -->
+                <div class="office-field-wrap office-field-wrap-half">
+                    <template lwc:if={isReadOnlyScreen}>
+                        <div class="office-info-cell">
+                            <div class="office-info-cell-header"><span class="office-info-label">Pin Code</span></div>
+                            <p class="office-info-value">{pinCode}</p>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="office-field-cell">
+                            <div class="office-field-label">
+                                Pin Code
+                                <span class="office-required-indicator" title="Required">*</span>
+                            </div>
+                            <div class="office-field-value-col">
+                                <input type="text" class="office-input"
+                                    value={pinCode}
+                                    placeholder="6-digit pincode"
+                                    inputmode="numeric"
+                                    maxlength="6"
+                                    oninput={handlePinCodeInput} />
+                                <template lwc:if={isPincodeBusy}>
+                                    <span class="office-input-helper">Looking up city / state...</span>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- City (auto-filled from pincode; editable when lookup returns empty) -->
+                <div class="office-field-wrap office-field-wrap-half">
+                    <template lwc:if={isReadOnlyScreen}>
+                        <div class="office-info-cell">
+                            <div class="office-info-cell-header"><span class="office-info-label">City</span></div>
+                            <p class="office-info-value">{city}</p>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="office-field-cell">
+                            <div class="office-field-label">
+                                City
+                                <span class="office-required-indicator" title="Required">*</span>
+                            </div>
+                            <div class="office-field-value-col">
+                                <input type="text" class={cityInputClass}
+                                    value={city}
+                                    placeholder="Enter city"
+                                    maxlength="80"
+                                    readonly={isCityReadOnly}
+                                    oninput={handleCityInput} />
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- State (auto-filled from pincode; editable when lookup returns empty) -->
+                <div class="office-field-wrap office-field-wrap-half">
+                    <template lwc:if={isReadOnlyScreen}>
+                        <div class="office-info-cell">
+                            <div class="office-info-cell-header"><span class="office-info-label">State</span></div>
+                            <p class="office-info-value">{state}</p>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="office-field-cell">
+                            <div class="office-field-label">
+                                State
+                                <span class="office-required-indicator" title="Required">*</span>
+                            </div>
+                            <div class="office-field-value-col">
+                                <input type="text" class={stateInputClass}
+                                    value={state}
+                                    placeholder="Enter state"
+                                    maxlength="80"
+                                    readonly={isStateReadOnly}
+                                    oninput={handleStateInput} />
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Email Address (textWithAction — Verify, mirrors Basic Details pattern) -->
+                <div class="office-field-wrap office-field-wrap-half">
+                    <template lwc:if={isReadOnlyScreen}>
+                        <div class="office-info-cell">
+                            <div class="office-info-cell-header"><span class="office-info-label">Office Email</span></div>
+                            <div class="office-info-value-wrap">
+                                <div class="office-info-value-with-action-row">
+                                    <p class="office-info-value">{email}</p>
+                                    <template lwc:if={emailVerified}>
+                                        <span class="office-info-action-label office-info-action-label--verified">Verified</span>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="office-field-cell">
+                            <div class="office-field-label">
+                                Office Email
+                                <span class="office-required-indicator" title="Required">*</span>
+                            </div>
+                            <div class="office-field-value-col">
+                                <div class="office-input-with-action-wrap">
+                                    <input type="text" class="office-action-input"
+                                        value={email}
+                                        placeholder="Enter office email"
+                                        maxlength="80"
+                                        oninput={handleEmailInput} />
+                                    <div class="office-input-with-action-btn-wrap">
+                                        <button type="button" class={emailVerifyActionBtnClass}
+                                            disabled={emailVerifyDisabled}
+                                            onclick={handleEmailVerifyClick}>
+                                            {emailVerifyLabel}
+                                        </button>
+                                    </div>
+                                </div>
+                                <template lwc:if={isEmailFormatInvalid}>
+                                    <p class="office-field-error">{emailValidationError}</p>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</template>

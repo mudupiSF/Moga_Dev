@@ -1,0 +1,71 @@
+<template>
+    <div class="pdf-viewer-container">
+        <!-- Header -->
+        <div class="pdf-header">
+            <span class="pdf-filename" title={fileName}>{fileName}</span>
+            <div class="header-right">
+                <span class="page-info" if:false={isLoading}>
+                    Page {currentPage} of {totalPages}
+                </span>
+                <lightning-button-icon
+                    icon-name="utility:close"
+                    alternative-text="Close"
+                    title="Close"
+                    variant="bare"
+                    class="close-btn"
+                    onclick={handleClose}>
+                </lightning-button-icon>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="pdf-toolbar">
+            <!-- Zoom controls -->
+            <div class="toolbar-group zoom-controls">
+                <button class="toolbar-btn" onclick={handleZoomOut} title="Zoom Out" disabled={isLoading}>&#8722;</button>
+                <span class="zoom-display">{scalePercent}%</span>
+                <button class="toolbar-btn" onclick={handleZoomIn} title="Zoom In" disabled={isLoading}>&#43;</button>
+            </div>
+
+            <!-- Page navigation note -->
+            <div class="toolbar-group page-nav-note">
+                <span class="nav-note">Use browser PDF controls for page navigation</span>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="pdf-body">
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <div class="loading-container">
+                    <lightning-spinner alternative-text="Loading PDF..." size="medium"></lightning-spinner>
+                    <p class="loading-text">Loading PDF...</p>
+                </div>
+            </template>
+
+            <!-- Error Message -->
+            <template if:true={errorMsg}>
+                <div class="error-container">
+                    <lightning-icon icon-name="utility:error" alternative-text="Error" size="medium" variant="error"></lightning-icon>
+                    <p class="error-text">{errorMsg}</p>
+                </div>
+            </template>
+
+            <!-- PDF iframe wrapper -->
+            <template if:false={isLoading}>
+                <template if:false={errorMsg}>
+                    <div class="iframe-wrapper" data-id="iframeWrapper">
+                        <iframe
+                            data-id="pdfFrame"
+                            class="pdf-frame"
+                            title={fileName}
+                            width="100%"
+                            height="100%"
+                            frameborder="0">
+                        </iframe>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,1185 @@
+<template>
+    <div class="form-layout viability-check-wrap">
+        <template if:true={isLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={isCv}>
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <lightning-icon
+                            icon-name="utility:edit_form"
+                            size="small"
+                            class="slds-icon-text-default"
+                            variant="inverse">
+                        </lightning-icon>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Viability Check</h1>
+                            <p class="form-header-subtitle">Select how you want to calculate viability</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <template if:true={isReadOnlyMode}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Calculation Basis</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{calculationBasis}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isReadOnlyMode}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">CALCULATION BASIS <span class="form-required-indicator">*</span></div>
+                                    <div class="form-field-value-col">
+                                        <lightning-combobox
+                                            label="Calculation Basis"
+                                            variant="label-hidden"
+                                            value={calculationBasis}
+                                            options={calculationBasisOptions}
+                                            placeholder="Select calculation type"
+                                            disabled={isReadOnlyMode}
+                                            onchange={handleCalculationBasisChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <template if:true={showCvBasisHint}>
+                <p class="viability-cv-hint slds-m-top_small">Select a Calculation Basis (Hourly or KMS) to show Income and Expense.</p>
+            </template>
+
+            <template if:true={showCvIncome}>
+                <div class="form-card slds-m-top_medium">
+                    <div class="form-header">
+                        <div class="form-header-overlay"></div>
+                        <div class="form-header-content">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="slds-icon-text-default" variant="inverse"></lightning-icon>
+                            <div class="form-header-text">
+                                <h1 class="form-header-title">Income</h1>
+                                <p class="form-header-subtitle">Update application information</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Asset Deployment</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.assetDeployment}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Asset Deployment <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox
+                                                label="Asset Deployment"
+                                                variant="label-hidden"
+                                                value={cvHourlyValues.assetDeployment}
+                                                options={assetDeploymentOptions}
+                                                placeholder="Select asset deployment"
+                                                data-key="assetDeployment"
+                                                disabled={isReadOnlyMode}
+                                                onchange={handleCvHourlyChange}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">No of days the machine will work per month</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.daysPerMonth}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">No of days the machine will work per month <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input
+                                                type="number"
+                                                label="No of days the machine will work per month"
+                                                variant="label-hidden"
+                                                value={cvHourlyValues.daysPerMonth}
+                                                data-key="daysPerMonth"
+                                                step="1"
+                                                disabled={isReadOnlyMode}
+                                                onchange={handleCvHourlyChange}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">No of hours the machine will work per day on average</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.hoursPerDay}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">No of hours the machine will work per day on average <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input
+                                                type="number"
+                                                label="No of hours the machine will work per day on average"
+                                                variant="label-hidden"
+                                                value={cvHourlyValues.hoursPerDay}
+                                                data-key="hoursPerDay"
+                                                step="1"
+                                                disabled={isReadOnlyMode}
+                                                onchange={handleCvHourlyChange}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Rate per hour estimated to realise (Rs) / Cost per hour estimated to save</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.ratePerHour}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Rate per hour estimated to realise (Rs) / Cost per hour estimated to save <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input
+                                                type="number"
+                                                label="Rate per hour estimated to realise"
+                                                variant="label-hidden"
+                                                value={cvHourlyValues.ratePerHour}
+                                                data-key="ratePerHour"
+                                                disabled={isReadOnlyMode}
+                                                onchange={handleCvHourlyChange}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Estimated average monthly income/cost (Rs)</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.estimatedMonthlyIncome}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Estimated average monthly income/cost (Rs) <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input
+                                                type="number"
+                                                label="Estimated average monthly income/cost"
+                                                variant="label-hidden"
+                                                value={cvHourlyValues.estimatedMonthlyIncome}
+                                                data-key="estimatedMonthlyIncome"
+                                                disabled={isReadOnlyMode}
+                                                onchange={handleCvHourlyChange}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={showCvExpense}>
+                <div class="form-card slds-m-top_medium">
+                    <div class="form-header">
+                        <div class="form-header-overlay"></div>
+                        <div class="form-header-content">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="slds-icon-text-default" variant="inverse"></lightning-icon>
+                            <div class="form-header-text">
+                                <h1 class="form-header-title">Expense</h1>
+                                <p class="form-header-subtitle">Update application information</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Fuel cost per litre (Rs)</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.fuelCostPerLitre}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Fuel cost per litre (Rs) <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Fuel cost per litre" variant="label-hidden" value={cvHourlyValues.fuelCostPerLitre} data-key="fuelCostPerLitre" disabled={isReadOnlyMode} onchange={handleCvHourlyChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Fuel consumption per hour</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.fuelConsumptionPerHour}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Fuel consumption per hour <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Fuel consumption per hour" variant="label-hidden" value={cvHourlyValues.fuelConsumptionPerHour} data-key="fuelConsumptionPerHour" disabled={isReadOnlyMode} onchange={handleCvHourlyChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Cost of fuel per month</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.costFuelPerMonth}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Cost of fuel per month <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Cost of fuel per month" variant="label-hidden" value={cvHourlyValues.costFuelPerMonth} data-key="costFuelPerMonth" disabled={isReadOnlyMode} onchange={handleCvHourlyChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Operators salary / month</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.operatorSalary}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Operators salary / month <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Operators salary" variant="label-hidden" value={cvHourlyValues.operatorSalary} data-key="operatorSalary" disabled={isReadOnlyMode} onchange={handleCvHourlyChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Maintainence parts / month</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.maintenanceParts}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Maintainence parts / month <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Maintainence parts" variant="label-hidden" value={cvHourlyValues.maintenanceParts} data-key="maintenanceParts" disabled={isReadOnlyMode} onchange={handleCvHourlyChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Tyre cost</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.tyreCost}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Tyre cost <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Tyre cost" variant="label-hidden" value={cvHourlyValues.tyreCost} data-key="tyreCost" disabled={isReadOnlyMode} onchange={handleCvHourlyChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Tax / Cess</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.taxCess}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Tax / Cess <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Tax / Cess" variant="label-hidden" value={cvHourlyValues.taxCess} data-key="taxCess" disabled={isReadOnlyMode} onchange={handleCvHourlyChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Others</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.others}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Others <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Others" variant="label-hidden" value={cvHourlyValues.others} data-key="others" disabled={isReadOnlyMode} onchange={handleCvHourlyChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Total expenses</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.totalExpenses}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Total expenses <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Total expenses" variant="label-hidden" value={cvHourlyValues.totalExpenses} data-key="totalExpenses" disabled={isReadOnlyMode} onchange={handleCvHourlyChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Gross surplus</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.grossSurplus}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Gross surplus <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Gross surplus" variant="label-hidden" value={cvHourlyValues.grossSurplus} data-key="grossSurplus" disabled={isReadOnlyMode} onchange={handleCvHourlyChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Instalment amount</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.instalment}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Instalment amount <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Instalment amount" variant="label-hidden" value={cvHourlyValues.instalment} data-key="instalment" disabled={isReadOnlyMode} onchange={handleCvHourlyChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Net surplus</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{cvHourlyValues.netSurplus}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Net surplus <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Net surplus" variant="label-hidden" value={cvHourlyValues.netSurplus} data-key="netSurplus" disabled={isReadOnlyMode} onchange={handleCvHourlyChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Viability Ratio</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{cvViabilityRatioDisplay}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <template if:false={isReadOnlyMode}>
+                            <div class="viability-cta slds-m-top_medium">
+                                <template if:true={errorMessage}>
+                                    <div class="slds-text-color_error slds-m-bottom_small">{errorMessage}</div>
+                                </template>
+                                <button
+                                    type="button"
+                                    class="p4-primary-btn p4-button-text"
+                                    disabled={isCvCheckDisabled}
+                                    onclick={handleCvViabilityCheck}>
+                                    Viability Check
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={showKmsIncome}>
+                <div class="form-card slds-m-top_medium">
+                    <div class="form-header">
+                        <div class="form-header-overlay"></div>
+                        <div class="form-header-content">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="slds-icon-text-default" variant="inverse"></lightning-icon>
+                            <div class="form-header-text">
+                                <h1 class="form-header-title">Income</h1>
+                                <p class="form-header-subtitle">Update application information</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Vehicle Route</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.vehicleRoute}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Vehicle Route <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox
+                                                label="Vehicle Route"
+                                                variant="label-hidden"
+                                                value={kmsValues.vehicleRoute}
+                                                options={vehicleRouteOptions}
+                                                placeholder="Select vehicle route"
+                                                data-key="vehicleRoute"
+                                                disabled={isReadOnlyMode}
+                                                onchange={handleKmsChange}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">From</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.fromLocation}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">From <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="text" label="From" variant="label-hidden" value={kmsValues.fromLocation} data-key="fromLocation" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">To</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.toLocation}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">To <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="text" label="To" variant="label-hidden" value={kmsValues.toLocation} data-key="toLocation" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Trips per month</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.tripsPerMonth}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Trips per month <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Trips per month" variant="label-hidden" value={kmsValues.tripsPerMonth} data-key="tripsPerMonth" step="1" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">No of kilometers per trip</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.kilometersPerTrip}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">No of kilometers per trip <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="No of kilometers per trip" variant="label-hidden" value={kmsValues.kilometersPerTrip} data-key="kilometersPerTrip" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Average rate per trip</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.averageRatePerTrip}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Average rate per trip <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Average rate per trip" variant="label-hidden" value={kmsValues.averageRatePerTrip} data-key="averageRatePerTrip" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Estimated average income / month</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.estimatedMonthlyIncome}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Estimated average income / month <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Estimated average income per month" variant="label-hidden" value={kmsValues.estimatedMonthlyIncome} data-key="estimatedMonthlyIncome" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={showKmsExpense}>
+                <div class="form-card slds-m-top_medium">
+                    <div class="form-header">
+                        <div class="form-header-overlay"></div>
+                        <div class="form-header-content">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="slds-icon-text-default" variant="inverse"></lightning-icon>
+                            <div class="form-header-text">
+                                <h1 class="form-header-title">Expense</h1>
+                                <p class="form-header-subtitle">Update application information</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Fuel rate per liter</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.fuelRatePerLitre}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Fuel rate per liter <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Fuel rate per liter" variant="label-hidden" value={kmsValues.fuelRatePerLitre} data-key="fuelRatePerLitre" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Cost of fuel / trip</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.costFuelPerTrip}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Cost of fuel / trip <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Cost of fuel per trip" variant="label-hidden" value={kmsValues.costFuelPerTrip} data-key="costFuelPerTrip" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Cost of fuel / month</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.costFuelPerMonth}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Cost of fuel / month <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Cost of fuel per month" variant="label-hidden" value={kmsValues.costFuelPerMonth} data-key="costFuelPerMonth" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Salaries</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.salaries}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Salaries <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Salaries" variant="label-hidden" value={kmsValues.salaries} data-key="salaries" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Maintainence</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.maintenance}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Maintainence <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Maintainence" variant="label-hidden" value={kmsValues.maintenance} data-key="maintenance" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Tyre cost</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.tyreCost}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Tyre cost <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Tyre cost" variant="label-hidden" value={kmsValues.tyreCost} data-key="tyreCost" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Motor tax / permit cost / cess</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.motorTaxPermitCost}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Motor tax / permit cost / cess <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Motor tax permit cost cess" variant="label-hidden" value={kmsValues.motorTaxPermitCost} data-key="motorTaxPermitCost" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Others</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.others}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Others <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Others" variant="label-hidden" value={kmsValues.others} data-key="others" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Total expenses</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.totalExpenses}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Total expenses <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Total expenses" variant="label-hidden" value={kmsValues.totalExpenses} data-key="totalExpenses" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Gross surplus</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.grossSurplus}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Gross surplus <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Gross surplus" variant="label-hidden" value={kmsValues.grossSurplus} data-key="grossSurplus" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Instalment amount</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.instalment}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Instalment amount <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Instalment amount" variant="label-hidden" value={kmsValues.instalment} data-key="instalment" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template if:true={isReadOnlyMode}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Net surplus</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{kmsValues.netSurplus}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isReadOnlyMode}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Net surplus <span class="form-required-indicator">*</span></div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" label="Net surplus" variant="label-hidden" value={kmsValues.netSurplus} data-key="netSurplus" disabled={isReadOnlyMode} onchange={handleKmsChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Viability Ratio</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{kmsViabilityRatioDisplay}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <template if:false={isReadOnlyMode}>
+                            <div class="viability-cta slds-m-top_medium">
+                                <template if:true={errorMessage}>
+                                    <div class="slds-text-color_error slds-m-bottom_small">{errorMessage}</div>
+                                </template>
+                                <button
+                                    type="button"
+                                    class="p4-primary-btn p4-button-text"
+                                    disabled={isKmsCheckDisabled}
+                                    onclick={handleKmsViabilityCheck}>
+                                    Viability Check
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+            <template if:false={isReadOnlyMode}>
+                <div class="viability-actions slds-m-top_medium">
+                    <button
+                        type="button"
+                        class="p4-secondary-btn p4-button-text"
+                        disabled={isLoading}
+                        onclick={handleCancel}>
+                        Cancel
+                    </button>
+                </div>
+            </template>
+        </template>
+
+        <template if:false={isCv}>
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <lightning-icon
+                        icon-name="utility:edit_form"
+                        size="small"
+                        class="slds-icon-text-default"
+                        variant="inverse">
+                    </lightning-icon>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">Viability</h1>
+                        <p class="form-header-subtitle">Route and receipts details</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-body">
+                <div class="form-fields-grid">
+                    <div class="form-field-wrap">
+                        <template if:true={isReadOnlyMode}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">DISTANCE (KMS)</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{distance}</p>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={isReadOnlyMode}>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">DISTANCE (KMS) <span class="form-required-indicator">*</span></div>
+                                <div class="form-field-value-col">
+                                    <lightning-input
+                                        type="number"
+                                        label="Distance (KMS)"
+                                        variant="label-hidden"
+                                        value={distance}
+                                        data-key="distance"
+                                        onchange={handleFieldChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="form-field-wrap">
+                        <template if:true={isReadOnlyMode}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">GROSS RECEIPTS/MONTH</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{grossReceiptsMonth}</p>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={isReadOnlyMode}>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">GROSS RECEIPTS/MONTH <span class="form-required-indicator">*</span></div>
+                                <div class="form-field-value-col">
+                                    <lightning-input
+                                        type="number"
+                                        label="Gross Receipts/Month"
+                                        variant="label-hidden"
+                                        value={grossReceiptsMonth}
+                                        data-key="grossReceiptsMonth"
+                                        onchange={handleFieldChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="form-field-wrap">
+                        <template if:true={isReadOnlyMode}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">NUMBER OF VEHICLES OWNED</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{numberOfVehiclesOwned}</p>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={isReadOnlyMode}>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">NUMBER OF VEHICLES OWNED <span class="form-required-indicator">*</span></div>
+                                <div class="form-field-value-col">
+                                    <lightning-input
+                                        type="number"
+                                        label="Number Of Vehicles Owned"
+                                        variant="label-hidden"
+                                        value={numberOfVehiclesOwned}
+                                        data-key="numberOfVehiclesOwned"
+                                        onchange={handleFieldChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="form-field-wrap">
+                        <template if:true={isReadOnlyMode}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">EXPENSE</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{expense}</p>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={isReadOnlyMode}>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">EXPENSE <span class="form-required-indicator">*</span></div>
+                                <div class="form-field-value-col">
+                                    <lightning-input
+                                        type="number"
+                                        label="Expense"
+                                        variant="label-hidden"
+                                        value={expense}
+                                        data-key="expense"
+                                        onchange={handleFieldChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="form-field-wrap">
+                        <template if:true={isReadOnlyMode}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">VEHICLE ROUTE</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{vehicleRoute}</p>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={isReadOnlyMode}>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">VEHICLE ROUTE <span class="form-required-indicator">*</span></div>
+                                <div class="form-field-value-col">
+                                    <lightning-input
+                                        type="text"
+                                        label="Vehicle Route"
+                                        variant="label-hidden"
+                                        value={vehicleRoute}
+                                        data-key="vehicleRoute"
+                                        onchange={handleFieldChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="form-field-wrap">
+                        <div class="form-info-cell">
+                            <div class="form-info-cell-header">
+                                <span class="form-info-label">VIABILITY RATIO</span>
+                            </div>
+                            <div class="form-info-value-wrap">
+                                <p class="form-info-value">{viabilityRatioDisplay}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <template if:true={errorMessage}>
+                    <div class="slds-text-color_error slds-m-top_small">{errorMessage}</div>
+                </template>
+
+                <template if:false={isReadOnlyMode}>
+                    <div class="viability-actions slds-m-top_medium">
+                        <button
+                            type="button"
+                            class="p4-secondary-btn p4-button-text"
+                            disabled={isLoading}
+                            onclick={handleCancel}>
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            class="p4-primary-btn p4-button-text"
+                            disabled={isSaveDisabled}
+                            onclick={handleSave}>
+                            Save Viability
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </div>
+        </template>
+
+        <template if:true={showIntegrationProgressModal}>
+            <c-integration-progress-modal
+                status={integrationProgressModalStatus}
+                current-stage-index={integrationProgressModalCurrentStageIdx}
+                stages={integrationProgressModalStages}
+                error-message={integrationProgressModalErrorMessage}
+                onclose={handleIntegrationProgressModalClose}
+                onretry={handleIntegrationProgressModalRetry}
+                ondone={handleIntegrationProgressModalDone}>
+            </c-integration-progress-modal>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Document_Category__c</fullName>
+    <label>Document Category</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Null</fullName>
+                <default>false</default>
+                <label>Null</label>
+            </value>
+            <value>
+                <fullName>KYC - Identity &amp; Address Proof</fullName>
+                <default>false</default>
+                <label>KYC - Identity &amp; Address Proof</label>
+            </value>
+            <value>
+                <fullName>KYC - Miscellaneous</fullName>
+                <default>false</default>
+                <label>KYC - Miscellaneous</label>
+            </value>
+            <value>
+                <fullName>Income - Income Proof</fullName>
+                <default>false</default>
+                <label>Income - Income Proof</label>
+            </value>
+            <value>
+                <fullName>Income - Banking Proof</fullName>
+                <default>false</default>
+                <label>Income - Banking Proof</label>
+            </value>
+            <value>
+                <fullName>Income - Financial Analysis</fullName>
+                <default>false</default>
+                <label>Income - Financial Analysis</label>
+            </value>
+            <value>
+                <fullName>Vehicle - Registration &amp; RTO</fullName>
+                <default>false</default>
+                <label>Vehicle - Registration &amp; RTO</label>
+            </value>
+            <value>
+                <fullName>Vehicle - Invoice &amp; Purchase</fullName>
+                <default>false</default>
+                <label>Vehicle - Invoice &amp; Purchase</label>
+            </value>
+            <value>
+                <fullName>Vehicle - NOC &amp; Misc</fullName>
+                <default>false</default>
+                <label>Vehicle - NOC &amp; Misc</label>
+            </value>
+            <value>
+                <fullName>Legal - Loan Agreement</fullName>
+                <default>false</default>
+                <label>Legal - Loan Agreement</label>
+            </value>
+            <value>
+                <fullName>Legal - Security Instruments</fullName>
+                <default>false</default>
+                <label>Legal - Security Instruments</label>
+            </value>
+            <value>
+                <fullName>Repayment - Mandate</fullName>
+                <default>false</default>
+                <label>Repayment - Mandate</label>
+            </value>
+            <value>
+                <fullName>Repayment - Cheques &amp; Security</fullName>
+                <default>false</default>
+                <label>Repayment - Cheques &amp; Security</label>
+            </value>
+            <value>
+                <fullName>Government - Employee Authorization</fullName>
+                <default>false</default>
+                <label>Government - Employee Authorization</label>
+            </value>
+            <value>
+                <fullName>Government - DARPAN / NGO</fullName>
+                <default>false</default>
+                <label>Government - DARPAN / NGO</label>
+            </value>
+            <value>
+                <fullName>Regulatory - Verification Reports</fullName>
+                <default>false</default>
+                <label>Regulatory - Verification Reports</label>
+            </value>
+            <value>
+                <fullName>Regulatory - Refinance</fullName>
+                <default>false</default>
+                <label>Regulatory - Refinance</label>
+            </value>
+            <value>
+                <fullName>Entity - Partnership</fullName>
+                <default>false</default>
+                <label>Entity - Partnership</label>
+            </value>
+            <value>
+                <fullName>Entity - Company</fullName>
+                <default>false</default>
+                <label>Entity - Company</label>
+            </value>
+            <value>
+                <fullName>Entity - Trust / HUF / Society</fullName>
+                <default>false</default>
+                <label>Entity - Trust / HUF / Society</label>
+            </value>
+            <value>
+                <fullName>Entity - Business Registration &amp; Licenses</fullName>
+                <default>false</default>
+                <label>Entity - Business Registration &amp; Licenses</label>
+            </value>
+            <value>
+                <fullName>Entity - Ownership &amp; Compliance</fullName>
+                <default>false</default>
+                <label>Entity - Ownership &amp; Compliance</label>
+            </value>
+            <value>
+                <fullName>Other - Miscellaneous</fullName>
+                <default>false</default>
+                <label>Other - Miscellaneous</label>
+            </value>
+            <value>
+                <fullName>Occupation Details</fullName>
+                <default>false</default>
+                <label>Occupation Details</label>
+            </value>
+            <value>
+                <fullName>Entity - Government</fullName>
+                <default>false</default>
+                <label>Entity - Government</label>
+            </value>
+            <value>
+                <fullName>Additional Documents - Cheques &amp; Security</fullName>
+                <default>false</default>
+                <label>Additional Documents - Cheques &amp; Security</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

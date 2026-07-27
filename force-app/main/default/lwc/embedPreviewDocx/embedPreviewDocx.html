@@ -1,0 +1,40 @@
+<template>
+    <div class="docx-container">
+
+        <!-- Header -->
+        <div class="docx-header">
+            <span class="docx-filename" title={fileName}>{fileName}</span>
+            <div class="header-actions">
+                <button class="toolbar-btn" onclick={handleDownload} title="Download">&#8595; Download</button>
+                <button class="close-btn" onclick={handleClose}>&#10005;</button>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="docx-toolbar">
+            <button class="toolbar-btn" onclick={handleZoomOut} title="Zoom Out">&#8722;</button>
+            <span class="zoom-display">{scalePercent}%</span>
+            <button class="toolbar-btn" onclick={handleZoomIn} title="Zoom In">&#43;</button>
+        </div>
+
+        <!-- Body -->
+        <div class="docx-body">
+            <template if:true={isLoading}>
+                <div class="loading-wrap">
+                    <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:true={errorMsg}>
+                <div class="docx-error">{errorMsg}</div>
+            </template>
+
+            <!-- Rendered HTML from mammoth -->
+            <template if:false={isLoading}>
+                <template if:false={errorMsg}>
+                    <div class="docx-content" data-id="docxContent" style={contentStyle}></div>
+                </template>
+            </template>
+        </div>
+    </div>
+</template>

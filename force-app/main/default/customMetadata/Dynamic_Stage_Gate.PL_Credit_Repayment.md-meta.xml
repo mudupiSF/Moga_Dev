@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Repayment</label>
+    <protected>false</protected>
+    <values>
+        <field>Backward_Path__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Current_Main_Stage_Order__c</field>
+        <value xsi:type="xsd:double">5.0</value>
+    </values>
+    <values>
+        <field>Current_Step_Order__c</field>
+        <value xsi:type="xsd:double">1.0</value>
+    </values>
+    <values>
+        <field>Forward_Main_Stage_Name__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Forward_Steps_Name__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Main_Stage_Name__c</field>
+        <value xsi:type="xsd:string">Post Sanction Sales</value>
+    </values>
+    <values>
+        <field>NSTP_Create_at__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Override_Apex__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Override_LWC__c</field>
+        <value xsi:type="xsd:string">repaymentMandate</value>
+    </values>
+    <values>
+        <field>Portfolio__c</field>
+        <value xsi:type="xsd:string">Personal Loan</value>
+    </values>
+    <values>
+        <field>Product_Type__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>STP_Create_at__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Steps_Sub_Menu_Name__c</field>
+        <value xsi:type="xsd:string">Repayment</value>
+    </values>
+    <values>
+        <field>Sub_Type__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Type__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>is_Current_Stage_common_for_Wheels__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>is_Current_Step_Applicant_based__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>is_Current_Step_Optional__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>is_Current_Step_Parallel__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+</CustomMetadata>

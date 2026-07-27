@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <label>Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Investment in P&amp;M (Other than Lands &amp; Buildings) In INR</fullName>
+                <default>false</default>
+                <label>Investment in P&amp;M (Other than Lands &amp; Buildings) In INR</label>
+            </value>
+            <value>
+                <fullName>Turnover in INR</fullName>
+                <default>false</default>
+                <label>Turnover in INR</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

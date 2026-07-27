@@ -1,0 +1,144 @@
+@import 'c/commonStyles';
+
+.kyc-viewer-wrap {
+    min-height: 14rem;
+}
+
+.form-loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.65);
+    z-index: 2;
+    border-radius: 1rem;
+}
+
+.form-fields-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem 0.75rem;
+}
+
+.form-body {
+    padding: 0.75rem 1rem;
+}
+
+.kyc-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.kyc-doc-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.kyc-doc-table th {
+    text-align: left;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--form-slate-200);
+    background: var(--form-slate-50);
+}
+
+.kyc-doc-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--form-slate-100);
+    vertical-align: middle;
+}
+
+.kyc-preview-btn {
+    border: none;
+    background: var(--form-indigo-50);
+    border-radius: 999px;
+    width: 1.9rem;
+    height: 1.9rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.kyc-preview-btn:hover {
+    background: var(--form-indigo-100);
+}
+
+.kyc-empty-state {
+    margin: 0;
+    text-align: center;
+    padding: 0.75rem;
+    border: 1px dashed var(--form-slate-200);
+    border-radius: 0.5rem;
+    background: var(--form-slate-50);
+}
+
+.kyc-preview-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+}
+
+.kyc-preview-modal {
+    width: 100%;
+    max-width: 1280px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+}
+
+.kyc-preview-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background: #0f172a;
+    color: #fff;
+}
+
+.kyc-preview-modal-title {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.kyc-preview-modal-close {
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 1.125rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+}
+
+.kyc-preview-modal-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.kyc-preview-modal-body {
+    padding: 1.25rem;
+    overflow: auto;
+    min-height: 12rem;
+}
+
+.kyc-preview-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 12rem;
+}
+
+.kyc-preview-modal-body > c-png-display-preview-pane + c-pdf-display-preview-pane {
+    margin-top: 1rem;
+}

@@ -1,0 +1,6 @@
+<design:component label="15-85 Custom Layout">
+    <flexipage:template >
+        <flexipage:region name="left" defaultWidth="Small" />
+        <flexipage:region name="right" defaultWidth="Large" />
+    </flexipage:template>
+</design:component>

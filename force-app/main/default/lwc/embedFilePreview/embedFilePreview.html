@@ -1,0 +1,84 @@
+<template>
+    <div class="ecfp-modal-overlay" onclick={handleOverlayClick}>
+        <div class="ecfp-modal" onclick={stopPropagation}>
+
+            <div class="ecfp-modal-header">
+                <div class="ecfp-modal-title">
+                    <lightning-icon icon-name={iconName} size="small" alternative-text="file"></lightning-icon>
+                    <span>{fileName}</span>
+                </div>
+                <div class="ecfp-modal-header-actions">
+                    <template if:true={canDownload}>
+                        <button class="ecfp-btn-secondary" onclick={handleDownload}>
+                            <lightning-icon icon-name="utility:download" size="x-small" alternative-text="Download"></lightning-icon>
+                            Download
+                        </button>
+                    </template>
+                    <button class="ecfp-btn-close" title="Close" onclick={handleClose}>&#10005;</button>
+                </div>
+            </div>
+
+            <div class="ecfp-modal-body">
+                <template if:true={isPdf}>
+                    <c-embed-preview-pdf
+                        content-version-id={contentVersionId}
+                        session-id={sessionId}
+                        vf-root={vfRoot}
+                        file-name={fileName}
+                        onclose={handleClose}>
+                    </c-embed-preview-pdf>
+                </template>
+                <template if:true={isImage}>
+                    <c-embed-preview-images
+                        content-version-id={contentVersionId}
+                        session-id={sessionId}
+                        vf-root={vfRoot}
+                        file-name={fileName}
+                        onclose={handleClose}>
+                    </c-embed-preview-images>
+                </template>
+                <template if:true={isExcel}>
+                    <c-embed-preview-excel
+                        content-version-id={contentVersionId}
+                        session-id={sessionId}
+                        vf-root={vfRoot}
+                        file-name={fileName}
+                        onclose={handleClose}>
+                    </c-embed-preview-excel>
+                </template>
+                <template if:true={isDocx}>
+                    <c-embed-preview-docx
+                        content-version-id={contentVersionId}
+                        session-id={sessionId}
+                        vf-root={vfRoot}
+                        file-name={fileName}
+                        onclose={handleClose}>
+                    </c-embed-preview-docx>
+                </template>
+                <template if:true={isVideo}>
+                    <c-embed-preview-video
+                        content-document-id={contentDocumentId}
+                        content-version-id={contentVersionId}
+                        vf-root={vfRoot}
+                        session-id={sessionId}
+                        file-name={fileName}
+                        onclose={handleClose}>
+                    </c-embed-preview-video>
+                </template>
+                <template if:true={isOther}>
+                    <div class="ecfp-unsupported">
+                        <lightning-icon icon-name="utility:file" size="large"></lightning-icon>
+                        <p>Preview not available for this file type.</p>
+                        <template if:false={preventDownload}>
+                            <button class="ecfp-btn-primary" onclick={handleDownload}>
+                                <lightning-icon icon-name="utility:download" size="x-small" alternative-text="Download"></lightning-icon>
+                                Download to View
+                            </button>
+                        </template>
+                    </div>
+                </template>
+            </div>
+
+        </div>
+    </div>
+</template>

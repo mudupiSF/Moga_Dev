@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <classAccesses>
+        <apexClass>JWTTokenGenClass</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>JWTTokenResponseWrapper</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <description>API access + JWT_Token tab + JWTTokenGenClass access for the JWT Token &amp; Encryption Utility. Required for Partner/Customer Community users in JWT_Mapping__mdt.Subject__c — Community users cannot inherit API Enabled from a profile.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>JWT Token Generator (API Access)</label>
+    <tabSettings>
+        <tab>JWT_Token</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ApiEnabled</name>
+    </userPermissions>
+</PermissionSet>

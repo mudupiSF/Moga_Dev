@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Minor_Industry__c</fullName>
+    <label>Minor Industry</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Major_Industry__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>AGRICULTURE</fullName>
+                <default>false</default>
+                <label>AGRICULTURE</label>
+            </value>
+            <value>
+                <fullName>EGGS</fullName>
+                <default>false</default>
+                <label>EGGS</label>
+            </value>
+            <value>
+                <fullName>FISH</fullName>
+                <default>false</default>
+                <label>FISH</label>
+            </value>
+            <value>
+                <fullName>HIRING</fullName>
+                <default>false</default>
+                <label>HIRING</label>
+            </value>
+            <value>
+                <fullName>INFRASTRUCTURE</fullName>
+                <default>false</default>
+                <label>INFRASTRUCTURE</label>
+            </value>
+            <value>
+                <fullName>PORT</fullName>
+                <default>false</default>
+                <label>PORT</label>
+            </value>
+            <value>
+                <fullName>ROAD</fullName>
+                <default>false</default>
+                <label>ROAD</label>
+            </value>
+            <value>
+                <fullName>COLLEGE BUS</fullName>
+                <default>false</default>
+                <label>COLLEGE BUS</label>
+            </value>
+            <value>
+                <fullName>SCHOOL BUS</fullName>
+                <default>false</default>
+                <label>SCHOOL BUS</label>
+            </value>
+            <value>
+                <fullName>HOSPITAL ACTIVITIES</fullName>
+                <default>false</default>
+                <label>HOSPITAL ACTIVITIES</label>
+            </value>
+            <value>
+                <fullName>SOCIAL WORK</fullName>
+                <default>false</default>
+                <label>SOCIAL WORK</label>
+            </value>
+            <value>
+                <fullName>BLUE METAL</fullName>
+                <default>false</default>
+                <label>BLUE METAL</label>
+            </value>
+            <value>
+                <fullName>CEMENT</fullName>
+                <default>false</default>
+                <label>CEMENT</label>
+            </value>
+            <value>
+                <fullName>COAL</fullName>
+                <default>false</default>
+                <label>COAL</label>
+            </value>
+            <value>
+                <fullName>MARKET LOAD</fullName>
+                <default>false</default>
+                <label>MARKET LOAD</label>
+            </value>
+            <value>
+                <fullName>OIL</fullName>
+                <default>false</default>
+                <label>OIL</label>
+            </value>
+            <value>
+                <fullName>PUBLIC TRANSPORT – PASSENGER</fullName>
+                <default>false</default>
+                <label>PUBLIC TRANSPORT – PASSENGER</label>
+            </value>
+            <value>
+                <fullName>ROUTE PERMIT</fullName>
+                <default>false</default>
+                <label>ROUTE PERMIT</label>
+            </value>
+            <value>
+                <fullName>STAFF PERMIT</fullName>
+                <default>false</default>
+                <label>STAFF PERMIT</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>FISHING AND POULTRY</controllingFieldValue>
+            <valueName>EGGS</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FISHING AND POULTRY</controllingFieldValue>
+            <valueName>FISH</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>TRANSPORT</controllingFieldValue>
+            <valueName>BLUE METAL</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>TRANSPORT</controllingFieldValue>
+            <valueName>CEMENT</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>TRANSPORT</controllingFieldValue>
+            <valueName>COAL</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>TRANSPORT</controllingFieldValue>
+            <valueName>MARKET LOAD</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>TRANSPORT</controllingFieldValue>
+            <valueName>OIL</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>TRANSPORT</controllingFieldValue>
+            <valueName>PUBLIC TRANSPORT – PASSENGER</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>TRANSPORT</controllingFieldValue>
+            <valueName>ROUTE PERMIT</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>TRANSPORT</controllingFieldValue>
+            <valueName>STAFF PERMIT</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CONSTRUCTION</controllingFieldValue>
+            <valueName>HIRING</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CONSTRUCTION</controllingFieldValue>
+            <valueName>INFRASTRUCTURE</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CONSTRUCTION</controllingFieldValue>
+            <valueName>PORT</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CONSTRUCTION</controllingFieldValue>
+            <valueName>ROAD</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>HEALTH AND SOCIAL WORK</controllingFieldValue>
+            <valueName>HOSPITAL ACTIVITIES</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>HEALTH AND SOCIAL WORK</controllingFieldValue>
+            <valueName>SOCIAL WORK</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>EDUCATION</controllingFieldValue>
+            <valueName>COLLEGE BUS</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>EDUCATION</controllingFieldValue>
+            <valueName>SCHOOL BUS</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>AGRICULTURE</controllingFieldValue>
+            <valueName>AGRICULTURE</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

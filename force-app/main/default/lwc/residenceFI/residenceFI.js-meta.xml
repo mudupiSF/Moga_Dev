@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Residence FI</masterLabel>
+    <description>Current residence field investigation (Investigations__c / Verification__c).</description>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__UrlAddressable</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightningCommunity__Default">
+            <property name="recordId" type="String" default="{!recordId}" label="Investigation Id"
+                description="Investigations__c record Id." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,133 @@
+<template>
+    <div class="list-wrapper">
+        <div class="card-header">
+            <div class="header-content">
+                <div class="header-icon-wrap">
+                    <lightning-icon icon-name="standard:people" size="medium" class="header-icon"></lightning-icon>
+                </div>
+                <div class="header-text">
+                    <h2 class="header-title">{groupLabel}</h2>
+                    <span class="header-subtitle">Select an applicant to view details</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="applicants-grid">
+                <template for:each={normalizedApplicants} for:item="applicant">
+                    <div key={applicant.applicantId} class={applicant.cardClass}
+                        data-applicant-id={applicant.applicantId} onclick={handleSelectParent}>
+                        <div class={applicant.statusBarClass}></div>
+                        <div class="card-top">
+                            <div class="applicant-label-wrap">
+                                <div class={applicant.statusIconClass}>
+                                    <lightning-icon icon-name="standard:contact" size="small" class="person-icon"></lightning-icon>
+                                </div>
+                                <div class="label-with-status">
+                                    <span class="applicant-label">{applicant.tabLabel}</span>
+                                    <span class={applicant.statusBadgeClass}>{applicant.statusBadgeText}</span>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <template lwc:if={applicant.primaryEligible}>
+                                    <button type="button" class={applicant.primaryToggleClass} title={applicant.primaryToggleTitle}
+                                        data-applicant-id={applicant.applicantId} data-on={applicant.primaryOnAttr}
+                                        disabled={applicant.primaryDisabled} onclick={handleSetPrimary}>
+                                        <span class="primary-toggle-dot"></span>
+                                        <span class="primary-toggle-text">PRIMARY</span>
+                                    </button>
+                                </template>
+                                <button type="button" class="action-btn" title={applicant.buttonTitle}
+                                    data-applicant-id={applicant.applicantId} data-tab-label={applicant.tabLabel}
+                                    onclick={handleViewDetails}>
+                                    <template lwc:if={applicant.isStagePast}>
+                                        <lightning-icon icon-name="utility:preview" size="x-small" class="eye-icon"></lightning-icon>
+                                    </template>
+                                    <template lwc:else>
+                                        <lightning-icon icon-name="utility:edit" size="x-small" class="edit-icon"></lightning-icon>
+                                    </template>
+                                </button>
+                                <!-- Top-level applicants are removed from the Dedupe & Eligibility screen
+                                     (Add Guarantor / Add Beneficiary section), not here. Delete lives only
+                                     on the IN sub-applicant tiles below. -->
+                            </div>
+                        </div>
+                        <div class="applicant-name">{applicant.applicantName}</div>
+                        <div class="applicant-type">{applicant.customerType}</div>
+                        <template lwc:if={applicant.isSelectable}>
+                            <div class="sub-expand-hint">
+                                <lightning-icon icon-name="utility:chevrondown" size="xx-small" class="sub-expand-chevron"></lightning-icon>
+                                <span>Add/View Sub-Applicants</span>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+
+            <template lwc:if={selectedParent}>
+                <div class="sub-applicants-section">
+                    <span class="sub-applicants-label">{subSectionLabel}</span>
+                    <div class="sub-applicants-grid">
+                        <template for:each={selectedParent.subTiles} for:item="sub">
+                            <div key={sub.applicantId} class={sub.cardClass}>
+                                <div class={sub.statusBarClass}></div>
+                                <div class="card-top">
+                                    <div class="applicant-label-wrap">
+                                        <div class={sub.statusIconClass}>
+                                            <lightning-icon icon-name="standard:contact" size="x-small" class="person-icon"></lightning-icon>
+                                        </div>
+                                        <div class="label-with-status">
+                                            <span class="applicant-label">{sub.tabLabel}</span>
+                                            <span class={sub.statusBadgeClass}>{sub.statusBadgeText}</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-actions">
+                                        <template lwc:if={sub.primaryEligible}>
+                                            <button type="button" class={sub.primaryToggleClass} title={sub.primaryToggleTitle}
+                                                data-applicant-id={sub.applicantId} data-on={sub.primaryOnAttr}
+                                                disabled={sub.primaryDisabled} onclick={handleSetPrimary}>
+                                                <span class="primary-toggle-dot"></span>
+                                                <span class="primary-toggle-text">PRIMARY</span>
+                                            </button>
+                                        </template>
+                                        <button type="button" class="action-btn" title={sub.buttonTitle}
+                                            data-applicant-id={sub.applicantId} data-tab-label={sub.tabLabel}
+                                            onclick={handleViewDetails}>
+                                            <template lwc:if={sub.isStagePast}>
+                                                <lightning-icon icon-name="utility:preview" size="x-small" class="eye-icon"></lightning-icon>
+                                            </template>
+                                            <template lwc:else>
+                                                <lightning-icon icon-name="utility:edit" size="x-small" class="edit-icon"></lightning-icon>
+                                            </template>
+                                        </button>
+                                        <button type="button" class="action-btn" title="Delete Applicant"
+                                            data-applicant-id={sub.applicantId} data-tab-label={sub.tabLabel}
+                                            onclick={handleDeleteApplicant}>
+                                            <lightning-icon icon-name="utility:delete" size="x-small" class="trash-icon"></lightning-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="applicant-name">{sub.applicantName}</div>
+                                <div class="applicant-type">{sub.customerType}</div>
+                            </div>
+                        </template>
+                        <template lwc:if={selectedParent.canAddSub}>
+                            <button type="button" class="sub-add-tile" title="Add sub-applicant"
+                                data-applicant-id={selectedParent.applicantId} onclick={handleAddSub}>
+                                <span class="sub-add-icon">+</span>
+                                <span class="sub-add-text">Add Sub-Applicant</span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+    <template if:true={showRemoveConfirmModal}>
+        <c-dynamic-component-modal
+            component-name={removeConfirmProps.componentName}
+            component-props={removeConfirmProps.componentProps}
+            onclose={handleRemoveModalClose}
+            onaction={handleRemoveModalAction}>
+        </c-dynamic-component-modal>
+    </template>
+</template>

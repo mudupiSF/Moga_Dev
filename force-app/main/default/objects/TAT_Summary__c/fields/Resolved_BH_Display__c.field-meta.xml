@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Resolved_BH_Display__c</fullName>
+    <externalId>false</externalId>
+    <formula>TEXT(FLOOR(Resolved_TAT_Mins__c / 1440)) &amp; &quot;d &quot; &amp;
+TEXT(FLOOR(MOD(Resolved_TAT_Mins__c, 1440) / 60)) &amp; &quot;h &quot; &amp;
+TEXT(MOD(Resolved_TAT_Mins__c, 60)) &amp; &quot;m&quot;</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Resolved BH TAT Duration</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

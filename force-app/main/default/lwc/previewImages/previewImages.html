@@ -1,0 +1,44 @@
+<template>
+    <!-- Header -->
+    <div class="preview-header">
+        <span class="preview-filename" title={fileName}>{fileName}</span>
+        <button class="close-btn" title="Close" onclick={handleClose}>&#x2715;</button>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="preview-toolbar">
+        <button class="toolbar-btn" title="Rotate Left" onclick={rotateLeft}>&#x21BA;</button>
+        <button class="toolbar-btn" title="Rotate Right" onclick={rotateRight}>&#x21BB;</button>
+        <button class="toolbar-btn" title="Zoom In" onclick={zoomIn}>&#xFF0B;</button>
+        <button class="toolbar-btn" title="Zoom Out" onclick={zoomOut}>&#x2212;</button>
+        <span class="zoom-display">{scalePercent}%</span>
+        <button class="toolbar-btn reset-btn" title="Reset" onclick={reset}>Reset</button>
+    </div>
+
+    <!-- Image Body -->
+    <div class="preview-body">
+        <template if:true={isLoading}>
+            <div class="spinner-container">
+                <lightning-spinner alternative-text="Loading image..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={errorMsg}>
+            <div class="error-container">
+                <p class="error-message">{errorMsg}</p>
+            </div>
+        </template>
+
+        <template if:false={errorMsg}>
+            <div class="image-scroll-container">
+                <img
+                    data-id="previewImg"
+                    class="preview-image"
+                    alt={fileName}
+                    onload={handleImageLoad}
+                    onerror={handleImageError}
+                />
+            </div>
+        </template>
+    </div>
+</template>

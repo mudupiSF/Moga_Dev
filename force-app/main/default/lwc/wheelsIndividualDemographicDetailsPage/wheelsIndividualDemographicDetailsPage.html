@@ -1,0 +1,959 @@
+<template>
+    <div class="form-layout">
+
+        <!-- ══ LOADING OVERLAY ══════════════════════════════════════════════ -->
+        <template lwc:if={isPageLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ══ SECTION 1 — ADDITIONAL CUSTOMER DETAILS ═══════════════════ -->
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:user" size="small" class="form-header-icon slds-icon-utility-edit-form slds-icon_container"></lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">Additional Customer Details</h1>
+                        <p class="form-header-subtitle">Capture demographic details for the applicant</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-body">
+                <div class="form-fields-grid">
+
+                    <!-- Preferred address for communication -->
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">
+                                    Preferred address for communication
+                                    <span class="form-field-required-indicator" title="Required">*</span>
+                                </label>
+                                <div class="form-field-editable-input-wrap">
+                                    <lightning-combobox
+                                        value={preferredAddressForCommunication}
+                                        options={preferredAddressOptions}
+                                        name="preferredAddressForCommunication"
+                                        onchange={handleFieldChange}
+                                        variant="label-hidden"
+                                        placeholder="Select address type"
+                                        disabled={isReadOnlyScreen}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Preferred address for communication</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{preferredAddressForCommunication}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <!-- Communication Language -->
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">Communication Language <span class="form-field-required-indicator" title="Required">*</span></label>
+                                <div class="form-field-editable-input-wrap">
+                                    <lightning-combobox
+                                        value={communicationLanguage}
+                                        options={communicationLanguageOptions}
+                                        name="communicationLanguage"
+                                        onchange={handleFieldChange}
+                                        variant="label-hidden"
+                                        placeholder="Select language"
+                                        disabled={isReadOnlyScreen}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Communication Language</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{communicationLanguage}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Father's Name -->
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">Father's Name <span class="form-field-required-indicator" title="Required">*</span></label>
+                                <div class="form-field-editable-input-wrap">
+                                    <lightning-input
+                                        type="text"
+                                        value={fatherName}
+                                        name="fatherName"
+                                        onchange={handleFieldChange}
+                                        variant="label-hidden"
+                                        disabled={isReadOnlyScreen}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Father's Name</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{fatherName}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Mother's Name -->
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">Mother's Name <span class="form-field-required-indicator" title="Required">*</span></label>
+                                <div class="form-field-editable-input-wrap">
+                                    <lightning-input
+                                        type="text"
+                                        value={motherName}
+                                        name="motherName"
+                                        onchange={handleFieldChange}
+                                        variant="label-hidden"
+                                        disabled={isReadOnlyScreen}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Mother's Name</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{motherName}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Religion -->
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">Religion <span class="form-field-required-indicator" title="Required">*</span></label>
+                                <div class="form-field-editable-input-wrap">
+                                    <lightning-combobox
+                                        value={religion}
+                                        options={religionOptions}
+                                        name="religion"
+                                        onchange={handleFieldChange}
+                                        variant="label-hidden"
+                                        placeholder="Select religion"
+                                        disabled={isReadOnlyScreen}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Religion</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{religion}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Caste -->
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">Caste <span class="form-field-required-indicator" title="Required">*</span></label>
+                                <div class="form-field-editable-input-wrap">
+                                    <lightning-combobox
+                                        value={caste}
+                                        options={casteOptions}
+                                        name="caste"
+                                        onchange={handleFieldChange}
+                                        variant="label-hidden"
+                                        placeholder="Select category"
+                                        disabled={isReadOnlyScreen}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Caste</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{caste}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Customer Qualification -->
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">Customer Qualification <span class="form-field-required-indicator" title="Required">*</span></label>
+                                <div class="form-field-editable-input-wrap">
+                                    <lightning-combobox
+                                        value={qualification}
+                                        options={qualificationOptions}
+                                        name="qualification"
+                                        onchange={handleFieldChange}
+                                        variant="label-hidden"
+                                        placeholder="Select qualification"
+                                        disabled={isReadOnlyScreen}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Customer Qualification</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{qualification}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Relationship with borrower -->
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">Relationship with borrower <span class="form-field-required-indicator" title="Required">*</span></label>
+                                <div class="form-field-editable-input-wrap">
+                                    <lightning-combobox
+                                        value={relationshipWithBorrower}
+                                        options={relationshipOptions}
+                                        name="relationshipWithBorrower"
+                                        onchange={handleFieldChange}
+                                        variant="label-hidden"
+                                        placeholder="Select relationship"
+                                        disabled={isReadOnlyScreen}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Relationship with borrower</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{relationshipWithBorrower}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ SECTION 2 — REFERENCE DETAILS ═══════════════════════════════ -->
+        <template lwc:if={showReferenceSection}>
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:contact" size="small" class="form-header-icon"></lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">Reference Details</h1>
+                        <p class="form-header-subtitle">Provide two references <span class="form-field-required-indicator" title="Required">*</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-body">
+                <!-- Reference 1 -->
+                <div class="form-reference-section">
+                    <h3 class="form-reference-title">Reference 1</h3>
+                    <div class="form-fields-grid">
+
+                        <!-- Reference 1 Name -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Name <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            value={reference1Name}
+                                            name="reference1Name"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder=""
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Name</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference1Name}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 1 Relationship -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Relationship with borrower <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-combobox
+                                            value={reference1Relationship}
+                                            options={relationshipOptions}
+                                            name="reference1Relationship"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder="Select relationship"
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Relationship with borrower</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference1Relationship}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 1 Phone -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Phone number <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="tel"
+                                            value={reference1Phone}
+                                            name="reference1Phone"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder=""
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Phone number</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference1Phone}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 1 Address Line 1 -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Address line 1 <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            value={reference1AddressLine1}
+                                            name="reference1AddressLine1"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Address line 1</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference1AddressLine1}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 1 Address Line 2 -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Address line 2 <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            value={reference1AddressLine2}
+                                            name="reference1AddressLine2"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder=""
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Address line 2</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference1AddressLine2}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 1 Pin code -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Pin code <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            value={reference1Pincode}
+                                            name="reference1Pincode"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder=""
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Pin code</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference1Pincode}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 1 City -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">City <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            value={reference1City}
+                                            name="reference1City"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder=""
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">City</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference1City}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 1 State -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">State <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            value={reference1State}
+                                            name="reference1State"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder=""
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">State</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference1State}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Reference 2 -->
+                <div class="form-reference-section">
+                    <h3 class="form-reference-title">Reference 2</h3>
+                    <div class="form-fields-grid">
+
+                        <!-- Reference 2 Name -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Name <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            value={reference2Name}
+                                            name="reference2Name"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder=""
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Name</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference2Name}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 2 Relationship -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Relationship with borrower <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-combobox
+                                            value={reference2Relationship}
+                                            options={relationshipOptions}
+                                            name="reference2Relationship"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder="Select relationship"
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Relationship with borrower</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference2Relationship}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 2 Phone -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Phone number <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="tel"
+                                            value={reference2Phone}
+                                            name="reference2Phone"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder=""
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Phone number</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference2Phone}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 2 Address Line 1 -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Address line 1 <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            value={reference2AddressLine1}
+                                            name="reference2AddressLine1"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Address line 1</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference2AddressLine1}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 2 Address Line 2 -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Address line 2 <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            value={reference2AddressLine2}
+                                            name="reference2AddressLine2"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder=""
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Address line 2</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference2AddressLine2}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 2 Pin code -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Pin code <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            value={reference2Pincode}
+                                            name="reference2Pincode"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Pin code</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference2Pincode}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 2 City -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">City <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            value={reference2City}
+                                            name="reference2City"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder=""
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">City</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference2City}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Reference 2 State -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">State <span class="form-field-required-indicator" title="Required">*</span></label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            value={reference2State}
+                                            name="reference2State"
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder=""
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">State</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{reference2State}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                    </div>
+                </div>               
+            </div>
+        </div>
+        </template>
+
+        <!-- ══ SECTION 3 — CUSTOMER SIGNATURE CARD ═══════════════════════ -->
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:edit" size="small" class="form-header-icon"></lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">Customer Signature</h1>
+                        <p class="form-header-subtitle">Upload customer signature  <span class="form-field-required-indicator" title="Required">*</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-body">
+                <div class="form-fields-grid">
+                    <div class="form-field-wrap">
+                        <div class="form-file-upload-wrap">
+                            <label class="form-field-editable-label">
+                                Customer Signature
+                                <span class="form-field-required-indicator" title="Required">*</span>
+                            </label>
+                            <template lwc:if={signatureUploaded}>
+                                <div class="form-file-uploaded-bar">
+                                    <lightning-icon
+                                        icon-name="utility:success"
+                                        size="x-small"
+                                        class="form-file-success-icon"
+                                        alternative-text="Uploaded">
+                                    </lightning-icon>
+                                    <p class="form-file-selected-name">{signatureFileName}</p>
+                                    <button
+                                        type="button"
+                                        class="form-file-action-btn"
+                                        onclick={handleSignaturePreview}
+                                        title="Preview">
+                                        <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                    </button>
+                                    <template lwc:if={showDocumentDelete}>
+                                        <button
+                                            type="button"
+                                            class="form-file-action-btn"
+                                            onclick={handleSignatureDelete}
+                                            title="Delete">
+                                            <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                        </button>
+                                    </template>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <template lwc:if={showDocumentActions}>
+                                    <lightning-file-upload
+                                        record-id={signatureDocumentChecklistId}
+                                        accept={signatureAcceptedFormats}
+                                        onuploadfinished={handleSignatureUploadFinished}
+                                        disabled={isReadOnlyScreen}
+                                        label="Customer Signature"
+                                        title="Customer Signature"
+                                        multiple="false">
+                                    </lightning-file-upload>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ SECTION — DEMOGRAPHIC REMARKS (OPS view only) ═════════════════ -->
+        <template lwc:if={isDemographicOpsView}>
+            <div class="form-card">
+                <c-operations-section-header
+                    subtitle="Verify demographic details and acceptance">
+                </c-operations-section-header>
+
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <template lwc:if={isDemographicRemarksEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">
+                                        Demographic Details Correctly Captured
+                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                    </label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-combobox
+                                            name="demographicDetailsCorrectlyCaptured"
+                                            value={demographicDetailsCorrectlyCaptured}
+                                            options={demographicCorrectlyCapturedOptions}
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder="Please select">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Demographic Details Correctly Captured</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{demographicDetailsCorrectlyCaptured}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template lwc:if={isDemographicRemarksEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">
+                                        Remarks
+                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                    </label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-textarea
+                                            name="remarks"
+                                            value={remarks}
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder="Enter remarks">
+                                        </lightning-textarea>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Remarks</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{remarks}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ FOOTER — NEXT (disabled via isNextDisabled) ═══════════════════ -->
+        <div class="form-footer-wrapper">
+            <div class="form-footer">
+                <div class="form-btn-wrapper">
+                    <button type="button"
+                        class="form-primary-btn p4-button-text"
+                        onclick={handleNextButton}
+                        disabled={isNextDisabled}>
+                        Next
+                        <lightning-icon
+                            icon-name="utility:forward"
+                            size="x-small"
+                            class="form-btn-icon">
+                        </lightning-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document preview overlay for customer signature -->
+        <template lwc:if={openPreviewModal}>
+            <c-file-previewer
+                content-document-id={contentDocumentId}
+                file-type={fileType}
+                record-id={recordId}
+                onclose={handleFilePreviewClose}>
+            </c-file-previewer>
+        </template>
+
+    </div>
+</template>

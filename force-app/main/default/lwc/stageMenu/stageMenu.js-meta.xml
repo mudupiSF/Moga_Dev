@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>65.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightning__Tab</target>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="recordId"      type="String" description="Application__c record Id (auto-populated on record pages)"/>
+            <property name="applicationId" type="String" description="Explicit Application__c Id override"/>
+            <property name="portfolio"     type="String" description="Portfolio value, e.g. Wheels or Personal Loan"/>
+            <objects>
+                <object>Application__c</object>
+            </objects>
+        </targetConfig>
+        <targetConfig targets="lightning__AppPage,lightning__HomePage">
+            <property name="applicationId" type="String" description="Application__c Id"/>
+            <property name="portfolio"     type="String" description="Portfolio value, e.g. Wheels or Personal Loan"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Payment Request</label>
+    <protected>false</protected>
+    <values>
+        <field>Backward_Path__c</field>
+        <value xsi:type="xsd:string">Overview;QDE-&gt;Basic Details;QDE-&gt;KYC Details;QDE-&gt;Occupation Details;QDE-&gt;Dedupe and Eligibility;DDE-&gt;Loan Terms;DDE-&gt;Income and Banking Details;DDE-&gt;Offer;Credit Processing-&gt;Application Overview-&gt;Exposure Analysis;Credit Processing-&gt;Credit Assessment;Credit Processing-&gt;Investigation Reports;Credit Processing-&gt;CAM and Approval Log;Post Sanction Sales-&gt;Repayment;Post Sanction Sales-&gt;Agreement;Post Sanction Sales-&gt;Demographic Details;Post Sanction Sales-&gt;
+Additional Documents;Post Sanction Sales-&gt;Payment Request;Operations-&gt;Repayment;Operations-&gt; Agreement;Operations-&gt;Demographic Details;Operations-&gt;Additional Documents;</value>
+    </values>
+    <values>
+        <field>Current_Main_Stage_Order__c</field>
+        <value xsi:type="xsd:double">6.0</value>
+    </values>
+    <values>
+        <field>Current_Step_Order__c</field>
+        <value xsi:type="xsd:double">5.0</value>
+    </values>
+    <values>
+        <field>Forward_Main_Stage_Name__c</field>
+        <value xsi:type="xsd:string">Post Disbursement</value>
+    </values>
+    <values>
+        <field>Forward_Steps_Name__c</field>
+        <value xsi:type="xsd:string">Payment Disbursement</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Main_Stage_Name__c</field>
+        <value xsi:type="xsd:string">Operations</value>
+    </values>
+    <values>
+        <field>NSTP_Create_at__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Override_Apex__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Override_LWC__c</field>
+        <value xsi:type="xsd:string">listofAssetDetails</value>
+    </values>
+    <values>
+        <field>Portfolio__c</field>
+        <value xsi:type="xsd:string">Personal Loan</value>
+    </values>
+    <values>
+        <field>Product_Type__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>STP_Create_at__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Steps_Sub_Menu_Name__c</field>
+        <value xsi:type="xsd:string">Payment Request</value>
+    </values>
+    <values>
+        <field>Sub_Type__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Type__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>is_Current_Stage_common_for_Wheels__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>is_Current_Step_Applicant_based__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>is_Current_Step_Optional__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>is_Current_Step_Parallel__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+</CustomMetadata>

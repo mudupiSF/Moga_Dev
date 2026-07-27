@@ -1,0 +1,24 @@
+<template>
+    <div class={fabHostClass}>
+        <div class={dockActionsClass}>
+            <button type="button" class="fab fab-upload" title="Upload Document" onclick={handleUploadClick}>
+                <lightning-icon icon-name="utility:upload" size="x-small" aria-label="Upload Document" variant="inverse" class="fab-icon"></lightning-icon>
+            </button>
+            <button type="button" class="fab fab-view" title="View Document" aria-label="View Document" onclick={handleViewClick}>
+                <lightning-icon icon-name="utility:preview" size="x-small" variant="inverse" class="fab-icon"></lightning-icon>
+            </button>
+            <c-query-indicator record-id={recordId} onviewqueries={handleViewQueriesClick} oncreatequery={handleCreateQueryClick}></c-query-indicator>
+        </div>
+    </div>
+
+    <template if:true={showDynamicModal}>
+        <c-dynamic-component-modal
+            component-name={dynamicModalComponentName}
+            record-id={recordId}
+            modal-header={dynamicModalHeader}
+            component-props={dynamicModalComponentProps}
+            onclose={handleDynamicModalClose}
+        >
+        </c-dynamic-component-modal>
+    </template>
+</template>

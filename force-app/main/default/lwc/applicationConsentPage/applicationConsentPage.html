@@ -1,0 +1,173 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <div class="consent-container">
+
+        <template lwc:if={isLoading}>
+            <div class="loading-wrap">
+                <lightning-spinner alternative-text="Loading consent" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:if={errorMessage}>
+            <div class="error-banner">{errorMessage}</div>
+        </template>
+
+        <template lwc:if={showOtpStep}>
+            <div class="consent-otp-wrap">
+                <h2 class="consent-otp-heading">Consent - Verify Mobile</h2>
+                <c-otp-verification
+                    applicant-id={applicantIdForWire}
+                    otp-type="mobile"
+                    verify-target={mobileNumber}
+                    otp-context="consent"
+                    header-name="OTP Verification"
+                    guest-site-mode
+                    onotpverified={handleConsentOtpVerified}>
+                </c-otp-verification>
+            </div>
+        </template>
+
+        <template lwc:if={showConsentForm}>
+            <p class="consent-greeting">{greetingLine}</p>
+            <p class="consent-intro">The consent content as confirmed by you is as follows:</p>
+
+            <div class="consent-body">
+                <p>
+                    1/ We authorize the Bank to make any enquiries regarding my application, including without
+                    limitation, to carry out verification / validations / authenticity check of my / our documents /
+                    information so provided in the application or gathered through the device I/ we have applied
+                    through, by using technology enabled algorithms or processes (either by itself or through its
+                    various Service Providers) and give consent to the Bank to disclose, without notice to me /us,
+                    information furnished by me / us in application form(s) / related documents executed in relation
+                    to the facilities availed from the Bank, other Branches / Subsidiaries / Affiliates, Credit
+                    Bureaus like CIBIL, EQUIFAX etc. / rating agencies, Service Providers and / or their agents /
+                    partners / vendors whether located India or overseas, as it deems fit and in accordance with the
+                    applicable guidelines of the Reserve Bank of India (RBI). I / We also acknowledge the right of
+                    the Bank to provide / share details of my / our account/ application to such Service Providers
+                    and /or their agents / partners /vendors for any activities related to the operations or above
+                    stated verification activities without any specific consent.
+                </p>
+                <p>
+                    1/We note that my / our Primary or Alternate Number or WhatsApp Number would be considered as the
+                    Registered Mobile Number (RMN) by the Bank and the Bank is authorized to initiate the necessary
+                    verification and validation processes relating to Mobile and other relevant credentials like email,
+                    EPFO Number, CKYC ID and Professional Qualification registered ID.
+                </p>
+                <p>
+                    I/ We hereby authorize the Bank to verify /check/obtain/download/upload/update my / our KYC
+                    details from/with the Central KYC Registry(CERSAI):
+                </p>
+                <ul class="consent-sublist">
+                    <li>
+                        a. by verifying such details through the CKYC number (i.e. KYC Identifier Number- KIN) provided
+                        by me / us or
+                    </li>
+                    <li>
+                        b. by obtaining such CKYC number/KIN, through details shared by me / us for this Application
+                        Form.
+                    </li>
+                </ul>
+                <p>
+                    I/ we hereby consent for receiving information from the Bank and Central KYC Registry through
+                    SMS/Email on the registered number/email address.
+                </p>
+                <p>
+                    I/ we acknowledge that I / we are informed that details of all charges / fee levied as may be
+                    applicable for my / our Loan / Loan Product are hosted under the heading Schedule of Charges on the
+                    website of the Bank. I / we are further informed that Schedule of Charges are subject to change
+                    and that I/ we should refer to the Bank's website to view the current rates.
+                </p>
+                <p>
+                    Furthermore, I/ we agree and acknowledge that the use of information furnished by me / us in
+                    application form(s) / related documents for the above purposes, to the Bank and /or above
+                    transferees shall not be made basis for any compliant, claim, suit, demand or cause of action or
+                    other proceeding against the Bank or the transferees by me or any other party claiming under my
+                    name, as legal heirs / successors. I voluntarily opt for Aadhaar OVD KYC or e-KYC or Video KYC or
+                    offline verification, and submit to the Bank my Aadhaar Number, Virtual ID, e-Aadhaar, Masked
+                    Aadhaar. I authorize the Bank for downloading details of my AADHAAR using Biometric / OTP
+                    authentication route from UIDAI.
+                </p>
+                <p>
+                    I/we am /are duly informed that my /our Name and Bank account details as furnished by me /us as
+                    part of the loan application/ journey flow, will be mandatorily verified through the Online Bank
+                    Account Verification (Penny Drop / Penniless) facility. By agreeing these terms, I /We hereby
+                    authorize the Bank to initiate a small transaction of say ₹1 (One Rupee) or less to
+                    my/ our designated Bank Account for the purpose of verifying the validity and accuracy of my/ our
+                    account details as provided by me/ us in the Loan application and from which account I /we intend
+                    to do the loan repayment, if the loan is sanctioned.
+                </p>
+            </div>
+
+            <div class="confirm-section">
+                <p class="confirm-heading">1/ We confirm that:</p>
+                <ul class="confirm-list">
+                    <li>we am/ are the "First Account Holder(s") in my/ our Bank Account and is valid and active as of today</li>
+                    <li>the name in the Bank Account would match with the name that is mentioned in the loan application</li>
+                    <li>in case of failure of Bank Account verification / name matching process, I/ We would provide alternate active Bank account details to enable further progressing of the loan process</li>
+                </ul>
+            </div>
+
+            <div class="confirm-section">
+                <p class="confirm-heading">I/we note and explicitly consent and agree:</p>
+                <ul class="confirm-list">
+                    <li>that, if l/ we have any concerns regarding potential Bank Charges, I /we would first confirm about the same with my/ our Bank prior to giving this authorization / consent and would not bring about any issues against the Bank, later.</li>
+                    <li>to the initiation of the verification of my/ our bank account details by the Bank, on our volition</li>
+                    <li>that, there can be initial credit given to my/ our account and which would get subsequently reversed</li>
+                    <li>that I /we will not claim any charges, now or later from the Bank and whether the loan is sanctioned, withdrawn, or rejected.</li>
+                    <li>that the Bank shall not be liable for any incidental charges or fees imposed by my / our Bank in connection with this transaction or its reversal.</li>
+                </ul>
+            </div>
+
+            <div class="consent-body">
+                <p class="confirm-heading">Further to this, I/ We, declare that,</p>
+                <p>
+                    I/We am/are not a defaulter to any Bank/ Financial Institution.
+                </p>
+                <p>
+                    I/We further confirm that the l/ We am/are major, resident of India and residing in India. I/We,
+                    also confirm that I/We am/are not a tax resident of any other country. I/ We further confirm that
+                    the declaration given for FATCA Compliance is submitted to the Bank commonly for all relationships
+                    namely asset, liability and distribution products available by me / us. In case of any change, I/
+                    We, agree to keep the Bank duly informed about the change and furnish revised declaration as may
+                    be required.
+                </p>
+                <p>
+                    I/ we do not have any existing customer ID other than the one mentioned in the loan application
+                    (Section 1/17) and in case, if the Bank identifies any other / different customer ID as in Bank's
+                    records, the Bank is duly empowered to consolidate my / our customer ID(s) under a single customer
+                    ID as it may decide, without any prior notice to me / us.
+                </p>
+                <p>
+                    I/We are aware that my / our OTP shared is an explicit consent towards the same or is conclusive
+                    proof of me / us having noted and consented to the details shared by the Bank, vide the Web form
+                    /digital page exposed.
+                </p>
+            </div>
+
+            <div class="consent-footer">
+                <p>Your inputs were given to our sources vide:</p>
+                <p>Application Number: {applicationNumber}</p>
+                <p>Sourcer Name: {sourcerName}</p>
+                <p>Sourcer Code: {sourcerCode}</p>
+            </div>
+
+            <div class="consent-actions">
+                <button class="accept-btn" onclick={handleAcceptConsent} disabled={isAcceptDisabled}>
+                    <template lwc:if={acceptLoading}>
+                        <span class="spinner-sm"></span>
+                    </template>
+                    <template lwc:elseif={consentAlreadyReceived}>
+                        Accepted
+                    </template>
+                    <template lwc:else>
+                        Accept
+                    </template>
+                </button>
+            </div>
+
+            <template lwc:if={showStatusMessage}>
+                <p class="consent-status">{statusMessage}</p>
+            </template>
+        </template>
+    </div>
+</template>

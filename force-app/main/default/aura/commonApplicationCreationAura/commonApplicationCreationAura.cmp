@@ -1,0 +1,298 @@
+<aura:component
+    controller="CommonApplicationCreationController"
+    implements="lightning:actionOverride,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome"
+    access="global">
+
+    <!-- ── Selection state ─────────────────────────────────────────────── -->
+    <aura:attribute name="selectedProduct"         type="String"  default=""/>
+    <aura:attribute name="selectedProductLabel"    type="String"  default=""/>
+    <aura:attribute name="selectedProductIcon"     type="String"  default=""/>
+    <aura:attribute name="selectedVehicleType"      type="String" default=""/>
+    <aura:attribute name="selectedSegment"          type="String" default=""/>
+    <aura:attribute name="selectedSubProduct"       type="String" default=""/>
+    <aura:attribute name="selectedSubProductLabel"  type="String" default=""/>
+
+    <!-- ── Options (dynamic Product + static cascading lists like IBL_SIT) ── -->
+    <aura:attribute name="productOptions"           type="List"   default="[]"/>
+
+    <aura:attribute name="numberOfVehiclesOptions"  type="List"   default="[
+        {'label': 'Single Vehicle',   'value': 'Single'},
+        {'label': 'Multiple Vehicles','value': 'Multiple'}
+    ]"/>
+
+    <aura:attribute name="vehicleTypeOptions"       type="List"   default="[
+        {'label': 'New',       'value': 'New'},
+        {'label': 'Refinance', 'value': 'Refinance'}
+    ]"/>
+
+    <aura:attribute name="segmentOptions"           type="List"   default="[
+        {'label': 'Motorcycle','value': 'MOTORCYC'},
+        {'label': 'Scooter',   'value': 'SCOOTER'},
+        {'label': 'Moped',     'value': 'MOPEDS'},
+        {'label': 'E-Scooter', 'value': 'ESCOOTER'},
+        {'label': 'Hi-Street', 'value': 'HISTREET'},
+        {'label': 'Hi-End',    'value': 'HIENDBIKE'}
+    ]"/>
+
+    <!-- Sub-Product options resolved per Product (set in helper). -->
+    <aura:attribute name="subProductDependencyMap"  type="Object" default="{}"/>
+    <aura:attribute name="subProductOptions"        type="List"   default="[]"/>
+    <aura:attribute name="showSubProduct"           type="Boolean" default="false"/>
+
+    <!-- ── UI state ────────────────────────────────────────────────────── -->
+    <aura:attribute name="isLoadingOptions"        type="Boolean" default="true"/>
+    <aura:attribute name="isSubmitting"            type="Boolean" default="false"/>
+    <aura:attribute name="isSuccess"               type="Boolean" default="false"/>
+    <aura:attribute name="isFormValid"             type="Boolean" default="false"/>
+    <aura:attribute name="newRecordId"             type="String"  default=""/>
+    <aura:attribute name="errorMessage"            type="String"  default=""/>
+
+    <!-- ── Lifecycle ───────────────────────────────────────────────────── -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- .THIS in CSS is the fixed full-screen overlay; cac-container centres the card -->
+    <div class="cac-container">
+
+        <div class="cac-card">
+
+            <!-- Modal header bar — matches .bmp-card-header style -->
+            <div class="cac-modal-hdr">
+                <div class="cac-modal-hdr-left">
+                    <div class="cac-modal-icon-wrap">
+                        <span class="cac-modal-icon">📋</span>
+                    </div>
+                    <h2 class="cac-modal-title">Create New Application</h2>
+                </div>
+                <button class="cac-modal-close" onclick="{!c.handleCancel}" title="Close">✕</button>
+            </div>
+
+            <!-- Loading state -->
+            <aura:if isTrue="{!v.isLoadingOptions}">
+                <div class="cac-loading">
+                    <lightning:spinner alternativeText="Loading product catalog…" size="medium"/>
+                    <p class="cac-loading-text">Loading product catalog…</p>
+                </div>
+            </aura:if>
+
+            <!-- ─── Form (loaded, not yet submitted successfully) ──── -->
+            <aura:if isTrue="{!and(not(v.isLoadingOptions), not(v.isSuccess))}">
+
+                <!-- Error banner -->
+                <aura:if isTrue="{!v.errorMessage}">
+                    <div class="cac-error-banner" role="alert">
+                        <span class="cac-error-icon">⚠️</span>
+                        <span>{!v.errorMessage}</span>
+                    </div>
+                </aura:if>
+
+                <!-- ════════════════════════════════════════════════════════════════ -->
+                <!-- SECTION 1 : Select Primary Product                                -->
+                <!-- Visual design adapted from REACT UI Codes (lines 265-303)         -->
+                <!-- Per Rule 6, converted to Aura because target component is Aura.   -->
+                <!-- ════════════════════════════════════════════════════════════════ -->
+                <div class="cac-section">
+                    <div class="cac-rx-section-hdr">
+                        <span class="{!v.selectedProduct != '' ? 'cac-step-icon cac-step-icon-filled' : 'cac-step-icon'}">📋</span>
+                        <h3 class="cac-rx-step-title">Select Primary Product</h3>
+                    </div>
+
+                    <div class="cac-rx-product-grid">
+                        <aura:iteration items="{!v.productOptions}" var="opt">
+                            <button
+                                class="{!v.selectedProduct == opt.value ? 'cac-rx-tile cac-rx-tile-selected' : 'cac-rx-tile'}"
+                                data-value="{!opt.value}"
+                                data-label="{!opt.label}"
+                                data-icon="{!opt.icon}"
+                                onclick="{!c.handleProductSelect}">
+
+                                <aura:if isTrue="{!v.selectedProduct == opt.value}">
+                                    <div class="cac-rx-tile-check-pill">✓</div>
+                                </aura:if>
+
+                                <div class="cac-rx-tile-emoji">{!opt.icon}</div>
+                                <div class="cac-rx-tile-code">{!opt.label}</div>
+                                <div class="cac-rx-tile-name">{!opt.code}</div>
+                            </button>
+                        </aura:iteration>
+                    </div>
+                </div>
+
+                <!-- ════════════════════════════════════════════════════════════════ -->
+                <!-- CASCADING FIELDS - appear after Product is selected               -->
+                <!-- Functional/conditional logic replicated from IBL_SIT              -->
+                <!-- ════════════════════════════════════════════════════════════════ -->
+                <aura:if isTrue="{!v.selectedProduct != ''}">
+                    <!-- ── Vehicle Type (only for 2W) ───────── -->
+                    <aura:if isTrue="{!v.selectedProduct == '2W'}">
+                        <div class="cac-section">
+                            <div class="cac-section-hdr">
+                                <span class="cac-section-label">
+                                    <span class="{!v.selectedVehicleType != '' ? 'cac-step-icon cac-step-icon-filled' : 'cac-step-icon'}">{!v.selectedProductIcon}</span>
+                                    Vehicle Type
+                                </span>
+                            </div>
+                            <div class="cac-radio-grid">
+                                <aura:iteration items="{!v.vehicleTypeOptions}" var="vtOpt">
+                                    <button
+                                        class="{!v.selectedVehicleType == vtOpt.value ? 'cac-radio-card cac-radio-card-selected' : 'cac-radio-card'}"
+                                        data-value="{!vtOpt.value}"
+                                        onclick="{!c.handleVehicleTypeChange}">
+                                        <span class="{!v.selectedVehicleType == vtOpt.value ? 'cac-radio-dot cac-radio-dot-on' : 'cac-radio-dot'}"></span>
+                                        <span class="cac-radio-label">{!vtOpt.label}</span>
+                                    </button>
+                                </aura:iteration>
+                            </div>
+                        </div>
+                    </aura:if>
+
+                    <!-- ── Segment (only for 2W + New) ─────── -->
+                    <aura:if isTrue="{!and(v.selectedProduct == '2W', v.selectedVehicleType == 'New')}">
+                        <div class="cac-section">
+                            <div class="cac-section-hdr">
+                                <span class="cac-section-label">
+                                    <span class="{!v.selectedSegment != '' ? 'cac-step-icon cac-step-icon-filled' : 'cac-step-icon'}">⚙️</span>
+                                    Segment
+                                </span>
+                            </div>
+                            <div class="cac-radio-grid cac-radio-grid-3col">
+                                <aura:iteration items="{!v.segmentOptions}" var="sgOpt">
+                                    <button
+                                        class="{!v.selectedSegment == sgOpt.value ? 'cac-radio-card cac-radio-card-selected' : 'cac-radio-card'}"
+                                        data-value="{!sgOpt.value}"
+                                        onclick="{!c.handleSegmentChange}">
+                                        <span class="{!v.selectedSegment == sgOpt.value ? 'cac-radio-dot cac-radio-dot-on' : 'cac-radio-dot'}"></span>
+                                        <span class="cac-radio-label">{!sgOpt.label}</span>
+                                    </button>
+                                </aura:iteration>
+                            </div>
+                        </div>
+                    </aura:if>
+
+                    <!-- ── Sub-Product (only for CV or PL) ──────
+                         Section visibility per Product:
+                           2W : Number of Vehicles → Vehicle Type → Segment (if New)
+                           CV : Number of Vehicles → Sub-Product
+                           PL : Number of Vehicles → Sub-Product
+                           4W : Number of Vehicles -->
+                    <aura:if isTrue="{!v.showSubProduct}">
+                        <div class="cac-section">
+                            <div class="cac-section-hdr">
+                                <span class="cac-section-label">
+                                    <span class="{!v.selectedSubProduct != '' ? 'cac-step-icon cac-step-icon-filled' : 'cac-step-icon'}">📦</span>
+                                    Sub Product
+                                </span>
+                            </div>
+                            <div class="cac-radio-grid">
+                                <aura:iteration items="{!v.subProductOptions}" var="spOpt">
+                                    <button
+                                        class="{!v.selectedSubProduct == spOpt.value ? 'cac-radio-card cac-radio-card-selected' : 'cac-radio-card'}"
+                                        data-value="{!spOpt.value}"
+                                        data-label="{!spOpt.label}"
+                                        onclick="{!c.handleSubProductSelect}">
+                                        <span class="{!v.selectedSubProduct == spOpt.value ? 'cac-radio-dot cac-radio-dot-on' : 'cac-radio-dot'}"></span>
+                                        <span class="cac-radio-label">{!spOpt.label}</span>
+                                    </button>
+                                </aura:iteration>
+                            </div>
+                        </div>
+                    </aura:if>
+
+                </aura:if>
+
+                <!-- ── Action row ────────────────────────────────── -->
+                <div class="cac-action-row">
+                    <button
+                        class="{!v.selectedProduct != '' ? 'cac-reset-btn' : 'cac-reset-btn cac-reset-hidden'}"
+                        onclick="{!c.handleReset}">
+                        ↺ &nbsp; Reset Selection
+                    </button>
+
+                    <div class="cac-action-right">
+                        <button class="cac-cancel-btn"
+                                onclick="{!c.handleCancel}"
+                                disabled="{!v.isSubmitting}">
+                            Cancel
+                        </button>
+                        <button
+                            class="{!v.isFormValid ? 'cac-confirm-btn cac-confirm-active' : 'cac-confirm-btn'}"
+                            disabled="{!or(v.isSubmitting, not(v.isFormValid))}"
+                            onclick="{!c.handleSubmit}">
+                            <aura:if isTrue="{!v.isSubmitting}">
+                                <lightning:spinner alternativeText="Creating…" size="x-small" variant="inverse"/>
+                                &nbsp; Creating…
+                                <aura:set attribute="else">
+                                    Create Application &nbsp; →
+                                </aura:set>
+                            </aura:if>
+                        </button>
+                    </div>
+                </div>
+
+            </aura:if>
+
+            <!-- ─── Success panel ─────────────────────────────────── -->
+            <aura:if isTrue="{!v.isSuccess}">
+                <div class="cac-success">
+
+                    <div class="cac-success-icon-wrap">🛡️</div>
+
+                    <div class="cac-success-text">
+                        <h2 class="cac-success-title">Application Configured</h2>
+                        <p class="cac-success-sub">
+                            Your loan application has been created successfully.
+                        </p>
+                    </div>
+
+                    <!-- Summary card -->
+                    <div class="cac-summary-card">
+                        <div class="cac-summary-row">
+                            <span class="cac-summary-label">Primary Product</span>
+                            <span class="cac-summary-value">{!v.selectedProductLabel}</span>
+                        </div>
+                        <aura:if isTrue="{!v.selectedSubProduct != ''}">
+                            <div class="cac-summary-divider"></div>
+                            <div class="cac-summary-row">
+                                <span class="cac-summary-label">Sub-Product</span>
+                                <span class="cac-summary-value">{!v.selectedSubProductLabel}</span>
+                            </div>
+                        </aura:if>
+                        <!-- Number of Vehicles — not captured on this screen
+                        <div class="cac-summary-divider"></div>
+                        <div class="cac-summary-row">
+                            <span class="cac-summary-label">Number of Vehicles</span>
+                            <span class="cac-summary-value">{!v.selectedNumberOfVehicles}</span>
+                        </div>
+                        -->
+                        <aura:if isTrue="{!v.selectedVehicleType != ''}">
+                            <div class="cac-summary-divider"></div>
+                            <div class="cac-summary-row">
+                                <span class="cac-summary-label">Vehicle Type</span>
+                                <span class="cac-summary-value">{!v.selectedVehicleType}</span>
+                            </div>
+                        </aura:if>
+                        <aura:if isTrue="{!v.selectedSegment != ''}">
+                            <div class="cac-summary-divider"></div>
+                            <div class="cac-summary-row">
+                                <span class="cac-summary-label">Segment</span>
+                                <span class="cac-summary-value">{!v.selectedSegment}</span>
+                            </div>
+                        </aura:if>
+                    </div>
+
+                    <div class="cac-success-actions">
+                        <button class="cac-cancel-btn" onclick="{!c.handleReset}">
+                            Configure Another
+                        </button>
+                        <button class="cac-confirm-btn cac-confirm-active" onclick="{!c.handleProceed}">
+                            Proceed to Application &nbsp; →
+                        </button>
+                    </div>
+
+                </div>
+            </aura:if>
+
+        </div>
+
+    </div>
+</aura:component>

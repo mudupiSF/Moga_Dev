@@ -1,0 +1,40 @@
+{
+  "project": {
+    "name": "{{PROJECT_NAME}}",
+    "jira_project": "{{JIRA_PROJECT_KEY}}",
+    "jira_url": "{{JIRA_URL}}",
+    "github_repo": "{{GITHUB_REPO}}",
+    "salesforce_org": "{{SF_ORG_NAME}}",
+    "last_updated": "{{TIMESTAMP}}"
+  },
+  "summary": {
+    "total_epics": 0,
+    "total_stories": 0,
+    "stories_built": 0,
+    "stories_in_progress": 0,
+    "stories_in_review": 0,
+    "stories_pending": 0,
+    "completion_percentage": 0,
+    "total_tokens": 0
+  },
+  "contributors": [],
+  "token_consumption": {
+    "note": "Token estimates based on conversation session length and complexity.",
+    "total_estimated_tokens": 0,
+    "by_contributor": [],
+    "by_epic": []
+  },
+  "deployment_status": {
+    "note": "Track what's deployed to the Salesforce org.",
+    "last_deployment": null,
+    "deployed_components": {
+      "custom_objects": [],
+      "custom_fields": [],
+      "apex_classes": [],
+      "lwc_components": [],
+      "permission_sets": [],
+      "flexipages": []
+    }
+  },
+  "epics": []
+}

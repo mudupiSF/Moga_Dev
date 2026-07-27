@@ -1,0 +1,6 @@
+<design:component>
+        <design:attribute name="title" label="Title" description="The title to put at top of component" />
+        <design:attribute name="icon" label="Icon" description="Name of SLDS icon to show in title area" />
+        <design:attribute name="height" label="Height" description="Default height in pixels of event text area" />
+        <design:attribute name="channel" label="Channel" description="The Platform Event channel name to subcribe" />
+</design:component>

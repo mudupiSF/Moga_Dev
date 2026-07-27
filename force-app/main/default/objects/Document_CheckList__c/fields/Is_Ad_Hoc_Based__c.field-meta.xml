@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Ad_Hoc_Based__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE when the checklist is created/reused through the dock-panel.</description>
+    <label>Is this Ad-Hoc Based?</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

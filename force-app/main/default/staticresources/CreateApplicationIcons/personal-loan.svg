@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
+  <!-- Ground Anchor Line -->
+  <line x1="8" y1="54" x2="56" y2="54" stroke="#E2E8F0" stroke-width="2" stroke-linecap="round" />
+
+  <!-- MAIN OBJECT: MONEY BAG (PERSONAL FINANCE FORMAT) -->
+  <g id="money-bag-personal">
+    <!-- Sack Body Outline (Shifted left for perfect badge layout balance) -->
+    <path d="M 16,24 C 12,28 12,36 12,36 V 48 Q 12,54 18,54 H 38 Q 44,54 44,48 V 36 Q 44,28 40,24 Z" 
+          stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    
+    <!-- Cinched Top Ruffle -->
+    <path d="M 20,19 Q 22,16 28,16 Q 34,16 36,19" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" fill="none" />
+    <path d="M 16,24 C 16,22 18,19 20,19 M 40,24 C 40,22 38,19 36,19" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" fill="none" />
+
+    <!-- Rope Tie (Financial Emerald Green Accent) -->
+    <path d="M 18,25 H 38" stroke="#10B981" stroke-width="3.5" stroke-linecap="round" />
+
+    <!-- Corrected Vector Indian Rupee (₹) Symbol - Pure Path Alignment -->
+    <path d="M 23,32 H 33 
+             M 23,36 H 31 
+             M 27,32 C 32,32 32,41 27,41 
+             M 26,41 L 32,48" 
+          stroke="#10B981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  </g>
+
+  <!-- LOAN / PERCENT BADGE (Top Right Corner) -->
+  <g id="loan-badge">
+    <!-- Badge Background with White Border Clearance Masking -->
+    <circle cx="48" cy="18" r="10" fill="#10B981" stroke="#FFFFFF" stroke-width="2.5" />
+    
+    <!-- Stylized Percentage Symbol (%) -->
+    <line x1="44" y1="22" x2="52" y2="14" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" />
+    <circle cx="44.5" cy="14.5" r="1.2" fill="#FFFFFF" />
+    <circle cx="51.5" cy="21.5" r="1.2" fill="#FFFFFF" />
+  </g>
+</svg>

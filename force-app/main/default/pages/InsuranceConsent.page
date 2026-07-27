@@ -1,0 +1,207 @@
+<apex:page controller="InsuranceConsentController"
+           renderAs="{!IF(renderAsPdf, 'pdf', '')}"
+           showHeader="false"
+           sidebar="false"
+           standardStylesheets="false"
+           docType="html-5.0">
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; font-size: 13px; color: #222; background: #fff; padding: 30px 40px; }
+
+        /* ── Header ── */
+        .page-title { text-align: center; font-size: 15px; font-weight: bold; text-decoration: underline; margin-bottom: 20px; }
+
+        /* ── Greeting ── */
+        .greeting { margin-bottom: 14px; line-height: 1.6; }
+        .greeting b { font-weight: bold; }
+
+        /* ── Product / Insurer rows ── */
+        .option-row { display: flex; align-items: center; gap: 0; margin-bottom: 10px; }
+        .option-label { font-weight: bold; width: 80px; flex-shrink: 0; }
+        .option-items { display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: center; }
+        .option-item  { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+        .option-item input[type="checkbox"] { width: 13px; height: 13px; cursor: default; }
+        .option-item.checked { font-weight: bold; }
+
+        /* ── Premium table ── */
+        .section-title { font-weight: bold; text-decoration: underline; margin: 18px 0 10px; }
+        .premium-wrap  { display: flex; justify-content: center; }
+        table.premium  { border-collapse: collapse; width: 420px; }
+        table.premium th { border: 1px solid #aaa; padding: 6px 10px; background: #f5f5f5; font-weight: bold; text-align: left; font-size: 13px; }
+        table.premium td { border: 1px solid #aaa; padding: 6px 10px; font-size: 13px; }
+        table.premium td.insurer-link { color: #b5651d; }
+        table.premium tr.total td { text-align: right; font-weight: bold; border: 1px solid #aaa; }
+        table.premium tr.total td.total-amt { border: 1px solid #aaa; font-weight: bold; }
+
+        /* ── Declaration ── */
+        .declaration { margin-top: 22px; line-height: 1.7; }
+        .declaration .main-text { font-weight: bold; font-size: 13px; }
+        .declaration .auth-text  { color: #c0392b; font-style: italic; margin-top: 6px; }
+
+        /* ── DOGH ── */
+        .dogh { margin-top: 16px; font-size: 12.5px; line-height: 1.7; text-align: justify; }
+        .dogh b { font-weight: bold; }
+
+        /* ── Terms checkbox ── */
+        .terms-row { margin-top: 18px; display: flex; align-items: center; gap: 6px; }
+        .terms-row input[type="checkbox"] { width: 14px; height: 14px; cursor: default; }
+        .terms-row a { color: #1a6fba; text-decoration: underline; }
+
+        /* ── Buttons ── */
+        .btn-row { margin-top: 30px; display: flex; justify-content: center; gap: 20px; }
+        .btn { padding: 10px 32px; font-size: 14px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; color: #fff; background: #8b0000; }
+        .btn:hover { opacity: 0.88; }
+
+        /* ── Status messages ── */
+        .status-box { margin-top: 40px; padding: 20px 30px; border-radius: 6px; text-align: center; font-size: 15px; font-weight: bold; }
+        .status-agreed    { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status-disagreed { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* ── PDF: hide buttons ── */
+        @media print {
+            .btn-row { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<apex:form >
+<apex:outputPanel id="mainContent">
+
+    <!-- ── Status: Agreed ─────────────────────────────────────────────────── -->
+    <apex:outputPanel rendered="{!consentStatus == 'agreed'}">
+        <div class="page-title">Insurance Consent</div>
+        <div class="status-box status-agreed">
+            Insurance consent has been submitted successfully. Thank you, {!applicantName}.
+        </div>
+    </apex:outputPanel>
+
+    <!-- ── Status: Disagreed ──────────────────────────────────────────────── -->
+    <apex:outputPanel rendered="{!consentStatus == 'disagreed'}">
+        <div class="page-title">Insurance Consent</div>
+        <div class="status-box status-disagreed">
+            Insurance consent has been provided as Disagree for application {!applicationNumber}.
+        </div>
+    </apex:outputPanel>
+
+    <!-- ── Main consent content ───────────────────────────────────────────── -->
+    <apex:outputPanel rendered="{!consentStatus == 'initial'}">
+
+            <div class="page-title">Insurance consent</div>
+
+            <!-- Greeting -->
+            <div class="greeting">
+                Dear <b>{!applicantName}</b>.<br/>
+                With reference to your application <b>{!applicationNumber}</b> with Bandhan Bank,
+                you have voluntarily opted for the following insurance products from the options suggested:
+            </div>
+
+            <!-- Product row -->
+            <div class="option-row">
+                <div class="option-label">Product</div>
+                <div class="option-items">
+                    <apex:repeat value="{!products}" var="p">
+                        <span class="{!IF(p.checked, 'option-item checked', 'option-item')}">
+                            <input type="checkbox" disabled="disabled" checked="{!p.checked}" />
+                            <apex:outputText value="{!p.label}" />
+                        </span>
+                    </apex:repeat>
+                </div>
+            </div>
+
+            <!-- Insurer row -->
+            <div class="option-row">
+                <div class="option-label">Insurer</div>
+                <div class="option-items">
+                    <apex:repeat value="{!insurers}" var="i">
+                        <span class="{!IF(i.checked, 'option-item checked', 'option-item')}">
+                            <input type="checkbox" disabled="disabled" checked="{!i.checked}" />
+                            <apex:outputText value="{!i.label}" />
+                        </span>
+                    </apex:repeat>
+                </div>
+            </div>
+
+            <!-- Premium table -->
+            <div class="section-title">Premium details breakup:</div>
+            <div class="premium-wrap">
+                <table class="premium">
+                    <thead>
+                        <tr>
+                            <th>Insurer</th>
+                            <th>Product</th>
+                            <th>Premium</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!premiumRows}" var="row">
+                            <tr>
+                                <td class="insurer-link"><apex:outputText value="{!row.insurer}" /></td>
+                                <td><apex:outputText value="{!row.product}" /></td>
+                                <td>&#8377;<apex:outputText value="{!row.premium}" /></td>
+                            </tr>
+                        </apex:repeat>
+                        <tr class="total">
+                            <td colspan="2" style="text-align:right; font-weight:bold;">Total:</td>
+                            <td class="total-amt">&#8377;<apex:outputText value="{!totalPremium}" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Declaration -->
+            <div class="declaration">
+                <div class="main-text">
+                    I / We hereby declare, on my behalf and on behalf of all persons proposed to be insured
+                    that the above statements, answers and/or particulars given by me are true and complete
+                    in all respects to the best of my knowledge and that I/We am/ are authorized to propose
+                    on behalf of these other persons.
+                </div>
+                <div class="auth-text">
+                    I hereby authorize Bandhan Bank to share my Pan Card/CKYC details to the insurer
+                    for the purpose of insurance policy issuance only
+                </div>
+            </div>
+
+            <!-- DOGH -->
+            <div class="dogh">
+                <b>DOGH (Declaration of Good Health):</b> I /We declare that any of the person's proposed
+                to be insured has never been diagnosed with but not limited to Tumor or cancer, brain or
+                psychiatric disorders, epilepsy, Chronic liver disease, Hepatitis B or C, auto-immune
+                disorders, sexually transmitted diseases, lungs, Kidney and Dialysis, Ulcerative Colitis/
+                Crohn's disease, or any kind of congenital diseases, Cardiac ailment, Type I Diabetes, ,
+                spinal or joint disorders or ligament/arthritis, slip disc (PIVD), not been on any
+                medication for more than 21 days consistently or undergone any kind of surgery and not been
+                hospitalized for more than 7 continuous days in last 10 years and , undergoing/awaiting any
+                medical or surgical treatment or attending any follow up for any disease/condition/ailment/
+                injury/ addiction. Please remember that in event of a claim wherein there is identification
+                of any non-disclosure of information, the insurer reserves the rights to repudiate the
+                claim and cancel the policy.
+            </div>
+
+            <!-- Terms checkbox -->
+            <div class="terms-row">
+                <input type="checkbox" checked="checked" disabled="disabled" />
+                <span>I/We Agreed as per <a href="https://www.google.com" target="_blank">Terms and Condition</a></span>
+            </div>
+
+            <!-- Buttons (hidden in PDF) -->
+            <apex:outputPanel rendered="{!NOT(renderAsPdf)}">
+                <div class="btn-row">
+                    <apex:commandButton value="Agree"    action="{!doAgree}"    styleClass="btn" reRender="mainContent"/>
+                    <apex:commandButton value="Disagree" action="{!doDisagree}" styleClass="btn" reRender="mainContent"/>
+                </div>
+            </apex:outputPanel>
+
+    </apex:outputPanel>
+
+</apex:outputPanel>
+</apex:form>
+
+</body>
+</html>
+</apex:page>

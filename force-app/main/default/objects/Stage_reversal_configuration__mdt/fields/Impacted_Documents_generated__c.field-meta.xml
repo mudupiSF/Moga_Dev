@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Impacted_Documents_generated__c</fullName>
+    <description>Add impacted document master and for multiple use semi column separated</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Add impacted document master and for multiple use semi column separated</inlineHelpText>
+    <label>Impacted Documents generated</label>
+    <required>false</required>
+    <type>TextArea</type>
+</CustomField>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Identity_Proof__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Proof of Identity for the applicant.</description>
+    <label>Identity Proof</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,150 @@
+/* Wrap column headers to show full text */
+.slds-table th {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    min-height: 2rem;
+    vertical-align: middle;
+    padding: 0.5rem !important;
+}
+
+/* Ensure data cells also wrap if needed */
+.slds-table td {
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    padding: 0.5rem;
+}
+
+/* Style for page size selector to keep it compact */
+.page-size-selector {
+    width: 80px;
+}
+
+/* Ensure modal is properly sized */
+.slds-modal__container {
+    max-width: 50rem;
+}
+
+/* Additional styling for datatable headers - needed for shadow DOM */
+lightning-datatable {
+    --slds-c-table-header-text-align: left;
+    --lwc-tableHeaderTextAlign: left;
+}
+
+/* ============================================ */
+/* MOBILE RESPONSIVE STYLES */
+/* ============================================ */
+
+/* Mobile: Stack pagination controls vertically on small screens */
+@media (max-width: 767px) {
+    /* Stack pagination controls */
+    .slds-grid.slds-grid_align-spread {
+        flex-direction: column;
+        align-items: center !important;
+    }
+    
+    /* Full width columns on mobile */
+    .slds-grid.slds-grid_align-spread > .slds-col {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Center pagination info */
+    .slds-grid.slds-grid_align-spread > .slds-col p {
+        text-align: center;
+    }
+    
+    /* Remove float on mobile */
+    .slds-float_right {
+        float: none !important;
+        display: inline-block;
+    }
+    
+    /* Center button groups on mobile */
+    lightning-button-group {
+        display: flex;
+        justify-content: center;
+    }
+    
+    /* Make page size selector section center-aligned */
+    .slds-grid.slds-grid_vertical-align-center {
+        justify-content: center;
+    }
+    
+    /* Adjust modal for mobile */
+    .slds-modal__container {
+        max-width: 95%;
+        margin: 0 auto;
+    }
+    
+    /* Make datatable scrollable on mobile */
+    lightning-datatable {
+        overflow-x: auto;
+        display: block;
+    }
+    
+    /* Reduce padding on mobile for better space utilization */
+    .slds-p-around_small {
+        padding: 0.5rem !important;
+    }
+    
+    /* Stack filter columns more efficiently on mobile */
+    .slds-grid.slds-wrap > .slds-col {
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Make buttons full width on very small screens */
+    @media (max-width: 479px) {
+        lightning-button {
+            width: 100%;
+        }
+        
+        lightning-button-group {
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        
+        lightning-button-group lightning-button {
+            flex: 1 1 45%;
+            margin: 0.25rem;
+        }
+    }
+}
+
+/* Tablet: Optimize for medium screens */
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* Slightly reduce padding on tablets */
+    .slds-p-around_small {
+        padding: 0.75rem !important;
+    }
+    
+    /* Allow datatable to use full width */
+    lightning-datatable {
+        width: 100%;
+    }
+}
+
+/* Desktop: Ensure optimal display on large screens */
+@media (min-width: 1024px) {
+    /* Maintain standard padding */
+    .slds-p-around_small {
+        padding: 1rem !important;
+    }
+}
+
+/* Warning message text styling */
+.warning-text-white {
+    color: white;
+}
+
+/* Reduce spacing between tabs and filters */
+.filter-section {
+    padding-top: 0.25rem !important;
+}
+
+/* Reduce default spacing in lightning-tab content */
+lightning-tab {
+    padding-top: 0 !important;
+}

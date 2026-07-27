@@ -1,0 +1,27 @@
+.face-mock-response-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.face-mock-response-title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.face-mock-response-body {
+    margin: 0;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #dbeafe;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    max-height: 22rem;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}

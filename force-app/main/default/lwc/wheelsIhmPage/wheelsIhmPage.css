@@ -1,0 +1,803 @@
+/* ── Host / root ──────────────────────────────────────────────────────────── */
+:host {
+    display: block;
+    width: 100%;
+    font-family: var(--p4-font-family);
+
+    /* Color tokens */
+    --form-slate-50:     #f8fafc;
+    --form-slate-100:    #f1f5f9;
+    --form-slate-200:    #e2e8f0;
+    --form-slate-400:    #94a3b8;
+    --form-slate-500:    #64748b;
+    --form-slate-600:    #475569;
+    --form-slate-700:    #334155;
+    --form-slate-800:    #1e293b;
+    --form-slate-900:    #0f172a;
+    --form-indigo-50:    #eef2ff;
+    --form-indigo-100:   #e0e7ff;
+    --form-indigo-500:   #6366f1;
+    --form-indigo-600:   #4f46e5;
+    --form-indigo-700:   #4338ca;
+    --form-emerald-50:   #ecfdf5;
+    --form-emerald-500:  #10b981;
+    --form-red-500:      #ef4444;
+
+    /* Override Salesforce brand colors to indigo */
+    --slds-g-color-brand-base-10: #eef2ff;
+    --slds-g-color-brand-base-20: #e0e7ff;
+    --slds-g-color-brand-base-30: #c7d2fe;
+    --slds-g-color-brand-base-40: #a5b4fc;
+    --slds-g-color-brand-base-50: #818cf8;
+    --slds-g-color-brand-base-60: #6366f1;
+    --slds-g-color-brand-base-70: #4f46e5;
+    --slds-g-color-brand-base-80: #4338ca;
+    --slds-g-color-brand-base-90: #3730a3;
+    --slds-g-color-brand-base-100: #312e81;
+    --slds-g-color-border-base-1: #f1f5f9;
+    --slds-g-color-border-base-2: #e2e8f0;
+    --slds-g-color-border-base-3: #cbd5e1;
+    --slds-g-color-border-base-4: #6366f1;
+    --lwc-brandAccessible: #6366f1;
+    --lwc-colorBorder: #f1f5f9;
+    --lwc-colorBorderInput: #f1f5f9;
+    --lwc-colorBorderInputActive: #6366f1;
+    --lwc-brandPrimary: #6366f1;
+    --lwc-brandPrimaryActive: #4f46e5;
+
+    /* ── Disabled field — clearly visible text (vehicleInspection style) ── */
+    --sds-c-input-text-color-disabled:       #1e293b;
+    --sds-c-input-color-background-disabled: #f8fafc;
+    --sds-c-input-color-border-disabled:     transparent;
+    --lwc-colorTextInputDisabled:            #1e293b;
+    --lwc-colorBackgroundInputDisabled:      #f8fafc;
+}
+
+:host, :host * { font-family: var(--p4-font-family); }
+
+/* ── Page layout ──────────────────────────────────────────────────────────── */
+.form-page-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem;
+    position: relative;
+}
+
+/* ── Loading overlay ──────────────────────────────────────────────────────── */
+.form-loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.65);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+.form-card {
+    width: 100%;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--form-slate-100);
+    overflow: visible;
+    box-sizing: border-box;
+}
+
+/* ── Card header ──────────────────────────────────────────────────────────── */
+.form-card-header {
+    height: 72px;
+    min-height: 72px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background: var(--form-slate-900);
+    border-radius: 1rem 1rem 0 0;
+}
+
+.form-header-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(49, 46, 129, 0.8), transparent);
+}
+
+.form-header-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 1.25rem;
+    height: 100%;
+}
+
+.form-header-icon-wrap {
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+}
+
+.form-header-icon {
+    --slds-c-icon-color-foreground-default: white;
+}
+
+.form-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.form-header-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.025em;
+}
+
+.form-header-subtitle {
+    margin: 0;
+    font-size: 0.75rem;
+    color: rgba(199, 210, 254, 0.8);
+}
+
+
+/* ── Card header with action button (dealer table) ────────────────────────── */
+.ihm-header-with-action {
+    justify-content: space-between;
+    padding-right: 1.25rem;
+}
+
+.ihm-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.ihm-add-row-btn {
+    height: 36px;
+    padding: 0 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    backdrop-filter: blur(8px);
+    transition: background 0.2s;
+    font-family: inherit;
+}
+
+.ihm-add-row-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.ihm-add-row-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* ── Card body ────────────────────────────────────────────────────────────── */
+.form-card-body {
+    padding: 1.25rem;
+    overflow: visible;
+}
+
+/* ── Fields grid ──────────────────────────────────────────────────────────── */
+.form-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.625rem 0.75rem;
+    align-items: start;
+}
+
+.form-fields-grid-three {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* Each field renders as a bordered card — same style as wheelsPaymentRequest */
+.form-field-wrap {
+    min-width: 0;
+    background: white;
+    border: 1px solid var(--form-slate-200);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.15s, background 0.15s;
+    box-sizing: border-box;
+}
+
+.form-field-wrap:hover {
+    border-color: var(--form-slate-300);
+    background: rgba(248,250,252,0.6);
+}
+
+/* Input / select fills the full cell width inside the bordered wrap */
+.form-field-wrap .lt-info-value-wrap,
+.form-field-wrap .form-field-value-col {
+    padding-left: 0.25rem;
+}
+
+.form-field-wrap lightning-input,
+.form-field-wrap lightning-combobox {
+    --slds-c-input-sizing-width: 100%;
+    max-width: 100%;
+}
+
+.form-field-full-width { grid-column: 1 / -1; }
+
+/* ── Field cell ────────────────────────────────────────────────────────────── */
+.form-field-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.form-field-label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--form-slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+    padding: 0;
+}
+
+.form-field-value-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+
+/* Lightning Input / Combobox Styling */
+.form-lightning-input {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Read-only display values — bold, clearly visible (vehicleInspection style).   */
+/* Attribute selector targets the <lightning-input> host; CSS custom properties  */
+/* cascade into its shadow DOM so the inner <input> gets the correct font style. */
+.form-lightning-input[readonly],
+.ihm-textarea-field:read-only,
+.ihm-textarea-field[readonly] {
+    font-size: medium;
+    font-weight: 700;
+}
+
+.form-field-value-col lightning-input,
+.form-field-value-col lightning-combobox {
+    --slds-c-input-color-border: #f1f5f9;
+    --slds-c-input-color-border-hover: #6366f1;
+    --slds-c-input-sizing-border: 2px;
+    --slds-c-input-radius-border: 0.75rem;
+    --slds-c-input-color-background: #f8fafc;
+    --slds-c-input-color-background-hover: #f8fafc;
+    --slds-c-input-text-color: #334155;
+    --slds-c-input-font-weight: 600;
+    --slds-c-input-font-size: 0.9375rem;
+    --slds-c-input-color-border-focus: #6366f1 !important;
+    --slds-c-input-shadow-focus: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    --slds-c-input-spacing-block-start: 0.5rem;
+    --slds-c-input-spacing-block-end: 0.5rem;
+    --slds-c-input-spacing-inline-start: 0.75rem;
+    --slds-c-input-spacing-inline-end: 0.75rem;
+    --slds-c-input-label-spacing-block-end: 0;
+}
+
+.form-field-value-col lightning-combobox {
+    --slds-c-combobox-color-border: #f1f5f9;
+    --slds-c-combobox-color-border-focus: #6366f1 !important;
+    --slds-c-combobox-shadow-focus: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    --slds-c-combobox-sizing-border: 2px;
+    --slds-c-combobox-radius-border: 0.75rem;
+    --slds-c-combobox-dropdown-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ── loanTerms-style field labels: dot + uppercase label ─────────────────── */
+.lt-info-cell {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.lt-info-cell-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.lt-info-bullet {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--form-slate-400);
+    flex-shrink: 0;
+}
+
+.lt-info-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--form-slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.3;
+}
+
+.lt-info-value-wrap {
+    padding-left: 0.875rem;
+}
+
+/* ── Summary row below table ───────────────────────────────────────────────── */
+.ihm-summary-row {
+    margin-top: 1rem;
+}
+
+/* ── Sub-section headers (inside a card body) ─────────────────────────────── */
+.ihm-subsection-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.ihm-subsection-header--gap {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--form-slate-100);
+}
+
+.ihm-subsection-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--form-slate-500);
+    padding: 0.2rem 0.6rem;
+    background: var(--form-slate-50);
+    border: 1px solid var(--form-slate-200);
+    border-radius: 999px;
+}
+
+/* ── Dealer Payment Table ─────────────────────────────────────────────────── */
+
+/*
+ * overflow-x: auto would force overflow-y: auto too (CSS spec), which clips
+ * the lightning-input date picker popup. Using overflow: visible fixes this.
+ * Table fits desktop width without horizontal scroll (desktop-only component).
+ */
+.ihm-table-wrapper {
+    overflow: visible;
+    border-radius: 0.75rem;
+    border: 1px solid var(--form-slate-200);
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.ihm-table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.ihm-table-head {
+    display: table-row;
+    background: var(--form-slate-50);
+}
+
+.ihm-th {
+    display: table-cell;
+    padding: 0.75rem 0.875rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--form-slate-500);
+    border-bottom: 2px solid var(--form-slate-200);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ihm-th-actions {
+    text-align: center;
+    width: 88px;
+}
+
+.ihm-table-row {
+    display: table-row;
+    transition: background 0.15s;
+}
+
+.ihm-table-row:hover {
+    background: var(--form-slate-50);
+}
+
+.ihm-table-row-error {
+    background: #fff5f5;
+    box-shadow: inset 3px 0 0 var(--form-red-500);
+}
+
+.ihm-table-row-error .ihm-td {
+    border-bottom-color: #fecaca;
+}
+
+.ihm-td {
+    display: table-cell;
+    padding: 0.5rem 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--form-slate-100);
+    position: relative;
+    overflow: visible;
+}
+
+.ihm-td-actions {
+    text-align: center;
+    width: 88px;
+}
+
+/* Action icons in upload cell */
+.ihm-action-icons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.ihm-icon-btn {
+    cursor: pointer;
+    --slds-c-icon-color-foreground-default: var(--form-slate-500);
+    transition: opacity 0.15s;
+}
+
+.ihm-icon-btn:hover {
+    opacity: 0.7;
+}
+
+.ihm-icon-delete {
+    --slds-c-icon-color-foreground-default: var(--form-red-500);
+}
+
+/* ── Pending file (staged, not yet submitted) ─────────────────────────────── */
+.ihm-pending-file {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    max-width: 100%;
+}
+
+.ihm-pending-icon {
+    --slds-c-icon-color-foreground-default: var(--form-indigo-600);
+    flex-shrink: 0;
+}
+
+.ihm-pending-filename {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--form-indigo-600);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70px;
+}
+
+.ihm-remove-file-btn {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fef2f2;
+    color: var(--form-red-500);
+    border: 1px solid #fecaca;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-family: inherit;
+    line-height: 1;
+    padding: 0;
+}
+
+.ihm-remove-file-btn:hover {
+    background: #fee2e2;
+    border-color: var(--form-red-500);
+}
+
+/* Upload button */
+.ihm-upload-btn {
+    height: 32px;
+    padding: 0 0.875rem;
+    background: var(--form-indigo-50);
+    color: var(--form-indigo-600);
+    border: 1px solid var(--form-indigo-100);
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.ihm-upload-btn:hover:not(:disabled) {
+    background: var(--form-indigo-100);
+    border-color: var(--form-indigo-500);
+}
+
+.ihm-upload-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* Delete row button */
+.ihm-delete-btn {
+    height: 32px;
+    padding: 0 0.75rem;
+    background: #fef2f2;
+    color: var(--form-red-500);
+    border: 1px solid #fecaca;
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.ihm-delete-btn:hover:not(:disabled) {
+    background: #fee2e2;
+    border-color: var(--form-red-500);
+}
+
+.ihm-delete-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* ── Textarea ─────────────────────────────────────────────────────────────── */
+.ihm-textarea-field {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.375rem 0.625rem;
+    border: 2px solid rgba(79, 70, 229, 0.3);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--form-slate-700);
+    resize: vertical;
+    min-height: 80px;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+    line-height: 1.5;
+    outline: none;
+}
+
+.ihm-textarea-field:focus {
+    border-color: var(--form-indigo-500);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.ihm-textarea-field:read-only,
+.ihm-textarea-field[readonly] {
+    color: var(--form-slate-800);
+    font-weight: 600;
+    background: var(--form-slate-50);
+    border-color: var(--form-slate-200);
+}
+
+/* ── CVO Radio Group ──────────────────────────────────────────────────────── */
+.ihm-cvo-section {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--form-indigo-50);
+    border: 1px solid var(--form-indigo-100);
+    border-radius: 0.75rem;
+}
+
+/* ── Submit button ────────────────────────────────────────────────────────── */
+.ihm-submit-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.25rem;
+}
+
+.ihm-submit-btn {
+    height: 44px;
+    min-width: 140px;
+    padding: 0 1.5rem;
+    background: var(--form-indigo-600);
+    color: white;
+    border: none;
+    border-radius: 0.625rem;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.3);
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.ihm-submit-btn:hover:not(:disabled) {
+    background: var(--form-indigo-700);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -6px rgba(79, 70, 229, 0.4);
+}
+
+.ihm-submit-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 8px 16px -4px rgba(79, 70, 229, 0.3);
+}
+
+.ihm-submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+    background: var(--form-slate-400);
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+.form-footer-wrapper {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    z-index: 10;
+    margin-top: auto;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.form-footer {
+    padding: 1rem 1.5rem;
+    background: white;
+    border-top: 1px solid var(--form-slate-200);
+}
+
+.form-btn-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.form-primary-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 44px;
+    min-width: 140px;
+    padding: 0.625rem 1.5rem;
+    border: none;
+    border-radius: 0.625rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    background: var(--form-indigo-600);
+    color: white;
+    box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.3);
+    transition: all 0.2s ease;
+}
+
+.form-primary-btn:hover:not(:disabled) {
+    background: var(--form-indigo-700);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -6px rgba(79, 70, 229, 0.4);
+}
+
+.form-primary-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 8px 16px -4px rgba(79, 70, 229, 0.3);
+}
+
+.form-primary-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    background: var(--form-slate-400);
+    box-shadow: none;
+    transform: none;
+}
+
+.form-btn-icon {
+    --slds-c-icon-color-foreground-default: white;
+}
+
+/* ── CRITICAL OVERRIDE: Force indigo focus ───────────────────────────────── */
+.form-field-value-col lightning-input,
+.ihm-td lightning-input {
+    --slds-c-input-color-border-focus: #6366f1 !important;
+    --slds-c-input-shadow-focus: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+}
+
+.form-field-value-col lightning-combobox {
+    --slds-c-combobox-color-border-focus: #6366f1 !important;
+    --slds-c-combobox-shadow-focus: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+}
+
+.form-field-value-col lightning-input:hover,
+.ihm-td lightning-input:hover {
+    --slds-c-input-color-border: #6366f1 !important;
+}
+
+.form-field-value-col lightning-combobox:hover {
+    --slds-c-combobox-color-border: #6366f1 !important;
+}
+
+/* ── Read-only display fields — bold clear values (vehicleInspection style) ── */
+lightning-input[readonly],
+.ihm-td lightning-input[readonly],
+.form-page-readonly lightning-input[readonly] {
+    --sds-c-input-text-color:        #1e293b;
+    --slds-c-input-text-color:       #1e293b;
+    --sds-c-input-font-weight:       700;
+    --slds-c-input-font-weight:      700;
+    --sds-c-input-font-size:         0.9375rem;
+    --slds-c-input-font-size:        0.9375rem;
+    --sds-c-input-color-background:  #f8fafc;
+    --slds-c-input-color-background: #f8fafc;
+    --sds-c-input-color-border:      #f1f5f9;
+    --slds-c-input-color-border:     #f1f5f9;
+    --sds-c-input-color-border-hover:#f1f5f9;
+    --slds-c-input-color-border-hover:#f1f5f9;
+}
+
+/* Receipt table inputs in review mode */
+.ihm-td lightning-input.ihm-table-input[readonly] {
+    --sds-c-input-text-color:        #0f172a;
+    --slds-c-input-text-color:       #0f172a;
+    --sds-c-input-font-weight:       600;
+    --slds-c-input-font-weight:      600;
+    --sds-c-input-color-background:  #ffffff;
+    --slds-c-input-color-background: #ffffff;
+}
+
+/* ── Disabled lightning-input / combobox — fallback if disabled is still used ─ */
+lightning-input[disabled],
+lightning-input[disabled="true"],
+.form-page-readonly lightning-input[disabled] {
+    --sds-c-input-text-color-disabled:       #1e293b;
+    --slds-c-input-text-color-disabled:        #1e293b;
+    --lwc-colorTextInputDisabled:              #1e293b;
+    --sds-c-input-color-background-disabled:   #f8fafc;
+    --slds-c-input-color-background-disabled:  #f8fafc;
+    --lwc-colorBackgroundInputDisabled:          #f8fafc;
+    --sds-c-input-color-border-disabled:       #f1f5f9;
+    --slds-c-input-color-border-disabled:      #f1f5f9;
+    --sds-c-input-font-weight:                 600;
+    --slds-c-input-font-weight:                600;
+    opacity: 1;
+}
+
+lightning-combobox[disabled],
+lightning-combobox[disabled="true"] {
+    --sds-c-combobox-text-color-disabled:       #1e293b;
+    --slds-c-combobox-text-color-disabled:        #1e293b;
+    --sds-c-combobox-color-background-disabled:   #f8fafc;
+    --slds-c-combobox-color-background-disabled:  #f8fafc;
+    --sds-c-combobox-color-border-disabled:       #f1f5f9;
+    --slds-c-combobox-color-border-disabled:      #f1f5f9;
+    opacity: 1;
+}
+
+/* ── Print ────────────────────────────────────────────────────────────────── */
+@media print {
+    .form-footer-wrapper { display: none; }
+    .form-card { page-break-inside: avoid; box-shadow: none; }
+}

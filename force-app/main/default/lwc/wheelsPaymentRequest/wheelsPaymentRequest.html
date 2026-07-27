@@ -1,0 +1,1010 @@
+<template>
+    <div class="wpr-page">
+
+        <!-- Loading overlay -->
+        <template if:true={isLoading}>
+            <div class="wpr-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ══ SECTION 1 — BUSINESS PAYMENT ═════════════════════════════════ -->
+        <div class="form-card">
+            <div class="form-card-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:payment_gateway" size="small"
+                            class="form-header-icon" alternative-text="Business Payment"></lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">Business Payment</h1>
+                        <p class="form-header-subtitle">Payment source, sourcing and DO issuance details</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-card-body">
+
+                <!-- All Business Payment fields in one 2-column grid -->
+                <div class="wpr-fields-grid">
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Payment Originated From</span>
+                            </div>
+                            <div class="lt-info-value-wrap" if:false={isReadOnly}>
+                                <lightning-combobox 
+                                    label="Payment Originated From"
+                                    value={businessPayment.paymentOriginatedFrom}
+                                    options={paymentOriginOptions}
+                                    onchange={handleSelectChange}
+                                    variant="label-hidden"
+                                    placeholder="Select"
+                                    data-field="paymentOriginatedFrom"
+                                    readonly={isReadOnly}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="lt-info-value-wrap" if:true={isReadOnly}>
+                                <input type="text" class="lt-field-input" value={businessPayment.paymentOriginatedFrom} readonly variant="label-hidden" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Vehicle Sold By</span>
+                            </div>
+                            <div class="lt-info-value-wrap">
+                                <input type="text" class="lt-field-input"
+                                    value={businessPayment.vehicleSoldBy}
+                                    data-field="vehicleSoldBy"
+                                    placeholder="Enter vehicle sold by"
+                                    onchange={handleInputChange} readonly={isReadOnly} />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Business Sourced By</span>
+                            </div>
+                            <div class="lt-info-value-wrap">
+                                <!-- User lookup — shows current user name, stores Id -->
+                                <input type="text" class="lt-field-input"
+                                    value={businessPayment.businessSourcedByName}
+                                    readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Business Done By</span>
+                            </div>
+                            <div class="lt-info-value-wrap">
+                                <!-- User lookup — shows current user name, stores Id -->
+                                <input type="text" class="lt-field-input"
+                                    value={businessPayment.businessDoneByName}
+                                    readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">FI Done By</span>
+                            </div>
+                            <div class="lt-info-value-wrap">
+                                <!-- User lookup — shows current user name, stores Id -->
+                                <input type="text" class="lt-field-input"
+                                    value={businessPayment.fiDoneByName}
+                                    readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Collection Executive</span>
+                            </div>
+                            <div class="lt-info-value-wrap" if:false={isReadOnly}>
+                                <lightning-combobox 
+                                    label="Collection Executive"
+                                    value={businessPayment.collectionExecutive}
+                                    options={collectionExecutiveOptions}
+                                    onchange={handleSelectChange}
+                                    variant="label-hidden"
+                                    placeholder="Select"
+                                    data-field="collectionExecutive"
+                                    readonly={isReadOnly}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="lt-info-value-wrap" if:true={isReadOnly}>
+                                <input type="text" class="lt-field-input" value={businessPayment.collectionExecutive} readonly variant="label-hidden" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">DO Issuance Mode</span>
+                            </div>
+                            <div class="lt-info-value-wrap" if:false={isReadOnly}>
+                                <lightning-combobox 
+                                    label="DO Issuance Mode"
+                                    value={businessPayment.doIssuance}
+                                    options={doIssuanceOptions}
+                                    onchange={handleDoIssuanceChange}
+                                    variant="label-hidden"
+                                    placeholder="Select"
+                                    data-field="doIssuance"
+                                    readonly={isReadOnly}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="lt-info-value-wrap" if:true={isReadOnly}>
+                                <input type="text" class="lt-field-input" value={businessPayment.doIssuance} readonly variant="label-hidden" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- DO Issuance Date — col 2, same row as DO Issuance Mode -->
+                    <template if:true={showDoIssuanceDate}>
+                        <div class="wpr-field-wrap">
+                            <div class="lt-info-cell">
+                                <div class="lt-info-cell-header">
+                                    <span class="lt-info-bullet"></span>
+                                    <span class="lt-info-label">DO Issuance Date</span>
+                                </div>
+                                <div class="lt-info-value-wrap">
+                                    <input type="date" class="lt-field-input"
+                                        value={businessPayment.doIssuanceDate}
+                                        data-field="doIssuanceDate"
+                                        onchange={handleInputChange} readonly={isReadOnly} />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <!-- DO To Be Authorized By — flows into next available cell -->
+                    <template if:true={showDoAuthorizedBy}>
+                        <div class="wpr-field-wrap">
+                            <div class="lt-info-cell">
+                                <div class="lt-info-cell-header">
+                                    <span class="lt-info-bullet"></span>
+                                    <span class="lt-info-label">DO To Be Authorized By</span>
+                                </div>
+                                <div class="lt-info-value-wrap" if:false={isReadOnly}>
+                                    <lightning-combobox 
+                                        label="DO To Be Authorized By"
+                                        value={businessPayment.doToBeAuthorizedBy}
+                                        options={doAuthorizedByOptions}
+                                        onchange={handleSelectChange}
+                                        variant="label-hidden"
+                                        placeholder="Select"
+                                        data-field="doToBeAuthorizedBy"
+                                        readonly={isReadOnly}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="lt-info-value-wrap" if:true={isReadOnly}>
+                                    <input type="text" class="lt-field-input" value={businessPayment.doToBeAuthorizedBy} readonly variant="label-hidden" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Used / Ref section -->
+                <template if:true={isUsedOrRefinance}>
+                    
+                        <div class="wpr-fields-grid">
+                            <div class="wpr-field-wrap">
+                                <div class="lt-info-cell">
+                                    <div class="lt-info-cell-header">
+                                        <span class="lt-info-bullet"></span>
+                                        <span class="lt-info-label">Vehicle Registered in Name</span>
+                                    </div>
+                                    <div class="lt-info-value-wrap">
+                                        <input type="text" class="lt-field-input"
+                                            value={businessPayment.vehicleRegisteredInName}
+                                            data-field="vehicleRegisteredInName"
+                                            placeholder="Enter registered name"
+                                            onchange={handleInputChange} readonly={isReadOnly} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wpr-field-wrap">
+                                <div class="lt-info-cell">
+                                    <div class="lt-info-cell-header">
+                                        <span class="lt-info-bullet"></span>
+                                        <span class="lt-info-label">Balance Transfer (In Rs.)</span>
+                                    </div>
+                                    <div class="lt-info-value-wrap">
+                                        <input type="number" class="lt-field-input"
+                                            value={businessPayment.balanceTransfer}
+                                            data-field="balanceTransfer"
+                                            placeholder="Enter amount"
+                                            onchange={handleInputChange} readonly={isReadOnly} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wpr-field-wrap">
+                                <div class="lt-info-cell">
+                                    <div class="lt-info-cell-header">
+                                        <span class="lt-info-bullet"></span>
+                                        <span class="lt-info-label">Purchase Document Category</span>
+                                    </div>
+                                    <div class="lt-info-value-wrap" if:false={isReadOnly}>
+                                        <lightning-combobox
+                                            label="Purchase Document Category"
+                                            value={businessPayment.purchaseDocCategory}
+                                            options={purchaseDocOptions}
+                                            onchange={handlePurchaseDocChange}
+                                            variant="label-hidden"
+                                            placeholder="Select"
+                                            data-field="purchaseDocCategory"
+                                            readonly={isReadOnly}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="lt-info-value-wrap" if:true={isReadOnly}>
+                                        <input type="text" class="lt-field-input" value={businessPayment.purchaseDocCategory} readonly variant="label-hidden" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wpr-field-wrap">
+                                <div class="lt-info-cell">
+                                    <div class="lt-info-cell-header">
+                                        <span class="lt-info-bullet"></span>
+                                        <span class="lt-info-label">Fund End Use</span>
+                                    </div>
+                                    <div class="lt-info-value-wrap" if:false={isReadOnly}>
+                                        <lightning-combobox 
+                                            label="Fund End Use"
+                                            value={businessPayment.fundEndUse}
+                                            options={fundEndUseOptions}
+                                            onchange={handleSelectChange}
+                                            variant="label-hidden"
+                                            placeholder="Select"
+                                            data-field="fundEndUse"
+                                            readonly={isReadOnly}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="lt-info-value-wrap" if:true={isReadOnly}>
+                                        <input type="text" class="lt-field-input" value={businessPayment.fundEndUse} readonly variant="label-hidden" />
+                                    </div>
+                                </div>
+                            </div>
+                            <template if:true={showOriginalPurchaseInfo}>
+                                <div class="wpr-field-wrap">
+                                    <div class="lt-info-cell">
+                                        <div class="lt-info-cell-header">
+                                            <span class="lt-info-bullet"></span>
+                                            <span class="lt-info-label">Original Purchase Value (In Rs.)</span>
+                                        </div>
+                                        <div class="lt-info-value-wrap">
+                                            <input type="number" class="lt-field-input"
+                                                value={businessPayment.originalPurchaseValue}
+                                                data-field="originalPurchaseValue"
+                                                placeholder="Enter value"
+                                                onchange={handleInputChange} readonly={isReadOnly} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wpr-field-wrap">
+                                    <div class="lt-info-cell">
+                                        <div class="lt-info-cell-header">
+                                            <span class="lt-info-bullet"></span>
+                                            <span class="lt-info-label">Original Purchase Date</span>
+                                        </div>
+                                        <div class="lt-info-value-wrap">
+                                            <input type="date" class="lt-field-input"
+                                                value={businessPayment.originalPurchaseDate}
+                                                data-field="originalPurchaseDate"
+                                                onchange={handleInputChange} readonly={isReadOnly} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                </template>
+
+            </div><!-- /form-card-body -->
+        </div><!-- /Business Payment -->
+
+        <!-- ══ SECTION 2 — BENEFICIARY DETAILS ══════════════════════════════ -->
+        <div class="form-card">
+            <div class="form-card-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:people" size="small"
+                            class="form-header-icon" alternative-text="Beneficiary Details"></lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">Beneficiary Details</h1>
+                        <p class="form-header-subtitle">Vehicle details, beneficiary payment and disbursement</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-card-body">
+
+                <!-- ── Vehicle Details sub-section ──────────────────────── -->
+                <div class="wpr-subsection-header">
+                    <span class="wpr-subsection-title">Vehicle Details</span>
+                </div>
+                <div class="wpr-fields-grid">
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Delivery</span>
+                            </div>
+                            <div class="lt-info-value-wrap">
+                                <div class="wpr-radio-group wpr-radio-inline">
+                                    <template for:each={deliveryOptions} for:item="opt">
+                                        <label key={opt.value} class="wpr-radio-label">
+                                            <input type="radio" class="wpr-radio-input"
+                                                name="delivery" value={opt.value}
+                                                data-field="delivery"
+                                                onchange={handleVehicleRadioChange} disabled={isReadOnly} />
+                                            <span class={opt.circleClass}></span>
+                                            <span class="wpr-radio-text">{opt.label}</span>
+                                        </label>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <template if:true={isNewVehicle}>
+                        <div class="wpr-field-wrap">
+                            <div class="lt-info-cell">
+                                <div class="lt-info-cell-header">
+                                    <span class="lt-info-bullet"></span>
+                                    <span class="lt-info-label">RTA Taxes Remitted upto</span>
+                                </div>
+                                <div class="lt-info-value-wrap">
+                                    <input type="date" class="lt-field-input"
+                                        value={vehicleDetails.rtaTaxRemittedUpto}
+                                        data-field="rtaTaxRemittedUpto"
+                                        onchange={handleVehicleInputChange} readonly={isReadOnly} />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Reg / Engine / Chassis — shown after Delivery = Yes -->
+                <template if:true={vehicleDetails.showDetails}>
+                    <div class="wpr-fields-grid">
+                        <div class="wpr-field-wrap">
+                            <div class="lt-info-cell">
+                                <div class="lt-info-cell-header">
+                                    <span class="lt-info-bullet"></span>
+                                    <span class="lt-info-label">Registration No</span>
+                                </div>
+                                <div class="lt-info-value-wrap">
+                                    <input type="text" class="lt-field-input"
+                                        value={vehicleDetails.regNumber} data-field="regNumber"
+                                        placeholder="e.g. MH01AB1234"
+                                        onchange={handleVehicleInputChange} readonly={isReadOnly} />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wpr-field-wrap">
+                            <div class="lt-info-cell">
+                                <div class="lt-info-cell-header">
+                                    <span class="lt-info-bullet"></span>
+                                    <span class="lt-info-label">Engine No</span>
+                                </div>
+                                <div class="lt-info-value-wrap">
+                                    <input type="text" class="lt-field-input"
+                                        value={vehicleDetails.engineNumber} data-field="engineNumber"
+                                        placeholder="Enter engine no"
+                                        onchange={handleVehicleInputChange} readonly={isReadOnly} />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wpr-field-wrap">
+                            <div class="lt-info-cell">
+                                <div class="lt-info-cell-header">
+                                    <span class="lt-info-bullet"></span>
+                                    <span class="lt-info-label">Chassis No</span>
+                                </div>
+                                <div class="lt-info-value-wrap">
+                                    <input type="text" class="lt-field-input"
+                                        value={vehicleDetails.chassisNumber} data-field="chassisNumber"
+                                        placeholder="Enter chassis no"
+                                        onchange={handleVehicleInputChange} readonly={isReadOnly} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Used / Ref vehicle details -->
+                    <template if:true={isUsedOrRefinance}>
+                            <div class="wpr-fields-grid">
+                                <div class="wpr-field-wrap">
+                                    <div class="lt-info-cell">
+                                        <div class="lt-info-cell-header">
+                                            <span class="lt-info-bullet"></span>
+                                            <span class="lt-info-label">Is Name Transferred?</span>
+                                        </div>
+                                        <div class="lt-info-value-wrap">
+                                            <div class="wpr-radio-group wpr-radio-inline">
+                                                <template for:each={isNameTransferredOptions} for:item="opt">
+                                                    <label key={opt.value} class="wpr-radio-label">
+                                                        <input type="radio" class="wpr-radio-input"
+                                                            name="isNameTransferred" value={opt.value}
+                                                            data-field="isNameTransferred"
+                                                            onchange={handleVehicleRadioChange} disabled={isReadOnly} />
+                                                        <span class={opt.circleClass}></span>
+                                                        <span class="wpr-radio-text">{opt.label}</span>
+                                                    </label>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wpr-field-wrap">
+                                    <div class="lt-info-cell">
+                                        <div class="lt-info-cell-header">
+                                            <span class="lt-info-bullet"></span>
+                                            <span class="lt-info-label">Current Vehicle Owner</span>
+                                        </div>
+                                        <div class="lt-info-value-wrap">
+                                            <input type="text" class="lt-field-input"
+                                                value={vehicleDetails.currentVehicleOwner}
+                                                data-field="currentVehicleOwner"
+                                                placeholder="Enter current owner name"
+                                                onchange={handleVehicleInputChange} readonly={isReadOnly} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wpr-field-wrap">
+                                    <div class="lt-info-cell">
+                                        <div class="lt-info-cell-header">
+                                            <span class="lt-info-bullet"></span>
+                                            <span class="lt-info-label">Is Lien Marked to Bank?</span>
+                                        </div>
+                                        <div class="lt-info-value-wrap">
+                                            <div class="wpr-radio-group wpr-radio-inline">
+                                                <template for:each={lienMarkedOptions} for:item="opt">
+                                                    <label key={opt.value} class="wpr-radio-label">
+                                                        <input type="radio" class="wpr-radio-input"
+                                                            name="lienMarked" value={opt.value}
+                                                            data-field="lienMarked"
+                                                            onchange={handleLienChange} disabled={isReadOnly} />
+                                                        <span class={opt.circleClass}></span>
+                                                        <span class="wpr-radio-text">{opt.label}</span>
+                                                    </label>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wpr-field-wrap">
+                                    <div class="lt-info-cell">
+                                        <div class="lt-info-cell-header">
+                                            <span class="lt-info-bullet"></span>
+                                            <span class="lt-info-label">Marked On</span>
+                                        </div>
+                                        <div class="lt-info-value-wrap">
+                                            <input type="date" class="lt-field-input"
+                                                value={vehicleDetails.markedOn} data-field="markedOn"
+                                                onchange={handleVehicleInputChange} readonly={isReadOnly} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wpr-field-wrap">
+                                    <div class="lt-info-cell">
+                                        <div class="lt-info-cell-header">
+                                            <span class="lt-info-bullet"></span>
+                                            <span class="lt-info-label">RTA Taxes Remitted upto</span>
+                                        </div>
+                                        <div class="lt-info-value-wrap">
+                                            <input type="date" class="lt-field-input"
+                                                value={vehicleDetails.rtaTaxRemittedUpto}
+                                                data-field="rtaTaxRemittedUpto"
+                                                onchange={handleVehicleInputChange} readonly={isReadOnly} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wpr-field-wrap">
+                                    <div class="lt-info-cell">
+                                        <div class="lt-info-cell-header">
+                                            <span class="lt-info-bullet"></span>
+                                            <span class="lt-info-label">Now Lien in Name of</span>
+                                        </div>
+                                        <div class="lt-info-value-wrap">
+                                            <input type="text" class="lt-field-input"
+                                                value={vehicleDetails.nowLienInTheNameOf}
+                                                data-field="nowLienInTheNameOf"
+                                                placeholder="Enter lien holder name"
+                                                onchange={handleVehicleInputChange} readonly={isReadOnly} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </template>
+                </template>
+
+                <!-- ── Adjustment (Used / Ref only) ─────────────────────── -->
+                <template if:true={isUsedOrRefinance}>
+                    <div class="wpr-subsection-header wpr-subsection-header--gap">
+                        <span class="wpr-subsection-title">Adjustment</span>
+                    </div>
+                    <div class="wpr-table-wrapper">
+                        <div class="wpr-table">
+                            <div class="wpr-table-head">
+                                <div class="wpr-th">Deal Number</div>
+                                <div class="wpr-th wpr-th-verify">Verify</div>
+                                <div class="wpr-th">Customer Name</div>
+                                <div class="wpr-th">Amount (₹)</div>
+                                <template if:false={isReadOnly}>
+                                    <div class="wpr-th wpr-th-action">Actions</div>
+                                </template>
+                            </div>
+                            <template for:each={adjustmentRows} for:item="row" for:index="index">
+                                <div key={row.id} class="wpr-table-row">
+                                    <div class="wpr-td">
+                                        <input type="text" class="lt-field-input"
+                                            value={row.dealNumber}
+                                            data-index={index} data-field="dealNumber"
+                                            placeholder="Enter deal number"
+                                            onchange={handleAdjustmentChange}
+                                            disabled={isReadOnly} />
+                                    </div>
+                                    <div class="wpr-td wpr-td-verify">
+                                        <template if:true={row.verified}>
+                                            <span class="wpr-row-verified-badge" title="Verified">
+                                                <lightning-icon icon-name="utility:success" size="x-small"
+                                                    class="wpr-verified-icon"
+                                                    alternative-text="Verified"></lightning-icon>
+                                                Verified
+                                            </span>
+                                        </template>
+                                        <template if:false={row.verified}>
+                                            <button type="button" class="wpr-verify-btn"
+                                                data-index={index}
+                                                onclick={handleVerifyAdjustment}
+                                                aria-label="Verify deal number" disabled={isReadOnly}>
+                                                Verify
+                                            </button>
+                                        </template>
+                                    </div>
+                                    <!-- Customer Name — readonly, auto-populated after verify -->
+                                    <div class="wpr-td">
+                                        <input type="text" class="lt-field-input"
+                                            value={row.customerName}
+                                            placeholder="Auto-populated on verify"
+                                            disabled />
+                                    </div>
+                                    <div class="wpr-td">
+                                        <input type="number" class="lt-field-input"
+                                            value={row.amount}
+                                            data-index={index} data-field="amount"
+                                            placeholder="0"
+                                            onchange={handleAdjustmentChange}
+                                            disabled={isReadOnly} />
+                                    </div>
+                                    <template if:false={isReadOnly}>
+                                        <div class="wpr-td wpr-td-action">
+                                            <button type="button" class="wpr-icon-btn wpr-icon-btn--add"
+                                                onclick={handleAddAdjustment}
+                                                aria-label="Add adjustment row" disabled={disableAddAdjustment}>
+                                                <lightning-icon icon-name="utility:add" size="x-small"
+                                                    alternative-text="Add"></lightning-icon>
+                                            </button>
+                                            <template if:true={showRemoveAdjustment}>
+                                                <button type="button" class="wpr-icon-btn wpr-icon-btn--remove"
+                                                    data-index={index}
+                                                    onclick={handleRemoveAdjustment}
+                                                    aria-label="Remove adjustment row" disabled={row.verified}>
+                                                    <lightning-icon icon-name="utility:dash" size="x-small"
+                                                        alternative-text="Remove"></lightning-icon>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="wpr-table-summary">
+                            <span class="wpr-summary-label">Total Adjustment Amount:</span>
+                            <span class="wpr-summary-value">₹{totalAdjustmentAmount}</span>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- ── Beneficiary Payment sub-section ──────────────────── -->
+                <div class="wpr-subsection-header wpr-subsection-header--gap">
+                    <span class="wpr-subsection-title">Beneficiary Payment Details</span>
+                </div>
+                <div class="wpr-table-wrapper">
+                    <div class="wpr-table">
+                        <div class="wpr-table-head">
+                            <div class="wpr-th">Name</div>
+                            <div class="wpr-th">Account Number</div>
+                            <div class="wpr-th">IFSC Code</div>
+                            <div class="wpr-th wpr-th-verify">Verify</div>
+                            <div class="wpr-th">Amount (₹)</div>
+                            <template if:false={isReadOnly}>
+                                <div class="wpr-th wpr-th-action">Actions</div>
+                            </template>
+                        </div>
+                        <template for:each={beneficiaryRows} for:item="row" for:index="index">
+                            <div key={row.id} class="wpr-table-row">
+                                <div class="wpr-td">
+                                    <input type="text" class="lt-field-input"
+                                        value={row.name} data-index={index} data-field="name"
+                                        placeholder="Enter name"
+                                        onchange={handleBeneficiaryChange} disabled={isReadOnly} />
+                                </div>
+                                <div class="wpr-td">
+                                    <input type="text" class="lt-field-input"
+                                        value={row.accountNumber} data-index={index} data-field="accountNumber"
+                                        placeholder="Account number"
+                                        onchange={handleBeneficiaryChange} disabled={isReadOnly} />
+                                </div>
+                                <div class="wpr-td">
+                                    <input type="text" class="lt-field-input"
+                                        value={row.ifscCode} data-index={index} data-field="ifscCode"
+                                        placeholder="IFSC Code"
+                                        onchange={handleBeneficiaryChange} disabled={isReadOnly} />
+                                </div>
+                                <!-- Verify cell — always visible -->
+                                <div class="wpr-td wpr-td-verify">
+                                    <template if:true={row.verified}>
+                                        <span class="wpr-row-verified-badge"
+                                            title="Verified">
+                                            <lightning-icon icon-name="utility:success" size="x-small"
+                                                class="wpr-verified-icon"
+                                                alternative-text="Verified"></lightning-icon>
+                                            Verified
+                                        </span>
+                                    </template>
+                                    <template if:false={row.verified}>
+                                        <button type="button" class="wpr-verify-btn"
+                                            data-index={index}
+                                            onclick={handleVerifyBeneficiary}
+                                            aria-label="Verify beneficiary IFSC and bank" disabled={isReadOnly}>
+                                            Verify
+                                        </button>
+                                    </template>
+                                </div>
+                                <div class="wpr-td">
+                                    <input type="number" class="lt-field-input"
+                                        value={row.amount} data-index={index} data-field="amount"
+                                        placeholder="0"
+                                        onchange={handleBeneficiaryChange} disabled={isReadOnly} />
+                                </div>
+                                <template if:false={isReadOnly}>
+                                    <div class="wpr-td wpr-td-action">
+                                        <button type="button" class="wpr-icon-btn wpr-icon-btn--add"
+                                            data-index={index} onclick={handleAddBeneficiary}
+                                            aria-label="Add row" disabled={disableAddBeneficiary}>
+                                            <lightning-icon icon-name="utility:add" size="x-small"
+                                                alternative-text="Add"></lightning-icon>
+                                        </button>
+                                        <template if:true={showRemoveBeneficiary}>
+                                            <button type="button" class="wpr-icon-btn wpr-icon-btn--remove"
+                                                data-index={index} onclick={handleRemoveBeneficiary}
+                                                aria-label="Remove row" disabled={row.verified}>
+                                                <lightning-icon icon-name="utility:dash" size="x-small"
+                                                    alternative-text="Remove"></lightning-icon>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="wpr-table-summary">
+                        <span class="wpr-summary-label">Total Beneficiary Amount:</span>
+                        <span class="wpr-summary-value">₹{totalBeneficiaryAmount}</span>
+                    </div>
+                </div>
+
+                  <!-- ── Seller Bank Details (Used / Refinance only) ────────── -->
+                  <template if:true={showSellerBankDetailSection}>
+                    <div class="wpr-subsection-header wpr-subsection-header--gap">
+                        <span class="wpr-subsection-title">Seller Bank Details</span>
+                    </div>
+                    <div class="wpr-fields-grid">
+                        <div class="wpr-field-wrap">
+                            <div class="lt-info-cell">
+                                <div class="lt-info-cell-header">
+                                    <span class="lt-info-bullet"></span> 
+                                    <span class="lt-info-label">Bank Name</span>
+                                </div>
+                                <div class="lt-info-value-wrap">
+                                    <input type="text" class="lt-field-input"
+                                        value={sellerBankDetails.bankName}
+                                        data-field="bankName"
+                                        placeholder="Enter bank name"
+                                        onchange={handleSellerBankChange}
+                                        readonly={sellerBankDetails.verified} />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wpr-field-wrap">
+                            <div class="lt-info-cell">
+                                <div class="lt-info-cell-header">
+                                    <span class="lt-info-bullet"></span>
+                                    <span class="lt-info-label">Bank Account Number</span>
+                                </div>
+                                <div class="lt-info-value-wrap">
+                                    <input type="text" class="lt-field-input"
+                                        value={sellerBankDetails.accountNumber}
+                                        data-field="accountNumber"
+                                        placeholder="Enter account number"
+                                        onchange={handleSellerBankChange}
+                                        readonly={sellerBankDetails.verified} />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wpr-field-wrap">
+                            <div class="lt-info-cell">
+                                <div class="lt-info-cell-header">
+                                    <span class="lt-info-bullet"></span>
+                                    <span class="lt-info-label">IFSC Code</span>
+                                </div>
+                                <div class="lt-info-value-wrap">
+                                    <input type="text" class="lt-field-input"
+                                        value={sellerBankDetails.ifscCode}
+                                        data-field="ifscCode"
+                                        placeholder="Enter IFSC code"
+                                        onchange={handleSellerBankChange}
+                                        readonly={sellerBankDetails.verified} />
+                                    <template if:true={sellerBankDetails.ifscVerified}>
+                                        <p class="wpr-branch-info">
+                                            Branch: <strong>{sellerBankDetails.branchName}</strong>
+                                            &nbsp;|&nbsp; City: <strong>{sellerBankDetails.bankBranchCity}</strong>
+                                        </p>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wpr-field-wrap">
+                            <div class="lt-info-cell">
+                                <div class="lt-info-cell-header">
+                                    <span class="lt-info-bullet"></span>
+                                    <span class="lt-info-label">Pin Code</span>
+                                </div>
+                                <div class="lt-info-value-wrap">
+                                    <input type="text" class="lt-field-input"
+                                        value={sellerBankDetails.pinCode}
+                                        data-field="pinCode"
+                                        placeholder="Enter pin code"
+                                        maxlength="6"
+                                        onchange={handleSellerBankChange}
+                                        readonly={sellerBankDetails.verified} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Verify + Upload actions -->
+                    <template if:false={isReadOnly}>
+                        <div class="wpr-seller-actions">
+                            <template if:true={sellerBankDetails.verified}>
+                                <span class="wpr-row-verified-badge">
+                                    <lightning-icon icon-name="utility:success" size="x-small"
+                                        class="wpr-verified-icon"
+                                        alternative-text="Verified"></lightning-icon>
+                                    Verified
+                                </span>
+                            </template>
+                            <template if:false={sellerBankDetails.verified}>
+                                <button type="button" class="wpr-verify-btn"
+                                    onclick={handleVerifySellerBank}
+                                    aria-label="Verify seller bank details">
+                                    Verify
+                                </button>
+                            </template>
+                            <button type="button" class="wpr-action-btn wpr-action-btn--outline"
+                                aria-label="Upload seller bank document">
+                                Upload Document
+                            </button>
+                        </div>
+                    </template>
+                </template>
+
+                <!-- ── Disbursement sub-section ──────────────────────────── -->
+                <div class="wpr-subsection-header wpr-subsection-header--gap">
+                    <span class="wpr-subsection-title">Disbursement</span>
+                </div>
+                <div class="wpr-fields-grid">
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Dealer Payment / Disbursement Amount</span>
+                            </div>
+                            <div class="lt-info-value-wrap">
+                                <input type="text" class="lt-field-input" value={disbursement.dealerPayment} readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Payment to be Made on</span>
+                            </div>
+                            <div class="lt-info-value-wrap">
+                                <input type="date" class="lt-field-input"
+                                    value={disbursement.paymentDate} data-field="paymentDate"
+                                    onchange={handleDisbursementChange} readonly={isReadOnly} />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">1st EMI Due Date</span>
+                            </div>
+                            <div class="lt-info-value-wrap" if:false={isReadOnly}>
+                                <lightning-combobox 
+                                    label="1st EMI Due Date"
+                                    value={disbursement.firstEmiDueDate}
+                                    options={emiDateOptions}
+                                    onchange={handleEmiDateChange}
+                                    variant="label-hidden"
+                                    placeholder="Select"
+                                    data-field="firstEmiDueDate"
+                                    readonly={isReadOnly}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="lt-info-value-wrap" if:true={isReadOnly}>
+                                <input type="text" class="lt-field-input" value={disbursement.firstEmiDueDate} readonly variant="label-hidden" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">2nd EMI Due Date</span>
+                            </div>
+                            <div class="lt-info-value-wrap">
+                                <input type="text" class="lt-field-input" value={secondEmiDueDate} readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">CRM IRR</span>
+                            </div>
+                            <div class="lt-info-value-wrap">
+                                <input type="text" class="lt-field-input" value={disbursement.crmIrr} readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">EMI Amount</span>
+                            </div>
+                            <div class="lt-info-value-wrap">
+                                <input type="text" class="lt-field-input" value={disbursement.emiAmount} readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Installment Schedule button — enabled when disbursement changes -->
+                <template if:true={showInstallmentScheduleBtn}>
+                    <div class="wpr-schedule-btn-row">
+                        <button type="button" class="wpr-action-btn wpr-action-btn--brand"
+                            onclick={handleInstallmentSchedule}
+                            aria-label="View installment schedule">
+                            <lightning-icon icon-name="utility:table" size="x-small"
+                                class="wpr-btn-icon-inline"
+                                alternative-text="Schedule"></lightning-icon>
+                            Installment Schedule
+                        </button>
+                    </div>
+                </template>
+
+            </div><!-- /form-card-body -->
+        </div><!-- /Beneficiary Details -->
+
+        <!-- ══ OPERATIONS ═══════════════════════════════════════════════════ -->
+        <div class="form-card" if:true={isOperationsStage}>
+            <c-operations-section-header
+                subtitle="Verify payment request document and acceptance">
+            </c-operations-section-header>
+            <div class="form-card-body">
+                <div class="wpr-ops-fields-grid">
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Are all details correct?</span>
+                            </div>
+                            <div class="lt-info-value-wrap" if:false={isOpsReadOnly}>
+                                <lightning-combobox
+                                    label="Are all details correct?"
+                                    value={operationData.areAllDetailsCorrect}
+                                    options={yesNoOptions}
+                                    onchange={handleIsAllDetailsCorrectChange}
+                                    variant="label-hidden"
+                                    placeholder="Please select..."
+                                    class="form-lightning-input">
+                                </lightning-combobox>
+                            </div>
+                            <div class="lt-info-value-wrap" if:true={isOpsReadOnly}>
+                                <input type="text" class="lt-field-input"
+                                    value={operationData.areAllDetailsCorrect} readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpr-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Remarks</span>
+                            </div>
+                            <div class="lt-info-value-wrap">
+                                <textarea class="wpr-textarea-field"
+                                    placeholder="Enter any additional remarks..."
+                                    onchange={handleRemarksChange}
+                                    rows="3"
+                                    readonly={isOpsReadOnly}
+                                    aria-label="Remarks" if:false={isOpsReadOnly}>{operationData.remarks}</textarea>
+                                <input if:true={isOpsReadOnly} label="Remarks" type="text" value={operationData.remarks} readonly variant="label-hidden" class="lt-field-input"></input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Integration Progress Modal ───────────────────────────────── -->
+        <template if:true={showIntegrationModal}>
+            <c-integration-progress-modal
+                status={integrationStatus}
+                stages={integrationStages}
+                current-stage-index={integrationCurrentStageIndex}
+                success-message={integrationSuccessMessage}
+                onclose={handleIntegrationModalClose}
+                ondone={handleIntegrationModalClose}>
+            </c-integration-progress-modal>
+        </template>
+
+        <!-- ── Dynamic Component Modal (Installment Schedule) ────────────── -->
+        <template if:true={showDynamicModal}>
+            <c-dynamic-component-modal
+                component-name={dynamicComponentName}
+                modal-header={dynamicModalHeader}
+                component-props={dynamicComponentProps}
+                onclose={handleModalClose}>
+            </c-dynamic-component-modal>
+        </template>
+
+        <!-- ── Footer ────────────────────────────────────────────────────── -->
+        <div class="wpr-footer-wrapper" if:false={isStagePast}>
+            <div class="wpr-footer">
+                <button type="button" class="wpr-submit-btn"
+                    onclick={handleSubmit} disabled={disableSubmitButton}
+                    aria-label="Submit payment request" if:false={isStagePast}>Submit</button>
+                <button type="button" class="wpr-next-btn"
+                    onclick={handleNext} aria-label="Next step" disabled={disableNextButton}>
+                    <lightning-icon icon-name="utility:forward" size="x-small"
+                        class="wpr-btn-icon-inline" alternative-text="Next"></lightning-icon>
+                    Next
+                </button>
+            </div>
+        </div>
+
+    </div>
+</template>

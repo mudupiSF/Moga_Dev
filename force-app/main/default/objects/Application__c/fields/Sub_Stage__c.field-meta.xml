@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sub_Stage__c</fullName>
+    <label>Sub Stage</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Basic Details</fullName>
+                <default>false</default>
+                <label>Basic Details</label>
+            </value>
+            <value>
+                <fullName>KYC Details</fullName>
+                <default>false</default>
+                <label>KYC Details</label>
+            </value>
+            <value>
+                <fullName>Occupation Details</fullName>
+                <default>false</default>
+                <label>Occupation Details</label>
+            </value>
+            <value>
+                <fullName>Dedupe and Eligibility</fullName>
+                <default>false</default>
+                <label>Dedupe and Eligibility</label>
+            </value>
+            <value>
+                <fullName>Asset Details</fullName>
+                <default>false</default>
+                <label>Asset Details</label>
+            </value>
+            <value>
+                <fullName>Valuation</fullName>
+                <default>false</default>
+                <label>Valuation</label>
+            </value>
+            <value>
+                <fullName>Loan Terms</fullName>
+                <default>false</default>
+                <label>Loan Terms</label>
+            </value>
+            <value>
+                <fullName>Offer</fullName>
+                <default>false</default>
+                <label>Offer</label>
+            </value>
+            <value>
+                <fullName>Application Overview</fullName>
+                <default>false</default>
+                <label>Application Overview</label>
+            </value>
+            <value>
+                <fullName>Investigation Reports</fullName>
+                <default>false</default>
+                <label>Investigation Reports</label>
+            </value>
+            <value>
+                <fullName>Exposure Analysis</fullName>
+                <default>false</default>
+                <label>Exposure Analysis</label>
+            </value>
+            <value>
+                <fullName>Credit Assessment</fullName>
+                <default>false</default>
+                <label>Credit Assessment</label>
+            </value>
+            <value>
+                <fullName>CAM and Approval Log</fullName>
+                <default>false</default>
+                <label>CAM and Approval Log</label>
+            </value>
+            <value>
+                <fullName>Repayment</fullName>
+                <default>false</default>
+                <label>Repayment</label>
+            </value>
+            <value>
+                <fullName>Agreement</fullName>
+                <default>false</default>
+                <label>Agreement</label>
+            </value>
+            <value>
+                <fullName>Demographic Details</fullName>
+                <default>false</default>
+                <label>Demographic Details</label>
+            </value>
+            <value>
+                <fullName>Additional Documents</fullName>
+                <default>false</default>
+                <label>Additional Documents</label>
+            </value>
+            <value>
+                <fullName>Invoice</fullName>
+                <default>false</default>
+                <label>Invoice</label>
+            </value>
+            <value>
+                <fullName>Vehicle Inspection</fullName>
+                <default>false</default>
+                <label>Vehicle Inspection</label>
+            </value>
+            <value>
+                <fullName>IHM</fullName>
+                <default>false</default>
+                <label>IHM</label>
+            </value>
+            <value>
+                <fullName>Payment Request</fullName>
+                <default>false</default>
+                <label>Payment Request</label>
+            </value>
+            <value>
+                <fullName>Income and Banking Details</fullName>
+                <default>false</default>
+                <label>Income and Banking Details</label>
+            </value>
+            <value>
+                <fullName>Payment Disbursement</fullName>
+                <default>false</default>
+                <label>Payment Disbursement</label>
+            </value>
+            <value>
+                <fullName>Post-Disbursement Tracking</fullName>
+                <default>false</default>
+                <label>Post-Disbursement Tracking</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Evaluation_Type__c</fullName>
+    <label>Evaluation Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Captive Retail</fullName>
+                <default>false</default>
+                <label>Captive Retail</label>
+            </value>
+            <value>
+                <fullName>Captive strategic</fullName>
+                <default>false</default>
+                <label>Captive strategic</label>
+            </value>
+            <value>
+                <fullName>Hiring FTU</fullName>
+                <default>false</default>
+                <label>Hiring FTU</label>
+            </value>
+            <value>
+                <fullName>Hiring Retail</fullName>
+                <default>false</default>
+                <label>Hiring Retail</label>
+            </value>
+            <value>
+                <fullName>Hiring Strategic</fullName>
+                <default>false</default>
+                <label>Hiring Strategic</label>
+            </value>
+            <value>
+                <fullName>Not Applicable</fullName>
+                <default>false</default>
+                <label>Not Applicable</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

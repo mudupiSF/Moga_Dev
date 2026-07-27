@@ -1,0 +1,153 @@
+<template>
+    <div class="card-wrapper">
+        <div class="card">
+            <div class="card-header">
+                <div class="header-overlay"></div>
+                <div class="header-content">
+                    <div class="header-icon-wrap">
+                        <lightning-icon icon-name="utility:cancel_transfer" size="small" class="header-icon"></lightning-icon>
+                    </div>
+                    <div class="header-text">
+                        <h2 class="header-title">Add / Change Applicants</h2>
+                        <p class="header-subtitle">Manage additional applicants</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <!-- Status Message -->
+                <div class="status-note">
+                    <lightning-icon icon-name="utility:info" size="small" class="status-icon-info"></lightning-icon>
+                    <p class="status-text">{statusNoteText}</p>
+                </div>
+
+                <!-- Add Applicant Buttons -->
+                <template if:true={showAddApplicantButtons}>
+                    <div class="field-group">
+                        <div class="aas-add-btn-row">
+                            <template if:true={showGuarantorQuestion}>
+                                <button
+                                    type="button"
+                                    class={guarantorButtonClass}
+                                    onclick={handleAddGuarantorClick}
+                                    disabled={isGuarantorButtonDisabled}
+                                    aria-pressed={isGuarantorActive}>
+                                    <lightning-icon icon-name="utility:add" size="x-small" class="aas-add-btn-icon"></lightning-icon>
+                                    {guarantorButtonLabel}
+                                </button>
+                            </template>
+                            <template if:true={showBeneficiaryQuestion}>
+                                <button
+                                    type="button"
+                                    class={beneficiaryButtonClass}
+                                    onclick={handleAddBeneficiaryClick}
+                                    disabled={isBeneficiaryButtonDisabled}
+                                    aria-pressed={isBeneficiaryActive}>
+                                    <lightning-icon icon-name="utility:add" size="x-small" class="aas-add-btn-icon"></lightning-icon>
+                                    {beneficiaryButtonLabel}
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- "+ Add Sub-<Role>" buttons (shown only when an NI of that role exists).
+                     When ON, NEXT routes to the role's existing multi-grid instead of creating a new top-level. -->
+                <template if:true={showSubGuarantorButton}>
+                    <div class="field-group">
+                        <div class="aas-add-btn-row">
+                            <button
+                                type="button"
+                                class={subGuarantorButtonClass}
+                                onclick={handleAddSubGuarantorClick}
+                                aria-pressed={isSubGuarantorActive}>
+                                <lightning-icon icon-name="utility:add" size="x-small" class="aas-add-btn-icon"></lightning-icon>
+                                {subGuarantorButtonLabel}
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={showSubBeneficiaryButton}>
+                    <div class="field-group">
+                        <div class="aas-add-btn-row">
+                            <button
+                                type="button"
+                                class={subBeneficiaryButtonClass}
+                                onclick={handleAddSubBeneficiaryClick}
+                                aria-pressed={isSubBeneficiaryActive}>
+                                <lightning-icon icon-name="utility:add" size="x-small" class="aas-add-btn-icon"></lightning-icon>
+                                {subBeneficiaryButtonLabel}
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Remove Applicant Section -->
+                <template if:true={showRemoveSection}>
+                    <div class="divider"></div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">
+                            Do you wish to change/remove an Applicant to your application?
+                        </label>
+                        <div class="aas-radio-group" role="radiogroup" aria-label="Do you wish to change/remove an Applicant to your application?">
+                            <label class="aas-radio-label">
+                                <input
+                                    type="radio"
+                                    class="aas-radio-input"
+                                    name="wishToRemove"
+                                    value="Yes"
+                                    checked={isWishToRemoveYes}
+                                    disabled={isRemoveReadOnly}
+                                    onchange={handleWishToRemoveChange} />
+                                <span class="aas-radio-circle"></span>
+                                <span class="aas-radio-text">Yes</span>
+                            </label>
+                            <label class="aas-radio-label">
+                                <input
+                                    type="radio"
+                                    class="aas-radio-input"
+                                    name="wishToRemove"
+                                    value="No"
+                                    checked={isWishToRemoveNo}
+                                    disabled={isRemoveReadOnly}
+                                    onchange={handleWishToRemoveChange} />
+                                <span class="aas-radio-circle"></span>
+                                <span class="aas-radio-text">No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <template if:true={showRemoveApplicantPicker}>
+                        <div class="field-group">
+                            <label class="field-label">
+                                Please choose which one to remove
+                                <span class="required-indicator">*</span>
+                            </label>
+                            <lightning-combobox
+                                name="applicantToRemove"
+                                placeholder="Select an applicant"
+                                options={removableApplicants}
+                                value={applicantToRemove}
+                                onchange={handleApplicantToRemoveChange}
+                                disabled={isRemoveReadOnly}>
+                            </lightning-combobox>
+                        </div>
+
+                        <div class="action-button-container">
+                            <button 
+                                type="button" 
+                                class="remove-button"
+                                onclick={handleRemoveClick}
+                                disabled={isRemoveButtonDisabled}>
+                                <lightning-icon icon-name="utility:delete" size="x-small" class="button-icon"></lightning-icon>
+                                Remove
+                            </button>
+                        </div>
+                    </template>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>

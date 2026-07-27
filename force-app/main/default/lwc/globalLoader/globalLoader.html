@@ -1,0 +1,12 @@
+<template>
+    <template lwc:if={visible}>
+        <div class="global-loader-backdrop" role="status" aria-live="polite" aria-label={resolvedMessage}>
+            <div class="global-loader-card">
+                <lightning-spinner alternative-text={resolvedMessage} size="medium" variant="brand"></lightning-spinner>
+                <template lwc:if={resolvedMessage}>
+                    <p class="global-loader-message">{resolvedMessage}</p>
+                </template>
+            </div>
+        </div>
+    </template>
+</template>

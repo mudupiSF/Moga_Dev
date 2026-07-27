@@ -1,0 +1,112 @@
+<template>
+    <template lwc:if={showDetails}>
+        <div class="filter-section slds-var-p-horizontal_small slds-var-p-bottom_small slds-border_bottom">
+            <div class="slds-grid slds-gutters_small slds-wrap slds-grid_vertical-align-end">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                    <lightning-combobox
+                        name="status"
+                        label="Status"
+                        value={employeeQuerySelectedStatus}
+                        placeholder="Select Status"
+                        options={queryStatusOptions}
+                        onchange={handleEmployeeQueryStatusChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                    <lightning-combobox
+                        name="priority"
+                        label="Priority"
+                        value={employeeQuerySelectedPriority}
+                        placeholder="Select Priority"
+                        options={queryPriorityOptions}
+                        onchange={handleEmployeeQueryPriorityChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                    <lightning-combobox
+                        name="type"
+                        label="Type"
+                        value={employeeQuerySelectedType}
+                        placeholder="Select Type"
+                        options={queryTypeOptions}
+                        onchange={handleEmployeeQueryTypeChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                    <lightning-combobox
+                        name="age"
+                        label="Age Range"
+                        value={employeeQuerySelectedAge}
+                        placeholder="Select Age Range"
+                        options={ageFilterOptions}
+                        onchange={handleEmployeeQueryAgeChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                    <template if:true={employeeQueryHasFilters}>
+                        <lightning-button
+                            label="Clear Filters"
+                            onclick={clearEmployeeQueryFilters}
+                            variant="neutral">
+                        </lightning-button>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <template if:true={employeeQueryHasRecords}>
+            <div class="slds-var-p-around_small">
+                <lightning-datatable
+                    key-field="queryId"
+                    data={employeeQueryDisplayedRecords}
+                    columns={queryColumns}
+                    hide-checkbox-column
+                    show-row-number-column
+                    row-number-offset={employeeQueryRowNumberOffset}
+                    onsort={handleEmployeeQuerySort}
+                    sorted-by={employeeQuerySortedBy}
+                    sorted-direction={employeeQuerySortDirection}>
+                </lightning-datatable>
+            </div>
+        </template>
+
+        <!-- No Records Message -->
+        <template if:false={employeeQueryHasRecords}>
+            <div class="slds-align_absolute-center slds-var-p-around_xx-large">
+                <template if:true={isLoading}>
+                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </template>
+                <template if:false={isLoading}>
+                    <lightning-icon icon-name="utility:info" size="large" class="slds-var-m-bottom_medium"></lightning-icon>
+                </template>
+                <p class="slds-text-heading_medium">{noEmployeeQueryRecordsMessage}</p>
+            </div>
+        </template>
+
+        <!-- Pagination -->
+        <template if:true={employeeQueryHasRecords}>
+            <div class="slds-var-p-around_small slds-border_top">
+                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                    <div class="slds-col">
+                        <span class="slds-text-body_small">
+                            Showing {employeeQueryDisplayedRecords.length} of {employeeQueryTotalRecords} records | Page {employeeQueryPageInfo}
+                        </span>
+                    </div>
+                    <div class="slds-col">
+                        <template if:true={employeeQueryHasRecords}>
+                            <lightning-button-group class="slds-float_right">
+                                <lightning-button label="First" onclick={handleEmployeeQueryFirst} 
+                                    disabled={employeeQueryCurrentPage}></lightning-button>
+                                <lightning-button icon-name="utility:chevronleft" onclick={handleEmployeeQueryPrevious} 
+                                    disabled={employeeQueryCurrentPage}></lightning-button>
+                                <lightning-button icon-name="utility:chevronright" onclick={handleEmployeeQueryNext}></lightning-button>
+                                <lightning-button label="Last" onclick={handleEmployeeQueryLast}></lightning-button>
+                            </lightning-button-group>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </template>
+</template>

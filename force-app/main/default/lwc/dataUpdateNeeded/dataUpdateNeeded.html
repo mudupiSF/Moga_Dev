@@ -1,0 +1,232 @@
+<template>
+    <lightning-card title="Data Update Needed Fields" icon-name="standard:record">
+        <div slot="actions">
+            <template if:true={showBackButton}>
+                <lightning-button 
+                    label="Close" 
+                    icon-name="utility:close" 
+                    variant="neutral"
+                    onclick={handleClose}
+                    class="slds-m-right_x-small"
+                ></lightning-button>
+            </template>
+            <lightning-button 
+                label="Refresh" 
+                icon-name="utility:refresh" 
+                onclick={handleRefresh}
+                disabled={isLoading}
+            ></lightning-button>
+        </div>
+        
+        <div class="slds-m-around_medium">
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <div class="slds-is-relative" style="height: 200px;">
+                    <lightning-spinner 
+                        alternative-text="Loading..." 
+                        size="medium"
+                    ></lightning-spinner>
+                </div>
+            </template>
+            
+            <!-- Error Message -->
+            <template if:true={error}>
+                <div class="slds-box slds-theme_error slds-m-bottom_medium">
+                    <div class="slds-text-heading_small slds-m-bottom_x-small">
+                        <lightning-icon 
+                            icon-name="utility:error" 
+                            size="small" 
+                            alternative-text="Error"
+                            class="slds-m-right_x-small"
+                        ></lightning-icon>
+                        Error Loading Data
+                    </div>
+                    <p>{error}</p>
+                </div>
+            </template>
+            
+            <!-- Record Count -->
+            <template if:false={isLoading}>
+                <div class="slds-m-bottom_small">
+                    <div class="slds-text-body_regular">
+                        Showing <strong>{filteredRecordCount}</strong> of <strong>{totalRecordCount}</strong> field(s) requiring data updates
+                    </div>
+                </div>
+            </template>
+            
+            <!-- Filters -->
+            <template if:false={isLoading}>
+                <div class="filter-container slds-m-bottom_medium">
+                    <template if:true={showApplicantFilter}>
+                        <div class="filter-item">
+                            <lightning-combobox
+                                label="Applicant"
+                                value={selectedApplicant}
+                                options={applicantOptions}
+                                onchange={handleApplicantChange}
+                            ></lightning-combobox>
+                        </div>
+                    </template>
+                    
+                    <template if:true={showAddressFilter}>
+                        <div class="filter-item">
+                            <lightning-combobox
+                                label="Address"
+                                value={selectedAddress}
+                                options={addressOptions}
+                                onchange={handleAddressChange}
+                            ></lightning-combobox>
+                        </div>
+                    </template>
+                    
+                    <template if:true={showEmploymentFilter}>
+                        <div class="filter-item">
+                            <lightning-combobox
+                                label="Employment"
+                                value={selectedEmployment}
+                                options={employmentOptions}
+                                onchange={handleEmploymentChange}
+                            ></lightning-combobox>
+                        </div>
+                    </template>
+                    
+                    <template if:true={showIncomeFilter}>
+                        <div class="filter-item">
+                            <lightning-combobox
+                                label="Income"
+                                value={selectedIncome}
+                                options={incomeOptions}
+                                onchange={handleIncomeChange}
+                            ></lightning-combobox>
+                        </div>
+                    </template>
+                    
+                    <template if:true={showProductFilter}>
+                        <div class="filter-item">
+                            <lightning-combobox
+                                label="Product"
+                                value={selectedProduct}
+                                options={productOptions}
+                                onchange={handleProductChange}
+                            ></lightning-combobox>
+                        </div>
+                    </template>
+                    
+                    <template if:true={showBankFilter}>
+                        <div class="filter-item">
+                            <lightning-combobox
+                                label="Bank"
+                                value={selectedBank}
+                                options={bankOptions}
+                                onchange={handleBankChange}
+                            ></lightning-combobox>
+                        </div>
+                    </template>
+                </div>
+            </template>
+            
+            <!-- Data Table - Desktop View -->
+            <template if:true={hasData}>
+                <template if:true={isDesktop}>
+                    <lightning-datatable
+                        key-field="id"
+                        data={displayedData}
+                        columns={columns}
+                        hide-checkbox-column
+                        show-row-number-column
+                        resize-column-disabled
+                        wrap-text-max-lines="3"
+                        onsort={handleSort}
+                    >
+                    </lightning-datatable>
+                </template>
+                
+                <!-- Card View - Mobile View -->
+                <template if:true={isMobile}>
+                    <div class="mobile-cards">
+                        <template for:each={displayedData} for:item="record" for:index="index">
+                            <div key={record.id} class="slds-box slds-m-bottom_small mobile-card">
+                                <div class="slds-grid slds-gutters_xx-small">
+                                    <div class="slds-col slds-size_1-of-12">
+                                        <span class="slds-badge slds-theme_info">{record.displayIndex}</span>
+                                    </div>
+                                    <div class="slds-col slds-size_11-of-12">
+                                        <div class="card-field">
+                                            <span class="field-label">Field:</span>
+                                            <span class="field-value slds-text-title_bold">{record.fieldLabel}</span>
+                                        </div>
+                                        
+                                        <template if:true={record.fieldValue}>
+                                            <div class="card-field">
+                                                <span class="field-label">Value:</span>
+                                                <span class="field-value">{record.fieldValue}</span>
+                                            </div>
+                                        </template>
+                                        
+                                        <template if:true={record.comments}>
+                                            <div class="card-field">
+                                                <span class="field-label">Comments:</span>
+                                                <span class="field-value">{record.comments}</span>
+                                            </div>
+                                        </template>
+                                        
+                                        <template if:true={record.lookupFieldName}>
+                                            <div class="card-field">
+                                                <span class="field-label">Related:</span>
+                                                <template if:true={record.recordReferenceUrl}>
+                                                    <a href={record.recordReferenceUrl} class="field-value slds-text-link" target="_blank">
+                                                        {record.lookupFieldName}
+                                                    </a>
+                                                </template>
+                                                <template if:false={record.recordReferenceUrl}>
+                                                    <span class="field-value">{record.lookupFieldName}</span>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        
+                                        <template if:true={record.verifiedDate}>
+                                            <div class="card-field">
+                                                <span class="field-label">Verified:</span>
+                                                <lightning-formatted-date-time 
+                                                    value={record.verifiedDate}
+                                                    year="numeric"
+                                                    month="short"
+                                                    day="2-digit"
+                                                    hour="2-digit"
+                                                    minute="2-digit"
+                                                ></lightning-formatted-date-time>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </template>
+            
+            <!-- No Data Message -->
+            <template if:false={hasData}>
+                <template if:false={isLoading}>
+                    <template if:false={error}>
+                        <div class="slds-illustration slds-illustration_small">
+                            <div class="slds-text-align_center">
+                                <lightning-icon 
+                                    icon-name="utility:info" 
+                                    size="large"
+                                    alternative-text="No Data"
+                                ></lightning-icon>
+                                <h3 class="slds-text-heading_medium slds-m-top_small">
+                                    No Data Update Needed
+                                </h3>
+                                <p class="slds-text-body_regular">
+                                    All fields are verified or no records found for this application.
+                                </p>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

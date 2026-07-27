@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>BCC</label>
+    <protected>false</protected>
+    <values>
+        <field>CCC_Above_Flag__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>LowerLevelCommittees__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Mandatory_Role__c</field>
+        <value xsi:type="xsd:string">BH</value>
+    </values>
+    <values>
+        <field>Non_Mandatory_Role__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Partial_Mandatory_Roles__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Product__c</field>
+        <value xsi:type="xsd:string">Passenger Vehicles</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>65.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>PDFforce Renderer</masterLabel>
+    <description>Renders a PDFforce template against input data, with paged preview, signature capture, save, and submit-as-PDF.</description>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__AppPage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property
+                name="templateId"
+                type="String"
+                label="Template Id"
+                description="Id of the template record whose attached docx-export HTML should be rendered."
+            />
+            <property
+                name="recordId"
+                type="String"
+                label="Record Id"
+                description="Record context for the renderer. Saved drafts are keyed by recordId+templateId, and Submit defaults to attaching the PDF here. On community record pages this is auto-populated via the {!recordId} expression; leave blank to inherit it."
+            />
+            <property
+                name="submitRecordId"
+                type="String"
+                label="Submit Target Record Id"
+                description="Optional. When set, Submit attaches the generated PDF to this record id instead of the renderer's own Record Id."
+            />
+            <property
+                name="fileName"
+                type="String"
+                label="File Name"
+                default="Application Form"
+                description="Base file name (no extension) used for the submitted PDF."
+            />
+            <property
+                name="pageNumberPosition"
+                type="String"
+                label="Page Number Position"
+                default="center"
+                datasource="left,center,right,none"
+                description="Where to render the Page X of Y footer in each page's bottom margin band. Choose 'none' to suppress page numbers."
+            />
+            <property
+                name="customSpinner"
+                type="Boolean"
+                label="Use Custom Spinner"
+                default="false"
+                description="When true, renders the component's CSS spinner instead of the standard Lightning spinner."
+            />
+            <property
+                name="showPreview"
+                type="Boolean"
+                label="Show PDF Preview"
+                default="false"
+                description="When true, the generated PDF is displayed in-place after generation."
+            />
+            <property
+                name="autoSave"
+                type="Boolean"
+                label="Auto Save"
+                default="false"
+                description="When true, the document is saved automatically once rendering completes."
+            />
+            <property
+                name="autoSaveToCurrentRecord"
+                type="Boolean"
+                label="Auto Save to Current Record"
+                default="false"
+                description="When true, the auto-saved file is linked to the current Record Id."
+            />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

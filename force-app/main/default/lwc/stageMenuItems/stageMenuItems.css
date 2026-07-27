@@ -1,0 +1,97 @@
+/* Option 1 + Option 4: Card-Matched + capitalized group names. REVERT: restore from git if needed */
+:host {
+    display: block;
+    width: 100%;
+    flex: 1;
+}
+
+.menu-container {
+    display: block;
+    width: 100%;
+}
+
+.vertical-menu {
+    width: 100%;
+}
+
+.vertical-menu .slds-nav-vertical {
+    padding: 0.5rem 0;
+    width: 100%;
+}
+
+
+.menu-group-accordion {
+    list-style: none;
+    margin: 4px 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.group-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 8px;
+    cursor: pointer;
+    border-radius: 6px;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.group-header-active {
+    background: #f6f7ff;
+    border-color: #dfe3ff;
+    color: #4f46e5;
+}
+
+/* All sub-stages of this group are completed: subtle green tint + green border + green tick icon. */
+.group-header-completed {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #047857;
+}
+
+.group-completed-tick {
+    margin-left: auto;
+    --sds-c-icon-color-foreground-default: #2e844a;
+    --slds-c-icon-color-foreground-default: #2e844a;
+}
+
+.group-header:hover {
+    background: #f3f4f6;
+    color: #4f46e5;
+}
+
+.group-chevron {
+    --sds-c-icon-color-foreground-default: #9ca3af;
+    transition: transform 0.25s ease;
+}
+
+.group-chevron-expanded {
+    transform: rotate(90deg);
+    --sds-c-icon-color-foreground-default: #4f46e5;
+}
+
+.group-content {
+    display: none;
+    margin: 2px 0 0 0;
+    padding-left: 14px;
+    border-left: none;
+    border-top: 1px solid #f3f4f6;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+.group-content.expanded {
+    display: block;
+}

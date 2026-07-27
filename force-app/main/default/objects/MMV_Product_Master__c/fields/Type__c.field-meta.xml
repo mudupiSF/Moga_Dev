@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <label>Type</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Make</fullName>
+                <default>false</default>
+                <label>Make</label>
+            </value>
+            <value>
+                <fullName>Model</fullName>
+                <default>false</default>
+                <label>Model</label>
+            </value>
+            <value>
+                <fullName>Variant</fullName>
+                <default>false</default>
+                <label>Variant</label>
+            </value>
+            <value>
+                <fullName>Class Of Vehicle</fullName>
+                <default>false</default>
+                <label>Class Of Vehicle</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

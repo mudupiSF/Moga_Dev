@@ -1,0 +1,113 @@
+:host {
+    --los-navy: #1b2559;
+    --los-navy-hover: #243074;
+    --los-navy-border: rgba(160, 175, 220, 0.45);
+}
+
+.fab-host {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    pointer-events: auto;
+    box-sizing: border-box;
+}
+
+/* Inside a host LWC (e.g. sfLOSOpportunityMasterPage): top row of that component only */
+.fab-host_embedded-top-right {
+    position: relative;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem 0.5rem;
+    z-index: 5;
+}
+
+.dock-actions-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-left: auto;
+}
+
+
+.dock-actions-right_embedded-fixed {
+    position: static;
+    right: auto;
+    z-index: 5;
+    display: flex;
+    visibility: visible;
+    opacity: 1;
+}
+
+.lead-info-collapse-icon {
+    --slds-c-icon-color-foreground-default: #706e6b;
+    flex-shrink: 0;
+}
+
+.lead-info-collapse-icon:hover {
+    --slds-c-icon-color-foreground-default: #0176d3;
+    transform: scale(1.1);
+}
+
+.fab-host_bottom-right {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    top: auto;
+    z-index: 10050;
+}
+
+.fab-host_top-right {
+    position: fixed;
+    right: 1rem;
+    top: max(0.75rem, env(safe-area-inset-top, 0px));
+    bottom: auto;
+    z-index: 10050;
+}
+
+.fab {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 1px solid var(--los-navy-border);
+    background: var(--los-navy);
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(27, 37, 89, 0.45);
+    transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    position: relative;
+}
+
+.fab:hover {
+    background: var(--los-navy-hover);
+    border-color: rgba(190, 200, 240, 0.65);
+}
+
+.fab:focus {
+    outline: 2px solid rgba(160, 175, 220, 0.8);
+    outline-offset: 2px;
+}
+
+.fab-icon {
+    --sds-c-icon-color-foreground-default: #ffffff;
+}
+
+.queries-indicator {
+    position: absolute;
+    top: -0.35rem;
+    right: -0.35rem;
+    min-width: 1rem;
+    height: 1rem;
+    padding: 0 0.2rem;
+    border-radius: 999px;
+    background: #ea001e;
+    color: #ffffff;
+    font-size: 0.625rem;
+    font-weight: 700;
+    line-height: 1rem;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}

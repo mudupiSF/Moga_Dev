@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>is_Current_Stage_common_for_Wheels__c</fullName>
+    <defaultValue>false</defaultValue>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Wheels include 4W,2W,CV and CE</inlineHelpText>
+    <label>is Current Stage common for Wheels?</label>
+    <type>Checkbox</type>
+</CustomField>

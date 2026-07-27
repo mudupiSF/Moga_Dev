@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
+  <!-- Ground Anchor Line -->
+  <line x1="8" y1="54" x2="56" y2="54" stroke="#E2E8F0" stroke-width="2" stroke-linecap="round" />
+
+  <!-- COMMERCIAL VEHICLE (TRUCK) SHAPE -->
+  <g id="commercial-truck">
+    <!-- Rear Wheel -->
+    <circle cx="18" cy="46" r="7.5" stroke="#1E293B" stroke-width="3.5" fill="none" />
+    <circle cx="18" cy="46" r="2" fill="#10B981" />
+
+    <!-- Front Wheel -->
+    <circle cx="44" cy="46" r="7.5" stroke="#1E293B" stroke-width="3.5" fill="none" />
+    <circle cx="44" cy="46" r="2" fill="#10B981" />
+
+    <!-- Main Outer Silhouette (Cargo Container + Driver Cab) -->
+    <path d="M 11,39 L 5,39 L 5,21 L 35,21 L 35,26 L 46,26 L 52,33 L 52,39 L 50.5,39" 
+          stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    
+    <!-- Center Rocker Panel (Between Wheels) -->
+    <line x1="25" y1="39" x2="37" y2="39" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" />
+
+    <!-- Vertical Seam Separating Cargo Box from Cab -->
+    <line x1="35" y1="22" x2="35" y2="39" stroke="#1E293B" stroke-width="2" stroke-linecap="round" />
+
+    <!-- Driver Side Cabin Window -->
+    <path d="M 38,29 H 45 L 49,34 H 38 Z" stroke="#1E293B" stroke-width="2" stroke-linejoin="round" fill="none" />
+
+    <!-- Commercial Logistics Style Decal Stripes on Cargo Box -->
+    <line x1="10" y1="27" x2="28" y2="27" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round" />
+    <line x1="10" y1="32" x2="24" y2="32" stroke="#10B981" stroke-width="2" stroke-linecap="round" />
+
+    <!-- Cab Door Handle -->
+    <rect x="38" y="36" width="3" height="1.5" rx="0.5" fill="#1E293B" />
+  </g>
+
+  <!-- LOAN / PERCENT BADGE (Top Right Corner) -->
+  <g id="loan-badge">
+    <!-- Badge Background with White Border Clearance -->
+    <circle cx="48" cy="18" r="10" fill="#10B981" stroke="#FFFFFF" stroke-width="2.5" />
+    
+    <!-- Stylized Percentage Symbol (%) -->
+    <line x1="44" y1="22" x2="52" y2="14" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" />
+    <circle cx="44.5" cy="14.5" r="1.2" fill="#FFFFFF" />
+    <circle cx="51.5" cy="21.5" r="1.2" fill="#FFFFFF" />
+  </g>
+</svg>

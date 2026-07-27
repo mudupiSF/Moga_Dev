@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <description>Iter 3 — Advanced File Management hub. </description>
+    <isExposed>true</isExposed>
+    <masterLabel>Embed: Advanced File Management</masterLabel>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightning__AppPage,lightning__HomePage">
+            <property name="checklistIds"
+                      type="String"
+                      label="Document Checklist Ids (comma-separated)"
+                      description="ITER 3 TEST DESIGN ATTRIBUTE — paste a comma-separated list of Document_CheckList__c record Ids (e.g. a0XIn00000ABCDE,a0XIn00000FGHIJ). Removed in Iter 6 when Dock Panel host wires IDs at runtime."/>
+            <property name="headerTitle"
+                      type="String"
+                      label="Header Title"
+                      default="Advanced File Management"
+                      description="Title shown in the top bar."/>
+            <property name="pageSize"
+                      type="Integer"
+                      label="Checklists per page"
+                      default="5"
+                      description="How many checklists are shown per page in the pagination footer."/>
+            <property name="preventDownload"
+                      type="Boolean"
+                      label="Hide download button"
+                      default="false"
+                      description="Hide the Download button in the preview modal."/>
+            <property name="fileValidatorClassName"
+                      type="String"
+                      label="File validator Apex class"
+                      description="Optional. An Apex class implementing FileValidator to gate Delete/Download per file."/>
+            <property name="emptyStateText"
+                      type="String"
+                      label="Empty state text"
+                      default="No document checklists configured yet."/>
+            <property name="defaultExpandedAll"
+                      type="Boolean"
+                      label="Expand all on load"
+                      default="false"/>
+            <property name="enableAdhocAdd"
+                      type="Boolean"
+                      label="Enable ad-hoc add (+)"
+                      default="false"
+                      description="ITER 4 — shows the '+' control to add an ad-hoc document (Document Type fixed to OTHER + Applicant Type). Used by Dock Panel (B) and Non-Individual (C) flows."/>
+            <property name="mode"
+                      type="String"
+                      label="Mode (upload | preview)"
+                      default="preview"
+                      description="'upload' shows the '+ New Ad-Hoc File' flow and write actions; 'preview' shows the Applicant/Document Type filters and is preview-only."/>
+        </targetConfig>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="checklistIds"   type="String"  label="Document Checklist Ids (comma-separated)"/>
+            <property name="headerTitle"    type="String"  label="Header Title" default="Advanced File Management"/>
+            <property name="pageSize"       type="Integer" label="Checklists per page" default="5"/>
+            <property name="preventDownload" type="Boolean" label="Hide download button" default="false"/>
+            <property name="fileValidatorClassName" type="String" label="File validator Apex class"/>
+            <property name="emptyStateText" type="String"  label="Empty state text"
+                      default="No document checklists configured yet."/>
+            <property name="defaultExpandedAll" type="Boolean" label="Expand all on load" default="false"/>
+            <property name="enableAdhocAdd" type="Boolean" label="Enable ad-hoc add (+)" default="false"/>
+            <property name="mode" type="String" label="Mode (upload | preview)" default="preview"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

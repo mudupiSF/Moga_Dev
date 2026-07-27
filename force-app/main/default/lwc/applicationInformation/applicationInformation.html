@@ -1,0 +1,88 @@
+<template>
+    <div class="form-layout">
+
+        <template lwc:if={isLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading application overview" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ══ SECTION 1 — APPLICATION OVERVIEW ═════════════════════════════ -->
+        <div class={cardClass}>
+            <div class={headerClass}>
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content app-info-header-content">
+                    <div class="app-info-header-left" onclick={handleToggleCollapse}>
+                        <div class="form-header-icon-wrap" aria-hidden="true">
+                            <lightning-icon
+                                icon-name="utility:display_text"
+                                size="small"
+                                variant="inverse"
+                                class="form-header-icon">
+                            </lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Application Overview</h1>
+                        </div>
+                        <!-- <button
+                            type="button"
+                            class="app-info-collapse-btn"
+                            title={collapseIconTitle}
+                            aria-expanded={isExpanded}
+                            onclick={handleToggleCollapse}> -->
+                            <lightning-icon
+                                icon-name={collapseIconName}
+                                size="x-small"
+                                class="app-info-collapse-icon"
+                                alternative-text="">
+                            </lightning-icon>
+                        <!-- </button> -->
+                    </div>
+
+                    <!-- Header actions: Revoke, Withdraw (opens modal), Transfer -->
+                    <template lwc:if={isExpanded}>
+                        <div class="app-info-actions" role="group" aria-label="Application actions">
+                            <button class="app-info-action-btn app-info-action-btn--danger" type="button" data-action="revoke" onclick={handleButtonClick}>
+                                <lightning-icon icon-name="utility:undo" size="x-small" class="app-info-action-icon" alternative-text=""></lightning-icon>
+                                <span>Revoke</span>
+                            </button>
+                            <button class="app-info-action-btn app-info-action-btn--danger" type="button" data-action="withdraw" onclick={handleButtonClick}>
+                                <lightning-icon icon-name="utility:close" size="x-small" class="app-info-action-icon" alternative-text=""></lightning-icon>
+                                <span>Withdraw</span>
+                            </button>
+                            <button class="app-info-action-btn app-info-action-btn--primary" type="button" data-action="transfer" onclick={handleButtonClick}>
+                                <lightning-icon icon-name="utility:forward" size="x-small" class="app-info-action-icon" alternative-text=""></lightning-icon>
+                                <span>Transfer</span>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <template lwc:if={isExpanded}>
+                <div class="form-body">
+                    <template lwc:if={hasError}>
+                        <p class="app-info-error">Unable to load application overview.</p>
+                    </template>
+                    <template lwc:else>
+                        <!-- Read-only overview fields; Application Status shown when withdrawn -->
+                        <div class="form-fields-grid">
+                            <template for:each={displayFields} for:item="field">
+                                <div key={field.key} class="form-field-wrap">
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">{field.label}</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{field.displayValue}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status__c</fullName>
+    <label>Status</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>FCU Initiation</fullName>
+                <default>false</default>
+                <label>FCU Initiation</label>
+            </value>
+            <value>
+                <fullName>FCU Query</fullName>
+                <default>false</default>
+                <label>FCU Query</label>
+            </value>
+            <value>
+                <fullName>FCU Screened ok</fullName>
+                <default>false</default>
+                <label>FCU Screened ok</label>
+            </value>
+            <value>
+                <fullName>FCU Sampled-Verification</fullName>
+                <default>false</default>
+                <label>FCU Sampled-Verification</label>
+            </value>
+            <value>
+                <fullName>FCU Review</fullName>
+                <default>false</default>
+                <label>FCU Review</label>
+            </value>
+            <value>
+                <fullName>FCU Closed</fullName>
+                <default>false</default>
+                <label>FCU Closed</label>
+            </value>
+            <value>
+                <fullName>New</fullName>
+                <default>false</default>
+                <label>New</label>
+            </value>
+            <value>
+                <fullName>In-Progress</fullName>
+                <default>false</default>
+                <label>In-Progress</label>
+            </value>
+            <value>
+                <fullName>Screen In-Progress</fullName>
+                <default>false</default>
+                <label>Screening In-Progress</label>
+            </value>
+            <value>
+                <fullName>Screened</fullName>
+                <default>false</default>
+                <label>Screened</label>
+            </value>
+            <value>
+                <fullName>Sampling In-Progress</fullName>
+                <default>false</default>
+                <label>Sampling In-Progress</label>
+            </value>
+            <value>
+                <fullName>Sampled</fullName>
+                <default>false</default>
+                <label>Sampled</label>
+            </value>
+            <value>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+                <label>Submitted</label>
+            </value>
+            <value>
+                <fullName>Declined</fullName>
+                <default>false</default>
+                <label>Declined</label>
+            </value>
+            <value>
+                <fullName>FCU Initiated</fullName>
+                <default>false</default>
+                <label>FCU Initiated</label>
+            </value>
+            <value>
+                <fullName>FCU Verification</fullName>
+                <default>false</default>
+                <label>FCU Verification</label>
+            </value>
+            <value>
+                <fullName>Pending FCU Review</fullName>
+                <default>false</default>
+                <label>Pending FCU Review</label>
+            </value>
+            <value>
+                <fullName>Pending Credit Review</fullName>
+                <default>false</default>
+                <label>Pending Credit Review</label>
+            </value>
+            <value>
+                <fullName>Closed</fullName>
+                <default>false</default>
+                <label>Closed</label>
+            </value>
+            <value>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+                <label>Rejected</label>
+            </value>
+            <value>
+                <fullName>Positive</fullName>
+                <default>false</default>
+                <label>Positive</label>
+            </value>
+            <value>
+                <fullName>Inconclusive</fullName>
+                <default>false</default>
+                <label>Inconclusive</label>
+            </value>
+            <value>
+                <fullName>Assign To Agency</fullName>
+                <default>false</default>
+                <label>Assign To Agency</label>
+            </value>
+            <value>
+                <fullName>Draft</fullName>
+                <default>false</default>
+                <label>Draft</label>
+            </value>
+            <value>
+                <fullName>Waived</fullName>
+                <default>false</default>
+                <label>Waived</label>
+            </value>
+            <value>
+                <fullName>Approved via Deviation</fullName>
+                <default>false</default>
+                <label>Approved via Deviation</label>
+            </value>
+            <value>
+                <fullName>On Hold</fullName>
+                <default>false</default>
+                <label>On Hold</label>
+            </value>
+            <value>
+                <fullName>NSNS (Not Screened &amp; Not Sampled)</fullName>
+                <default>false</default>
+                <label>NSNS (Not Screened &amp; Not Sampled)</label>
+            </value>
+            <value>
+                <fullName>Assigned to Sampler</fullName>
+                <default>false</default>
+                <label>Assigned to Sampler</label>
+            </value>
+            <value>
+                <fullName>FCU Sampling Required</fullName>
+                <default>false</default>
+                <label>FCU Sampling Required</label>
+            </value>
+            <value>
+                <fullName>Live Decisioning</fullName>
+                <default>false</default>
+                <label>Live Decisioning</label>
+            </value>
+            <value>
+                <fullName>FCU Pullback</fullName>
+                <default>false</default>
+                <label>FCU Pullback</label>
+            </value>
+            <value>
+                <fullName>Manager&apos;s Review</fullName>
+                <default>false</default>
+                <label>Manager&apos;s Review</label>
+            </value>
+            <value>
+                <fullName>FCU Accept</fullName>
+                <default>false</default>
+                <label>FCU Accept</label>
+            </value>
+            <value>
+                <fullName>FCU Reject - Document</fullName>
+                <default>false</default>
+                <label>FCU Reject - Document</label>
+            </value>
+            <value>
+                <fullName>FCU Reject - Profile</fullName>
+                <default>false</default>
+                <label>FCU Reject - Profile</label>
+            </value>
+            <value>
+                <fullName>FCU Credit Refer</fullName>
+                <default>false</default>
+                <label>FCU Credit Refer</label>
+            </value>
+            <value>
+                <fullName>Send back for Review</fullName>
+                <default>false</default>
+                <label>Send back for Review</label>
+            </value>
+            <value>
+                <fullName>Assigned to FCU Agency</fullName>
+                <default>false</default>
+                <label>Assigned to FCU Agency</label>
+            </value>
+            <value>
+                <fullName>Initiated</fullName>
+                <default>false</default>
+                <label>Initiated</label>
+            </value>
+            <value>
+                <fullName>Completed</fullName>
+                <default>false</default>
+                <label>Completed</label>
+            </value>
+            <value>
+                <fullName>Negative</fullName>
+                <default>false</default>
+                <label>Negative</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

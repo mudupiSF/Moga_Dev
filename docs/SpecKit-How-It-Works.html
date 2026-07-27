@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spec-Driven Development — SpecKit for Salesforce (Leadership View)</title>
+<style>
+@page { size: A4 landscape; margin: 9mm; }
+* { box-sizing:border-box; print-color-adjust:exact !important; -webkit-print-color-adjust:exact !important; }
+body { font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; color:#0f172a; margin:0; background:#f6f5fb; font-size:13px; line-height:1.5; }
+.wrap { max-width:1340px; margin:0 auto; padding:0 20px 70px; }
+
+/* ---- header ---- */
+.cover { display:flex; align-items:center; gap:18px; padding:22px 0 14px; border-bottom:3px solid #7c3aed; margin-bottom:22px; }
+.cover .logos { display:flex; align-items:center; gap:14px; }
+.cover .brand { font-size:20px; font-weight:800; color:#4c1d95; letter-spacing:-.3px; }
+.cover .brand .edition { display:block; font-size:10.5px; font-weight:700; color:#7c3aed; letter-spacing:.4px; text-transform:uppercase; }
+.cover .divider { width:1px; height:34px; background:#d6d3e6; }
+.cover h1 { font-size:26px; margin:0 0 3px; color:#4c1d95; letter-spacing:-.3px; }
+.cover .sub { color:#475569; font-size:13.5px; }
+.cover .meta { color:#94a3b8; font-size:11.5px; margin-top:3px; }
+
+h2 { font-size:18px; color:#4c1d95; margin:30px 0 4px; }
+h2 .n { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:#4c1d95; color:#fff; font-size:14px; margin-right:9px; vertical-align:middle; }
+.lead { color:#475569; font-size:13.5px; margin:4px 0 16px; max-width:1000px; }
+
+.card { background:#fff; border:1px solid #e7e4f2; border-radius:14px; padding:20px 22px; box-shadow:0 4px 16px rgba(76,29,149,.06); margin-bottom:18px; }
+
+/* ---- big one-liner ---- */
+.tldr { background:linear-gradient(135deg,#4c1d95,#6d28d9); color:#fff; border-radius:14px; padding:18px 22px; font-size:15px; line-height:1.6; box-shadow:0 8px 24px rgba(76,29,149,.25); }
+.tldr b { color:#fde68a; }
+
+/* ---- pipeline ---- */
+.pipe { display:flex; align-items:stretch; gap:0; flex-wrap:nowrap; overflow-x:auto; padding:8px 0 10px; }
+.step { flex:1 1 0; min-width:126px; position:relative; }
+.box { background:#fff; border:1.5px solid #ddd6fe; border-radius:14px; height:100%; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 4px 12px rgba(76,29,149,.08); transition:transform .15s ease, box-shadow .15s ease; }
+.box:hover { transform:translateY(-3px); box-shadow:0 12px 24px rgba(76,29,149,.18); }
+.box .top { padding:11px 11px 10px; display:flex; flex-direction:column; flex:1; }
+.box .ph { font-size:9px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; color:#7c3aed; }
+.box .ti { font-size:13px; font-weight:800; color:#1e1b4b; margin:3px 0 8px; line-height:1.18; }
+.box .cmd { font-family:'SF Mono',Menlo,Consolas,monospace; font-size:9px; color:#9d174d; background:#fdf2f8; border:1px solid #fbcfe8; border-radius:6px; padding:3px 7px; align-self:flex-start; margin-top:auto; }
+/* distinct OUTPUT zone */
+.outbox { background:linear-gradient(180deg,#faf5ff,#f1e6ff); border-top:1.5px dashed #d8b4fe; padding:8px 11px 9px; }
+.outbox .olbl { font-size:7.5px; font-weight:800; letter-spacing:.7px; text-transform:uppercase; color:#9333ea; display:flex; align-items:center; gap:5px; margin-bottom:3px; }
+.outbox .dot { width:6px; height:6px; border-radius:50%; background:#a855f7; box-shadow:0 0 0 3px #ecd9ff; flex:0 0 auto; }
+.outbox .oval { font-size:10px; color:#1e1b4b; line-height:1.35; }
+.outbox .oval b { color:#7e22ce; }
+/* connector: shows OUTPUT -> next INPUT */
+.arrow { display:flex; flex-direction:column; align-items:center; justify-content:center; width:30px; flex:0 0 30px; gap:2px; }
+.arrow .chev { color:#a855f7; font-size:21px; font-weight:900; line-height:1; }
+.arrow .albl { font-size:6.5px; font-weight:800; color:#b07be0; text-transform:uppercase; letter-spacing:.3px; }
+/* variants */
+.step.input .box { border-color:#34d399; }
+.step.input .top { background:#ecfdf5; }
+.step.input .ph { color:#059669; }
+.step.input .cmd { background:#fff; color:#065f46; border-color:#a7f3d0; }
+.step.input .outbox { background:linear-gradient(180deg,#ecfdf5,#c7f3df); border-top-color:#6ee7b7; }
+.step.input .outbox .olbl { color:#059669; }
+.step.input .outbox .dot { background:#10b981; box-shadow:0 0 0 3px #a7f3d0; }
+.step.input .outbox .oval b { color:#047857; }
+.step.implement .box { border-color:#2563eb; }
+.step.implement .top { background:#eff6ff; }
+.step.implement .ph { color:#1d4ed8; }
+.step.implement .outbox { background:linear-gradient(180deg,#eff6ff,#cfe2fe); border-top-color:#93c5fd; }
+.step.implement .outbox .olbl { color:#1d4ed8; }
+.step.implement .outbox .dot { background:#3b82f6; box-shadow:0 0 0 3px #bfdbfe; }
+.step.implement .outbox .oval b { color:#1d4ed8; }
+.chainnote { margin-top:11px; background:#faf5ff; border:1px solid #e9d5ff; border-radius:10px; padding:9px 14px; font-size:11.5px; color:#5b21b6; line-height:1.5; }
+.chainnote b { color:#4c1d95; }
+.ch-pill { display:inline-block; background:#7c3aed; color:#fff; font-size:9.5px; font-weight:800; padding:3px 10px; border-radius:999px; letter-spacing:.4px; text-transform:uppercase; margin-right:9px; }
+
+/* guardrail band */
+.band { margin-top:10px; background:#f5f3ff; border:1.5px dashed #c4b5fd; border-radius:10px; padding:9px 14px; font-size:12px; color:#5b21b6; display:flex; align-items:center; gap:10px; }
+.band b { color:#4c1d95; }
+.band .tag { background:#4c1d95; color:#fff; font-size:10px; font-weight:800; padding:3px 9px; border-radius:999px; letter-spacing:.4px; white-space:nowrap; }
+
+/* tracker row */
+.outrow { display:flex; gap:12px; margin-top:12px; flex-wrap:wrap; }
+.opill { flex:1 1 200px; background:#fff; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:9px; padding:9px 12px; font-size:11.5px; color:#475569; }
+.opill b { color:#92400e; display:block; font-size:12.5px; margin-bottom:1px; }
+
+/* ---- layered stack ---- */
+.stack { display:flex; flex-direction:column; gap:9px; }
+.layer { border-radius:11px; padding:12px 16px; display:flex; align-items:center; gap:16px; border:1px solid; }
+.layer .lh { font-size:12.5px; font-weight:800; width:165px; flex:0 0 165px; }
+.layer .lb { font-size:12px; line-height:1.5; }
+.layer .lb code { font-family:'SF Mono',Menlo,Consolas,monospace; font-size:11px; background:#ffffffaa; padding:1px 5px; border-radius:4px; }
+.l-you { background:#ecfdf5; border-color:#a7f3d0; } .l-you .lh { color:#047857; }
+.l-brain { background:#eef2ff; border-color:#c7d2fe; } .l-brain .lh { color:#4338ca; }
+.l-engine { background:#f5f3ff; border-color:#ddd6fe; } .l-engine .lh { color:#6d28d9; }
+.l-cust { background:#fdf2f8; border-color:#fbcfe8; } .l-cust .lh { color:#be185d; }
+.l-out { background:#fffbeb; border-color:#fde68a; } .l-out .lh { color:#b45309; }
+.stacknote { text-align:center; color:#94a3b8; font-size:11px; margin:4px 0; }
+
+/* ---- myth box ---- */
+.myth { display:flex; gap:14px; flex-wrap:wrap; }
+.myth > div { flex:1 1 300px; border-radius:11px; padding:13px 16px; font-size:12.5px; line-height:1.55; }
+.myth .bust { background:#fef2f2; border:1px solid #fecaca; }
+.myth .bust b { color:#b91c1c; }
+.myth .truth { background:#ecfdf5; border:1px solid #a7f3d0; }
+.myth .truth b { color:#047857; }
+
+/* ---- table ---- */
+table { border-collapse:collapse; width:100%; font-size:11.5px; margin-top:6px; }
+th { background:#4c1d95; color:#fff; text-align:left; padding:8px 10px; font-weight:600; }
+td { border:1px solid #e7e4f2; padding:7px 10px; vertical-align:top; }
+tr:nth-child(even) td { background:#faf9fe; }
+td code { font-family:'SF Mono',Menlo,Consolas,monospace; font-size:10.5px; background:#f1f5f9; padding:1px 5px; border-radius:4px; color:#9d174d; }
+.oss { display:inline-block; background:#dcfce7; color:#166534; font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:999px; letter-spacing:.3px; }
+.cust { display:inline-block; background:#fce7f3; color:#9d174d; font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:999px; letter-spacing:.3px; }
+.exist { display:inline-block; background:#dbeafe; color:#1e40af; font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:999px; letter-spacing:.3px; }
+
+/* talking points */
+.tp { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.tp .pt { background:#fff; border:1px solid #e7e4f2; border-radius:10px; padding:12px 14px; font-size:12.5px; }
+.tp .pt b { color:#4c1d95; }
+.analogy { background:#fffbeb; border:1px solid #fde68a; border-left:5px solid #f59e0b; border-radius:10px; padding:14px 18px; font-size:13.5px; line-height:1.6; color:#5b4205; }
+.analogy b { color:#92400e; }
+
+/* wireframe step variant */
+.step.wire .box { border-color:#06b6d4; }
+.step.wire .top { background:#ecfeff; }
+.step.wire .ph { color:#0891b2; }
+.step.wire .cmd { background:#ecfeff; color:#155e75; border-color:#a5f3fc; }
+.step.wire .outbox { background:linear-gradient(180deg,#ecfeff,#cff8fe); border-top-color:#67e8f9; }
+.step.wire .outbox .olbl { color:#0891b2; }
+.step.wire .outbox .dot { background:#06b6d4; box-shadow:0 0 0 3px #a5f3fc; }
+.step.wire .outbox .oval b { color:#0e7490; }
+
+/* saves & solves */
+.sv { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.svc { background:#fff; border:1px solid #e7e4f2; border-radius:11px; padding:13px 15px; }
+.svc h4 { margin:0 0 7px; font-size:13px; color:#4c1d95; display:flex; align-items:center; gap:8px; }
+.svc ul { margin:0; padding-left:16px; }
+.svc li { font-size:12px; margin-bottom:5px; color:#475569; line-height:1.5; }
+.svc li b { color:#1e1b4b; }
+.ext { font-size:9px; font-weight:800; padding:2px 8px; border-radius:999px; letter-spacing:.3px; text-transform:uppercase; white-space:nowrap; }
+.ext-high { background:#dcfce7; color:#166534; }
+.ext-med { background:#fef9c3; color:#854d0e; }
+.ext-part { background:#ffedd5; color:#9a3412; }
+
+/* role effort bar (in table) */
+.rb { display:flex; flex-direction:column; gap:3px; min-width:96px; }
+.rb .rp { font-weight:800; color:#6d28d9; font-size:12px; }
+.rb .rp small { color:#94a3b8; font-weight:700; font-size:9.5px; }
+.rb .rt { height:6px; background:#ede9fe; border-radius:999px; overflow:hidden; }
+.rb .rf { display:block; height:100%; background:linear-gradient(90deg,#7c3aed,#a855f7); border-radius:999px; }
+
+/* extent meter */
+.meter { display:flex; align-items:center; gap:10px; margin:8px 0; font-size:12px; }
+.meter .ml { width:235px; flex:0 0 235px; color:#1e1b4b; font-weight:700; }
+.meter .bar { flex:1; height:9px; background:#ede9fe; border-radius:999px; overflow:hidden; }
+.meter .fill { height:100%; background:linear-gradient(90deg,#7c3aed,#a855f7); }
+.meter .pc { width:130px; flex:0 0 130px; color:#7c3aed; font-weight:800; font-size:11px; text-align:right; }
+
+/* caveats */
+.caveat { background:#fff7ed; border:1.5px solid #fed7aa; border-left:5px solid #f97316; border-radius:12px; padding:16px 20px; }
+.caveat h3 { margin:0 0 10px; color:#9a3412; font-size:15px; display:flex; align-items:center; gap:8px; }
+.caveat ul { margin:0; padding-left:18px; }
+.caveat li { font-size:12.5px; margin-bottom:8px; color:#7c2d12; line-height:1.55; }
+.caveat li b { color:#9a3412; }
+.gigo { margin-top:12px; background:#fffbeb; border:1px dashed #fcd34d; border-radius:10px; padding:11px 15px; font-size:12.5px; color:#854d0e; line-height:1.6; }
+.gigo b { color:#92400e; }
+
+/* print bar */
+#bar { position:fixed; top:12px; right:14px; z-index:99; display:flex; gap:8px; background:#ffffffee; border:1px solid #ddd6fe; border-radius:10px; padding:7px 9px; box-shadow:0 6px 20px rgba(76,29,149,.15); }
+#bar button { border:1px solid #c4b5fd; background:#f5f3ff; color:#4c1d95; cursor:pointer; border-radius:7px; padding:6px 12px; font-weight:700; font-size:12px; }
+#bar button:hover { background:#ede9fe; }
+@media print { #bar { display:none !important; } body { background:#fff; } .card { box-shadow:none; } .wrap { max-width:100%; } h2 { page-break-after:avoid; } .card, .pipe, .stack, .tp { page-break-inside:avoid; } }
+@media (max-width:820px){ .tp { grid-template-columns:1fr; } .sv { grid-template-columns:1fr; } }
+.footer { margin-top:26px; padding-top:12px; border-top:1px solid #e2e8f0; color:#94a3b8; font-size:11px; text-align:center; }
+</style>
+</head>
+<body>
+<div id="bar"><button onclick="window.print()">&#128424; Save / Print PDF</button></div>
+<div class="wrap">
+
+  <div class="cover">
+    <div class="logos">
+      <div class="brand">SpecKit<span class="edition">Salesforce edition</span></div>
+      <div class="divider"></div>
+      <div class="brand" style="color:#00a1e0;">Salesforce</div>
+    </div>
+    <div>
+      <h1>Spec-Driven Development</h1>
+      <div class="sub">A plain-English view for leadership &mdash; from a meeting transcript to deployed Salesforce code</div>
+      <div class="meta">SpecKit for Salesforce &middot; Spec-Driven Development in Cursor</div>
+    </div>
+  </div>
+
+  <div class="tldr">
+    A <b>Salesforce delivery engine</b> on a Spec-Driven-Development framework that turns a plain-English input (a meeting transcript, notes or idea) into <b>User Stories &rarr; Wireframes &rarr; Technical Plan/Design &rarr; Technical Tasks &rarr; Test Cases &rarr; working Salesforce code</b>, repeatably.
+    The AI thinking runs on Cursor + its language model; the engine adds the <b>structure, guardrails and tracking.</b>
+  </div>
+
+  <!-- ============ SECTION 1: PIPELINE ============ -->
+  <h2><span class="n">1</span>The pipeline &mdash; one idea, seven guided steps</h2>
+  <p class="lead">Each step <b>reads the previous output</b> and produces the next &mdash; nothing is re-typed or re-interpreted by hand,
+  so the intent flows through unchanged. This is the exact flow that builds a typical <i>Customer&nbsp;360</i> feature.</p>
+
+  <div class="card">
+    <div class="pipe">
+
+      <div class="step input">
+        <div class="box">
+          <div class="top">
+            <div class="ph">Input</div>
+            <div class="ti">Your intent</div>
+            <span class="cmd">transcript / notes / idea</span>
+          </div>
+          <div class="outbox">
+            <div class="olbl"><span class="dot"></span> Starting input</div>
+            <div class="oval"><b>&ldquo;Users need a 360&deg; view of an account.&rdquo;</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow"><span class="chev">&rsaquo;</span><span class="albl">feeds</span></div>
+
+      <div class="step">
+        <div class="box">
+          <div class="top">
+            <div class="ph">Step 1 &middot; Specify</div>
+            <div class="ti">Define WHAT &amp; WHY</div>
+            <span class="cmd">/speckit-specify</span>
+          </div>
+          <div class="outbox">
+            <div class="olbl"><span class="dot"></span> Output</div>
+            <div class="oval"><b>User stories</b> + acceptance criteria</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow"><span class="chev">&rsaquo;</span><span class="albl">feeds</span></div>
+
+      <div class="step">
+        <div class="box">
+          <div class="top">
+            <div class="ph">Step 2 &middot; Clarify</div>
+            <div class="ti">Remove ambiguity</div>
+            <span class="cmd">/speckit-clarify</span>
+          </div>
+          <div class="outbox">
+            <div class="olbl"><span class="dot"></span> Output</div>
+            <div class="oval">Answered questions + a <b>quality checklist</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow"><span class="chev">&rsaquo;</span><span class="albl">feeds</span></div>
+
+      <div class="step wire">
+        <div class="box">
+          <div class="top">
+            <div class="ph">Step 3 &middot; Wireframe</div>
+            <div class="ti">Visualise the screens</div>
+            <span class="cmd">wireframe &middot; Figma / SLDS</span>
+          </div>
+          <div class="outbox">
+            <div class="olbl"><span class="dot"></span> Output</div>
+            <div class="oval"><b>Screen layout / wireframe</b> aligned to Salesforce (SLDS)</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow"><span class="chev">&rsaquo;</span><span class="albl">feeds</span></div>
+
+      <div class="step">
+        <div class="box">
+          <div class="top">
+            <div class="ph">Step 4 &middot; Plan</div>
+            <div class="ti">Decide the HOW</div>
+            <span class="cmd">/speckit-plan</span>
+          </div>
+          <div class="outbox">
+            <div class="olbl"><span class="dot"></span> Output</div>
+            <div class="oval"><b>Technical plan &amp; design</b> &mdash; data model + contracts</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow"><span class="chev">&rsaquo;</span><span class="albl">feeds</span></div>
+
+      <div class="step">
+        <div class="box">
+          <div class="top">
+            <div class="ph">Step 5 &middot; Tasks</div>
+            <div class="ti">Break into work</div>
+            <span class="cmd">/speckit-tasks</span>
+          </div>
+          <div class="outbox">
+            <div class="olbl"><span class="dot"></span> Output</div>
+            <div class="oval"><b>Build task list</b> &mdash; small, ordered, traceable</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow"><span class="chev">&rsaquo;</span><span class="albl">feeds</span></div>
+
+      <div class="step">
+        <div class="box">
+          <div class="top">
+            <div class="ph">Step 6 &middot; Test Cases</div>
+            <div class="ti">Prove it works</div>
+            <span class="cmd">/speckit-testcases</span>
+          </div>
+          <div class="outbox">
+            <div class="olbl"><span class="dot"></span> Output</div>
+            <div class="oval"><b>Test cases</b> &mdash; manual + automated + security</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow"><span class="chev">&rsaquo;</span><span class="albl">feeds</span></div>
+
+      <div class="step implement">
+        <div class="box">
+          <div class="top">
+            <div class="ph">Step 7 &middot; Implement</div>
+            <div class="ti">Build &amp; deploy</div>
+            <span class="cmd">/speckit-implement</span>
+          </div>
+          <div class="outbox">
+            <div class="olbl"><span class="dot"></span> Final output</div>
+            <div class="oval"><b>Working code</b> deployed to the Salesforce org</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="chainnote"><span class="ch-pill">How to read it</span> Each box shows the <b>command you run</b> (top) and the <b>artefact it produces</b> (the highlighted box). That artefact <b>&ldquo;feeds&rdquo; the next step as its input</b> &mdash; the intent travels left&nbsp;&rarr;&nbsp;right, never re-typed.</div>
+
+    <div class="band">
+      <span class="tag">GUARDRAILS</span>
+      <div>The <b>Constitution</b> (written once via <code style="font-family:'SF Mono',monospace">/speckit-constitution</code>) is the <b>&ldquo;bible&rdquo; &mdash; the main file checked at every step</b>:
+      security, governor limits, trigger patterns, coding standards, domain reference. The project is <b>grounded in the relevant Salesforce industry-cloud models, domains and taxonomy</b>, so it
+      <b>catches and stops the model from deviating from context</b> and ensures it <b>adheres to the defined guardrails</b>. In practice it has <b>caught a permission-set design gap before any code was written</b>.</div>
+    </div>
+
+    <div class="outrow">
+      <div class="opill"><b>&#128202; Progress Dashboard</b> Live status of epics &amp; stories (Built / In&nbsp;progress / Pending), hosted on GitHub Pages.</div>
+      <div class="opill"><b>&#129518; Token / Effort Tracker</b> Tokens &amp; sessions per contributor &amp; per epic &mdash; a transparent record of effort.</div>
+      <div class="opill"><b>&#128279; Jira Sync</b> Epics &amp; stories pushed to Jira; status flows back into the dashboard.</div>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 2: SAVES / SOLVES + CAVEATS ============ -->
+  <h2><span class="n">2</span>What it saves &amp; solves &mdash; and to what extent</h2>
+  <p class="lead">An <b>accelerator, not an autopilot</b> &mdash; four things leadership gets, with a human at every gate.</p>
+
+  <div class="card">
+    <div class="tp">
+      <div class="pt"><b>&#9201;&#65039; Faster time-to-value.</b> Stories, wireframes, plan, tasks, tests &amp; a code scaffold in <b>hours, not weeks</b> &mdash; the analysis-to-build journey is compressed.</div>
+      <div class="pt"><b>&#128737;&#65039; Lower delivery risk.</b> Ambiguity and design/security gaps are caught <b>before code</b> &mdash; in design, not in UAT or production.</div>
+      <div class="pt"><b>&#9881;&#65039; Consistency &amp; governance built-in.</b> Every feature follows the same guardrails &mdash; quality no longer depends on who builds it.</div>
+      <div class="pt"><b>&#128202; Transparency &amp; continuity.</b> Live story&nbsp;&rarr;&nbsp;task&nbsp;&rarr;&nbsp;test traceability and the &ldquo;why&rdquo; retained in version-controlled specs &mdash; it survives people changes.</div>
+    </div>
+
+    <div style="margin-top:16px; border-top:1px dashed #e7e4f2; padding-top:13px;">
+      <div style="font-size:13px; font-weight:800; color:#4c1d95; margin-bottom:8px;">&#128101; Effort saved &mdash; by role <span style="font-weight:600; color:#94a3b8; font-size:10.5px;">(indicative)</span></div>
+      <table>
+        <thead><tr><th style="width:16%">Role</th><th style="width:50%">What the engine takes off their plate</th><th style="width:18%">Effort saved</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>Solution Architect</b></td>
+            <td>Creates <b>user stories straight from BRDs, meeting notes &amp; transcripts</b>, plus flows &amp; solution design &mdash; the architect curates &amp; validates rather than authoring from scratch.</td>
+            <td><div class="rb"><span class="rp">~70&ndash;80% <small>Very high</small></span><span class="rt"><span class="rf" style="width:75%"></span></span></div></td>
+          </tr>
+          <tr>
+            <td><b>Testers / QA</b></td>
+            <td>Generates test cases <b>and executes them</b> &mdash; testers shift to <b>quality of cases, validation/modification &amp; complex-scenario execution</b> instead of writing every script.</td>
+            <td><div class="rb"><span class="rp">~65&ndash;75% <small>High</small></span><span class="rt"><span class="rf" style="width:70%"></span></span></div></td>
+          </tr>
+          <tr>
+            <td><b>Developers</b></td>
+            <td>Cuts the bulk of the build &mdash; <b>working Apex/LWC scaffold + unit tests</b> drafted; developers focus on complex logic, edge cases &amp; the last mile.</td>
+            <td><div class="rb"><span class="rp">~60&ndash;70% <small>High</small></span><span class="rt"><span class="rf" style="width:65%"></span></span></div></td>
+          </tr>
+          <tr>
+            <td><b>Technical Architect</b></td>
+            <td>Drafts the <b>data model, contracts &amp; patterns</b> with governor-limit/security guardrails pre-applied &mdash; reviewed, not authored line by line.</td>
+            <td><div class="rb"><span class="rp">~55&ndash;65% <small>High</small></span><span class="rt"><span class="rf" style="width:60%"></span></span></div></td>
+          </tr>
+          <tr>
+            <td><b>Enterprise Architect</b></td>
+            <td><b>Significant</b> &mdash; produces a large share of the <b>artefacts from the architect&rsquo;s design, guidelines &amp; inputs</b>, and the Constitution enforces architecture/standards alignment at every gate.</td>
+            <td><div class="rb"><span class="rp">~50&ndash;60% <small>Significant</small></span><span class="rt"><span class="rf" style="width:55%"></span></span></div></td>
+          </tr>
+          <tr>
+            <td><b>Project Manager</b></td>
+            <td><b>Central repository for all documents</b>, token tracking, Jira status, and stories <b>built vs in-progress vs blocked</b> &mdash; status &amp; traceability become a by-product.</td>
+            <td><div class="rb"><span class="rp">~30&ndash;40% <small>Medium</small></span><span class="rt"><span class="rf" style="width:35%"></span></span></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:10.5px; color:#94a3b8; margin:6px 0 0;">Percentages are indicative of effort taken off each role&rsquo;s plate &mdash; the engine drafts a strong first cut; each role reviews, validates and owns the final decision. Savings scale with the quality of the input.</p>
+    </div>
+
+    <div class="caveat" style="margin-top:14px;">
+      <h3>&#9888;&#65039; Caveats &mdash; read before you trust the output</h3>
+      <ul>
+        <li><b>Manual validation is still required.</b> Every artefact &mdash; spec, wireframe, plan, tasks, tests and code &mdash; <b>must be reviewed and verified by a human</b> before it is accepted or deployed. The engine drafts; people decide.</li>
+        <li><b>Output accuracy tracks input quality.</b> The richer and more specific the starting input &mdash; a detailed transcript, the data model, sample documents, field lists, business rules &mdash; the <b>more accurate and usable the output</b>. Thin or vague input produces generic, assumption-heavy results.</li>
+        <li><b>The AI will fill gaps with assumptions.</b> Where context is missing it makes its best guess; those assumptions need a human or SME to confirm or correct &mdash; which is exactly what the Clarify gate is for.</li>
+        <li><b>It accelerates experts, it does not replace them.</b> Architects, BAs &amp; SMEs still own the design decisions, the edge cases and the final business sign-off.</li>
+        <li><b>Always validate in a sandbox.</b> Generated code is deployed and tested in a non-production org first &mdash; never straight to production.</li>
+      </ul>
+      <div class="gigo"><b>Rule of thumb:</b> the engine is only as good as what you feed it &mdash; <b>better input &rarr; better output</b>. Treat it as a fast, disciplined first draft; the final 10&ndash;20% of judgement, validation and polish is human, and that is by design.</div>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 3: BEHIND THE SCENES ============ -->
+  <h2><span class="n">3</span>What it leverages behind the scenes</h2>
+  <p class="lead"><b>Five layers.</b> The framework is just the middle one &mdash; the &ldquo;plumbing&rdquo; forked and configured.
+  The intelligence is the AI assistant already in use; the outputs go to systems already owned.</p>
+
+  <div class="card stack">
+    <div class="stacknote">&#9650;&nbsp; intent flows down &nbsp;&middot;&nbsp; artefacts flow back up &nbsp;&#9660;</div>
+    <div class="layer l-you">
+      <div class="lh">&#128100; 1. You (the human)</div>
+      <div class="lb">State the <b>intent</b> &mdash; paste a transcript, type an idea, review &amp; approve at each gate. You own the <i>what</i> and the <i>why</i>.</div>
+    </div>
+    <div class="layer l-brain">
+      <div class="lh">&#129504; 2. The &ldquo;brain&rdquo;<br>Cursor + LLM</div>
+      <div class="lb">Does the actual reading, reasoning and writing &mdash; transcript &rarr; stories &rarr; plan &rarr; tasks &rarr; tests &rarr; code &mdash; on Cursor + a large language model (Claude / GPT-class). <b>The only AI in the stack.</b></div>
+    </div>
+    <div class="layer l-engine">
+      <div class="lh">&#9881;&#65039; 3. The engine<br>(framework base, forked)</div>
+      <div class="lb">The SDD framework is forked into a <b>Salesforce edition</b> with the <b>rules, templates, decisions and files</b> engineered in &mdash; CLI, templates, scripts and <code>/speckit-*</code> prompts. The framework gives the method; <b>the build makes it produce correct Salesforce artefacts</b>. It holds <b>no AI</b> &mdash; it just hands the brain a consistent structure and the next prompt.</div>
+    </div>
+    <div class="layer l-cust">
+      <div class="lh">&#127973; 4. Project customisation</div>
+      <div class="lb">The Salesforce edition adds the <b>Constitution</b>, <b>memory</b> (taxonomy / domain / regulatory), domain-tuned templates, the <b>test-case generator</b>, the <b>dashboard</b> &amp; <b>token tracker</b>, and Jira wiring.</div>
+    </div>
+    <div class="layer l-out">
+      <div class="lh">&#128228; 5. Where output lands</div>
+      <div class="lb">Files land in <b>Git</b> &rarr; deploy to the <b>Salesforce org</b> (<code>sf</code> CLI) &rarr; track in <b>Jira</b> &rarr; publish to a <b>GitHub&nbsp;Pages</b> dashboard. All systems already in use &mdash; <b>no new data destination.</b></div>
+    </div>
+  </div>
+
+  <div class="myth" style="margin-bottom:18px;">
+    <div class="bust"><b>&#10060; Common misconception</b><br>&ldquo;It&rsquo;s a special AI plugin that converts transcripts into stories, plans and tests.&rdquo;</div>
+    <div class="truth"><b>&#9989; What actually happens</b><br><b>No separate plugin.</b> At each step the engine hands the assistant a structured prompt + template, and the <b>language model does the conversion</b>. The engine&rsquo;s value is the <b>discipline, repeatability and guardrails</b> around it.</div>
+  </div>
+
+  <!-- ============ SECTION 4: OSS / TOOLS TABLE ============ -->
+  <h2><span class="n">4</span>What it is built on &mdash; the engineering breakdown</h2>
+  <p class="lead">Three kinds of pieces: the <span class="oss">FRAMEWORK BASE</span> that is forked, what is <span class="cust">BUILT</span> for Salesforce,
+  and <span class="exist">EXISTING TOOLS</span> in the stack. The framework is the start; the rules, templates, governance and wiring that make it deliver are <b>the added work</b>.</p>
+
+  <div class="card" style="padding:14px 16px;">
+  <table>
+    <thead><tr><th style="width:20%">Component</th><th style="width:13%">Type</th><th style="width:34%">What it is</th><th>Role in the flow</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Spec-Driven-Development framework</b> <span style="color:#64748b">(the base that is forked)</span></td>
+        <td><span class="oss">FRAMEWORK BASE</span></td>
+        <td>The proven SDD method &amp; CLI as a starting point, <b>forked</b> into the Salesforce edition.</td>
+        <td>Provides the specify &rarr; plan &rarr; tasks &rarr; implement method then configured for Salesforce.</td>
+      </tr>
+      <tr>
+        <td><b>Cursor + LLM</b></td>
+        <td><span class="exist">EXISTING TOOL</span></td>
+        <td>The AI coding assistant and its language model (Claude / GPT-class).</td>
+        <td><b>The brain.</b> Reads the transcript and writes every artefact and the code.</td>
+      </tr>
+      <tr>
+        <td><b>Salesforce templates &amp; commands</b></td>
+        <td><span class="cust">BUILT</span></td>
+        <td>Domain-tuned templates (<code>spec</code>, <code>plan</code>, <code>tasks</code>, <code>test-cases</code>) + the <code>/speckit-*</code> command prompts.</td>
+        <td>Tell the AI exactly what shape each Salesforce output must take &mdash; consistency across people &amp; features.</td>
+      </tr>
+      <tr>
+        <td><b>Installer CLI</b> <span style="color:#64748b">(<code>speckit</code>)</span></td>
+        <td><span class="cust">BUILT</span></td>
+        <td>One command that sets up a project with all the rules, templates &amp; files (via <code>uv</code>/<code>pipx</code>/<code>pip</code>).</td>
+        <td>One-time setup &amp; updates across teams. Copies the engineered files in &mdash; <b>never calls an AI.</b></td>
+      </tr>
+      <tr>
+        <td><b>Git + helper scripts</b> <span style="color:#64748b">(Bash / PowerShell)</span></td>
+        <td><span class="exist">EXISTING TOOL</span></td>
+        <td>Standard version control + the scripts that create feature folders, resolve paths and read JSON.</td>
+        <td>Numbering features, wiring files together, keeping everything in source control.</td>
+      </tr>
+      <tr>
+        <td><b>Constitution &amp; memory</b></td>
+        <td><span class="cust">BUILT</span></td>
+        <td>Salesforce governance rules + taxonomy / domain / regulatory context, grounded in the relevant <b>Salesforce industry-cloud</b> models.</td>
+        <td>Guardrails checked at every gate; gives the AI project-specific context.</td>
+      </tr>
+      <tr>
+        <td><b>Progress dashboard + token tracker</b></td>
+        <td><span class="cust">BUILT</span></td>
+        <td>A dashboard (HTML/CSS/JS) reading a <code>progress-tracker.json</code> file.</td>
+        <td>Live program status &amp; effort transparency, published on GitHub Pages.</td>
+      </tr>
+      <tr>
+        <td><b>Jira &amp; GitHub</b></td>
+        <td><span class="exist">EXISTING TOOL</span></td>
+        <td>Work-tracking and code-hosting platforms.</td>
+        <td>Stories/status sync to Jira; repo + dashboard hosting on GitHub.</td>
+      </tr>
+      <tr>
+        <td><b>Salesforce <code>sf</code> CLI</b></td>
+        <td><span class="exist">EXISTING TOOL</span></td>
+        <td>Salesforce&rsquo;s standard deployment tool.</td>
+        <td>Pushes the generated metadata/code into the org at the Implement step.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- ============ SECTION 5: TALKING POINTS ============ -->
+  <h2><span class="n">5</span>Why it matters &mdash; talking points</h2>
+
+  <div class="analogy" style="margin-bottom:14px;">
+    <b>In plain terms:</b> the AI is a brilliant, fast worker; <b>the engine is the assembly line, jigs and quality checklist</b> around it.
+    The result is output that&rsquo;s consistent, inspected at every station, traceable to the original intent, and reproducible by anyone &mdash;
+    craftsmanship <i>at factory discipline</i>.
+  </div>
+
+  <div class="tp">
+    <div class="pt"><b>Intent is the asset.</b> The spec (what &amp; why) is captured once and reused &mdash; it doesn&rsquo;t rot like a Word doc. Code is the renewable output.</div>
+    <div class="pt"><b>Quality gates, not vibes.</b> Ambiguity is removed and standards enforced <i>before</i> code &mdash; issues caught in design, not production.</div>
+    <div class="pt"><b>Full traceability.</b> Every task and test traces back to a user story; the dashboard shows live status and effort.</div>
+    <div class="pt"><b>Engineered once, reusable everywhere.</b> Rules, templates and governance on a forked framework &mdash; on tools already owned, no new data destination. The same engine powers the next project.</div>
+    <div class="pt"><b>Repeatable across the team.</b> Same commands, same structure &mdash; onboarding and handover become trivial.</div>
+    <div class="pt"><b>Faster, safer delivery.</b> A typical feature: one objective &rarr; spec &rarr; plan &rarr; traceable tasks &rarr; tests, with a security gap caught pre-build.</div>
+  </div>
+
+  <!-- ============ SECTION 6: REPO INVENTORY ============ -->
+  <h2><span class="n">6</span>What&rsquo;s inside the SpecKit Salesforce repository</h2>
+  <p class="lead">The <b>speckit-salesforce</b> repo is the <b>customer-agnostic toolkit</b> &mdash; everything reusable across any Salesforce engagement.
+  Customer-specific content (domain, taxonomy, memory) lives in a separate per-engagement repo.</p>
+
+  <div class="card" style="padding:14px 16px;">
+  <table>
+    <thead><tr><th style="width:22%">Category</th><th style="width:10%">Count</th><th>Contents</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Cursor Skills</b><br><span style="color:#64748b; font-size:10px;">.cursor/skills/</span></td>
+        <td style="text-align:center;"><b>14</b></td>
+        <td>
+          <code>speckit-init</code> &middot; <code>speckit-clarify</code> &middot; <code>speckit-analyze</code> &middot; <code>speckit-specify</code> &middot; <code>speckit-plan</code> &middot; <code>speckit-tasks</code> &middot; <code>speckit-implement</code> &middot; <code>speckit-checklist</code> &middot; <code>speckit-testcases</code> &middot; <code>speckit-wireframe</code> &middot; <code>speckit-dashboard</code> &middot; <code>speckit-taskstoissues</code> &middot; <code>speckit-constitution</code> &middot; <code>speckit-agent-context-update</code>
+        </td>
+      </tr>
+      <tr>
+        <td><b>Templates</b><br><span style="color:#64748b; font-size:10px;">.specify/templates/</span></td>
+        <td style="text-align:center;"><b>7</b></td>
+        <td>
+          <code>spec-template.md</code> &middot; <code>plan-template.md</code> &middot; <code>tasks-template.md</code> &middot; <code>checklist-template.md</code> &middot; <code>test-cases-template.md</code> &middot; <code>constitution-template.md</code> &middot; <code>progress-tracker-template.json</code>
+        </td>
+      </tr>
+      <tr>
+        <td><b>Workflow</b><br><span style="color:#64748b; font-size:10px;">.specify/workflows/</span></td>
+        <td style="text-align:center;"><b>1</b></td>
+        <td>Full SDD cycle: <b>specify &rarr; plan &rarr; tasks &rarr; implement</b> with review gates at every transition</td>
+      </tr>
+      <tr>
+        <td><b>Memory &amp; Context</b><br><span style="color:#64748b; font-size:10px;">.specify/memory/</span></td>
+        <td style="text-align:center;"><b>5</b></td>
+        <td>
+          <code>constitution.md</code> &middot; <code>project-details.md</code> &middot; <code>taxonomy.md</code> &middot; <code>regulatory.md</code> &middot; <code>domain.md</code>
+        </td>
+      </tr>
+      <tr>
+        <td><b>Rules</b><br><span style="color:#64748b; font-size:10px;">.cursor/rules/</span></td>
+        <td style="text-align:center;"><b>3</b></td>
+        <td>
+          <code>grounding-guardrails.mdc</code> &middot; <code>wireframe-salesforce-anatomy.mdc</code> &middot; <code>dashboard-enforcement.md</code>
+        </td>
+      </tr>
+      <tr>
+        <td><b>Scripts</b><br><span style="color:#64748b; font-size:10px;">.specify/scripts/</span></td>
+        <td style="text-align:center;"><b>3</b></td>
+        <td>
+          <code>sync-testcases-data.py</code> &middot; <code>sync-dashboard-data.py</code> &middot; <code>log-session.py</code> (per-prompt token logging)
+        </td>
+      </tr>
+      <tr>
+        <td><b>CLI</b><br><span style="color:#64748b; font-size:10px;">src/speckit_salesforce/</span></td>
+        <td style="text-align:center;"><b>1</b></td>
+        <td>Installable CLI package via <code>pip</code> / <code>uv</code> / <code>pipx</code> &mdash; one command to bootstrap any new project</td>
+      </tr>
+      <tr>
+        <td><b>Installer &amp; Updater</b></td>
+        <td style="text-align:center;"><b>2</b></td>
+        <td>
+          <code>install.sh</code> (5-step guided wizard) &middot; <code>update.sh</code> &mdash; sets up skills, templates, rules and memory in one shot
+        </td>
+      </tr>
+      <tr>
+        <td><b>Integrations</b><br><span style="color:#64748b; font-size:10px;">.specify/integrations/</span></td>
+        <td style="text-align:center;"><b>2</b></td>
+        <td>
+          <code>speckit.manifest.json</code> &middot; <code>cursor-agent.manifest.json</code>
+        </td>
+      </tr>
+      <tr>
+        <td><b>Documentation</b></td>
+        <td style="text-align:center;"><b>4</b></td>
+        <td>
+          <code>README.md</code> &middot; <code>INSTALLATION_GUIDE.md</code> &middot; <code>sample-constitution.md</code> &middot; <code>jira-integration.md</code>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:14px; display:flex; gap:12px; flex-wrap:wrap;">
+    <div class="opill" style="flex:1 1 280px;">
+      <b>&#127760; GitHub (public)</b>
+      <a href="https://github.com/pravsingh1987/speckit-salesforce" style="color:#4c1d95; font-size:11px; word-break:break-all;">github.com/pravsingh1987/speckit-salesforce</a>
+    </div>
+  </div>
+
+  <div class="chainnote" style="margin-top:12px;">
+    <span class="ch-pill">Reusability</span>
+    The <b>speckit-salesforce</b> repo is <b>customer-agnostic</b> &mdash; install it into any Salesforce project and it brings the full SDD pipeline.
+    Customer-specific content (constitution, memory, domain taxonomy) is authored separately per engagement &mdash; the framework + toolkit stays the same.
+  </div>
+  </div>
+
+  <h2><span class="n">7</span>Project grounding &mdash; the guardrails SpecKit reads every time</h2>
+  <p class="lead">The framework is customer-agnostic, but every requirement is executed against <b>project-specific memory &amp; guardrails</b>.
+  These are loaded on <b>every</b> command (<code>specify &rarr; plan &rarr; tasks &rarr; implement</code>, plus clarify / wireframe / analyze) &mdash;
+  enforced by the always-on rule <code>.cursor/rules/grounding-guardrails.mdc</code> (&ldquo;Project Grounding &amp; Guardrails &mdash; READ FIRST&rdquo;).
+  Nothing is written that isn&rsquo;t traceable back to them.</p>
+
+  <div class="card" style="padding:14px 16px;">
+  <table>
+    <thead><tr><th style="width:20%">Guardrail</th><th style="width:34%">Where it lives</th><th>What it locks in</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Constitution</b></td>
+        <td><code>.specify/memory/constitution.md</code></td>
+        <td>Non-negotiable architecture, security (USER_MODE, <code>with sharing</code>, FLS), governor limits, testing (&ge;75%), permission-set governance, Industry-First &amp; Salesforce industry data model alignment</td>
+      </tr>
+      <tr>
+        <td><b>Project Details</b></td>
+        <td><code>.specify/memory/project-details.md</code></td>
+        <td>Org alias &amp; API version, connected systems, modules, scope / out-of-scope, Jira &amp; repo IDs, grounding index</td>
+      </tr>
+      <tr>
+        <td><b>Domain</b></td>
+        <td><code>.specify/memory/domain.md</code></td>
+        <td>Business processes &amp; guiding principles for the target domain</td>
+      </tr>
+      <tr>
+        <td><b>Taxonomy</b></td>
+        <td><code>.specify/memory/taxonomy.md</code></td>
+        <td>Canonical naming &amp; terminology &mdash; objects, records, roles (used verbatim)</td>
+      </tr>
+      <tr>
+        <td><b>Regulatory</b></td>
+        <td><code>.specify/memory/regulatory.md</code></td>
+        <td>Industry &amp; data-governance compliance guardrails relevant to the engagement</td>
+      </tr>
+      <tr>
+        <td><b>Data Model</b></td>
+        <td><code>force-app/&hellip;/objects</code></td>
+        <td>REAL object/field API names from the org &mdash; inspected before any field list; fields are never invented</td>
+      </tr>
+      <tr>
+        <td><b>Wireframe Anatomy</b></td>
+        <td><code>.cursor/rules/wireframe-salesforce-anatomy.mdc</code></td>
+        <td>Mandatory Lightning record-page structure for every wireframe / Figma frame / screen mock</td>
+      </tr>
+      <tr>
+        <td><b>Always-On Rules</b></td>
+        <td><code>.cursor/rules/grounding-guardrails.mdc</code></td>
+        <td>The READ-FIRST mandate itself, spec-authoring depth, domain field grounding &amp; Git/Jira/org/dashboard deploy-sync discipline</td>
+      </tr>
+      <tr>
+        <td><b>Templates</b></td>
+        <td><code>.specify/templates/*.md</code></td>
+        <td>Required section structure for spec / plan / tasks / checklist / test-cases</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="chainnote" style="margin-top:12px;">
+    <span class="ch-pill">Precedence</span>
+    On any conflict: <b>Constitution &rarr; Rules (<code>grounding-guardrails.mdc</code>) &rarr; Memory (domain / taxonomy / regulatory / project-details) &rarr; Templates</b>.
+    If a needed artifact is missing or still has unfilled placeholders, SpecKit <b>flags it</b> instead of assuming a default.
+  </div>
+  </div>
+
+  <div class="footer">
+    SpecKit for Salesforce &middot; Spec-Driven Development (Salesforce edition) &middot; Leadership overview
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<template>
+    <div class="preview-excel-container">
+        <!-- Header -->
+        <div class="preview-header">
+            <span class="file-name">{fileName}</span>
+            <lightning-button-icon
+                icon-name="utility:close"
+                alternative-text="Close"
+                title="Close"
+                onclick={handleClose}
+                class="close-button">
+            </lightning-button-icon>
+        </div>
+
+        <!-- Error message -->
+        <template if:true={errorMsg}>
+            <div class="error-message">
+                <p>{errorMsg}</p>
+            </div>
+        </template>
+
+        <!-- Loading spinner -->
+        <template if:true={isLoading}>
+            <div class="spinner-container">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Sheet tab bar -->
+        <template if:true={sheetTabs.length}>
+            <div class="sheet-tabs">
+                <template for:each={sheetTabs} for:item="tab">
+                    <button
+                        key={tab.name}
+                        class={tab.tabClass}
+                        data-name={tab.name}
+                        onclick={switchSheet}>
+                        {tab.name}
+                    </button>
+                </template>
+            </div>
+        </template>
+
+        <!-- Table container -->
+        <div class="table-container" data-id="tableContainer">
+        </div>
+    </div>
+</template>

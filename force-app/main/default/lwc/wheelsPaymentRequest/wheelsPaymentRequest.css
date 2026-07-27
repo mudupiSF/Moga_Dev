@@ -1,0 +1,594 @@
+/* ── Host ──────────────────────────────────────────────────────────────────── */
+:host {
+    display: block;
+    width: 100%;
+    --wpr-slate-50:    #f8fafc;
+    --wpr-slate-100:   #f1f5f9;
+    --wpr-slate-200:   #e2e8f0;
+    --wpr-slate-300:   #cbd5e1;
+    --wpr-slate-400:   #94a3b8;
+    --wpr-slate-500:   #64748b;
+    --wpr-slate-600:   #475569;
+    --wpr-slate-700:   #334155;
+    --wpr-slate-800:   #1e293b;
+    --wpr-slate-900:   #0f172a;
+    --wpr-indigo-50:   #eef2ff;
+    --wpr-indigo-100:  #e0e7ff;
+    --wpr-indigo-500:  #6366f1;
+    --wpr-indigo-600:  #4f46e5;
+    --wpr-indigo-700:  #4338ca;
+    --wpr-emerald-500: #10b981;
+    --wpr-red-500:     #ef4444;
+}
+
+/* ── Page wrapper ──────────────────────────────────────────────────────────── */
+.wpr-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem;
+    position: relative;
+}
+
+/* ── Loading overlay ───────────────────────────────────────────────────────── */
+.wpr-loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.65);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   IHM-STYLE CARD (matches wheelsIhmPage sections)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.form-card {
+    width: 100%;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1px solid var(--wpr-slate-100);
+    overflow: visible;
+    box-sizing: border-box;
+}
+
+.form-card-header {
+    height: 72px;
+    min-height: 72px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background: var(--wpr-slate-900);
+    border-radius: 1rem 1rem 0 0;
+}
+
+.form-header-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(49,46,129,0.8), transparent);
+}
+
+.form-header-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 1.25rem;
+    height: 100%;
+}
+
+.form-header-icon-wrap {
+    padding: 0.5rem;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    flex-shrink: 0;
+}
+
+.form-header-icon {
+    --slds-c-icon-color-foreground-default: white;
+}
+
+.form-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.form-header-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.025em;
+}
+
+.form-header-subtitle {
+    margin: 0;
+    font-size: 0.75rem;
+    color: rgba(199,210,254,0.8);
+}
+
+.form-card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow: visible;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   loanTerms-STYLE FIELD LABELS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.lt-info-cell {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.lt-info-cell-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+.lt-info-bullet {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--wpr-slate-400);
+    flex-shrink: 0;
+}
+.lt-info-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--wpr-slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.3;
+}
+.lt-info-value-wrap {
+    padding-left: 0.875rem;
+}
+
+/* ── Native input / select ───────────────────────────────────────────────── */
+.lt-field-input {
+    width: 100%;
+    max-width: 24rem;
+    padding: 0.375rem 0.625rem;
+    border: 2px solid rgba(79,70,229,0.3);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: var(--wpr-slate-700);
+    background: var(--wpr-slate-50);
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.lt-field-input:focus {
+    border-color: var(--wpr-indigo-500);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+}
+.lt-field-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    border-color: var(--wpr-slate-200);
+    background: var(--wpr-slate-100);
+}
+
+/* ── Readonly display-value fields — match wheelsIhmPage card style ───────── */
+/* Only targets inputs with the HTML readonly attribute (dealerPayment,        */
+/* crmIrr, emiAmount, secondEmiDueDate, user-lookup display fields).           */
+/* Beneficiary / adjustment table inputs have NO readonly attr → unaffected.  */
+.lt-field-input[readonly] {
+    font-size: medium;
+    font-weight: 700;
+    border:none;
+    background: none;
+    padding: 0rem 0rem 0rem 1rem;
+}
+
+.lt-field-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2394a3b8' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.625rem center;
+    padding-right: 2rem;
+    cursor: pointer;
+}
+.lt-field-select:disabled { cursor: not-allowed; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FIELDS GRID
+   ═══════════════════════════════════════════════════════════════════════════ */
+.wpr-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.625rem 0.75rem;
+    align-items: start;
+}
+.wpr-fields-grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+.wpr-ops-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.625rem 0.75rem;
+    align-items: start;
+}
+
+.wpr-textarea-field {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.375rem 0.625rem;
+    border: 2px solid rgba(79, 70, 229, 0.3);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--wpr-slate-700);
+    resize: vertical;
+    min-height: 80px;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+    line-height: 1.5;
+    outline: none;
+}
+
+.wpr-textarea-field:focus {
+    border-color: var(--wpr-indigo-500);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.wpr-textarea-field:read-only,
+.wpr-textarea-field[readonly] {
+    color: var(--wpr-slate-800);
+    font-weight: 600;
+    background: var(--wpr-slate-50);
+    border-color: var(--wpr-slate-200);
+}
+
+/* Each field is a bordered card — matches the screenshot style */
+.wpr-field-wrap {
+    min-width: 0;
+    background: white;
+    border: 1px solid var(--wpr-slate-200);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.15s, background 0.15s;
+    box-sizing: border-box;
+}
+
+.wpr-field-wrap:hover {
+    border-color: var(--wpr-slate-300);
+    background: rgba(248,250,252,0.6);
+}
+
+/* Input / select / combobox fills the full cell width inside the bordered wrap */
+.wpr-field-wrap .lt-field-input {
+    max-width: 100%;
+}
+
+/* Remove extra left indent — the card padding provides enough breathing room */
+.wpr-field-wrap .lt-info-value-wrap {
+    padding-left: 0.25rem;
+}
+
+/* lightning-combobox SLDS token overrides — indigo focus, matching border style */
+.wpr-field-wrap lightning-combobox {
+    width: 100%;
+    --slds-c-combobox-color-border:        #e2e8f0;
+    --slds-c-combobox-color-border-focus:  #6366f1;
+    --slds-c-combobox-shadow-focus:        0 0 0 3px rgba(99,102,241,0.12);
+    --slds-c-combobox-sizing-border:       2px;
+    --slds-c-combobox-radius-border:       0.5rem;
+    --slds-c-combobox-color-background:    #f8fafc;
+    --slds-c-input-label-spacing-block-end: 0;
+    --slds-c-combobox-dropdown-shadow:     0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RADIO BUTTONS — CSS-CLASS DRIVEN (no :checked dependency)
+   circleClass drives the fill; .wpr-radio-input is kept only for a11y/onChange
+   ═══════════════════════════════════════════════════════════════════════════ */
+.wpr-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.wpr-radio-inline {
+    flex-direction: row;
+    gap: 1.25rem;
+}
+.wpr-radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+    line-height: 1;
+}
+
+/* Hidden native input — exists only for onChange + accessibility */
+.wpr-radio-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+}
+
+/* Base circle */
+.wpr-radio-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--wpr-slate-300);
+    background: white;
+    flex-shrink: 0;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+/* Selected state — driven by circleClass JS getter */
+.wpr-radio-circle--on {
+    border-color: var(--wpr-indigo-600) !important;
+    background: var(--wpr-indigo-600) !important;
+    box-shadow: inset 0 0 0 3px white;
+}
+
+.wpr-radio-text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--wpr-slate-700);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   USED / REF SECTION BOX
+   ═══════════════════════════════════════════════════════════════════════════ */
+.wpr-used-section {
+    border: 1px solid var(--wpr-slate-200);
+    border-radius: 0.625rem;
+    padding: 1rem;
+    background: var(--wpr-slate-50);
+}
+.wpr-used-note {
+    font-size: 0.75rem;
+    color: var(--wpr-slate-500);
+    font-style: italic;
+    margin: 0 0 0.75rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SUB-SECTION PILL HEADERS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.wpr-subsection-header {
+    display: flex;
+    align-items: center;
+}
+.wpr-subsection-header--gap {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--wpr-slate-100);
+}
+.wpr-subsection-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--wpr-slate-500);
+    padding: 0.2rem 0.6rem;
+    background: var(--wpr-slate-50);
+    border: 1px solid var(--wpr-slate-200);
+    border-radius: 999px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BENEFICIARY TABLE
+   ═══════════════════════════════════════════════════════════════════════════ */
+.wpr-table-wrapper {
+    overflow: visible;
+    border-radius: 0.625rem;
+    border: 1px solid var(--wpr-slate-200);
+}
+.wpr-table { display: table; width: 100%; border-collapse: collapse; table-layout: fixed; }
+.wpr-table-head { display: table-row; background: var(--wpr-slate-50); }
+.wpr-th {
+    display: table-cell;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--wpr-slate-500);
+    border-bottom: 2px solid var(--wpr-slate-200);
+    white-space: nowrap;
+}
+.wpr-th-action { width: 80px; text-align: center; }
+.wpr-table-row { display: table-row; transition: background 0.12s; }
+.wpr-table-row:hover { background: var(--wpr-slate-50); }
+.wpr-td {
+    display: table-cell;
+    padding: 0.5rem 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--wpr-slate-100);
+    overflow: visible;
+}
+.wpr-td-action { text-align: center; width: 80px; }
+.wpr-td .lt-field-input { max-width: none; }
+.wpr-table-summary {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    background: var(--wpr-slate-50);
+    border-top: 1px solid var(--wpr-slate-200);
+}
+.wpr-summary-label { font-size: 0.8125rem; font-weight: 600; color: var(--wpr-slate-600); }
+.wpr-summary-value { font-size: 0.9375rem; font-weight: 700; color: var(--wpr-indigo-600); }
+
+.wpr-icon-btn {
+    width: 28px; height: 28px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; border-radius: 50%; cursor: pointer; transition: background 0.15s;
+}
+.wpr-icon-btn--add  { background: var(--wpr-indigo-50); --slds-c-icon-color-foreground-default: var(--wpr-indigo-600); }
+.wpr-icon-btn--add:hover { background: var(--wpr-indigo-100); }
+.wpr-icon-btn--remove { background: #fef2f2; --slds-c-icon-color-foreground-default: var(--wpr-red-500); }
+.wpr-icon-btn--remove:hover { background: #fee2e2; }
+
+/* ── Beneficiary table verify column ─────────────────────────────────────── */
+.wpr-th-verify  { width: 90px; text-align: center; }
+.wpr-td-verify  { text-align: center; }
+
+.wpr-verify-btn {
+    height: 30px;
+    padding: 0 0.75rem;
+    border: 1px solid var(--wpr-indigo-300, #a5b4fc);
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    background: var(--wpr-indigo-50);
+    color: var(--wpr-indigo-600);
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+.wpr-verify-btn:hover { background: var(--wpr-indigo-100); border-color: var(--wpr-indigo-600); }
+.wpr-verify-btn:disabled { opacity: 0.5; cursor: not-allowed; border-color: var(--wpr-slate-300); background: var(--wpr-slate-100); color: var(--wpr-slate-400); }
+
+/* VERIFIED inline label — Indigo border + Turquoise fill, matching the
+   global `--verified` palette used across the app. */
+.wpr-row-verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    background: var(--form-cyan-100, #cffafe);
+    color: var(--form-indigo-700, #4338ca);
+    border: 1px solid var(--form-indigo-700, #4338ca);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 0 0 2px var(--form-cyan-halo, rgba(44, 218, 238, 0.18));
+}
+
+.wpr-verified-icon {
+    --slds-c-icon-color-foreground-default: var(--form-indigo-700, #4338ca);
+    --sds-c-icon-color-foreground-default: var(--form-indigo-700, #4338ca);
+}
+
+/* ── Installment Schedule button row ─────────────────────────────────────── */
+.wpr-schedule-btn-row {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 0.25rem;
+}
+
+/* ── Seller Bank Details ─────────────────────────────────────────────────── */
+.wpr-branch-info {
+    margin: 0.375rem 0 0;
+    font-size: 0.8125rem;
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.wpr-seller-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    padding-left: 0.875rem;
+    flex-wrap: wrap;
+}
+
+.wpr-action-btn {
+    height: 36px;
+    padding: 0 1rem;
+    border: 1px solid var(--wpr-slate-300);
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    background: white;
+    color: var(--wpr-slate-700);
+    transition: all 0.15s;
+}
+.wpr-action-btn:hover { background: var(--wpr-slate-50); border-color: var(--wpr-slate-400); }
+
+.wpr-action-btn--brand {
+    background: var(--wpr-indigo-600);
+    color: white;
+    border-color: var(--wpr-indigo-600);
+}
+.wpr-action-btn--brand:hover { background: var(--wpr-indigo-700); border-color: var(--wpr-indigo-700); }
+
+.wpr-action-btn--outline {
+    border-color: var(--wpr-indigo-300, #a5b4fc);
+    color: var(--wpr-indigo-600);
+    background: var(--wpr-indigo-50);
+}
+.wpr-action-btn--outline:hover { background: var(--wpr-indigo-100); }
+
+/* VERIFIED pill — Indigo border + Turquoise fill, matching the global
+   `--verified` palette used across the app. */
+.wpr-verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    height: 32px;
+    padding: 0 0.75rem;
+    background: var(--form-cyan-100, #cffafe);
+    color: var(--form-indigo-700, #4338ca);
+    border: 1.5px solid var(--form-indigo-700, #4338ca);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    box-shadow: 0 0 0 2px var(--form-cyan-halo, rgba(44, 218, 238, 0.18));
+    --sds-c-icon-color-foreground-default: var(--form-indigo-700, #4338ca);
+    --slds-c-icon-color-foreground-default: var(--form-indigo-700, #4338ca);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════════════════════ */
+.wpr-footer-wrapper {
+    position: sticky; bottom: 0;
+    background: white; box-shadow: 0 -4px 12px rgba(0,0,0,0.08); z-index: 10;
+}
+.wpr-footer {
+    padding: 0.875rem 1.25rem;
+    display: flex; justify-content: flex-end; gap: 0.75rem;
+    border-top: 1px solid var(--wpr-slate-200);
+}
+.wpr-submit-btn {
+    height: 40px; min-width: 120px; padding: 0 1.25rem;
+    border: none; border-radius: 0.5rem;
+    font-size: 0.9rem; font-weight: 700; font-family: inherit; cursor: pointer;
+    background: var(--wpr-indigo-600); color: white;
+    box-shadow: 0 6px 14px -4px rgba(79,70,229,0.35);
+    transition: all 0.2s;
+}
+.wpr-submit-btn:hover:not(:disabled) { background: var(--wpr-indigo-700); transform: translateY(-1px); }
+.wpr-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.wpr-next-btn {
+    height: 40px; min-width: 120px; padding: 0 1.25rem;
+    border: none; border-radius: 0.5rem;
+    font-size: 0.9rem; font-weight: 700; font-family: inherit; cursor: pointer;
+    background: var(--wpr-indigo-600); color: white;
+    box-shadow: 0 6px 14px -4px rgba(79,70,229,0.35);
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 0.375rem;
+}
+.wpr-next-btn:hover { background: var(--wpr-indigo-700); transform: translateY(-1px); }
+.wpr-btn-icon-inline { --slds-c-icon-color-foreground-default: white; }
+.wpr-next-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }

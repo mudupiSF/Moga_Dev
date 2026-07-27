@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ParentLookupField__c</fullName>
+    <description>As example , when we are selecting Course Details , its child of Loan application.  When selecting Loan Applicant , its child of Loan Application</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>ParentLookupField</label>
+    <length>150</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

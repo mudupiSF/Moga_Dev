@@ -1,0 +1,18 @@
+{
+"emiRanges": [
+{
+"Loan_Type": "Used Car Loan",
+"Outstanding_Amt": "0",
+"Upper_Emi_Cap": "10000",
+"Lower_Emi_Cap": "5000",
+"Remaining_Months": "-18"
+},
+{
+"Loan_Type": "New Car Loan",
+"Outstanding_Amt": "0",
+"Upper_Emi_Cap": "15000",
+"Lower_Emi_Cap": "10000",
+"Remaining_Months": "-92"
+}
+]
+}

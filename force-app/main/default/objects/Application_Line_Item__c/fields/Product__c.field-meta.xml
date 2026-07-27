@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product__c</fullName>
+    <description>Primary product selected on the Application__c record.</description>
+    <label>Product</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>PL</fullName>
+                <default>false</default>
+                <label>PL</label>
+            </value>
+            <value>
+                <fullName>2W</fullName>
+                <default>false</default>
+                <label>2W</label>
+            </value>
+            <value>
+                <fullName>4W</fullName>
+                <default>false</default>
+                <label>4W</label>
+            </value>
+            <value>
+                <fullName>CV</fullName>
+                <default>false</default>
+                <label>CV</label>
+            </value>
+            <value>
+                <fullName>Balance Transfer</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Balance Transfer</label>
+            </value>
+            <value>
+                <fullName>OD</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>OD</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

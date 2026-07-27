@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Parent_Product__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Parent Product</label>
+    <referenceTo>MMV_Product_Master__c</referenceTo>
+    <relationshipLabel>Child MMV Product Masters</relationshipLabel>
+    <relationshipName>Child_MMV_Product_Masters</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,93 @@
+<template>
+    <div class={rootClass}>
+        <div
+            class="dsp-control"
+            role="combobox"
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
+            aria-label={label}
+        >
+            <div class="dsp-input-wrap">
+                <input
+                    type="text"
+                    class="dsp-input"
+                    value={displayText}
+                    placeholder={placeholder}
+                    disabled={disabled}
+                    aria-autocomplete="list"
+                    aria-controls="dsp-listbox"
+                    aria-activedescendant={comboboxAriaActiveDescendant}
+                    oninput={handleInput}
+                    onfocus={handleFocus}
+                    onblur={handleBlur}
+                    onkeydown={handleKeydown}
+                />
+
+                <template lwc:if={showClearButton}>
+                    <button
+                        type="button"
+                        class="dsp-clear-btn"
+                        title="Clear selection"
+                        aria-label="Clear selection"
+                        tabindex="-1"
+                        onmousedown={handleClear}
+                    >
+                        <lightning-icon
+                            icon-name="utility:close"
+                            size="x-small"
+                            alternative-text="Clear"
+                        ></lightning-icon>
+                    </button>
+                </template>
+            </div>
+
+            <template lwc:if={isOpen}>
+                <ul id="dsp-listbox" class="dsp-dropdown" role="listbox">
+                    <template lwc:if={showMinLengthHint}>
+                        <li class="dsp-option dsp-option_hint" role="presentation">
+                            {minLengthHintMessage}
+                        </li>
+                    </template>
+
+                    <template lwc:if={isLoading}>
+                        <li class="dsp-option dsp-option_loading" role="presentation">
+                            {loadingMessage}
+                        </li>
+                    </template>
+
+                    <template for:each={filteredOptions} for:item="opt">
+                        <li
+                            key={opt.value}
+                            id={opt.optionId}
+                            class={opt.optionClass}
+                            role="option"
+                            aria-selected={opt.isSelected}
+                            data-value={opt.value}
+                            data-label={opt.label}
+                            onmousedown={handleSelect}
+                        >
+                            {opt.label}
+                        </li>
+                    </template>
+
+                    <template lwc:if={hasNoResults}>
+                        <li class="dsp-option dsp-option_empty" role="presentation">
+                            {noResultsMessage}
+                        </li>
+                    </template>
+                </ul>
+            </template>
+        </div>
+
+        <template lwc:if={trackSectionProgress}>
+            <span
+                class="slds-assistive-text"
+                data-section-input
+                data-required={sectionRequiredAttr}
+                data-editable={sectionEditableAttr}
+                data-value={value}
+                aria-hidden="true"
+            ></span>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ColumnsUsedInWhereClause__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>ColumnsUsedInWhereClause</label>
+    <required>false</required>
+    <type>TextArea</type>
+</CustomField>

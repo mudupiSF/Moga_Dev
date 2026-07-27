@@ -1,0 +1,384 @@
+<template>
+    <div class="form-layout">
+        <template if:true={isLoading}>
+            <div class="form-loading-overlay" role="status" aria-live="polite">
+                <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <div class="form-card">
+                    <div class="form-header">
+                        <div class="form-header-overlay"></div>
+                        <div class="form-header-content form-header-content--split">
+                            <div class="form-header-leading">
+                                <div class="form-header-icon-wrap">
+                                    <lightning-icon
+                                        icon-name="standard:search"
+                                        size="small"
+                                        class="form-header-icon"
+                                        alternative-text={labels.amlReviewTitle}>
+                                    </lightning-icon>
+                                </div>
+                                <div class="form-header-text">
+                                    <h1 class="form-header-title">{labels.amlReviewTitle}</h1>
+                                    <p class="form-header-subtitle">{labels.amlReviewSubtitle}</p>
+                                </div>
+                            </div>
+                            <div class="header-meta">
+                                <span class="slds-badge slds-theme_info p4-badge-text header-stat-badge">
+                                    {labels.casesFound}: {verificationRows.length}
+                                </span>
+                                <span class="slds-badge p4-badge-text header-stat-badge">
+                                    {labels.investigationStatus}: {investigationStatus}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-body">
+                        <template if:true={hasVerificationRows}>
+                            <div
+                                class="table-scroll aml-scroll-area"
+                                role="region"
+                                aria-label="AML match records"
+                                onscroll={handleScrollArea}>
+                                <div class="table-wrap">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped match-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="form-info-label match-table-header" scope="col">Sr. No</th>
+                                                <th class="form-info-label match-table-header" scope="col">List Name</th>
+                                                <th class="form-info-label match-table-header" scope="col">Customer Name</th>
+                                                <th class="form-info-label match-table-header" scope="col">Name Score</th>
+                                                <th class="form-info-label match-table-header" scope="col">Nationality</th>
+                                                <th class="form-info-label match-table-header" scope="col">Nationality Score</th>
+                                                <th class="form-info-label match-table-header" scope="col">ML City</th>
+                                                <th class="form-info-label match-table-header" scope="col">ML Address</th>
+                                                <th class="form-info-label match-table-header" scope="col">ML Date of Birth</th>
+                                                <th class="form-info-label match-table-header" scope="col">ML Description</th>
+                                                <th class="form-info-label match-table-header" scope="col">Decision</th>
+                                                <th class="form-info-label match-table-header remarks-header" scope="col">Remarks</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={verificationRows} for:item="row" for:index="index">
+                                                <tr class={row.recordCss} key={row.id}>
+                                                    <td><p class="form-info-value">{row.serialNo}</p></td>
+                                                    <td>
+                                                        <p class="form-info-value slds-truncate" title={row.listName}>{row.listName}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="form-info-value slds-truncate" title={row.customerName}>{row.customerName}</p>
+                                                    </td>
+                                                    <td>
+                                                        <template if:true={row.nameScore}>
+                                                            <span class={row.nameScoreClass}>{row.nameScore}</span>
+                                                        </template>
+                                                    </td>
+                                                    <td>
+                                                        <p class="form-info-value slds-truncate">{row.nationality}</p>
+                                                    </td>
+                                                    <td>
+                                                        <template if:true={row.nationalityScore}>
+                                                            <span class={row.nationalityScoreClass}>{row.nationalityScore}</span>
+                                                        </template>
+                                                    </td>
+                                                    <td>
+                                                        <p class="form-info-value slds-truncate">{row.mlCity}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="form-info-value slds-truncate" title={row.mlAddress}>{row.mlAddress}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="form-info-value slds-truncate">{row.mlDateOfBirth}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="form-info-value slds-truncate" title={row.mlDescription}>{row.mlDescription}</p>
+                                                    </td>
+                                                    <td class="decision-cell">
+                                                        <template if:true={isReadOnly}>
+                                                            <p class="form-info-value">{row.decision}</p>
+                                                        </template>
+                                                        <template if:false={isReadOnly}>
+                                                            <div class="combobox-wrap">
+                                                                <lightning-combobox
+                                                                    required
+                                                                    variant="label-hidden"
+                                                                    label="Decision"
+                                                                    data-index={index}
+                                                                    value={row.decision}
+                                                                    options={decisionOptions}
+                                                                    onchange={handleDecisionChange}
+                                                                    placeholder="Select decision">
+                                                                </lightning-combobox>
+                                                            </div>
+                                                        </template>
+                                                    </td>
+                                                    <td>
+                                                        <template if:true={isReadOnly}>
+                                                            <p class="form-info-value">{row.remarks}</p>
+                                                        </template>
+                                                        <template if:false={isReadOnly}>
+                                                            <lightning-input
+                                                                type="text"
+                                                                variant="label-hidden"
+                                                                label="Remarks"
+                                                                data-index={index}
+                                                                value={row.remarks}
+                                                                onchange={handleRemarksChange}>
+                                                            </lightning-input>
+                                                        </template>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                            <template if:false={isReadOnly}>
+                                                <tr class="decision-all-row">
+                                                    <td colspan="10" class="slds-text-align_right decision-all-label-cell">
+                                                        <span class="form-info-label">{labels.applyDecisionAll}</span>
+                                                    </td>
+                                                    <td class="decision-all-cell">
+                                                        <div class="form-radio-group decision-all-radios" role="radiogroup" aria-label="Apply decision">
+                                                            <label class="form-radio-label">
+                                                                <input
+                                                                    type="radio"
+                                                                    class="form-radio-input"
+                                                                    name="apply-decision-all"
+                                                                    value="Positive"
+                                                                    checked={isApplyDecisionPositive}
+                                                                    onchange={handleApplyDecisionToAll} />
+                                                                <span class="form-radio-circle"></span>
+                                                                <span class="form-radio-text">Positive</span>
+                                                            </label>
+                                                            <label class="form-radio-label">
+                                                                <input
+                                                                    type="radio"
+                                                                    class="form-radio-input"
+                                                                    name="apply-decision-all"
+                                                                    value="False Positive"
+                                                                    checked={isApplyDecisionFalsePositive}
+                                                                    onchange={handleApplyDecisionToAll} />
+                                                                <span class="form-radio-circle"></span>
+                                                                <span class="form-radio-text">False Positive</span>
+                                                            </label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="copy-remarks-cell">
+                                                        <button
+                                                            type="button"
+                                                            class="p4-secondary-btn aml-copy-remarks-btn"
+                                                            onclick={handleCopyRemarks}>
+                                                            {labels.copyRemarks}
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={hasVerificationRows}>
+                            <p class="p4-help-text slds-text-align_center slds-p-around_medium">{labels.noMatches}</p>
+                        </template>
+                    </div>
+                </div>
+
+                <template if:true={hasApplicants}>
+                    <div class="aml-applicant-panel">
+                        <div
+                            class="tab-bar aml-scroll-area"
+                            role="tablist"
+                            aria-label={labels.applicantDetailsTitle}
+                            onscroll={handleScrollArea}>
+                            <template for:each={applicantTabs} for:item="tab">
+                                <button
+                                    type="button"
+                                    key={tab.applicantId}
+                                    class={tab.tabClass}
+                                    role="tab"
+                                    data-applicant-id={tab.applicantId}
+                                    aria-selected={tab.tabSelected}
+                                    onclick={handleApplicantTabClick}>
+                                    {tab.tabLabel}
+                                </button>
+                            </template>
+                        </div>
+
+                        <template if:true={selectedApplicant}>
+                            <section class="form-card" aria-label={labels.personalInfoTitle}>
+                                <div class="form-header">
+                                    <div class="form-header-overlay"></div>
+                                    <div class="form-header-content">
+                                        <div class="form-header-leading">
+                                            <div class="form-header-icon-wrap">
+                                                <lightning-icon
+                                                    icon-name="standard:contact"
+                                                    size="small"
+                                                    class="form-header-icon"
+                                                    alternative-text={labels.personalInfoTitle}>
+                                                </lightning-icon>
+                                            </div>
+                                            <div class="form-header-text">
+                                                <h2 class="form-header-title">{labels.personalInfoTitle}</h2>
+                                                <p class="form-header-subtitle">{labels.personalInfoSubtitle}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-body">
+                                    <div class="form-fields-grid">
+                                        <template for:each={selectedApplicant.personalFields} for:item="field">
+                                            <div class="form-field-wrap" key={field.key}>
+                                                <div class="form-info-cell">
+                                                    <div class="form-info-cell-header">
+                                                        <span class="form-info-label">{field.label}</span>
+                                                    </div>
+                                                    <div class="form-info-value-wrap">
+                                                        <template if:true={field.isBadge}>
+                                                            <span class={field.badgeClass}>{field.value}</span>
+                                                        </template>
+                                                        <template if:false={field.isBadge}>
+                                                            <p class="form-info-value">{field.value}</p>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="form-card" aria-label={labels.addressInfoTitle}>
+                                <div class="form-header">
+                                    <div class="form-header-overlay"></div>
+                                    <div class="form-header-content">
+                                        <div class="form-header-leading">
+                                            <div class="form-header-icon-wrap">
+                                                <lightning-icon
+                                                    icon-name="standard:address"
+                                                    size="small"
+                                                    class="form-header-icon"
+                                                    alternative-text={labels.addressInfoTitle}>
+                                                </lightning-icon>
+                                            </div>
+                                            <div class="form-header-text">
+                                                <h2 class="form-header-title">{labels.addressInfoTitle}</h2>
+                                                <p class="form-header-subtitle">{labels.addressInfoSubtitle}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-body">
+                                    <div class="form-fields-grid aml-address-grid">
+                                        <template for:each={selectedApplicant.addresses} for:item="address">
+                                            <div class="form-field-wrap" key={address.label}>
+                                                <div class="form-info-cell">
+                                                    <div class="form-info-cell-header">
+                                                        <template if:true={address.iconName}>
+                                                            <lightning-icon
+                                                                icon-name={address.iconName}
+                                                                size="xx-small"
+                                                                class="aml-address-icon"
+                                                                aria-hidden="true">
+                                                            </lightning-icon>
+                                                        </template>
+                                                        <span class="form-info-label">{address.label}</span>
+                                                    </div>
+                                                    <div class="form-info-value-wrap">
+                                                        <p class={address.valueClass}>{address.displayValue}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="form-card" aria-label={labels.identityDocsTitle}>
+                                <div class="form-header">
+                                    <div class="form-header-overlay"></div>
+                                    <div class="form-header-content">
+                                        <div class="form-header-leading">
+                                            <div class="form-header-icon-wrap">
+                                                <lightning-icon
+                                                    icon-name="standard:document"
+                                                    size="small"
+                                                    class="form-header-icon"
+                                                    alternative-text={labels.identityDocsTitle}>
+                                                </lightning-icon>
+                                            </div>
+                                            <div class="form-header-text">
+                                                <h2 class="form-header-title">{labels.identityDocsTitle}</h2>
+                                                <p class="form-header-subtitle">{labels.identityDocsSubtitle}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-body">
+                                    <div class="form-fields-grid">
+                                        <template for:each={selectedApplicant.identityDocuments} for:item="document">
+                                            <div class="form-field-wrap" key={document.docKey}>
+                                                <div class="form-info-cell aml-doc-tile">
+                                                    <div class="aml-doc-tile-row">
+                                                        <div class="aml-doc-tile-leading">
+                                                            <span class={document.iconClass} aria-hidden="true">
+                                                                <lightning-icon
+                                                                    icon-name={document.iconName}
+                                                                    size="x-small">
+                                                                </lightning-icon>
+                                                            </span>
+                                                            <span class="form-info-label aml-doc-tile-label">{document.label}</span>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            class={document.lockButtonClass}
+                                                            data-reveal-key={document.revealKey}
+                                                            aria-label={document.ariaLabel}
+                                                            disabled={document.isDisabled}
+                                                            onclick={handleDocumentReveal}>
+                                                            <template if:true={document.showMaskedValue}>
+                                                                <span class="aml-doc-revealed-value">{document.maskedValue}</span>
+                                                            </template>
+                                                            <lightning-icon
+                                                                icon-name={document.lockIconName}
+                                                                size="xx-small"
+                                                                class={document.lockIconClass}>
+                                                            </lightning-icon>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </section>
+                        </template>
+                    </div>
+                </template>
+
+                <template if:false={isReadOnly}>
+                    <div class="form-footer-wrapper">
+                        <div class="form-footer">
+                            <div class="form-btn-wrapper">
+                                <button
+                                    type="button"
+                                    class={submitButtonClass}
+                                    disabled={submitDisabled}
+                                    onclick={handleSubmit}>
+                                    <template if:true={isSubmitting}>
+                                        <lightning-spinner
+                                            alternative-text={labels.loading}
+                                            size="x-small"
+                                            class="submit-spinner">
+                                        </lightning-spinner>
+                                    </template>
+                                    <span class="p4-button-text">{labels.submit}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+        </template>
+    </div>
+</template>

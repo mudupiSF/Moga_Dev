@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product__c</fullName>
+    <label>Product</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>PASSENGER VEHICLE</fullName>
+                <default>false</default>
+                <label>PASSENGER VEHICLE</label>
+            </value>
+            <value>
+                <fullName>SMALL COMMERCIAL VEHICLE</fullName>
+                <default>false</default>
+                <label>SMALL COMMERCIAL VEHICLE</label>
+            </value>
+            <value>
+                <fullName>LIGHT COMMERCIAL VEHICLE</fullName>
+                <default>false</default>
+                <label>LIGHT COMMERCIAL VEHICLE</label>
+            </value>
+            <value>
+                <fullName>CONSTRUCTION EQUIPMENT</fullName>
+                <default>false</default>
+                <label>CONSTRUCTION EQUIPMENT</label>
+            </value>
+            <value>
+                <fullName>MEDIUM AND HEAVY COMMERCIAL VEHICLES</fullName>
+                <default>false</default>
+                <label>MEDIUM AND HEAVY COMMERCIAL VEHICLES</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

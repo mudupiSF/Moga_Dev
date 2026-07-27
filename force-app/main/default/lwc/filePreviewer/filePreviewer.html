@@ -1,0 +1,223 @@
+<template>
+    <!--
+      Single template with isDesktop / isNonDesktop branches.
+      Only one branch ever lives in the live DOM at a time, so this is
+      faster than a 3-template render() switch when the markup shapes
+      diverge (modal vs lightning-card).
+    -->
+
+    <!-- ===================== DESKTOP ===================== -->
+    <template if:true={isDesktop}>
+        <section role="dialog" tabindex="-1" aria-labelledby="sflos-preview-heading" aria-modal="true"
+            aria-describedby="sflos-preview-content"
+            class="slds-modal slds-fade-in-open slds-modal_medium sflos-preview-modal">
+            <div class="slds-modal__container sflos-preview-container">
+                <header class="slds-modal__header sflos-preview-header">
+                    <button class="slds-button slds-button_icon slds-modal__close sflos-preview-close"
+                        title="Close" onclick={close}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close"
+                            size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="sflos-preview-heading" class="slds-text-heading_medium">File Preview</h2>
+                </header>
+                <div id="sflos-preview-content"
+                    class="slds-modal__content slds-p-around_medium sflos-preview-body">
+                    <template if:true={noFileId}>
+                        <div class="slds-text-color_error">No File to Preview</div>
+                    </template>
+                    <template if:true={hasFileId}>
+                        <template lwc:if={isLoading}>
+                            <div class="sflos-preview-spinner">
+                                <lightning-spinner alternative-text="Loading preview" size="medium"></lightning-spinner>
+                            </div>
+                        </template>
+                        <template if:false={isLoading}>
+                            <template if:true={isFileSizeLarge}>
+                                <div class="slds-text-color_error">
+                                    File size is too large for inline preview. The file will be downloaded instead.
+                                </div>
+                                <div class="slds-p-top_medium">
+                                    <lightning-button variant="brand" label="Download File"
+                                        onclick={handleDownload}></lightning-button>
+                                </div>
+                            </template>
+                            <template if:false={isFileSizeLarge}>
+                                <template if:true={isPreviewReady}>
+                                    <!-- PDF -->
+                                    <template if:true={isPdf}>
+                                        <template if:true={isCommunity}>
+                                            <iframe data-id="communityPreviewIframe" lwc:dom="manual"
+                                                class="sflos-preview-iframe" scrolling="auto"
+                                                frameborder="0"></iframe>
+                                        </template>
+                                        <template if:false={isCommunity}>
+                                            <iframe data-id="previewIframe" src={previewUrl}
+                                                class="sflos-preview-iframe" scrolling="auto"
+                                                frameborder="0"></iframe>
+                                        </template>
+                                    </template>
+                                    <!-- Image -->
+                                    <template if:true={isImage}>
+                                        <div class="sflos-preview-image-wrap">
+                                            <img src={previewUrl} alt="Preview" class="sflos-preview-image" />
+                                        </div>
+                                    </template>
+                                    <!-- Word -->
+                                    <template if:true={isDocx}>
+                                        <template if:true={isCommunity}>
+                                            <iframe data-id="communityDocxIframe" lwc:dom="manual"
+                                                class="sflos-preview-iframe" scrolling="auto"
+                                                frameborder="0"></iframe>
+                                        </template>
+                                        <template if:false={isCommunity}>
+                                            <iframe data-id="docxIframe" src={previewUrl}
+                                                class="sflos-preview-iframe" scrolling="auto"
+                                                frameborder="0"></iframe>
+                                        </template>
+                                    </template>
+                                    <!-- Excel / CSV -->
+                                    <template if:true={isExcel}>
+                                        <template if:true={isCommunity}>
+                                            <iframe data-id="communityExcelIframe" lwc:dom="manual"
+                                                class="sflos-preview-iframe" scrolling="auto"
+                                                frameborder="0"></iframe>
+                                        </template>
+                                        <template if:false={isCommunity}>
+                                            <iframe data-id="excelIframe" src={previewUrl}
+                                                class="sflos-preview-iframe" scrolling="auto"
+                                                frameborder="0"></iframe>
+                                        </template>
+                                    </template>
+                                    <template if:true={isUnsupported}>
+                                        <div class="slds-text-align_center">
+                                            This file type cannot be previewed inline.
+                                            <div class="slds-p-top_medium">
+                                                <lightning-button variant="brand" label="Download File"
+                                                    onclick={handleDownload}></lightning-button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                            </template>
+                        </template>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer sflos-preview-footer">
+                    <lightning-button variant="neutral" label="Close" onclick={close}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="sflos-preview-backdrop" onclick={close}></div>
+    </template>
+
+    <!-- ===================== MOBILE / TABLET ===================== -->
+    <template if:true={isNonDesktop}>
+        <!-- Image: SLDS modal with <img> inline -->
+        <template if:true={isImage}>
+            <section role="dialog" tabindex="-1" aria-labelledby="sflos-preview-heading-m" aria-modal="true"
+                aria-describedby="sflos-preview-content-m"
+                class="slds-modal slds-fade-in-open slds-modal_medium sflos-preview-modal">
+                <div class="slds-modal__container sflos-preview-container">
+                    <header class="slds-modal__header sflos-preview-header">
+                        <button class="slds-button slds-button_icon slds-modal__close sflos-preview-close"
+                            title="Close" onclick={close}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="sflos-preview-heading-m" class="slds-text-heading_medium">File Preview</h2>
+                    </header>
+                    <div id="sflos-preview-content-m"
+                        class="slds-modal__content slds-p-around_medium sflos-preview-body">
+                        <template if:true={noFileId}>
+                            <div class="slds-text-color_error">No File to Preview</div>
+                        </template>
+                        <template if:true={hasFileId}>
+                            <template if:true={isLoading}>
+                                <div class="sflos-preview-spinner">
+                                    <lightning-spinner alternative-text="Loading preview" size="medium"></lightning-spinner>
+                                </div>
+                            </template>
+                            <template if:false={isLoading}>
+                                <template if:true={isPreviewReady}>
+                                    <div class="sflos-preview-image-wrap">
+                                        <img src={previewUrl} alt="Preview" class="sflos-preview-image" />
+                                    </div>
+                                </template>
+                            </template>
+                        </template>
+                    </div>
+                    <footer class="slds-modal__footer sflos-preview-footer">
+                        <lightning-button variant="neutral" label="Close" onclick={close}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="sflos-preview-backdrop" onclick={close}></div>
+        </template>
+
+        <!-- Non-image (PDF/DOCX/XLSX) on mobile/tablet:
+             we have already navigated away to the Aura overlay in
+             fetchPreviewData. This stub is shown briefly while navigation
+             takes effect. Community DOCX / XLSX show a tap-to-open link as
+             a defensive fallback. -->
+        <template if:false={isImage}>
+            <template if:true={noFileId}>
+                <div class="slds-text-color_error">No File to Preview</div>
+            </template>
+            <template if:true={hasFileId}>
+                <lightning-card>
+                    <div class="slds-p-around_medium">
+                        <template if:true={isLoading}>
+                            <div class="sflos-preview-spinner">
+                                <lightning-spinner alternative-text="Loading preview" size="medium"></lightning-spinner>
+                            </div>
+                        </template>
+                        <template if:false={isLoading}>
+                            <template if:true={isFileSizeLarge}>
+                                <div class="slds-text-color_error">
+                                    File size is too large for inline preview. The file will be downloaded instead.
+                                </div>
+                            </template>
+                            <template if:false={isFileSizeLarge}>
+                                <template if:true={isPreviewReady}>
+                                    <template if:true={isPdf}>
+                                        <template if:true={isCommunity}>
+                                            <iframe data-id="communityPreviewIframe" lwc:dom="manual"
+                                                class="sflos-preview-iframe" scrolling="auto"
+                                                frameborder="0"></iframe>
+                                        </template>
+                                        <template if:false={isCommunity}>
+                                            <div class="slds-text-align_center">
+                                                <p>Opening PDF Preview...</p>
+                                            </div>
+                                        </template>
+                                    </template>
+                                    <template if:true={isDocx}>
+                                        <div class="slds-text-align_center">
+                                            <a href={previewUrl} target="_blank" rel="noopener noreferrer">Open Document</a>
+                                        </div>
+                                    </template>
+                                    <template if:true={isExcel}>
+                                        <div class="slds-text-align_center">
+                                            <a href={previewUrl} target="_blank" rel="noopener noreferrer">Open Spreadsheet</a>
+                                        </div>
+                                    </template>
+                                    <template if:true={isUnsupported}>
+                                        <div class="slds-text-align_center">
+                                            This file type cannot be previewed.
+                                            <div class="slds-p-top_medium">
+                                                <lightning-button variant="brand" label="Download File"
+                                                    onclick={handleDocumentOpen}></lightning-button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                            </template>
+                        </template>
+                    </div>
+                </lightning-card>
+            </template>
+        </template>
+    </template>
+</template>

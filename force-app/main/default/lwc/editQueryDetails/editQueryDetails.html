@@ -1,0 +1,415 @@
+<template>
+    <div class="form-layout">
+        <template lwc:if={isLoading}>
+            <div class="eqd-spinner">
+                <lightning-spinner size="medium" alternative-text="Loading"></lightning-spinner>
+            </div>
+        </template>
+        <template lwc:else>
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Query Details</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Query #</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{queryDetails.QueryNumber}</p></div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Subject</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{queryDetails.Subject}</p></div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Query Type</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{queryDetails.QueryType}</p></div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Query Sub Type</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{queryDetails.QuerySubType}</p></div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Description</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{queryDetails.Description}</p></div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Priority</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{queryDetails.Priority}</p></div>
+                            </div>
+                        </div>
+                        <template lwc:if={queryDetails.ApplicantName}>
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Applicant</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{queryDetails.ApplicantName}</p></div>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:if={queryDetails.DocumentChecklistName}>
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Document Checklist</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{queryDetails.DocumentChecklistName}</p></div>
+                                </div>
+                            </div>
+                        </template>
+                        <div class="form-field-wrap">
+                            <template lwc:if={hasEditAccess}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label"><abbr class="slds-required" title="required">*</abbr> Status</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-combobox name="status" value={editStatus} options={editableStatusOptions} variant="label-hidden" onchange={handleStatusChange} placeholder="Select Status" required></lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Status</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{queryDetails.Status}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                        <template lwc:if={showReopenReasonField}>
+                            <div class="form-field-wrap">
+                                <div class="form-field-cell">
+                                    <div class="form-field-label"><abbr class="slds-required" title="required when reopening">*</abbr> Re-Open Reason</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-textarea
+                                            name="reopenReason"
+                                            value={editReopenReason}
+                                            onchange={handleReopenReasonChange}
+                                            placeholder="Enter reason for reopening"
+                                            variant="label-hidden"
+                                        >
+                                        </lightning-textarea>
+                                        <p class="form-info-value-small">Required only when status is changed to Re-Open.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <template lwc:if={isCommentEditable}>
+                                <div class="form-field-wrap">
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Comments</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-textarea name="comments" value={editComments} onchange={handleCommentsChange} variant="label-hidden" placeholder="Enter comments"></lightning-textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-wrap">
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Comments</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{editComments}</p></div>
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Comment History</span></div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">
+                                        <template lwc:if={hasQueryComments}>
+                                            <div class="slds-box slds-theme_default" style="max-height: 180px; overflow-y: auto;">
+                                                <template for:each={queryComments} for:item="comment">
+                                                    <article key={comment.Id} class="slds-var-m-bottom_small">
+                                                        <p class="slds-text-body_small slds-text-color_weak">
+                                                            <strong>{comment.CreatedByName}</strong>
+                                                            <span class="slds-var-m-horizontal_x-small">•</span>
+                                                            <lightning-formatted-date-time
+                                                                value={comment.CreatedDate}
+                                                                year="numeric"
+                                                                month="short"
+                                                                day="2-digit"
+                                                                hour="2-digit"
+                                                                minute="2-digit">
+                                                            </lightning-formatted-date-time>
+                                                        </p>
+                                                        <p class="slds-text-body_regular" style="margin-top: 2px; padding-left: 1rem; max-width: 100%; overflow-wrap: anywhere; word-break: break-word;">
+                                                            {comment.CommentBody}
+                                                        </p>
+                                                    </article>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <p class="slds-text-color_weak">No previous comments found on this query.</p>
+                                        </template>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">User Selection</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <div class="form-field-cell">
+                                <div class="form-field-label">Owner</div>
+                                <div class="form-field-value-col">
+                                    <template lwc:if={canEditOwner}>
+                                        <div class="slds-var-m-bottom_xx-small user-links">
+                                            <a onclick={handleShowLoanUsersOwner} class="user-link" style="cursor:pointer;color:#0070d2">Show users who worked on Loan</a>
+                                            <a onclick={handleShowMySubordinates} class="user-link" style="cursor:pointer;color:#0070d2">Select My Subordinates</a>
+                                            <a onclick={handleShowAllUsers} class="user-link" style="cursor: pointer; color: #0070d2;">Select all users</a>
+                                        </div>
+                                        <template lwc:if={editOwnerName}>
+                                            <div class="slds-box slds-box_x-small slds-theme_shade" style="display:flex;justify-content:space-between;align-items:center">
+                                                <span>{editOwnerName}</span>
+                                                <lightning-button-icon icon-name="utility:close" variant="bare" alternative-text="Clear" onclick={handleClearOwner}></lightning-button-icon>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="slds-box slds-box_x-small" style="color:#706e6b;font-style:italic">No user selected</div>
+                                        </template>
+                                    </template>
+                                    <template lwc:else>
+                                        <p class="form-info-value">{queryDetails.OwnerName}</p></div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-field-cell">
+                                <div class="form-field-label">Assigned To</div>
+                                <div class="form-field-value-col">
+                                    <template lwc:if={canEditAssignedTo}>
+                                        <div class="slds-var-m-bottom_xx-small user-links">
+                                            <a onclick={handleShowApplicationUsers} class="user-link" style="cursor:pointer;color:#0070d2">Show users who worked on Loan</a>
+                                            <a onclick={handleShowMySubordinates} class="user-link" style="cursor:pointer;color:#0070d2">Select My Subordinates</a>
+                                            <a onclick={handleShowAllUsers} class="user-link" style="cursor: pointer; color: #0070d2;">Select all users</a>
+                                        </div>
+                                        <template lwc:if={editAssignedToName}>
+                                            <div class="slds-box slds-box_x-small slds-theme_shade" style="display:flex;justify-content:space-between;align-items:center">
+                                                <span>{editAssignedToName}</span>
+                                                <lightning-button-icon icon-name="utility:close" variant="bare" alternative-text="Clear" onclick={handleClearAssignedTo}></lightning-button-icon>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="slds-box slds-box_x-small" style="color:#706e6b;font-style:italic">No user selected</div>
+                                        </template>
+                                    </template>
+                                    <template lwc:else>
+                                        <p class="form-info-value">{queryDetails.AssignedTo}</p>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <template lwc:if={showUserSelection}>
+                        <lightning-card class="user-selection-card">
+                            <h1 slot="title">Select User</h1>
+                            <div slot="actions">
+                                <lightning-button
+                                    variant="brand"
+                                    label="Close"
+                                    onclick={handleCloseUserSelection}
+                                >
+                                </lightning-button>
+                            </div>
+                            <template lwc:if={showAllUsers}>
+                                <div class="slds-box slds-theme_shade slds-var-m-top_small slds-var-p-around_small">
+                                    <div class="slds-grid slds-gutters slds-wrap">
+                                        <div class="slds-col slds-large-size_1-of-2 slds-small-size_1-of-1">
+                                            <lightning-combobox
+                                                name="productFilter"
+                                                label="Filter by Product"
+                                                value={productFilter}
+                                                placeholder="All Products"
+                                                options={productOptions}
+                                                onchange={handleProductFilterChange}>
+                                            </lightning-combobox>
+                                        </div>
+                                        <div class="slds-col slds-large-size_1-of-2 slds-small-size_1-of-1">
+                                            <div class="searchable-dropdown">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" for="eligible-owner-filter">Filter by Manager</label>
+                                                    <div class="slds-form-element__control">
+                                                        <input type="text"
+                                                            id="eligible-manager-filter"
+                                                            class="slds-input"
+                                                            value={managerSearchTerm}
+                                                            placeholder="Type manager name"
+                                                            oninput={handleManagerSearchInput}
+                                                            onfocus={handleManagerLookupFocus}
+                                                            onblur={handleManagerLookupBlur}
+                                                        >
+                                                    </div>
+                                                </div>
+                                                <template lwc:if={managerLookupOpen}>
+                                                    <div class="dropdown-list" role="listbox">
+                                                        <template for:each={filteredManagerOptions} for:item="opt">
+                                                            <div key={opt.value}
+                                                                class="dropdown-option"
+                                                                role="option"
+                                                                data-value={opt.value}
+                                                                data-label={opt.label}
+                                                                onmousedown={handleSelectManager}
+                                                            >
+                                                                {opt.label}
+                                                            </div>
+                                                        </template>
+                                                        <template if:false={filteredManagerOptions.length}>
+                                                            <div class="dropdown-option slds-text-color_weak">No matching managers found</div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <template lwc:if={hasUserSelectionFilters}>
+                                        <div class="slds-var-m-top_small slds-text-align_right">
+                                            <lightning-button 
+                                                variant="neutral" 
+                                                label="Clear Filters"
+                                                icon-name="utility:clear"
+                                                onclick={handleClearFilters}>
+                                            </lightning-button>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <div class="slds-text-body_small slds-var-m-top_small" style="color: #706e6b;">
+                                <strong>{filteredAvailableUsers.length}</strong> user(s) found. Click "Select" to assign.
+                            </div>
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-var-m-top_small user-picker-table">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th scope="col">
+                                            <div class="slds-truncate" title="Name">Name</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate" title="Email">Email</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate" title="Persona">Persona</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate" title="Product">Product</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate" title="Manager">Manager</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate" title="Action">Action</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={filteredAvailableUsers} for:item="user">
+                                        <tr key={user.userId} class="slds-hint-parent">
+                                            <td>
+                                                <div class="slds-cell-wrap" title={user.userName}>{user.userName}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-cell-wrap" title={user.userEmail}>{user.userEmail}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-cell-wrap" title={user.userPersona}>{user.userPersona}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-cell-wrap" title={user.product}>{user.product}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-cell-wrap" title={user.managerName}>{user.managerName}</div>
+                                            </td>
+                                            <td>
+                                                <lightning-button 
+                                                    variant="brand" 
+                                                    label="Select"
+                                                    data-user-id={user.userId}
+                                                    disabled={user.isCurrentUser}
+                                                    onclick={handleSelectUser}
+                                                >
+                                                </lightning-button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </lightning-card>
+                    </template>
+                </div>
+            </div>
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Query Attachments</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <template lwc:if={hasEditAccess}>
+                            <div class="form-field-wrap">
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Upload Attachments</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-file-upload name="fileUpload" label="Attach Files" accept="image/png,image/jpeg,image/jpg,image/gif,.pdf,.doc,.docx,.xls,.xlsx,.txt" record-id={queryDetails.Id} onuploadfinished={handleUploadFinished} multiple></lightning-file-upload>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <div class="form-field-wrap">
+                            <div class="form-field-cell">
+                                <div class="form-field-label">View Attachments</div>
+                                <div class="form-field-value-col">
+                                    <template if:true={attachments.length}>
+                                        <ul class="slds-list_dotted attachment-list">
+                                            <template for:each={attachments} for:item="att">
+                                                <li key={att.Id} class="slds-var-m-bottom_x-small">
+                                                    <a data-id={att.Id} onclick={handleViewAttachment} class="slds-text-link attachment-link" role="button" tabindex="0">{att.Title}</a>
+                                                    <p class="form-info-value-small slds-var-m-left_x-small">({att.FileExtension})</p>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                    <template if:false={attachments.length}>
+                                        <p class="form-info-value-small">No attachments</p>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-align_absolute-center">
+                <lightning-button label="Go Back to Queries" class="slds-var-m-right_x-small" onclick={handleCancel}></lightning-button>
+                <template lwc:if={recordEditable}>
+                    <lightning-button label="Save" variant="brand" onclick={handleSaveChanges}></lightning-button>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

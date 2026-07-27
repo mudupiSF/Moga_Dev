@@ -1,0 +1,189 @@
+<template>
+    <div class="form-layout kyc-viewer-wrap">
+        <template lwc:if={isLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading KYC details" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:else>
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <lightning-icon
+                            icon-name="utility:identity"
+                            size="small"
+                            class="slds-icon-text-default"
+                            variant="inverse">
+                        </lightning-icon>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">{title}</h1>
+                            <p class="form-header-subtitle">Verified profile and supporting document snapshot</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">CKYC Number</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{summary.ckycNumber}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">KYC DOB</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{summary.kycDob}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Age</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{summary.age}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Mobile Number</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{summary.mobileNo}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Face Match</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{summary.faceMatchPercentage}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Face Liveliness</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{summary.faceLiveliness}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card slds-m-top_medium">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <lightning-icon
+                            icon-name="utility:file"
+                            size="small"
+                            class="slds-icon-text-default"
+                            variant="inverse">
+                        </lightning-icon>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">KYC Documents</h1>
+                            <p class="form-header-subtitle">Supporting identity and address proofs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <template lwc:if={hasDocuments}>
+                        <div class="kyc-table-wrap">
+                            <table class="kyc-doc-table">
+                                <thead>
+                                    <tr>
+                                        <th class="p4-table-header" scope="col">Document Type</th>
+                                        <th class="p4-table-header" scope="col">Document Number</th>
+                                        <th class="p4-table-header" scope="col">Issuing Date</th>
+                                        <th class="p4-table-header" scope="col">KYC DOB</th>
+                                        <th class="p4-table-header" scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={documents} for:item="doc">
+                                        <tr key={doc.id}>
+                                            <td class="p4-field-value">{doc.documentType}</td>
+                                            <td class="p4-field-value">{doc.documentNumber}</td>
+                                            <td class="p4-field-value">{doc.issuanceDate}</td>
+                                            <td class="p4-field-value">{doc.kycDob}</td>
+                                            <td>
+                                                <template lwc:if={doc.hasFile}>
+                                                    <button
+                                                        type="button"
+                                                        class="kyc-preview-btn"
+                                                        title="Preview Document"
+                                                        data-checklist-id={doc.id}
+                                                        data-document-type={doc.documentType}
+                                                        onclick={handleOpenFile}>
+                                                        <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                    </button>
+                                                </template>
+                                                <template lwc:else>
+                                                    <span class="p4-help-text">N/A</span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text kyc-empty-state">No KYC documents found for this applicant.</p>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <template lwc:if={showDocumentPreview}>
+        <div class="kyc-preview-overlay">
+            <div class="kyc-preview-modal">
+                <div class="kyc-preview-modal-head">
+                    <span class="kyc-preview-modal-title">{previewDocumentTitle}</span>
+                    <button type="button" class="kyc-preview-modal-close" onclick={handleDocumentPreviewClose} title="Close">&#10005;</button>
+                </div>
+                <div class="kyc-preview-modal-body">
+                    <template lwc:if={isPreviewLoading}>
+                        <div class="kyc-preview-loading">
+                            <lightning-spinner alternative-text="Loading preview" size="medium"></lightning-spinner>
+                        </div>
+                    </template>
+                    <template lwc:elseif={hasPreviewDocuments}>
+                        <template lwc:if={hasPreviewImages}>
+                            <c-png-display-preview-pane
+                                documents={previewImageDocuments}
+                                preview-height={previewHeight}>
+                            </c-png-display-preview-pane>
+                        </template>
+                        <template lwc:if={hasPreviewPdfs}>
+                            <c-pdf-display-preview-pane
+                                documents={previewPdfDocuments}
+                                preview-height={previewHeight}>
+                            </c-pdf-display-preview-pane>
+                        </template>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

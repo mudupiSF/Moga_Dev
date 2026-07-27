@@ -1,0 +1,43 @@
+<template>
+    <template lwc:if={isLoaded}>
+        <lightning-card title="Application Aging Report" icon-name="standard:timesheet">
+            <div slot="actions">
+                <template if:true={showApplicationColumnsButton}>
+                    <lightning-button
+                        label="Select Application Columns"
+                        icon-name="utility:settings"
+                        onclick={openApplicationColumnSelector}
+                        variant="neutral">
+                    </lightning-button>
+                </template>
+                <template if:true={showInvestigationColumnsButton}>
+                    <lightning-button
+                        label="Select Investigation Columns"
+                        icon-name="utility:settings"
+                        onclick={openInvestigationColumnSelector}
+                        variant="neutral">
+                    </lightning-button>
+                </template>
+            </div>
+            <lightning-tabset active-tab-value={selectedTab}>
+                <!-- My Loans Tab -->
+                <!--<template if:true={showMyLoansTab}>
+                    <lightning-tab label="My Loans" value="employee" onactive={handleActive}></lightning-tab>
+                </template>-->
+                <template if:true={showMyTeamTab}>
+                    <lightning-tab label="My Team" value="manager" onactive={handleActive}></lightning-tab>
+                </template>
+                <!-- My Queries Tab (Employee) -->
+                <lightning-tab label="My Queries" value="employeeQuery" onactive={handleActive}></lightning-tab>
+                <template if:true={showMyTeamQueryTab}>
+                    <lightning-tab label="My Team Queries" value="managerQuery" onactive={handleActive}></lightning-tab>
+                </template>
+            </lightning-tabset>
+            <c-my-queries-aging-report></c-my-queries-aging-report>
+        </lightning-card>
+    </template>
+    <template lwc:else>
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+    </template>
+    
+</template>

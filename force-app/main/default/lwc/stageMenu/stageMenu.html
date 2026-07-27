@@ -1,0 +1,32 @@
+<template>
+    <template lwc:if={isSpinner}>
+        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+    </template>
+
+    <template if:false={isSpinner}>
+        <div class="desktop-view" style="position:fixed; z-index:100;">
+            <div class="slds-grid slds-wrap menu-grid">
+                <div class={menuColumnClass} style="border: 1px solid #e2e8f0; border-radius: 1rem; overflow: hidden;">
+                    <section class="menu-content menu">
+                        <div class="menu-header">
+                            <h1 class="menu-header-title slds-m-bottom_medium">Loan Application</h1>
+                        </div>
+                        <div class="menu-items">
+                            <c-stage-menu-items
+                                record-id={recordId}
+                                onmenuselect={handleMenuSelect}
+                                ontoggle={handleMenuToggle}
+                                ongrouptoggle={handleGroupToggle}
+                                onsubtoggle={handleSubToggle}
+                                active-tab={activeTab}
+                                active-tab-id={activeTabId}
+                                is-collapsed={isMenuCollapsed}
+                                menu-sections={menuSections}>
+                            </c-stage-menu-items>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

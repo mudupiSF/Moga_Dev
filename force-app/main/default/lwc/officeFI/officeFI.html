@@ -1,0 +1,2043 @@
+<template>
+    <div class={formLayoutClass}>
+        <template if:true={isLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:company" size="small" class="form-header-icon"></lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">{headerData.fiLabel}</h1>
+                        <p class="form-header-subtitle">{headerSubtitle}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-body">
+                <template lwc:if={isNonIndividual}>
+                <section class="form-card" aria-label="Office FI summary">
+                    <div class="form-body">
+                        <h2 class="p4-section-title">Office FI summary</h2>
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Applicant Name</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{headerData.applicantName}</p></div>
+                                </div>
+                            </div>
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Product type</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{headerData.productType}</p></div>
+                                </div>
+                            </div>
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">FI status</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{headerData.fiStatus}</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-card" aria-label="Business office address">
+                    <div class="form-body">
+                        <h2 class="p4-section-title">Business / office address</h2>
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Office name</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.employerBusinessName}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Office name</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="employerBusinessName" label="Office name" variant="label-hidden" value={formData.employerBusinessName} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Address line 1</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.addressLine1}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Address line 1</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="addressLine1" label="Address line 1" variant="label-hidden" value={formData.addressLine1} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">City</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.city}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">City</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="city" label="City" variant="label-hidden" value={formData.city} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">State</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.state}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">State</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="state" label="State" variant="label-hidden" value={formData.state} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Phone number</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.phoneNumber}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Phone number</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="tel" name="phoneNumber" label="Phone number" variant="label-hidden" value={formData.phoneNumber} maxlength="11" onchange={handleFieldChange} onblur={handleContactFieldBlur}></lightning-input>
+                                            <template lwc:if={contactErrors.phoneNumberError}><p class="form-field-error">{contactErrors.phoneNumberError}</p></template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Years in this address</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.yearsInThisAddress}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Years in this address</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="yearsInThisAddress" label="Years in this address" variant="label-hidden" value={formData.yearsInThisAddress} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Resi cum off (Y/N)</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{displayValues.resiCumOff}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Resi cum off (Y/N)</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox name="resiCumOff" label="Resi cum off (Y/N)" variant="label-hidden" value={formData.resiCumOff} options={yesNoOptions} onchange={handleFieldChange}></lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Address line 2</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.addressLine2}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Address line 2</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="addressLine2" label="Address line 2" variant="label-hidden" value={formData.addressLine2} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Pin code</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.pinCode}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Pin code</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="pinCode" label="Pin code" variant="label-hidden" value={formData.pinCode} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Landmark</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.landmark}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Landmark</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="landmark" label="Landmark" variant="label-hidden" value={formData.landmark} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Mobile</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.mobile}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Mobile</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="tel" name="mobile" label="Mobile" variant="label-hidden" value={formData.mobile} maxlength="10" onchange={handleFieldChange} onblur={handleContactFieldBlur}></lightning-input>
+                                            <template lwc:if={contactErrors.mobileError}><p class="form-field-error">{contactErrors.mobileError}</p></template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">KM from branch</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.kmFromBranch}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">KM from branch</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="kmFromBranch" label="KM from branch" variant="label-hidden" value={formData.kmFromBranch} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Office/BP FI</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.officeBpFi}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Office/BP FI</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="officeBpFi" label="Office/BP FI" variant="label-hidden" value={formData.officeBpFi} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Resi FI</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.resiFi}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Resi FI</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="resiFi" label="Resi FI" variant="label-hidden" value={formData.resiFi} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Latitude</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.fiLatitude}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Latitude</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="fiLatitude" label="Latitude" variant="label-hidden" value={formData.fiLatitude} disabled></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Longitude</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.fiLongitude}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Longitude</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="fiLongitude" label="Longitude" variant="label-hidden" value={formData.fiLongitude} disabled></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <template lwc:if={isEditable}>
+                                <div class="form-field-wrap">
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label"></div>
+                                        <div class="form-field-value-col">
+                                            <button type="button" class="form-primary-btn"
+                                                onclick={handleCaptureFiLocation}
+                                                disabled={uiFlags.captureLocationDisabled}
+                                                title="Capture location">
+                                                Capture Location
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Frontside</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.frontside}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Frontside</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="frontside" label="Frontside" variant="label-hidden" value={formData.frontside} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Leftside</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.leftside}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Leftside</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="leftside" label="Leftside" variant="label-hidden" value={formData.leftside} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Rearside</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.rearside}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Rearside</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="rearside" label="Rearside" variant="label-hidden" value={formData.rearside} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Rightside</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.rightside}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Rightside</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="rightside" label="Rightside" variant="label-hidden" value={formData.rightside} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Application Gen Time</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.leadGenTime}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Application Gen Time</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="datetime-local" name="leadGenTime" label="Application Gen Time" variant="label-hidden" value={formData.leadGenTime} disabled></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Request gen time</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.requestGenTime}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Request gen time</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="datetime-local" name="requestGenTime" label="Request gen time" variant="label-hidden" value={formData.requestGenTime} disabled></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Office verified time</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.officeVerifiedTime}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Office verified time</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="datetime-local" name="officeVerifiedTime" label="Office verified time" variant="label-hidden" value={formData.officeVerifiedTime} disabled></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-card" aria-label="Category SENP">
+                    <div class="form-body">
+                        <h2 class="p4-section-title">Category - SENP</h2>
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Company name</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.companyName}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Company name</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="companyName" label="Company name" variant="label-hidden" value={formData.companyName} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Name</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.senpContactName}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Name</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="senpContactName" label="Name" variant="label-hidden" value={formData.senpContactName} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Total business stability</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{displayValues.totalBusinessStability}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Total business stability</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox name="totalBusinessStability" label="Total business stability" variant="label-hidden" value={formData.totalBusinessStability} options={totalBusinessStabilityOptions} onchange={handleFieldChange}></lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Business premise</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{displayValues.businessPremise}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Business premise</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox name="businessPremise" label="Business premise" variant="label-hidden" value={formData.businessPremise} options={businessPremiseNiOptions} onchange={handleFieldChange}></lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Org type</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.orgType}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Org type</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="orgType" label="Org type" variant="label-hidden" value={formData.orgType} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Business nature</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.businessNature}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Business nature</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="businessNature" label="Business nature" variant="label-hidden" value={formData.businessNature} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Current business stability</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.currentBusinessStability}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Current business stability</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="currentBusinessStability" label="Current business stability" variant="label-hidden" value={formData.currentBusinessStability} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Business premises-owned/rental</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.businessPremisesOwnedRental}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Business premises-owned/rental</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="businessPremisesOwnedRental" label="Business premises-owned/rental" variant="label-hidden" value={formData.businessPremisesOwnedRental} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">If rental premises ? rent per month</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.rentalPremisesRentPerMonth}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">If rental premises ? rent per month</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="rentalPremisesRentPerMonth" label="If rental premises ? rent per month" variant="label-hidden" value={formData.rentalPremisesRentPerMonth} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-card" aria-label="Office business observation">
+                    <div class="form-body">
+                        <h2 class="p4-section-title">Office / business observation</h2>
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Office type</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{displayValues.officeBusinessType}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Office type</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox name="officeBusinessType" label="Office type" variant="label-hidden" value={formData.officeBusinessType} options={officeBusinessTypeOptions} onchange={handleFieldChange}></lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">No of emp seen</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.numberOfEmployeesSeen}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">No of emp seen</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="numberOfEmployeesSeen" label="No of emp seen" variant="label-hidden" value={formData.numberOfEmployeesSeen} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Office board</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.officeBoard}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Office board</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="officeBoard" label="Office board" variant="label-hidden" value={formData.officeBoard} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Location</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{displayValues.location}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Location</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox name="location" label="Location" variant="label-hidden" value={formData.location} options={locationOptions} onchange={handleFieldChange}></lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Activity at office</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.activityAtOffice}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Activity at office</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="activityAtOffice" label="Activity at office" variant="label-hidden" value={formData.activityAtOffice} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Locatability</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.locatability}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Locatability</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="locatability" label="Locatability" variant="label-hidden" value={formData.locatability} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Touring or transferable job</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.touringOrTransferableJob}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Touring or transferable job</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="touringOrTransferableJob" label="Touring or transferable job" variant="label-hidden" value={formData.touringOrTransferableJob} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">No of emp working</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.howManyEmployeesInOffice}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">No of emp working</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="howManyEmployeesInOffice" label="No of emp working" variant="label-hidden" value={formData.howManyEmployeesInOffice} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Political photo</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{displayValues.politicalPhoto}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Political photo</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox name="politicalPhoto" label="Political photo" variant="label-hidden" value={formData.politicalPhoto} options={politicalPhotoOptions} onchange={handleFieldChange}></lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Off size sqft</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{displayValues.officeBusinessSiteSqft}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Off size sqft</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox name="officeBusinessSiteSqft" label="Off size sqft" variant="label-hidden" value={formData.officeBusinessSiteSqft} options={officeBusinessSizeOptions} onchange={handleFieldChange}></lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Locality</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.locality}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Locality</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="locality" label="Locality" variant="label-hidden" value={formData.locality} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Office approach</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.officeApproach}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Office approach</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="officeApproach" label="Office approach" variant="label-hidden" value={formData.officeApproach} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Behaviour</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.behaviour}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Behaviour</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="behaviour" label="Behaviour" variant="label-hidden" value={formData.behaviour} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Photo not allowed</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.photoNotAllowed}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Photo not allowed</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="photoNotAllowed" label="Photo not allowed" variant="label-hidden" value={formData.photoNotAllowed} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="form-card" aria-label="FI feedback">
+                    <div class="form-body">
+                        <h2 class="p4-section-title">FI feedback</h2>
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">No. of attempts</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.noOfAttempts}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">No. of attempts</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" name="noOfAttempts" label="No. of attempts" variant="label-hidden" value={formData.noOfAttempts} min="0" max="99" step="1" onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">FI observation</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{displayValues.fiObservation}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">FI observation</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox name="fiObservation" label="FI observation" variant="label-hidden" value={formData.fiObservation} options={fiObservationOptions} onchange={handleFieldChange}></lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">FI recommendation</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.fiRecommendation}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">FI recommendation</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input name="fiRecommendation" label="FI recommendation" variant="label-hidden" value={formData.fiRecommendation} onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Verifier remarks</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.verifierRemarks}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Verifier remarks</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-textarea name="verifierRemarks" label="Verifier remarks" variant="label-hidden" value={formData.verifierRemarks} onchange={handleFieldChange}></lightning-textarea>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <template lwc:if={showRejectReason}>
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Reject reason</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{formData.rejectReason}</p></div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">Reject reason</div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input name="rejectReason" label="Reject reason" variant="label-hidden" value={formData.rejectReason} onchange={handleFieldChange}></lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-card" aria-label="Pictures">
+                    <div class="form-body">
+                        <h2 class="p4-section-title">Pictures</h2>
+                        <div class="rfi-doc-fields">
+                            <div class="dv-file-card">
+                                <span class="dv-file-legend">Office approach road</span>
+                                <p class="dv-file-title">Upload office approach road</p>
+                                <template lwc:if={documentUi.approachRoad.showUploadBtn}>
+                                    <button type="button" class="dv-upload-btn" data-document-type="Office Approach Road"
+                                        onclick={handleDocumentUploadClick} title="Upload office approach road" disabled={isLoading}>
+                                        <img src={chunkyUploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                                        <span class="dv-upload-btn-text">Select files</span>
+                                    </button>
+                                </template>
+                                <template lwc:if={documentUi.approachRoad.showEmptyPlaceholder}>
+                                    <p class="dv-file-empty">No file uploaded</p>
+                                </template>
+                                <template lwc:if={documentUi.approachRoad.showUploadedRow}>
+                                    <div class="dv-file-row dv-file-row--single">
+                                        <div class="dv-file-row-left">
+                                            <span class="dv-file-check">
+                                                <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"
+                                                    alternative-text="Uploaded"></lightning-icon>
+                                            </span>
+                                            <div class="dv-file-meta">
+                                                <span class="dv-file-name">{documentUi.fileNames.approachRoad}</span>
+                                                <span class="dv-file-status">Uploaded</span>
+                                            </div>
+                                        </div>
+                                        <div class="dv-file-row-actions">
+                                            <button type="button" class="dv-file-action dv-file-action--preview"
+                                                data-document-type="Office Approach Road" onclick={handleDocumentPreviewClick}
+                                                title="Preview">
+                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                            </button>
+                                            <template lwc:if={documentUi.approachRoad.showDeleteBtn}>
+                                                <button type="button" class="dv-file-action dv-file-action--danger"
+                                                    data-document-type="Office Approach Road" onclick={handleDocumentDeleteClick}
+                                                    title="Delete">
+                                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="dv-file-card">
+                                <span class="dv-file-legend">Office building inner view</span>
+                                <p class="dv-file-title">Upload office building inner view</p>
+                                <template lwc:if={documentUi.buildingInner.showUploadBtn}>
+                                    <button type="button" class="dv-upload-btn" data-document-type="Office Building Inner View"
+                                        onclick={handleDocumentUploadClick} title="Upload office building inner view" disabled={isLoading}>
+                                        <img src={chunkyUploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                                        <span class="dv-upload-btn-text">Select files</span>
+                                    </button>
+                                </template>
+                                <template lwc:if={documentUi.buildingInner.showEmptyPlaceholder}>
+                                    <p class="dv-file-empty">No file uploaded</p>
+                                </template>
+                                <template lwc:if={documentUi.buildingInner.showUploadedRow}>
+                                    <div class="dv-file-row dv-file-row--single">
+                                        <div class="dv-file-row-left">
+                                            <span class="dv-file-check">
+                                                <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"
+                                                    alternative-text="Uploaded"></lightning-icon>
+                                            </span>
+                                            <div class="dv-file-meta">
+                                                <span class="dv-file-name">{documentUi.fileNames.buildingInner}</span>
+                                                <span class="dv-file-status">Uploaded</span>
+                                            </div>
+                                        </div>
+                                        <div class="dv-file-row-actions">
+                                            <button type="button" class="dv-file-action dv-file-action--preview"
+                                                data-document-type="Office Building Inner View" onclick={handleDocumentPreviewClick}
+                                                title="Preview">
+                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                            </button>
+                                            <template lwc:if={documentUi.buildingInner.showDeleteBtn}>
+                                                <button type="button" class="dv-file-action dv-file-action--danger"
+                                                    data-document-type="Office Building Inner View" onclick={handleDocumentDeleteClick}
+                                                    title="Delete">
+                                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="dv-file-card">
+                                <span class="dv-file-legend">Office building front view</span>
+                                <p class="dv-file-title">Upload office building front view</p>
+                                <template lwc:if={documentUi.buildingFront.showUploadBtn}>
+                                    <button type="button" class="dv-upload-btn" data-document-type="Office Building Front View"
+                                        onclick={handleDocumentUploadClick} title="Upload office building front view" disabled={isLoading}>
+                                        <img src={chunkyUploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                                        <span class="dv-upload-btn-text">Select files</span>
+                                    </button>
+                                </template>
+                                <template lwc:if={documentUi.buildingFront.showEmptyPlaceholder}>
+                                    <p class="dv-file-empty">No file uploaded</p>
+                                </template>
+                                <template lwc:if={documentUi.buildingFront.showUploadedRow}>
+                                    <div class="dv-file-row dv-file-row--single">
+                                        <div class="dv-file-row-left">
+                                            <span class="dv-file-check">
+                                                <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"
+                                                    alternative-text="Uploaded"></lightning-icon>
+                                            </span>
+                                            <div class="dv-file-meta">
+                                                <span class="dv-file-name">{documentUi.fileNames.buildingFront}</span>
+                                                <span class="dv-file-status">Uploaded</span>
+                                            </div>
+                                        </div>
+                                        <div class="dv-file-row-actions">
+                                            <button type="button" class="dv-file-action dv-file-action--preview"
+                                                data-document-type="Office Building Front View" onclick={handleDocumentPreviewClick}
+                                                title="Preview">
+                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                            </button>
+                                            <template lwc:if={documentUi.buildingFront.showDeleteBtn}>
+                                                <button type="button" class="dv-file-action dv-file-action--danger"
+                                                    data-document-type="Office Building Front View" onclick={handleDocumentDeleteClick}
+                                                    title="Delete">
+                                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-card" aria-label="Fleet type">
+                    <div class="form-body">
+                        <h2 class="p4-section-title">Fleet type</h2>
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Count</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.fleetCount}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Count</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" name="fleetCount" label="Count" variant="label-hidden"
+                                                value={formData.fleetCount} min="0" step="1" onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Free fleet</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.freeFleet}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Free fleet</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" name="freeFleet" label="Free fleet" variant="label-hidden"
+                                                value={formData.freeFleet} min="0" step="1" onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Bank fleet</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.iblFleet}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Bank fleet</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" name="iblFleet" label="Bank fleet" variant="label-hidden"
+                                                value={formData.iblFleet} min="0" step="1" onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Financed by others</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.financedByOthers}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Financed by others</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" name="financedByOthers" label="Financed by others"
+                                                variant="label-hidden" value={formData.financedByOthers} min="0" step="1"
+                                                onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Total</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.fleetTotal}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Total</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" name="fleetTotal" label="Total" variant="label-hidden"
+                                                value={formData.fleetTotal} min="0" step="1" onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-card" aria-label="FI decision">
+                    <div class="form-body">
+                        <h2 class="p4-section-title">FI decision</h2>
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <template lwc:if={isDecisionReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Decision</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{displayValues.fiDecision}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Decision</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox name="fiDecision" label="Decision" variant="label-hidden"
+                                                value={fiDecision} options={fiDecisionOptions} onchange={handleDecisionFieldChange}
+                                                required>
+                                            </lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isDecisionReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Remarks</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{remarks}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Remarks</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-textarea name="remarks" label="Remarks" variant="label-hidden"
+                                                value={remarks} onchange={handleDecisionFieldChange}>
+                                            </lightning-textarea>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                </template>
+                <template lwc:else>
+                <section class="form-card" aria-label="Investigation summary">
+                    <div class="form-body">
+                        <h2 class="p4-section-title">Investigation summary</h2>
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">FI Status</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{headerData.fiStatus}</p></div>
+                                </div>
+                            </div>
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Applicant</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{headerData.applicantName}</p></div>
+                                </div>
+                            </div>
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Product</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{headerData.productType}</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-card" aria-label="Office address">
+                    <div class="form-body">
+                        <h2 class="p4-section-title">Office address</h2>
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Address Line 1</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.addressLine1}</p></div>
+                                </div>
+                            </div>
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Address Line 2</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.addressLine2}</p></div>
+                                </div>
+                            </div>
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">City</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.city}</p></div>
+                                </div>
+                            </div>
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Pin Code</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.pinCode}</p></div>
+                                </div>
+                            </div>
+                            <div class="form-field-wrap">
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">State</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.state}</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <template if:false={profileFlags.isGuarantorNonEarning}>
+                    <section class="form-card" aria-label="Office / business">
+                        <div class="form-body">
+                        <h2 class="p4-section-title">Office / business</h2>
+                            <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Landmark</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.landmark}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Landmark</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input name="landmark" label="Landmark" variant="label-hidden"
+                                            value={formData.landmark} onchange={handleFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Phone</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.phoneNumber}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Phone</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input type="tel" name="phoneNumber" label="Phone" variant="label-hidden"
+                                            value={formData.phoneNumber} maxlength="11" onchange={handleFieldChange}
+                                            onblur={handleContactFieldBlur}>
+                                        </lightning-input>
+                                        <template lwc:if={contactErrors.phoneNumberError}>
+                                            <p class="form-field-error">{contactErrors.phoneNumberError}</p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Mobile</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.mobile}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Mobile</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input type="tel" name="mobile" label="Mobile" variant="label-hidden"
+                                            value={formData.mobile} maxlength="10" onchange={handleFieldChange}
+                                            onblur={handleContactFieldBlur}>
+                                        </lightning-input>
+                                        <template lwc:if={contactErrors.mobileError}>
+                                            <p class="form-field-error">{contactErrors.mobileError}</p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Office/business same as application</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{displayValues.sameAddressAsInApplication}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Office/business same as application</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-combobox name="sameAddressAsInApplication"
+                                            label="Office/business same as application" variant="label-hidden"
+                                            value={formData.sameAddressAsInApplication} options={sameAddressOptions}
+                                            onchange={handleFieldChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Employer / business name</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.employerBusinessName}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Employer / business name</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input name="employerBusinessName" label="Employer / business name"
+                                            variant="label-hidden" value={formData.employerBusinessName}
+                                            onchange={handleFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Office / business type</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.officeBusinessType}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Office / business type</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input name="officeBusinessType" label="Office / business type"
+                                            variant="label-hidden" value={formData.officeBusinessType}
+                                            onchange={handleFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Business premise</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.businessPremise}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Business premise</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input name="businessPremise" label="Business premise" variant="label-hidden"
+                                            value={formData.businessPremise} onchange={handleFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Name of person met</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.nameOfPersonMet}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Name of person met</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input name="nameOfPersonMet" label="Name of person met" variant="label-hidden"
+                                            value={formData.nameOfPersonMet} pattern={nameTextPattern}
+                                            message-when-pattern-mismatch={nameTextPatternMessage} onchange={handleFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                            </div>
+                        </div>
+                    </section>
+                </template>
+
+                <template if:true={profileFlags.isSalaried}>
+                    <section class="form-card" aria-label="Salaried">
+                        <div class="form-body">
+                        <h2 class="p4-section-title">Salaried</h2>
+                            <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Current experience (years)</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.currentExperienceYears}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Current experience (years)</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input type="number" name="currentExperienceYears" label="Current experience (years)"
+                                            variant="label-hidden" value={formData.currentExperienceYears} min="0"
+                                            max="99999.9" step="0.1" onchange={handleFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Monthly income (FI visit)</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.monthlyIncomeAsPerFI}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Monthly income (FI visit)</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input type="number" name="monthlyIncomeAsPerFI" label="Monthly income (FI visit)"
+                                            variant="label-hidden" value={formData.monthlyIncomeAsPerFI} min="0"
+                                            step="0.01" onchange={handleFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Applicant recognized</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{displayValues.applicantRecognized}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Applicant recognized</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-combobox name="applicantRecognized" label="Applicant recognized"
+                                            variant="label-hidden" value={formData.applicantRecognized}
+                                            options={yesNoOptions} onchange={handleFieldChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                            </div>
+                        </div>
+                    </section>
+                </template>
+
+                <template if:true={profileFlags.isSEP}>
+                    <section class="form-card" aria-label="Self employed professional">
+                        <div class="form-body">
+                        <h2 class="p4-section-title">Self employed professional</h2>
+                            <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Current experience (years)</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.currentExperienceYears}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Current experience (years)</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input type="number" name="currentExperienceYears" label="Current experience (years)"
+                                            variant="label-hidden" value={formData.currentExperienceYears} min="0"
+                                            max="99999.9" step="0.1" onchange={handleFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Income as per FI visit</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.incomeAsPerFI}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Income as per FI visit</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input name="incomeAsPerFI" label="Income as per FI visit" variant="label-hidden"
+                                            value={formData.incomeAsPerFI} onchange={handleFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                            </div>
+                        </div>
+                    </section>
+                </template>
+
+                <template if:true={profileFlags.profileOther}>
+                    <section class="form-card" aria-label="SENP ? other">
+                        <div class="form-body">
+                        <h2 class="p4-section-title">SENP ? other</h2>
+                            <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Current experience (years)</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.currentExperienceYears}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Current experience (years)</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input type="number" name="currentExperienceYears" label="Current experience (years)"
+                                            variant="label-hidden" value={formData.currentExperienceYears} min="0"
+                                            max="99999.9" step="0.1" onchange={handleFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Income as per FI visit</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{formData.incomeAsPerFI}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Income as per FI visit</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input name="incomeAsPerFI" label="Income as per FI visit" variant="label-hidden"
+                                            value={formData.incomeAsPerFI} onchange={handleFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                            </div>
+                        </div>
+                    </section>
+                </template>
+
+                <section class="form-card" aria-label="FI documents">
+                    <div class="form-body">
+                        <h2 class="p4-section-title">FI documents</h2>
+                        <div class="rfi-doc-fields">
+                            <div class="dv-file-card">
+                                <span class="dv-file-legend">Building Front View</span>
+                                <p class="dv-file-title">Upload Building Front View</p>
+                                <template lwc:if={documentUi.buildingFront.showUploadBtn}>
+                                    <button type="button" class="dv-upload-btn" data-document-type="Office Building Front View"
+                                        onclick={handleDocumentUploadClick}
+                                        title="Upload building front view" disabled={isLoading}>
+                                        <img src={chunkyUploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                                        <span class="dv-upload-btn-text">Select Files</span>
+                                    </button>
+                                </template>
+                                <template lwc:if={documentUi.buildingFront.showEmptyPlaceholder}>
+                                    <p class="dv-file-empty">No file uploaded</p>
+                                </template>
+                                <template lwc:if={documentUi.buildingFront.showUploadedRow}>
+                                    <div class="dv-file-row dv-file-row--single">
+                                        <div class="dv-file-row-left">
+                                            <span class="dv-file-check">
+                                                <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"
+                                                    alternative-text="Uploaded"></lightning-icon>
+                                            </span>
+                                            <div class="dv-file-meta">
+                                                <span class="dv-file-name">{documentUi.fileNames.buildingFront}</span>
+                                                <span class="dv-file-status">Uploaded</span>
+                                            </div>
+                                        </div>
+                                        <div class="dv-file-row-actions">
+                                            <button type="button" class="dv-file-action dv-file-action--preview"
+                                                data-document-type="Office Building Front View" onclick={handleDocumentPreviewClick}
+                                                title="Preview">
+                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                            </button>
+                                            <template lwc:if={documentUi.buildingFront.showDeleteBtn}>
+                                                <button type="button" class="dv-file-action dv-file-action--danger"
+                                                    data-document-type="Office Building Front View" onclick={handleDocumentDeleteClick}
+                                                    title="Delete">
+                                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="dv-file-card">
+                                <span class="dv-file-legend">Signature</span>
+                                <p class="dv-file-title">Capture Signature</p>
+                                <template lwc:if={documentUi.signature.showUploadBtn}>
+                                    <button type="button" class="dv-upload-btn dv-upload-btn--compact"
+                                        onclick={handleSignatureUploadClick} title="Capture signature" disabled={isLoading}>
+                                        <span class="dv-upload-btn-text">Capture Signature</span>
+                                    </button>
+                                </template>
+                                <template lwc:if={documentUi.signature.showEmptyPlaceholder}>
+                                    <p class="dv-file-empty">No signature captured</p>
+                                </template>
+                                <template lwc:if={documentUi.signature.showUploadedRow}>
+                                    <div class="dv-file-row dv-file-row--single">
+                                        <div class="dv-file-row-left">
+                                            <span class="dv-file-check">
+                                                <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"
+                                                    alternative-text="Uploaded"></lightning-icon>
+                                            </span>
+                                            <div class="dv-file-meta">
+                                                <span class="dv-file-name">{documentUi.fileNames.signature}</span>
+                                                <span class="dv-file-status">Uploaded</span>
+                                            </div>
+                                        </div>
+                                        <div class="dv-file-row-actions">
+                                            <button type="button" class="dv-file-action dv-file-action--preview"
+                                                data-document-type="FI Signature" onclick={handleDocumentPreviewClick}
+                                                title="Preview">
+                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                            </button>
+                                            <template lwc:if={documentUi.signature.showDeleteBtn}>
+                                                <button type="button" class="dv-file-action dv-file-action--danger"
+                                                    data-document-type="FI Signature" onclick={handleDocumentDeleteClick}
+                                                    title="Delete">
+                                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <template lwc:if={profileFlags.profileAgriculture}>
+                    <section class="form-card" aria-label="Agriculture documents">
+                        <div class="form-body">
+                        <h2 class="p4-section-title">Agriculture documents</h2>
+                            <div class="rfi-doc-fields">
+                                <div class="dv-file-card">
+                                    <span class="dv-file-legend">Land Photo</span>
+                                    <p class="dv-file-title">Upload Land Photo</p>
+                                    <template lwc:if={documentUi.landPhoto.showUploadBtn}>
+                                        <button type="button" class="dv-upload-btn" data-document-type="Land Photo"
+                                            onclick={handleDocumentUploadClick}
+                                            title="Upload land photo" disabled={isLoading}>
+                                            <img src={chunkyUploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                                            <span class="dv-upload-btn-text">Select Files</span>
+                                        </button>
+                                    </template>
+                                    <template lwc:if={documentUi.landPhoto.showEmptyPlaceholder}>
+                                        <p class="dv-file-empty">No file uploaded</p>
+                                    </template>
+                                    <template lwc:if={documentUi.landPhoto.showUploadedRow}>
+                                        <div class="dv-file-row dv-file-row--single">
+                                            <div class="dv-file-row-left">
+                                                <span class="dv-file-check">
+                                                    <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"
+                                                        alternative-text="Uploaded"></lightning-icon>
+                                                </span>
+                                                <div class="dv-file-meta">
+                                                    <span class="dv-file-name">{documentUi.fileNames.landPhoto}</span>
+                                                    <span class="dv-file-status">Uploaded</span>
+                                                </div>
+                                            </div>
+                                            <div class="dv-file-row-actions">
+                                                <button type="button" class="dv-file-action dv-file-action--preview"
+                                                    data-document-type="Land Photo" onclick={handleDocumentPreviewClick}
+                                                    title="Preview">
+                                                    <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                </button>
+                                                <template lwc:if={documentUi.landPhoto.showDeleteBtn}>
+                                                    <button type="button" class="dv-file-action dv-file-action--danger"
+                                                        data-document-type="Land Photo" onclick={handleDocumentDeleteClick}
+                                                        title="Delete">
+                                                        <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="dv-file-card">
+                                    <span class="dv-file-legend">Patta Document</span>
+                                    <p class="dv-file-title">Upload Patta Document</p>
+                                    <template lwc:if={documentUi.patta.showUploadBtn}>
+                                        <button type="button" class="dv-upload-btn" data-document-type="Patta Document"
+                                            onclick={handleDocumentUploadClick}
+                                            title="Upload patta document" disabled={isLoading}>
+                                            <img src={chunkyUploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                                            <span class="dv-upload-btn-text">Select Files</span>
+                                        </button>
+                                    </template>
+                                    <template lwc:if={documentUi.patta.showEmptyPlaceholder}>
+                                        <p class="dv-file-empty">No file uploaded</p>
+                                    </template>
+                                    <template lwc:if={documentUi.patta.showUploadedRow}>
+                                        <div class="dv-file-row dv-file-row--single">
+                                            <div class="dv-file-row-left">
+                                                <span class="dv-file-check">
+                                                    <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"
+                                                        alternative-text="Uploaded"></lightning-icon>
+                                                </span>
+                                                <div class="dv-file-meta">
+                                                    <span class="dv-file-name">{documentUi.fileNames.patta}</span>
+                                                    <span class="dv-file-status">Uploaded</span>
+                                                </div>
+                                            </div>
+                                            <div class="dv-file-row-actions">
+                                                <button type="button" class="dv-file-action dv-file-action--preview"
+                                                    data-document-type="Patta Document" onclick={handleDocumentPreviewClick}
+                                                    title="Preview">
+                                                    <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                </button>
+                                                <template lwc:if={documentUi.patta.showDeleteBtn}>
+                                                    <button type="button" class="dv-file-action dv-file-action--danger"
+                                                        data-document-type="Patta Document" onclick={handleDocumentDeleteClick}
+                                                        title="Delete">
+                                                        <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </template>
+
+                <template lwc:if={profileFlags.profileRental}>
+                    <section class="form-card" aria-label="Rental documents">
+                        <div class="form-body">
+                        <h2 class="p4-section-title">Rental documents</h2>
+                            <div class="rfi-doc-fields">
+                                <div class="dv-file-card">
+                                    <span class="dv-file-legend">Rent Agreement</span>
+                                    <p class="dv-file-title">Upload Rent Agreement</p>
+                                    <template lwc:if={documentUi.rentAgreement.showUploadBtn}>
+                                        <button type="button" class="dv-upload-btn" data-document-type="Rent Agreement"
+                                            onclick={handleDocumentUploadClick}
+                                            title="Upload rent agreement" disabled={isLoading}>
+                                            <img src={chunkyUploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                                            <span class="dv-upload-btn-text">Select Files</span>
+                                        </button>
+                                    </template>
+                                    <template lwc:if={documentUi.rentAgreement.showEmptyPlaceholder}>
+                                        <p class="dv-file-empty">No file uploaded</p>
+                                    </template>
+                                    <template lwc:if={documentUi.rentAgreement.showUploadedRow}>
+                                        <div class="dv-file-row dv-file-row--single">
+                                            <div class="dv-file-row-left">
+                                                <span class="dv-file-check">
+                                                    <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"
+                                                        alternative-text="Uploaded"></lightning-icon>
+                                                </span>
+                                                <div class="dv-file-meta">
+                                                    <span class="dv-file-name">{documentUi.fileNames.rentAgreement}</span>
+                                                    <span class="dv-file-status">Uploaded</span>
+                                                </div>
+                                            </div>
+                                            <div class="dv-file-row-actions">
+                                                <button type="button" class="dv-file-action dv-file-action--preview"
+                                                    data-document-type="Rent Agreement" onclick={handleDocumentPreviewClick}
+                                                    title="Preview">
+                                                    <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                </button>
+                                                <template lwc:if={documentUi.rentAgreement.showDeleteBtn}>
+                                                    <button type="button" class="dv-file-action dv-file-action--danger"
+                                                        data-document-type="Rent Agreement" onclick={handleDocumentDeleteClick}
+                                                        title="Delete">
+                                                        <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </template>
+
+                <template lwc:if={profileFlags.profilePension}>
+                    <section class="form-card" aria-label="Pension documents">
+                        <div class="form-body">
+                        <h2 class="p4-section-title">Pension documents</h2>
+                            <div class="rfi-doc-fields">
+                                <div class="dv-file-card">
+                                    <span class="dv-file-legend">Pension Document</span>
+                                    <p class="dv-file-title">Upload Pension Document</p>
+                                    <template lwc:if={documentUi.pension.showUploadBtn}>
+                                        <button type="button" class="dv-upload-btn" data-document-type="Pension Document"
+                                            onclick={handleDocumentUploadClick}
+                                            title="Upload pension document" disabled={isLoading}>
+                                            <img src={chunkyUploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                                            <span class="dv-upload-btn-text">Select Files</span>
+                                        </button>
+                                    </template>
+                                    <template lwc:if={documentUi.pension.showEmptyPlaceholder}>
+                                        <p class="dv-file-empty">No file uploaded</p>
+                                    </template>
+                                    <template lwc:if={documentUi.pension.showUploadedRow}>
+                                        <div class="dv-file-row dv-file-row--single">
+                                            <div class="dv-file-row-left">
+                                                <span class="dv-file-check">
+                                                    <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"
+                                                        alternative-text="Uploaded"></lightning-icon>
+                                                </span>
+                                                <div class="dv-file-meta">
+                                                    <span class="dv-file-name">{documentUi.fileNames.pension}</span>
+                                                    <span class="dv-file-status">Uploaded</span>
+                                                </div>
+                                            </div>
+                                            <div class="dv-file-row-actions">
+                                                <button type="button" class="dv-file-action dv-file-action--preview"
+                                                    data-document-type="Pension Document" onclick={handleDocumentPreviewClick}
+                                                    title="Preview">
+                                                    <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                </button>
+                                                <template lwc:if={documentUi.pension.showDeleteBtn}>
+                                                    <button type="button" class="dv-file-action dv-file-action--danger"
+                                                        data-document-type="Pension Document" onclick={handleDocumentDeleteClick}
+                                                        title="Delete">
+                                                        <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </template>
+
+                <template lwc:if={isAddressProofUploaded}>
+                    <section class="form-card" aria-label="Address proof documents">
+                        <div class="form-body">
+                        <h2 class="p4-section-title">Address proof documents</h2>
+                            <div class="rfi-doc-fields">
+                        <template for:each={addressProofDocuments} for:item="document">
+                            <div key={document.ID} class="dv-file-card">
+                                <span class="dv-file-legend">Address Proof</span>
+                                <p class="dv-file-title">{document.Name}</p>
+                                <div class="dv-file-row dv-file-row--single">
+                                    <div class="dv-file-row-left">
+                                        <span class="dv-file-check">
+                                            <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"
+                                                alternative-text="Uploaded"></lightning-icon>
+                                        </span>
+                                        <div class="dv-file-meta">
+                                            <span class="dv-file-name">{document.Name}</span>
+                                            <span class="dv-file-status">Uploaded</span>
+                                        </div>
+                                    </div>
+                                    <div class="dv-file-row-actions">
+                                        <button type="button" class="dv-file-action dv-file-action--preview"
+                                            data-docid={document.ID} onclick={handleAddressProofPreview} title="Preview">
+                                            <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                            </div>
+                        </div>
+                    </section>
+                </template>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-card" aria-label="FI feedback">
+                    <div class="form-body">
+                        <h2 class="p4-section-title">FI feedback</h2>
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">No. of attempts</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{formData.noOfAttempts}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">No. of attempts</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-input type="number" name="noOfAttempts" label="No. of attempts" variant="label-hidden" value={formData.noOfAttempts} min="0" max="99" step="1" onchange={handleFieldChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">FI observation</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{displayValues.fiObservation}</p></div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">FI observation</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox name="fiObservation" label="FI observation" variant="label-hidden" value={formData.fiObservation} options={fiObservationOptions} onchange={handleFieldChange}></lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                </template>
+            </div>
+        </div>
+
+        <template lwc:if={uiFlags.showFooter}>
+            <div class="form-footer-wrapper">
+                <div class="form-footer">
+                    <div class="form-btn-wrapper">
+                        <template lwc:if={uiFlags.showFiActionButtons}>
+                            <button type="button" class="p4-secondary-btn" onclick={handleSaveClick}>Save</button>
+                            <button type="button" class="form-primary-btn" onclick={handleSubmitClick}
+                                disabled={uiFlags.submitDisabled}>Submit</button>
+                        </template>
+                        <template lwc:if={uiFlags.showDecisionButtons}>
+                            <button type="button" class="p4-secondary-btn" onclick={handleSaveDecisionClick}>Save decision</button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <template lwc:if={showSignatureModal}>
+        <template lwc:if={isIndividual}>
+        <section role="dialog" tabindex="-1" class="rfi-modal-backdrop">
+            <div class="rfi-modal rfi-modal--signature">
+                <header class="rfi-modal-header">
+                    <h2 class="rfi-modal-title">Capture signature</h2>
+                    <button type="button" class="rfi-modal-close" title="Close"
+                        onclick={handleCloseSignatureModal}>?</button>
+                </header>
+                <div class="rfi-modal-body">
+                    <c-capture-signature documentid={signatureDocumentId}
+                        onsignaturecapture={handleSignatureCapture}></c-capture-signature>
+                </div>
+                <footer class="rfi-modal-footer rfi-modal-footer--actions">
+                    <button type="button" class="p4-secondary-btn" onclick={handleSignatureClear}>Clear</button>
+                    <button type="button" class="form-primary-btn" onclick={handleSignatureSave}>Save</button>
+                </footer>
+            </div>
+        </section>
+        </template>
+    </template>
+
+    <template lwc:if={showMagicUpload}>
+        <div class="dv-modal-overlay" onmousedown={handleOverlayMouseDown} onclick={handleOverlayClick}>
+            <div class="dv-modal" onclick={stopPropagationDv}>
+                <div class="dv-modal-head">
+                    <span class="dv-modal-title">Advanced Document Upload</span>
+                    <button type="button" class="dv-modal-close" onclick={handleMagicUploadClose} title="Close">&#10005;</button>
+                </div>
+                <div class="dv-modal-body">
+                    <c-embed-custom-file-upload
+                        record-id={activeUploadChecklistId}
+                        max-files-allowed={activeMaxFiles}
+                        allowed-extensions={activeAllowedTypes}
+                        enable-compression
+                        allow-merge
+                        enable-video
+                        onfilesuploaded={handleMagicUploadComplete}>
+                    </c-embed-custom-file-upload>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template lwc:if={showFilePreviewer}>
+        <c-embed-file-preview
+            content-version-id={previewContentVersionId}
+            file-name={previewFileName}
+            file-extension={previewFileExtension}
+            session-id={sessionId}
+            vf-root={vfRoot}
+            can-download
+            onclose={handleEmbedPreviewClose}>
+        </c-embed-file-preview>
+    </template>
+
+    <template lwc:if={showPreviewModal}>
+        <c-file-previewer content-document-id={previewContentDocumentId} file-type={previewFileType}
+            record-id={applicationId} onclose={handleFilePreviewClose}>
+        </c-file-previewer>
+    </template>
+</template>

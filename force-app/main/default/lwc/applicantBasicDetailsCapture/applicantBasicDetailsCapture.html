@@ -1,0 +1,1884 @@
+<template>
+    <div class="bmp-page-layout"
+        onopendynamiccomponentmodal={handleOpenDynamicComponentModal}
+        onintegrationprogressupdate={handleIntegrationProgressUpdate} >
+
+        <!-- ══ LOADING OVERLAY ══════════════════════════════════════════════ -->
+        <template lwc:if={isLoading}>
+            <div class="bmp-loading-overlay">
+                <lightning-spinner alternative-text="Loading Basic Details" size="large"></lightning-spinner>
+                <span class="bmp-loading-overlay-text">Loading Basic Details…</span>
+            </div>
+        </template>
+
+        <!-- standalone "New / Clone Applicant" section removed; the copy-to-Guarantor
+             question now renders as the last row (before Primary) inside Application Details. -->
+
+        <!-- ══ SECTION 1 — APPLICATION DETAILS (fully static) ═══════════════ -->
+        <template lwc:if={showApplicationDetailsCard}>
+        <div class="bmp-card" data-id="applicationDetails">
+            <div class="bmp-card-header">
+                <div class="bmp-header-overlay"></div>
+                <div class="bmp-header-content">
+                    <div class="bmp-header-icon-wrap">
+                        <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                    </div>
+                    <div class="bmp-header-text">
+                        <h1 class="bmp-header-title">Application Details</h1>
+                        <p class="bmp-header-subtitle">Select vehicle type and applicant details</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bmp-card-body">
+                <div class="bmp-fields-grid">
+
+                    <!-- Product Type -->
+                    <!--<div class="bmp-field-wrap">
+                        <div class="bmp-info-cell">
+                            <div class="bmp-info-cell-header"><span class="bmp-info-label">Product Type</span></div>
+                            <div class="bmp-info-value-wrap"><p class="bmp-info-value">{productTypeLabel}</p></div>
+                        </div>
+                    </div>-->
+
+                    <!-- Vehicle Type -->
+                    <!--<div class="bmp-field-wrap">
+                        <template lwc:if={isBorrowerFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        Vehicle Type
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-radio-group">
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="assetType" value="New"
+                                                    checked={isVehicleTypeNew}
+                                                    onchange={handleVehicleTypeChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">New</span>
+                                            </label>
+                                            <template lwc:if={showVehicleTypeUsedOption}>
+                                                <label class="bmp-radio-label">
+                                                    <input type="radio" class="bmp-radio-input"
+                                                        name="assetType" value="Used"
+                                                        checked={isVehicleTypeUsed}
+                                                        onchange={handleVehicleTypeChange} />
+                                                    <span class="bmp-radio-circle"></span>
+                                                    <span class="bmp-radio-text">Used</span>
+                                                </label>
+                                            </template>
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="assetType" value="Refinance"
+                                                    checked={isVehicleTypeRefinance}
+                                                    onchange={handleVehicleTypeChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">Refinance</span>
+                                            </label>
+                                        </div>
+                                        <span class="slds-assistive-text" id="assetType" data-section-input data-required="true" data-editable="true" data-value={assetType} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Vehicle Type</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{assetType}</p></div>
+                                </div>
+                            </template>
+                    </div>-->
+
+                    <!-- Number of Vehicles (readonly — sourced from primary Application_Line_Item__c) -->
+                    <template lwc:if={hasNumberOfVehicles}>
+                        <div class="bmp-field-wrap">
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">🚙</span> --><span class="bmp-info-label">Number of Vehicles</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{numberOfVehicles}</p></div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Customer Type (editable combobox; drives Application Type) -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isCustomerTypeEditable}>
+                            <div class="bmp-field-cell">
+                                <div class="bmp-field-label">
+                                    Customer Type
+                                    <span class="bmp-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-combobox
+                                        id="customerType"
+                                        value={customerType}
+                                        label="Customer Type"
+                                        variant="label-hidden"
+                                        options={customerTypeOptions}
+                                        placeholder="Select Customer Type"
+                                        disabled={isCustomerTypeDisabled}
+                                        onchange={handleCustomerTypeChange}>
+                                    </lightning-combobox>
+                                    <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={customerType} aria-hidden="true"></span>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><!--<span class="bmp-field-emoji">👥</span>--><span class="bmp-info-label">Customer Type</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{customerType}</p></div>
+                            </div>
+                        </template>
+                    </div>
+                    <!-- Applicant Type (Entity Type) — enabled after Application Type is selected -->
+                    <template lwc:if={showApplicantEntityTypeField}>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <!-- <span class="field-emoji info-emoji">📋</span> -->
+                                        Applicant Type (Entity Type)
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            id="applicantEntityType"
+                                            value={applicantEntityType}
+                                            label="Applicant Type"
+                                            variant="label-hidden"
+                                            options={applicantEntityTypeOptionsComputed}
+                                            placeholder="Select Entity Type"
+                                            disabled={isApplicantEntityTypeDisabled}
+                                            onchange={handleApplicantEntityTypeChange}>
+                                        </lightning-combobox>
+                                        <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={applicantEntityType} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">📋</span> --><span class="bmp-info-label">Applicant Type (Entity Type)</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{applicantEntityTypeLabel}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- Entity Name — Non-Individual only -->
+                    <template lwc:if={isNonIndividualApplicant}>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <!-- <span class="field-emoji info-emoji">🏢</span> -->
+                                        Entity Name
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-editable-input-wrap">
+                                            <input type="text"
+                                                id="entityName"
+                                                class="bmp-input"
+                                                data-section-input
+                                                data-required="true"
+                                                data-editable="true"
+                                                value={entityName}
+                                                placeholder="Enter entity name"
+                                                oninput={handleEntityNameChange} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">🏢</span> --><span class="bmp-info-label">Entity Name</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{entityName}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template lwc:if={showMajorMinorIndustryFields}>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <!-- <span class="field-emoji info-emoji">🏭</span> -->
+                                        Major Industry
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            id="majorIndustry"
+                                            value={majorIndustry}
+                                            label="Major Industry"
+                                            variant="label-hidden"
+                                            options={majorIndustryOptions}
+                                            placeholder="Select Major Industry"
+                                            onchange={handleMajorIndustryChange}>
+                                        </lightning-combobox>
+                                        <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={majorIndustry} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">🏭</span> --><span class="bmp-info-label">Major Industry</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{majorIndustry}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <!-- <span class="field-emoji info-emoji">🏭</span> -->
+                                        Minor Industry
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            id="minorIndustry"
+                                            value={minorIndustry}
+                                            label="Minor Industry"
+                                            variant="label-hidden"
+                                            options={minorIndustryOptionsComputed}
+                                            placeholder="Select Minor Industry"
+                                            disabled={isMinorIndustryDisabled}
+                                            onchange={handleMinorIndustryChange}>
+                                        </lightning-combobox>
+                                        <span class="slds-assistive-text" data-section-input data-editable="true" data-value={minorIndustry} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">🏭</span> --><span class="bmp-info-label">Minor Industry</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{minorIndustry}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template lwc:if={showIndustryFields}>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <!-- <span class="field-emoji info-emoji">🏭</span> -->
+                                        Industry Name
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            id="industryName"
+                                            value={industryName}
+                                            label="Industry Name"
+                                            variant="label-hidden"
+                                            options={industryNameOptions}
+                                            placeholder="Select Industry Name"
+                                            onchange={handleIndustryNameChange}>
+                                        </lightning-combobox>
+                                        <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={industryName} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">🏭</span> --><span class="bmp-info-label">Industry Name</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{industryName}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">🏭</span> --><span class="bmp-info-label">Industry Code</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{industryCode}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">🏭</span> --><span class="bmp-info-label">Industry Code</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{industryCode}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- Segment (Two Wheeler + New only) -->
+                    <!--<template lwc:if={showSegmentField}>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        Segment
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            id="segment"
+                                            value={segment}
+                                            label="Segment"
+                                            variant="label-hidden"
+                                            options={segmentOptions}
+                                            placeholder="Select Segment"
+                                            onchange={handleSegmentChange}>
+                                        </lightning-combobox>
+                                        <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={segment} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Segment</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{segment}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>-->
+
+                    <!-- Beneficiary fields — Non-Individual + Beneficiary applicant -->
+                    <template lwc:if={showBeneficiaryFields}>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <!-- <span class="field-emoji info-emoji">👤</span> -->
+                                        Beneficial Owner Category
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            id="beneficialOwnerCategory"
+                                            value={beneficialOwnerCategory}
+                                            label="Beneficial Owner Category"
+                                            variant="label-hidden"
+                                            options={beneficialOwnerCategoryOptions}
+                                            placeholder="Select an Option"
+                                            onchange={handleBeneficialOwnerCategoryChange}>
+                                        </lightning-combobox>
+                                        <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={beneficialOwnerCategory} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">👤</span> --><span class="bmp-info-label">Beneficial Owner Category</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{beneficialOwnerCategoryLabel}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <!-- <span class="field-emoji info-emoji">🔗</span> -->
+                                        Relationship with Entity
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            id="relationshipWithEntity"
+                                            value={relationshipWithEntity}
+                                            label="Relationship with Entity"
+                                            variant="label-hidden"
+                                            options={relationshipWithEntityOptions}
+                                            placeholder="Select an Option"
+                                            onchange={handleRelationshipWithEntityChange}>
+                                        </lightning-combobox>
+                                        <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={relationshipWithEntity} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">🔗</span> --><span class="bmp-info-label">Relationship with Entity</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{relationshipWithEntityLabel}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <!-- <span class="field-emoji info-emoji">🔗</span> -->
+                                        Relationship Type
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            id="relationshipType"
+                                            value={relationshipType}
+                                            label="Relationship Type"
+                                            variant="label-hidden"
+                                            options={relationshipTypeOptions}
+                                            placeholder="Select an Option"
+                                            onchange={handleRelationshipTypeChange}>
+                                        </lightning-combobox>
+                                        <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={relationshipType} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">🔗</span> --><span class="bmp-info-label">Relationship Type</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{relationshipTypeLabel}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <!-- <span class="field-emoji info-emoji">📋</span> -->
+                                        POA Holder
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-editable-input-wrap">
+                                            <input type="checkbox"
+                                                id="poaHolder"
+                                                class="bmp-checkbox"
+                                                checked={poaHolder}
+                                                onchange={handlePoaHolderChange} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">📋</span> --><span class="bmp-info-label">POA Holder</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{poaHolderLabel}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <!-- <span class="field-emoji info-emoji">📊</span> -->
+                                        Shareholder %
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-editable-input-wrap">
+                                            <input type="number"
+                                                id="shareHolding"
+                                                class="bmp-input"
+                                                data-section-input
+                                                data-required="true"
+                                                data-editable="true"
+                                                value={shareHolding}
+                                                min="0"
+                                                max="100"
+                                                step="0.01"
+                                                placeholder="Enter percentage"
+                                                oninput={handleShareHoldingChange} 
+                                                onblur={handleShareHoldingBlur} />
+                                            <template lwc:if={hasShareHoldingValidationError}>
+                                                <p class="form-field-error">{shareHoldingValidationError}</p>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">📊</span> --><span class="bmp-info-label">Shareholder %</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{shareHoldingDisplay}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- Clone (copy to Guarantor) question: row before Primary, NI Beneficiary only -->
+                    <template lwc:if={showCloneApplicantQuestion}>
+                        <div class="bmp-field-wrap bmp-field-wrap--full">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        Choose whether to copy this Beneficiary Information to a Guarantor ?
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-radio-group">
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="copyToGuarantor" value="Yes"
+                                                    checked={isCopyToGuarantorYes}
+                                                    onchange={handleCopyToGuarantorChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">Yes</span>
+                                            </label>
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="copyToGuarantor" value="No"
+                                                    checked={isCopyToGuarantorNo}
+                                                    onchange={handleCopyToGuarantorChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Copy this Beneficiary to a Guarantor</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{copyToGuarantorDisplay}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- Primary applicant question (last row of Application Details) -->
+                    <template lwc:if={showPrimaryQuestion}>
+                        <div class="bmp-field-wrap bmp-field-wrap--full">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        {primaryQuestionLabel}
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-radio-group">
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="isPrimaryApplicant" value="Yes"
+                                                    checked={isPrimaryYes}
+                                                    onchange={handlePrimaryChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">Yes</span>
+                                            </label>
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="isPrimaryApplicant" value="No"
+                                                    checked={isPrimaryNo}
+                                                    onchange={handlePrimaryChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">{primaryQuestionLabel}</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{primaryAnswerLabel}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                </div>
+            </div>
+        </div>
+        </template>
+        <!-- END Application Details -->
+
+        <!-- ══ SECTION 2 — LOAN BASIC INFO ══════════════════════════════════ -->
+        <template lwc:if={showLoanBasicInfo}>
+            <div class="form-card" data-id="loanBasicInfo">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="form-header-icon"></lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Loan Basic Info</h1>
+                            <p class="form-header-subtitle">Update application information</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <template lwc:if={isBorrowerFieldEditable}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        Branch
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <lightning-record-picker
+                                            id="accountId"
+                                            value={accountId}
+                                            label="Branch"
+                                            variant="label-hidden"
+                                            object-api-name="Account"
+                                            placeholder="Search Branch..."
+                                            display-info={accountDisplayInfo}
+                                            matching-info={accountMatchingInfo}
+                                            onchange={handleAccountIdChange}>
+                                        </lightning-record-picker>
+                                        <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={accountId} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Branch</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{accountName}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                        <template lwc:if={showPurposeOfPurchaseField}>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isPurposeOfPurchaseEditable}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">Purpose of Purchase</div>
+                                        <div class="form-field-value-col">
+                                            <lightning-combobox
+                                                id="purposeOfPurchase"
+                                                value={purposeOfPurchase}
+                                                label="Purpose of Purchase"
+                                                variant="label-hidden"
+                                                options={purposeOfPurchaseOptions}
+                                                placeholder="Select Purpose of Purchase"
+                                                onchange={handlePurposeOfPurchaseChange}>
+                                            </lightning-combobox>
+                                            <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={purposeOfPurchase} aria-hidden="true"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Purpose of Purchase</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{purposeOfPurchase}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        <!--<div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Agent Branch Name</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{agentBranchName}</p></div>
+                            </div>
+                        </div>-->
+                    </div>
+                </div>
+            </div>
+        </template>
+        <!-- END Loan Basic Info -->
+
+        <!-- ══ SECTION 3 — LOAN DETAIL ═══════════════════════════════════════ -->
+        <template lwc:if={showLoanDetail}>
+            <div class="bmp-card" data-id="loanDetail">
+                <div class="bmp-card-header">
+                    <div class="bmp-header-overlay"></div>
+                    <div class="bmp-header-content">
+                        <div class="bmp-header-icon-wrap">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                        </div>
+                        <div class="bmp-header-text">
+                            <h1 class="bmp-header-title">Loan Detail</h1>
+                            <p class="bmp-header-subtitle">Loan and vehicle details</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bmp-card-body">
+                    <div class="bmp-fields-grid">
+
+                        <!-- ── Required Loan Amount ── -->
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isBorrowerFieldEditable}>
+                                <div class="bmp-editable-section">
+                                    <label class="bmp-editable-label">
+                                        Required Loan Amount (₹)
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </label>
+                                    <div class="bmp-editable-input-wrap">
+                                        <input type="text" inputmode="decimal"
+                                            id="requiredLoanAmount"
+                                            class="bmp-input"
+                                            data-section-input
+                                            data-required="true"
+                                            data-editable="true"
+                                            value={requiredLoanAmountDisplay}
+                                            data-key="requiredLoanAmount"
+                                            data-section="loanDetail"
+                                            placeholder="Enter required loan amount"
+                                            oninput={handleRequiredLoanAmountInput}
+                                            onfocus={handleRequiredLoanAmountFocus}
+                                            onblur={handleRequiredLoanAmountBlur} />
+                                        <span class="bmp-editable-badge">Editable</span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Required Loan Amount (₹)</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{requiredLoanAmountDisplay}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <!-- END Loan Detail -->
+
+        <!-- ══ SECTION 4 — PROFESSIONAL DETAIL ══════════════════════════════ -->
+        <template lwc:if={showProfessionalDetail}>
+            <div class="bmp-card" data-id="professionalDetail">
+                <div class="bmp-card-header">
+                    <div class="bmp-header-overlay"></div>
+                    <div class="bmp-header-content">
+                        <div class="bmp-header-icon-wrap">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                        </div>
+                        <div class="bmp-header-text">
+                            <h1 class="bmp-header-title">Professional Detail</h1>
+                            <p class="bmp-header-subtitle">Employment and income details</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bmp-card-body">
+                    <div class="bmp-fields-grid">
+                        <!-- ── Profile Type (Individual applicants only — not relevant for NI) ── -->
+                        <template lwc:if={isIndividualApplicant}>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <!-- <span class="field-emoji info-emoji">👤</span> -->
+                                        Profile Type
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            id="profileType"
+                                            value={profileType}
+                                            label="Profile Type"
+                                            variant="label-hidden"
+                                            options={profileTypeOptions}
+                                            placeholder="Select Profile Type"
+                                            onchange={handleProfileTypeChange}>
+                                        </lightning-combobox>
+                                        <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={profileType} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">👤</span> --><span class="bmp-info-label">Profile Type</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{profileType}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                        </template>
+
+                        <!-- ── Income Available (Individual applicants only — not relevant for NI) ── -->
+                        <template lwc:if={isIndividualApplicant}>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">
+                                        <!-- <span class="field-emoji info-emoji">💰</span> -->
+                                        Income Available
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <div class="bmp-radio-group">
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    name="incomeAvailable" value="Yes"
+                                                    checked={isIncomeAvailableYes}
+                                                    disabled={isIncomeAvailableDisabled}
+                                                    onchange={handleIncomeAvailableChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">Yes</span>
+                                            </label>
+                                            <label class="bmp-radio-label">
+                                                <input type="radio" class="bmp-radio-input"
+                                                    id="incomeAvailable-no"
+                                                    name="incomeAvailable" value="No"
+                                                    checked={isIncomeAvailableNo}
+                                                    disabled={isIncomeAvailableDisabled}
+                                                    onchange={handleIncomeAvailableChange} />
+                                                <span class="bmp-radio-circle"></span>
+                                                <span class="bmp-radio-text">No</span>
+                                            </label>
+                                        </div>
+                                        <span class="slds-assistive-text" id="incomeAvailable" data-section-input data-required="true" data-editable={isIncomeAvailableEditable} data-value={incomeAvailable} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">💰</span> --><span class="bmp-info-label">Income Available</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{incomeAvailable}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                        </template>
+
+                        <!-- ── Annual Income (currency: Individual applicants, when incomeAvailable = Yes) ── -->
+                        <template lwc:if={showAnnualIncome}>
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="bmp-editable-section">
+                                        <label class="bmp-editable-label">
+                                            Annual Income (₹)
+                                            <span class="bmp-required-indicator" title="Required">*</span>
+                                        </label>
+                                        <div class="bmp-editable-input-wrap">
+                                            <input type="text" inputmode="decimal"
+                                                id="annualIncome"
+                                                class="bmp-input"
+                                                data-section-input
+                                                data-required="true"
+                                                data-editable="true"
+                                                value={annualIncomeDisplay}
+                                                data-key="annualIncome"
+                                                data-section="professionalDetail"
+                                                placeholder="Enter annual income"
+                                                oninput={handleAnnualIncomeInput}
+                                                onfocus={handleAnnualIncomeFocus}
+                                                onblur={handleAnnualIncomeBlur} />
+                                            <span class="bmp-editable-badge">Editable</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><span class="bmp-info-label">Annual Income (₹)</span></div>
+                                        <div class="bmp-info-value-wrap"><p class="bmp-info-value">{annualIncomeDisplay}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <!-- ── Occupation Category (Individual applicants; SAL/SEP/SENP when Income Yes, locked NE when Income No) ── -->
+                        <template lwc:if={showOccupationCategory}>
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="bmp-field-cell">
+                                        <div class="bmp-field-label">
+                                            <!-- <span class="field-emoji info-emoji">💼</span> -->
+                                            Occupation Category
+                                            <span class="bmp-required-indicator" title="Required">*</span>
+                                        </div>
+                                        <div class="bmp-field-value-col">
+                                            <lightning-combobox
+                                                id="occupationCategory"
+                                                value={occupationCategory}
+                                                label="Occupation Category"
+                                                variant="label-hidden"
+                                                options={occupationCategoryOptions}
+                                                placeholder="Select Occupation Category"
+                                                disabled={isOccupationCategoryLocked}
+                                                onchange={handleOccupationCategoryChange}>
+                                            </lightning-combobox>
+                                            <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={occupationCategory} aria-hidden="true"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><!-- <span class="field-emoji info-emoji">💼</span> --><span class="bmp-info-label">Occupation Category</span></div>
+                                        <div class="bmp-info-value-wrap"><p class="bmp-info-value">{occupationCategoryLabel}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <!-- ── Evaluation Type (picklist: visible for Non-Individual only) ── -->
+                        <template lwc:if={showEvaluationType}>
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="bmp-field-cell">
+                                        <div class="bmp-field-label">Evaluation Type</div>
+                                        <div class="bmp-field-value-col">
+                                            <lightning-combobox
+                                                value={evaluationType}
+                                                label="Evaluation Type"
+                                                variant="label-hidden"
+                                                options={evaluationTypeOptions}
+                                                placeholder="Select Evaluation Type"
+                                                onchange={handleEvaluationTypeChange}>
+                                            </lightning-combobox>
+                                            <span class="slds-assistive-text" data-section-input data-required="true" data-editable="true" data-value={evaluationType} aria-hidden="true"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><span class="bmp-info-label">Evaluation Type</span></div>
+                                        <div class="bmp-info-value-wrap"><p class="bmp-info-value">{evaluationTypeLabel}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <!-- END Professional Detail -->
+
+        <!-- ══ SECTION 5 — DOCUMENT VERIFICATION ════════════════════════════ -->
+        <template lwc:if={showDocumentVerification}>
+            <div class="form-card" data-id="documentVerification">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Document Verification</h1>
+                            <p class="form-header-subtitle">Document verification details</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                  <div class="dv-split">
+                    <div class="dv-left">
+                    <div class="dv-fields-row">
+                        <div class="form-field-wrap">
+                            <template lwc:if={isIsPanAvailableReadonly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Is PAN Available</span></div>
+                                    <div class="form-info-value-wrap"><p class="form-info-value">{isPanAvailableValue}</p></div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">Is PAN Available</div>
+                                    <div class="form-field-value-col">
+                                        <div class="form-radio-group">
+                                            <label class="form-radio-label">
+                                                <input type="radio" class="form-radio-input"
+                                                    name="isPanAvailable" value="Yes"
+                                                    checked={isPanAvailableYes}
+                                                    onchange={handleIsPanAvailableChange} />
+                                                <span class="form-radio-circle"></span>
+                                                <span class="form-radio-text">Yes</span>
+                                            </label>
+                                            <label class="form-radio-label">
+                                                <input type="radio" class="form-radio-input"
+                                                    name="isPanAvailable" value="No"
+                                                    checked={isPanAvailableNo}
+                                                    onchange={handleIsPanAvailableChange} />
+                                                <span class="form-radio-circle"></span>
+                                                <span class="form-radio-text">No</span>
+                                            </label>
+                                        </div>
+                                        <span class="slds-assistive-text" id="isPanAvailable" data-section-input data-required="true" data-editable="true" data-value={isPanAvailableValue} aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <template lwc:if={showGenderField}>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">
+                                            Gender
+                                            <span class="form-required-indicator" title="Required">*</span>
+                                        </label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <lightning-combobox name="gender"
+                                                variant="label-hidden"
+                                                placeholder="Select Gender"
+                                                value={gender}
+                                                options={genderOptions}
+                                                onchange={handleGenderChange}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Gender</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{genderLabel}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+                            <template lwc:if={isFieldEditable}>
+                                <span class="slds-assistive-text" id="gender" data-section-input data-required="true" data-editable="true" data-value={gender} aria-hidden="true"></span>
+                            </template>
+                        </template>
+                    </div>
+                    <template lwc:if={showExtractedPanFields}>
+                        <div class="form-fields-grid">
+                            <template lwc:if={isNonIndividualApplicant}>
+                                <div class="form-field-wrap">
+                                    <template lwc:if={panVerified}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Entity / Company Name</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{entityName}</p></div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">Entity / Company Name</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <input type="text" class="form-field-editable-input"
+                                                    value={entityName}
+                                                    placeholder="Enter entity or company name"
+                                                    maxlength="255"
+                                                    oninput={handleEntityCompanyNameInDocumentInput} />
+                                                <span class="form-field-editable-badge">Editable</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template lwc:elseif={isIndividualApplicant}>
+                                <div class="form-field-wrap">
+                                    <template lwc:if={panVerified}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">First Name</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{extractedFirstName}</p></div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">
+                                                First Name
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <input type="text" class="form-field-editable-input"
+                                                    data-section-input
+                                                    data-required="true"
+                                                    data-editable="true"
+                                                    value={extractedFirstName}
+                                                    placeholder="Extracted from PAN"
+                                                    oninput={handleExtractedFirstNameInput} />
+                                                <span class="form-field-editable-badge">Editable</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="form-field-wrap">
+                                    <template lwc:if={panVerified}>
+                                        <div class="form-field-wrap">
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Last Name</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{extractedLastName}</p></div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">
+                                                Last Name
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <input type="text" class="form-field-editable-input"
+                                                    data-section-input
+                                                    data-required="true"
+                                                    data-editable="true"
+                                                    value={extractedLastName}
+                                                    placeholder="Extracted from PAN"
+                                                    oninput={handleExtractedLastNameInput} />
+                                                <span class="form-field-editable-badge">Editable</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template lwc:if={isNonIndividualApplicant}>
+                                <div class="form-field-wrap">
+                                    <template lwc:if={panVerified}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Date of Incorporation</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{dateOfIncorporation}</p></div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">Date of Incorporation</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <input type="date" class="form-field-editable-input"
+                                                    value={dateOfIncorporation}
+                                                    placeholder="Enter date of incorporation"
+                                                    oninput={handleDateOfIncorporationInput} />
+                                                <span class="form-field-editable-badge">Editable</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template lwc:if={isIndividualApplicant}>
+                                <div class="form-field-wrap">
+                                    <template lwc:if={panVerified}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Date of Birth</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{extractedDateOfBirth}</p></div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">Date of Birth</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <input type="date" class="form-field-editable-input form-field-editable-input--date"
+                                                    data-section-input
+                                                    data-required="true"
+                                                    data-editable="true"
+                                                    value={extractedDateOfBirth}
+                                                    placeholder="Extracted from PAN"
+                                                    max={dobMaxDateIso}
+                                                    onclick={handleDateInputClick}
+                                                    onchange={handleExtractedDateOfBirthInput}
+                                                    oninput={handleExtractedDateOfBirthInput} />
+                                                <span class="form-field-editable-badge">Editable</span>
+                                            </div>
+                                            <template lwc:if={hasDobValidationError}>
+                                                <p class="form-field-error">{dobValidationError}</p>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <div class="form-field-wrap">
+                                <template lwc:if={panVerified}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">PAN Card Number</span></div>
+                                        <div class="form-info-value-wrap">
+                                            <div class="form-info-value-with-action-row">
+                                                <p class="form-info-value">{extractedPanCardNumber}</p>
+                                                <span class={panVerifyInfoActionLabelClass}>{panVerifyActionLabel}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">
+                                            PAN Card Number
+                                            <span class="form-required-indicator" title="Required">*</span>
+                                        </div>
+                                        <div class="form-field-value-col">
+                                            <div class="form-input-with-action-wrap">
+                                                <input type="text" class="form-action-input"
+                                                    data-section-input
+                                                    data-required="true"
+                                                    data-editable="true"
+                                                    value={extractedPanCardNumber}
+                                                    placeholder="Extracted from PAN"
+                                                    maxlength="10"
+                                                    readonly={panInputReadonly}
+                                                    oninput={handleExtractedPanInput} 
+                                                    onblur={handleExtractedPanBlur} />
+                                                <div class="form-input-with-action-btn-wrap">
+                                                    <button type="button" class={panVerifyActionBtnClass}
+                                                        disabled={panVerifyDisabled}
+                                                        onclick={handlePanVerifyClick}>
+                                                        {panVerifyActionLabel}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <template lwc:if={hasExtractedPanCardNumberValidationError}>
+                                                <p class="form-field-error">{extractedPanCardNumberValidationError}</p>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        </template>
+                        <template lwc:if={showForm60NameFields}>
+                            <div class="dv-fields-row">
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">
+                                                First Name
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <input type="text" class="form-field-editable-input"
+                                                    data-section-input
+                                                    data-required="true"
+                                                    data-editable="true"
+                                                    value={extractedFirstName}
+                                                    placeholder="Enter first name"
+                                                    oninput={handleExtractedFirstNameInput} />
+                                                <span class="form-field-editable-badge">Editable</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">First Name</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{extractedFirstName}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">
+                                                Last Name
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <input type="text" class="form-field-editable-input"
+                                                    data-section-input
+                                                    data-required="true"
+                                                    data-editable="true"
+                                                    value={extractedLastName}
+                                                    placeholder="Enter last name"
+                                                    oninput={handleExtractedLastNameInput} />
+                                                <span class="form-field-editable-badge">Editable</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Last Name</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{extractedLastName}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:if={showPanAckNo}>
+                            <div class="dv-fields-row">
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">
+                                            Date of Birth
+                                            <span class="form-required-indicator" title="Required">*</span>
+                                        </label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <input type="date" class="form-field-editable-input form-field-editable-input--date"
+                                                data-section-input
+                                                data-required="true"
+                                                data-editable="true"
+                                                value={extractedDateOfBirth}
+                                                placeholder="Select date of birth"
+                                                max={dobMaxDateIso}
+                                                onclick={handleDateInputClick}
+                                                onchange={handleExtractedDateOfBirthInput}
+                                                oninput={handleExtractedDateOfBirthInput} />
+                                            <span class="form-field-editable-badge">Editable</span>
+                                        </div>
+                                        <template lwc:if={hasDobValidationError}>
+                                            <p class="form-field-error">{dobValidationError}</p>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Date of Birth</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{extractedDateOfBirth}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">
+                                            PAN Acknowledgement Number
+                                            <span class="form-required-indicator" title="Required">*</span>
+                                        </label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <input type="text" class="form-field-editable-input"
+                                                value={panAckNo}
+                                                placeholder="Enter PAN Acknowledgement Number"
+                                                maxlength="18"
+                                                inputmode="numeric"
+                                                pattern="[0-9]*"
+                                                oninput={handlePanAckNoChange} />
+                                            <span class="form-field-editable-badge">Editable</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">PAN Acknowledgement Number</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{panAckNo}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+                            <template lwc:if={isFieldEditable}>
+                                <span class="slds-assistive-text" id="panAckNo" data-section-input data-required="true" data-editable="true" data-value={panAckNo} aria-hidden="true"></span>
+                            </template>
+                            </div>
+                        </template>
+                    </div>
+                    <!-- RIGHT column — file upload / preview / delete -->
+                    <div class="dv-right">
+                        <template lwc:if={showPanCard}>
+                            <div class="dv-file-card">
+                                <span class="dv-file-legend">PAN Card <span class="dv-file-req" title="Required">*</span></span>
+                                <p class="dv-file-title">Upload PAN Card File</p>
+
+                                <template lwc:if={panShowUploadBtn}>
+                                    <button type="button" class="dv-upload-btn" onclick={handlePanChunkyUpload} title="Upload PAN Card file">
+                                        <img src={chunkyUploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                                        <span class="dv-upload-btn-text">Select Files</span>
+                                    </button>
+                                </template>
+                                <template lwc:if={panShowEmptyPlaceholder}>
+                                    <p class="dv-file-empty">No file uploaded</p>
+                                </template>
+
+                                <template lwc:if={panFilesSingle}>
+                                    <div class="dv-file-row dv-file-row--single">
+                                        <div class="dv-file-row-left">
+                                            <span class="dv-file-check">
+                                                <lightning-icon icon-name="utility:success" size="x-small" variant="inverse" alternative-text="Uploaded"></lightning-icon>
+                                            </span>
+                                            <div class="dv-file-meta">
+                                                <span class="dv-file-name">{panSingleFile.name}</span>
+                                                <span class="dv-file-status">Uploaded</span>
+                                            </div>
+                                        </div>
+                                        <div class="dv-file-row-actions">
+                                            <button type="button" class="dv-file-action dv-file-action--preview"
+                                                data-content-version-id={panSingleFile.contentVersionId}
+                                                data-file-name={panSingleFile.name}
+                                                data-file-extension={panSingleFile.extension}
+                                                onclick={handleFilePreviewClick} title="Preview">
+                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                            </button>
+                                            <template lwc:if={panCanDelete}>
+                                                <button type="button" class="dv-file-action dv-file-action--danger"
+                                                    data-id={panSingleFile.id}
+                                                    onclick={handlePanFileDelete} title="Delete">
+                                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <template lwc:if={panFilesMulti}>
+                                    <div class="dv-file-multi">
+                                        <button type="button" class="dv-file-multi-head" onclick={togglePanFilesExpand}>
+                                            <div class="dv-file-row-left">
+                                                <span class="dv-file-check">
+                                                    <lightning-icon icon-name="utility:success" size="x-small" variant="inverse" alternative-text="Uploaded"></lightning-icon>
+                                                </span>
+                                                <div class="dv-file-meta">
+                                                    <span class="dv-file-name">Multiple Files Uploaded</span>
+                                                    <span class="dv-file-status">{panFilesCountLabel}</span>
+                                                </div>
+                                            </div>
+                                            <lightning-icon icon-name={panFilesChevron} size="x-small" alternative-text="toggle"></lightning-icon>
+                                        </button>
+                                        <template lwc:if={isPanFilesExpanded}>
+                                            <div class="dv-file-multi-list">
+                                                <template for:each={panFilesView} for:item="file">
+                                                    <div key={file.id} class="dv-file-row">
+                                                        <div class="dv-file-row-left">
+                                                            <lightning-icon icon-name="utility:file" size="x-small" alternative-text="File"></lightning-icon>
+                                                            <span class="dv-file-name">{file.name}</span>
+                                                        </div>
+                                                        <div class="dv-file-row-actions">
+                                                            <button type="button" class="dv-file-action dv-file-action--preview"
+                                                                data-content-version-id={file.contentVersionId}
+                                                                data-file-name={file.name}
+                                                                data-file-extension={file.extension}
+                                                                onclick={handleFilePreviewClick} title="Preview">
+                                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                            </button>
+                                                            <template lwc:if={panCanDelete}>
+                                                                <button type="button" class="dv-file-action dv-file-action--danger"
+                                                                    data-id={file.id}
+                                                                    onclick={handlePanFileDelete} title="Delete">
+                                                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                                </button>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <template lwc:if={isFieldEditable}>
+                                    <span class="slds-assistive-text" id="panCardUpload" data-section-input data-required="true" data-editable="true" data-value={panCardFileName} aria-hidden="true"></span>
+                                </template>
+                            </div>
+                        </template>
+
+                        <template lwc:if={showForm60}>
+                            <div class="dv-file-card">
+                                <span class="dv-file-legend">Form 60 <span class="dv-file-req" title="Required">*</span></span>
+                                <p class="dv-file-title">Upload Form 60 File</p>
+
+                                <template lwc:if={form60ShowUploadBtn}>
+                                    <button type="button" class="dv-upload-btn" onclick={handleForm60ChunkyUpload} title="Upload Form 60 file">
+                                        <img src={chunkyUploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                                        <span class="dv-upload-btn-text">Select Files</span>
+                                    </button>
+                                </template>
+                                <template lwc:if={form60ShowEmptyPlaceholder}>
+                                    <p class="dv-file-empty">No file uploaded</p>
+                                </template>
+
+                                <template lwc:if={form60FilesSingle}>
+                                    <div class="dv-file-row dv-file-row--single">
+                                        <div class="dv-file-row-left">
+                                            <span class="dv-file-check">
+                                                <lightning-icon icon-name="utility:success" size="x-small" variant="inverse" alternative-text="Uploaded"></lightning-icon>
+                                            </span>
+                                            <div class="dv-file-meta">
+                                                <span class="dv-file-name">{form60SingleFile.name}</span>
+                                                <span class="dv-file-status">Uploaded</span>
+                                            </div>
+                                        </div>
+                                        <div class="dv-file-row-actions">
+                                            <button type="button" class="dv-file-action dv-file-action--preview"
+                                                data-content-version-id={form60SingleFile.contentVersionId}
+                                                data-file-name={form60SingleFile.name}
+                                                data-file-extension={form60SingleFile.extension}
+                                                onclick={handleFilePreviewClick} title="Preview">
+                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                            </button>
+                                            <template lwc:if={form60CanDelete}>
+                                                <button type="button" class="dv-file-action dv-file-action--danger"
+                                                    data-id={form60SingleFile.id}
+                                                    onclick={handleForm60FileDelete} title="Delete">
+                                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <template lwc:if={form60FilesMulti}>
+                                    <div class="dv-file-multi">
+                                        <button type="button" class="dv-file-multi-head" onclick={toggleForm60FilesExpand}>
+                                            <div class="dv-file-row-left">
+                                                <span class="dv-file-check">
+                                                    <lightning-icon icon-name="utility:success" size="x-small" variant="inverse" alternative-text="Uploaded"></lightning-icon>
+                                                </span>
+                                                <div class="dv-file-meta">
+                                                    <span class="dv-file-name">Multiple Files Uploaded</span>
+                                                    <span class="dv-file-status">{form60FilesCountLabel}</span>
+                                                </div>
+                                            </div>
+                                            <lightning-icon icon-name={form60FilesChevron} size="x-small" alternative-text="toggle"></lightning-icon>
+                                        </button>
+                                        <template lwc:if={isForm60FilesExpanded}>
+                                            <div class="dv-file-multi-list">
+                                                <template for:each={form60FilesView} for:item="file">
+                                                    <div key={file.id} class="dv-file-row">
+                                                        <div class="dv-file-row-left">
+                                                            <lightning-icon icon-name="utility:file" size="x-small" alternative-text="File"></lightning-icon>
+                                                            <span class="dv-file-name">{file.name}</span>
+                                                        </div>
+                                                        <div class="dv-file-row-actions">
+                                                            <button type="button" class="dv-file-action dv-file-action--preview"
+                                                                data-content-version-id={file.contentVersionId}
+                                                                data-file-name={file.name}
+                                                                data-file-extension={file.extension}
+                                                                onclick={handleFilePreviewClick} title="Preview">
+                                                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                            </button>
+                                                            <template lwc:if={form60CanDelete}>
+                                                                <button type="button" class="dv-file-action dv-file-action--danger"
+                                                                    data-id={file.id}
+                                                                    onclick={handleForm60FileDelete} title="Delete">
+                                                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                                </button>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <template lwc:if={isFieldEditable}>
+                                    <span class="slds-assistive-text" id="form60Upload" data-section-input data-required="true" data-editable="true" data-value={form60FileName} aria-hidden="true"></span>
+                                </template>
+                            </div>
+                        </template>
+
+                        <!-- PAN income warning note -->
+                        <template lwc:if={_showPancardNote}>
+                            <div class="form-status-note">
+                                <lightning-icon icon-name={_pancardNoteIcon} size="small" class="form-status-icon"></lightning-icon>
+                                <p class="form-status-text">{_pancardNoteMsg}</p>
+                            </div>
+                        </template>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Advanced Upload (Magic UI) pop-up modal -->
+        <template lwc:if={showMagicUpload}>
+            <div class="dv-modal-overlay" onmousedown={handleOverlayMouseDown} onclick={handleOverlayClick}>
+                <div class="dv-modal" onclick={stopPropagationDv}>
+                    <div class="dv-modal-head">
+                        <span class="dv-modal-title">Advanced Document Upload</span>
+                        <button type="button" class="dv-modal-close" onclick={handleMagicUploadClose} title="Close">&#10005;</button>
+                    </div>
+                    <div class="dv-modal-body">
+                        <c-embed-custom-file-upload
+                            record-id={activeUploadChecklistId}
+                            max-files-allowed={activeMaxFiles}
+                            allowed-extensions={activeAllowedTypes}
+                            enable-compression
+                            allow-merge
+                            enable-video
+                            onfilesuploaded={handleMagicUploadComplete}>
+                        </c-embed-custom-file-upload>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Headless checklist creation service -->
+        <c-embed-document-checklist></c-embed-document-checklist>
+        <!-- END Document Verification -->
+
+        <!-- ══ SECTION 6 — CONTACT INFO ══════════════════════════════════════ -->
+        <template lwc:if={showContactInfo}>
+            <div class="bmp-card" data-id="contactInfo">
+                <div class="bmp-card-header">
+                    <div class="bmp-header-overlay"></div>
+                    <div class="bmp-header-content">
+                        <div class="bmp-header-icon-wrap">
+                            <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                        </div>
+                        <div class="bmp-header-text">
+                            <h1 class="bmp-header-title">Contact Info</h1>
+                            <p class="bmp-header-subtitle">Contact information</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bmp-card-body">
+                    <div class="bmp-fields-grid">
+                        <!-- ── Marital Status (picklist) ── -->
+                        <div class="bmp-field-wrap" lwc:if={isIndividualApplicant}>
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">Marital Status</div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            value={maritalStatus}
+                                            label="Marital Status"
+                                            variant="label-hidden"
+                                            options={maritalStatusOptions}
+                                            placeholder="Select marital status"
+                                            onchange={handleMaritalStatusChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Marital Status</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{maritalStatus}</p></div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- ── Residence Country (picklist) ── -->
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="bmp-field-cell">
+                                    <div class="bmp-field-label">Residence Country</div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-combobox
+                                            value={residenceCountry}
+                                            label="Residence Country"
+                                            variant="label-hidden"
+                                            options={residenceCountryOptions}
+                                            placeholder="Select residence country"
+                                            onchange={handleResidenceCountryChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Residence Country</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{residenceCountry}</p></div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- ── Contact Person Name (Non-Individual only) ── -->
+                        <template lwc:if={isNonIndividualApplicant}>
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="bmp-field-cell">
+                                        <div class="bmp-field-label">
+                                            Contact Person Name
+                                            <span class="bmp-required-indicator" title="Required">*</span>
+                                        </div>
+                                        <div class="bmp-field-value-col">
+                                            <input type="text" class="bmp-input"
+                                                id="contactPersonName"
+                                                data-section-input
+                                                data-required="true"
+                                                data-editable="true"
+                                                value={contactPersonName}
+                                                maxlength="100"
+                                                placeholder="Enter contact person name"
+                                                oninput={handleContactPersonNameInput} />
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><span class="bmp-info-label">Contact Person Name</span></div>
+                                        <div class="bmp-info-value-wrap"><p class="bmp-info-value">{contactPersonName}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- ── Landline Number (Non-Individual only) ── -->
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="bmp-field-cell">
+                                        <div class="bmp-field-label">Landline Number</div>
+                                        <div class="bmp-field-value-col">
+                                            <input type="text" class="bmp-input"
+                                                id="landlineNumber"
+                                                value={landlineDisplay}
+                                                maxlength="16"
+                                                inputmode="numeric"
+                                                placeholder="(022) - 12345678"
+                                                oninput={handleLandlineNumberInput} />
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="bmp-info-cell">
+                                        <div class="bmp-info-cell-header"><span class="bmp-info-label">Landline Number</span></div>
+                                        <div class="bmp-info-value-wrap"><p class="bmp-info-value">{landlineDisplay}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <!-- ── Mobile Number (textWithAction — Verify) ── -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        Mobile Number
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <div class="form-input-with-action-wrap">
+                                            <input type="text" class="form-action-input"
+                                                id="contactNumber"
+                                                data-section-input
+                                                data-required="true"
+                                                data-editable="true"
+                                                value={contactNumber}
+                                                placeholder="Enter mobile number"
+                                                maxlength="10"
+                                                inputmode="numeric"
+                                                oninput={handleContactNumberInput} />
+                                            <div class="form-input-with-action-btn-wrap">
+                                                <button type="button" class={contactVerifyActionBtnClass}
+                                                    disabled={contactVerifyDisabled}
+                                                    onclick={handleContactVerifyClick}>
+                                                    {contactVerifyLabel}
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <template lwc:if={isMobileFormatInvalid}>
+                                            <p class="form-field-error">{mobileValidationError}</p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Mobile Number</span></div>
+                                    <div class="form-info-value-wrap">
+                                        <div class="form-info-value-with-action-row">
+                                            <p class="form-info-value">{contactNumber}</p>
+                                            <span class={contactVerifyInfoActionLabelClass}>{contactVerifyLabel}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- ── Email Address (textWithAction — Verify) ── -->
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        Email Address
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <div class="form-input-with-action-wrap">
+                                            <input type="text" class="form-action-input"
+                                                id="email"
+                                                data-section-input
+                                                data-required="true"
+                                                data-editable="true"
+                                                value={emailAddress}
+                                                placeholder="Enter email"
+                                                maxlength="80"
+                                                oninput={handleEmailInput} />
+                                            <div class="form-input-with-action-btn-wrap">
+                                                <button type="button" class={emailVerifyActionBtnClass}
+                                                    disabled={emailVerifyDisabled}
+                                                    onclick={handleEmailVerifyClick}>
+                                                    {emailVerifyLabel}
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <template lwc:if={isEmailFormatInvalid}>
+                                            <p class="form-field-error">{emailValidationError}</p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header"><span class="form-info-label">Email Address</span></div>
+                                    <div class="form-info-value-wrap">
+                                        <div class="form-info-value-with-action-row">
+                                            <p class="form-info-value">{emailAddress}</p>
+                                            <span class={emailVerifyInfoActionLabelClass}>{emailVerifyLabel}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <!-- END Contact Info -->
+
+        <!-- ══ INTEGRATION PROGRESS MODAL ═══════════════════════════════════ -->
+        <template lwc:if={showIntegrationProgressModal}>
+            <c-integration-progress-modal
+                status={integrationProgressModalStatus}
+                header={integrationProgressModalHeader}
+                current-stage-index={integrationProgressModalCurrentStageIdx}
+                stages={integrationProgressModalStages}
+                error-message={integrationProgressModalErrorMessage}
+                onclose={handleIntegrationProgressModalClose}
+                onretry={handleIntegrationProgressModalRetry}
+                ondone={handleIntegrationProgressModalDone}>
+            </c-integration-progress-modal>
+        </template>
+        <!-- END INTEGRATION PROGRESS MODAL -->
+        <!-- ══ DYNAMIC COMPONENT MODAL ═══════════════════════════════════ -->
+        <template lwc:if={showDynamicComponentModal}>
+            <c-dynamic-component-modal
+                component-name={dynamicComponentName}
+                modal-header={dynamicComponentModalHeader}
+                record-id={recordId}
+                component-props={dynamicComponentProps}
+                onclose={handleDynamicComponentModalClose}>
+            </c-dynamic-component-modal>
+        </template>
+
+        <!-- ══ Application Consent link modal (same pattern as KYC eKYC link modal) ══ -->
+        <template lwc:if={showConsentLinkModal}>
+            <section class="kyc-ekyc-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="bmp-consent-link-title">
+                <div class="kyc-ekyc-modal">
+                    <header class="kyc-ekyc-modal-header">
+                        <h2 id="bmp-consent-link-title">Application Consent Link</h2>
+                        <button type="button" class="kyc-ekyc-modal-close"
+                            onclick={handleCloseConsentLinkModal} aria-label="Close">&times;</button>
+                    </header>
+                    <div class="kyc-ekyc-modal-body">
+                        <p class="kyc-ekyc-modal-intro">
+                            {consentLinkIntroText}
+                        </p>
+                        <div class="kyc-ekyc-link-row">
+                            <input type="text" class="kyc-ekyc-link-input" value={consentLinkUrl} readonly />
+                            <button type="button" class="kyc-ekyc-link-copy kyc-ekyc-link-copy-icon"
+                                onclick={handleCopyConsentLink}
+                                title={copyConsentLinkButtonLabel}
+                                aria-label={copyConsentLinkButtonLabel}>
+                                <lightning-icon icon-name={copyConsentLinkButtonIcon} size="x-small"
+                                    alternative-text={copyConsentLinkButtonLabel}></lightning-icon>
+                            </button>
+                            <a class="kyc-ekyc-link-copy kyc-ekyc-link-copy-icon kyc-ekyc-link-open"
+                                href={consentLinkUrl}
+                                target="_blank" rel="noopener noreferrer"
+                                title="Open link in a new tab"
+                                aria-label="Open consent link in a new tab">
+                                <lightning-icon icon-name="utility:new_window" size="x-small"
+                                    alternative-text="Open link"></lightning-icon>
+                            </a>
+                        </div>
+                        <div class="kyc-ekyc-modal-status">
+                            <template lwc:if={isPollingApplicationConsent}>
+                                <span class="kyc-ekyc-modal-spinner-wrap">
+                                    <lightning-spinner alternative-text="Polling" size="small" variant="brand"></lightning-spinner>
+                                </span>
+                                <span class="kyc-ekyc-modal-status-text">{consentPollingStatusLabel}</span>
+                            </template>
+                        </div>
+                    </div>
+                    <footer class="kyc-ekyc-modal-footer">
+                        <button type="button" class="kyc-ekyc-modal-btn-secondary"
+                            onclick={handleCloseConsentLinkModal}>Close</button>
+                    </footer>
+                </div>
+            </section>
+        </template>
+        
+
+        <!-- ══ STICKY FOOTER — CONSENT + NEXT ════════════════════════════════
+             Consent is shown for every applicant; it is disabled on read-only
+             screens. Next remains editable-only for active Basic Details work. -->
+        <template lwc:if={showActionFooter}>
+            <div class="form-footer-wrapper">
+                <div class="form-footer">
+                    <div class="form-btn-wrapper">
+                        <button type="button"
+                            class={consentButtonClass}
+                            onclick={handleConsentClick}
+                            disabled={isConsentDisabled}
+                            aria-disabled={isConsentDisabled}
+                        >
+                            <template lwc:if={isConsentReviewButton}>
+                                <svg class="form-footer-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </template>
+                            {consentButtonLabel}
+                        </button>
+                        <template lwc:if={isFieldEditable}>
+                            <button type="button"
+                                class={nextButtonClass}
+                                onclick={handleNextButton}
+                                disabled={isNextDisabled}
+                                aria-disabled={isNextDisabled}
+                            >
+                                Next
+                            </button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+    </div>
+
+    <!-- ── File previewer (lazy-mounted on eye-icon click) ────────────────── -->
+    <template lwc:if={showFilePreviewer}>
+        <c-embed-file-preview
+            content-version-id={previewContentVersionId}
+            file-name={previewFileName}
+            file-extension={previewFileExtension}
+            session-id={_sessionId}
+            vf-root={_vfRoot}
+            can-download
+            onclose={handleFilePreviewClose}>
+        </c-embed-file-preview>
+    </template>
+
+</template>

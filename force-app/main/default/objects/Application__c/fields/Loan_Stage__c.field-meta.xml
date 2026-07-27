@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loan_Stage__c</fullName>
+    <label>Loan Stage</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Additional Documents</fullName>
+                <default>false</default>
+                <label>Additional Documents</label>
+            </value>
+            <value>
+                <fullName>IHM</fullName>
+                <default>false</default>
+                <label>IHM</label>
+            </value>
+            <value>
+                <fullName>Waiting for Customer</fullName>
+                <default>false</default>
+                <label>Waiting for Customer</label>
+            </value>
+            <value>
+                <fullName>Waiting for CMU Closure</fullName>
+                <default>false</default>
+                <label>Waiting for CMU Closure</label>
+            </value>
+            <value>
+                <fullName>Employment</fullName>
+                <default>false</default>
+                <label>Employment</label>
+            </value>
+            <value>
+                <fullName>Income Details</fullName>
+                <default>false</default>
+                <label>Income Details</label>
+            </value>
+            <value>
+                <fullName>Valuation</fullName>
+                <default>false</default>
+                <label>Valuation</label>
+            </value>
+            <value>
+                <fullName>KYC Details</fullName>
+                <default>false</default>
+                <label>KYC Details</label>
+            </value>
+            <value>
+                <fullName>Asset Details</fullName>
+                <default>false</default>
+                <label>Asset Details</label>
+            </value>
+            <value>
+                <fullName>Invoice</fullName>
+                <default>false</default>
+                <label>Invoice</label>
+            </value>
+            <value>
+                <fullName>Loan Terms</fullName>
+                <default>false</default>
+                <label>Loan Terms</label>
+            </value>
+            <value>
+                <fullName>Waiting for TVR Closure</fullName>
+                <default>false</default>
+                <label>Waiting for TVR Closure</label>
+            </value>
+            <value>
+                <fullName>Income and Banking</fullName>
+                <default>false</default>
+                <label>Income and Banking</label>
+            </value>
+            <value>
+                <fullName>Payment Request</fullName>
+                <default>false</default>
+                <label>Payment Request</label>
+            </value>
+            <value>
+                <fullName>Demographic Details</fullName>
+                <default>false</default>
+                <label>Demographic Details</label>
+            </value>
+            <value>
+                <fullName>Exposure Analysis</fullName>
+                <default>false</default>
+                <label>Exposure Analysis</label>
+            </value>
+            <value>
+                <fullName>Waiting for FI Closure</fullName>
+                <default>false</default>
+                <label>Waiting for FI Closure</label>
+            </value>
+            <value>
+                <fullName>Repayment</fullName>
+                <default>false</default>
+                <label>Repayment</label>
+            </value>
+            <value>
+                <fullName>Vehicle Inspection</fullName>
+                <default>false</default>
+                <label>Vehicle Inspection</label>
+            </value>
+            <value>
+                <fullName>Basic Details</fullName>
+                <default>false</default>
+                <label>Basic Details</label>
+            </value>
+            <value>
+                <fullName>Personal Info</fullName>
+                <default>false</default>
+                <label>Personal Info</label>
+            </value>
+            <value>
+                <fullName>Agreement</fullName>
+                <default>false</default>
+                <label>Agreement</label>
+            </value>
+            <value>
+                <fullName>CAM and Approval Log</fullName>
+                <default>false</default>
+                <label>CAM and Approval Log</label>
+            </value>
+            <value>
+                <fullName>Waiting for Sales</fullName>
+                <default>false</default>
+                <label>Waiting for Sales</label>
+            </value>
+            <value>
+                <fullName>Waiting for AML Closure</fullName>
+                <default>false</default>
+                <label>Waiting for AML Closure</label>
+            </value>
+            <value>
+                <fullName>Dedupe and Eligibility</fullName>
+                <default>false</default>
+                <label>Dedupe and Eligibility</label>
+            </value>
+            <value>
+                <fullName>Credit Assessment</fullName>
+                <default>false</default>
+                <label>Credit Assessment</label>
+            </value>
+            <value>
+                <fullName>Waiting for CMU Validation</fullName>
+                <default>false</default>
+                <label>Waiting for CMU Validation</label>
+            </value>
+            <value>
+                <fullName>Waiting for RCU Closure</fullName>
+                <default>false</default>
+                <label>Waiting for RCU Closure</label>
+            </value>
+            <value>
+                <fullName>Investigation Reports</fullName>
+                <default>false</default>
+                <label>Investigation Reports</label>
+            </value>
+            <value>
+                <fullName>Offer</fullName>
+                <default>false</default>
+                <label>Offer</label>
+            </value>
+            <value>
+                <fullName>Waiting for OffRole Case</fullName>
+                <default>false</default>
+                <label>Waiting for OffRole Case</label>
+            </value>
+            <value>
+                <fullName>Application Overview</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Application Overview</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

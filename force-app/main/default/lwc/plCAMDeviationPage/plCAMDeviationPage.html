@@ -1,0 +1,191 @@
+<template>
+    <div class="form-layout dev-layout">
+        <section class="form-card dev-section-card" aria-label="Deviation details">
+            <div class="form-body">
+                <div class="dev-section-header">
+                    <span class="dev-section-icon" aria-hidden="true">
+                        <lightning-icon icon-name="utility:warning" size="xx-small"></lightning-icon>
+                    </span>
+                    <h2 class="p4-section-title">{deviationLabel}</h2>
+                </div>
+
+                <div class={normalDeviationTableClass}>
+                    <template lwc:if={normalDeviations.length}>
+                        <table class="master-table dev-deviation-table">
+                            <thead>
+                                <tr class="master-table-header-row">
+                                    <th scope="col" class="master-th-cell">Deviation Description</th>
+                                    <th scope="col" class="master-th-cell">Deviation Level</th>
+                                    <th scope="col" class="master-th-cell">Role</th>
+                                    <th scope="col" class="master-th-cell">Approval Status</th>
+                                    <th scope="col" class="master-th-cell">Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody class="master-table-body">
+                                <template for:each={normalDeviations} for:item="row">
+                                    <tr key={row.id} class={row.trClass}>
+                                        <td class="master-td-cell"><span class="master-cell-text">{row.description}</span></td>
+                                        <td class="master-td-cell"><span class="master-cell-text">{row.level}</span></td>
+                                        <td class="master-td-cell"><span class="master-cell-text">{row.role}</span></td>
+                                        <td class="master-td-cell dev-approval-cell">
+                                            <div class="dev-combobox-wrap">
+                                                <template lwc:if={isStagePast}>
+                                                    <div class="dev-readonly-control">
+                                                        {row.approvalStatus}
+                                                    </div>
+                                                </template>
+                                                <template lwc:else>
+                                                    <lightning-combobox
+                                                        variant="label-hidden"
+                                                        label="Approval Status"
+                                                        name={row.comboboxName}
+                                                        value={row.approvalStatus}
+                                                        options={deviationApprovalOptions}
+                                                        data-id={row.id}
+                                                        data-section="normal"
+                                                        onfocus={handleComboboxFocus}
+                                                        onblur={handleComboboxBlur}
+                                                        onchange={handleApprovalChange}>
+                                                    </lightning-combobox>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td class="master-td-cell">
+                                            <template lwc:if={isStagePast}>
+                                                <div class="dev-readonly-textarea">{row.remarks}</div>
+                                            </template>
+                                            <template lwc:else>
+                                                <lightning-textarea
+                                                    variant="label-hidden"
+                                                    label="Remarks"
+                                                    value={row.remarks}
+                                                    placeholder="Enter remarks"
+                                                    max-length="3000"
+                                                    data-id={row.id}
+                                                    data-section="normal"
+                                                    onchange={handleDeviationRemarksChange}>
+                                                </lightning-textarea>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text slds-text-align_center slds-p-around_medium">No records found</p>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <!--<section class="form-card dev-section-card dev-asset-section" aria-label="Asset deviation details">
+            <div class="form-body">
+                <div class="dev-section-header">
+                    <span class="dev-section-icon" aria-hidden="true">
+                        <lightning-icon icon-name="utility:product" size="xx-small"></lightning-icon>
+                    </span>
+                    <h2 class="p4-section-title">Asset Deviation Details</h2>
+                </div>
+
+                <template lwc:if={assetDeviationGroups.length}>
+                    <ul class="dev-asset-list dev-asset-accordion">
+                        <template for:each={assetDeviationAccordionRows} for:item="assetGroup">
+                            <li key={assetGroup.id} class={assetGroup.itemClass}>
+                                <button type="button" class="dev-asset-accordion-trigger"
+                                    data-group-id={assetGroup.id}
+                                    aria-expanded={assetGroup.isExpanded}
+                                    onclick={handleAssetAccordionToggle}>
+                                    <lightning-icon icon-name={assetGroup.chevronIcon} size="xx-small"
+                                        class="dev-asset-accordion-chevron" aria-hidden="true">
+                                    </lightning-icon>
+                                    <span class="dev-asset-row-title">{assetGroup.listTitle}</span>
+                                </button>
+                                <template lwc:if={assetGroup.isExpanded}>
+                                    <div class="dev-asset-accordion-panel">
+                                        <template lwc:if={assetGroup.deviations.length}>
+                                            <div class={assetGroup.tableClass}>
+                                                <table class="master-table dev-deviation-table">
+                                                    <thead>
+                                                        <tr class="master-table-header-row">
+                                                            <th scope="col" class="master-th-cell">Deviation Description</th>
+                                                            <th scope="col" class="master-th-cell">Deviation Level</th>
+                                                            <th scope="col" class="master-th-cell">Role</th>
+                                                            <th scope="col" class="master-th-cell">Approval Status</th>
+                                                            <th scope="col" class="master-th-cell">Remarks</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="master-table-body">
+                                                        <template for:each={assetGroup.deviations} for:item="row">
+                                                            <tr key={row.id} class={row.trClass}>
+                                                                <td class="master-td-cell"><span class="master-cell-text">{row.description}</span></td>
+                                                                <td class="master-td-cell"><span class="master-cell-text">{row.level}</span></td>
+                                                                <td class="master-td-cell"><span class="master-cell-text">{row.role}</span></td>
+                                                                <td class="master-td-cell dev-approval-cell">
+                                                                    <div class="dev-combobox-wrap">
+                                                                        <template lwc:if={isStagePast}>
+                                                                            <div class="dev-readonly-control">{row.approvalStatus}</div>
+                                                                        </template>
+                                                                        <template lwc:else>
+                                                                            <lightning-combobox
+                                                                                variant="label-hidden"
+                                                                                label="Approval Status"
+                                                                                name={row.comboboxName}
+                                                                                value={row.approvalStatus}
+                                                                                options={deviationApprovalOptions}
+                                                                                data-id={row.id}
+                                                                                data-section="asset"
+                                                                                onfocus={handleComboboxFocus}
+                                                                                onblur={handleComboboxBlur}
+                                                                                onchange={handleApprovalChange}>
+                                                                            </lightning-combobox>
+                                                                        </template>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="master-td-cell">
+                                                                    <template lwc:if={isStagePast}>
+                                                                        <div class="dev-readonly-textarea">{row.remarks}</div>
+                                                                    </template>
+                                                                    <template lwc:else>
+                                                                        <lightning-textarea
+                                                                            variant="label-hidden"
+                                                                            label="Remarks"
+                                                                            value={row.remarks}
+                                                                            placeholder="Enter remarks"
+                                                                            max-length="3000"
+                                                                            data-id={row.id}
+                                                                            data-section="asset"
+                                                                            onchange={handleDeviationRemarksChange}>
+                                                                        </lightning-textarea>
+                                                                    </template>
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <p class="p4-help-text slds-text-align_center slds-p-around_medium">No deviations found for this asset.</p>
+                                        </template>
+                                    </div>
+                                </template>
+                            </li>
+                        </template>
+                    </ul>
+                </template>
+                <template lwc:else>
+                    <p class="p4-help-text slds-text-align_center slds-p-around_medium">No records found</p>
+                </template>
+            </div>
+        </section>-->
+
+        <template lwc:if={showSaveButton}>
+            <div class="p4-footer dev-footer">
+                <div class="p4-btn-wrapper">
+                    <button type="button" class="p4-primary-btn" disabled={isSaveDisabled} onclick={handleSaveButton}>Save</button>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AadhaareKYCLinkSent_Date__c</fullName>
+    <description>Timestamp the eKYC OTP link was generated.</description>
+    <encryptionScheme>None</encryptionScheme>
+    <label>Aadhaar eKYC Link Sent Date</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

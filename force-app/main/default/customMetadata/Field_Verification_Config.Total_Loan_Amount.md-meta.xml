@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Total  Loan Amount</label>
+    <protected>false</protected>
+    <values>
+        <field>Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>AdditionalColumnsToquery__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Additional_Doc_Field_Check__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Additional_Document_API_Name_To_Filter__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Additional_Document_Filter_Operator__c</field>
+        <value xsi:type="xsd:string">EQUALS</value>
+    </values>
+    <values>
+        <field>Additional_Document_Value_To_Filter__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Checklist_Mapping_Field__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Child_Section__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Date_Field_Format__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Document_Master_Name__c</field>
+        <value xsi:type="xsd:string">Initial_DOC_Verification</value>
+    </values>
+    <values>
+        <field>Exact_match__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Fallback_To_Parent_Document__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Field_Display_Value__c</field>
+        <value xsi:type="xsd:string">Total_Loan_Amount__c</value>
+    </values>
+    <values>
+        <field>Field_Name__c</field>
+        <value xsi:type="xsd:string">Total_Loan_Amount__c</value>
+    </values>
+    <values>
+        <field>Integration_Master__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Is_Date_Field__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Json_Field_Value__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>QC_Verification_Parent__c</field>
+        <value xsi:type="xsd:string">Application</value>
+    </values>
+    <values>
+        <field>Reference_Object_Name__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>WhereClause__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>isJson__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>isPickList__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+</CustomMetadata>

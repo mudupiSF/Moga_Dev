@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lead_Quality__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF( Lead_Total__c &lt; 5,  IMAGE(&apos;/resource/Dollars/dollar_zero.png&apos;, &apos;zero&apos;) , 
+ IF(Lead_Total__c &lt; 10, IMAGE(&apos;/resource/Dollars/dollar_one.png&apos;, &apos;one&apos;),
+ IF(Lead_Total__c &lt; 15, IMAGE(&apos;/resource/Dollars/dollar_two.png&apos;, &apos;two&apos;) ,
+ IF(Lead_Total__c &lt; 20, IMAGE(&apos;/resource/Dollars/dollar_three.png&apos;, &apos;three&apos;) ,
+ IF(Lead_Total__c &lt; 25, IMAGE(&apos;/resource/Dollars/dollar_four.png&apos;, &apos;four&apos;) ,
+ IMAGE(&apos;/resource/Dollars/dollar_five.png&apos;, &apos;five&apos;) ) ) ) ) 
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Lead Quality</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

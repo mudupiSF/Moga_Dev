@@ -1,0 +1,42 @@
+<template>
+  <!-- ══ WITHDRAW APPLICATION MODAL ════════════════════════════════════════ -->
+    <lightning-modal-header label="Withdraw Application"></lightning-modal-header>
+
+    <lightning-modal-body>
+        <template lwc:if={isLoading}>
+            <lightning-spinner alternative-text="Saving" size="medium"></lightning-spinner>
+        </template>
+
+        <div class="withdraw-modal-body">
+            <p class="withdraw-modal-description">
+                Select a withdrawal reason for this application.
+            </p>
+            <!-- Picklist options passed from applicationInformation -->
+            <lightning-combobox
+                name="withdrawalReason"
+                label="Withdrawal Reason"
+                value={withdrawalReason}
+                placeholder="Select Withdrawal Reason"
+                options={withdrawalReasonOptions}
+                onchange={handleWithdrawalReasonChange}
+                required>
+            </lightning-combobox>
+        </div>
+    </lightning-modal-body>
+
+    <lightning-modal-footer>
+        <lightning-button
+            label="Cancel"
+            variant="neutral"
+            onclick={handleCancel}
+            disabled={isLoading}>
+        </lightning-button>
+        <lightning-button
+            label="Submit"
+            variant="brand"
+            class="slds-var-m-left_xx-small"
+            onclick={handleSubmit}
+            disabled={isLoading}>
+        </lightning-button>
+    </lightning-modal-footer>
+</template>

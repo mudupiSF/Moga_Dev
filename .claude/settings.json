@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python)",
+      "Bash(grep -E \"\\\\.\\(cls|js\\)$\")",
+      "Bash(cat \"/c/Users/mudupi/.claude/projects/c--Users-mudupi-Desktop-Cursor-Moga-Dev/6d5ee049-d060-48eb-a02a-fbf007c28233/tool-results/bumzb84u0.txt\" | grep -i \"Entity_Type\\\\|Beneficial\\\\|Beneficiary\\\\|Guarantor\\\\|NonIndividual\" | head -50)",
+      "Read(//c/Users/mudupi/.claude/projects/c--Users-mudupi-Desktop-Cursor-Moga-Dev/6d5ee049-d060-48eb-a02a-fbf007c28233/tool-results/**)",
+      "Bash(xargs grep -l \"Entity_Type\\\\|Beneficiary\\\\|beneficiary\\\\|guarantor\\\\|Non-Individual\\\\|Applicant_Type\")",
+      "Bash(xargs grep -l \"NonIndividual\\\\|Entity_Type\\\\|isNonIndividual\\\\|Beneficial\\\\|Beneficiary\\\\|Guarantor\")",
+      "Bash(grep -E \"\\\\.field-meta.xml$\")",
+      "Bash(xargs -I {} basename {})",
+      "Bash(python scripts/build_post_credit_sheet.py)",
+      "Bash(xargs grep -oiE \"<fullName>[^<]+</fullName>|<label>[^<]+</label>\")",
+      "Bash(python scripts/apply_audit_corrections.py)",
+      "Bash(python scripts/apply_final_tweaks.py)"
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stage__c</fullName>
+    <label>Stage</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>QDE</fullName>
+                <default>false</default>
+                <label>QDE</label>
+            </value>
+            <value>
+                <fullName>DDE</fullName>
+                <default>false</default>
+                <label>DDE</label>
+            </value>
+            <value>
+                <fullName>Credit Processing</fullName>
+                <default>false</default>
+                <label>Credit Processing</label>
+            </value>
+            <value>
+                <fullName>Post Sanction Sales</fullName>
+                <default>false</default>
+                <label>Post Sanction Sales</label>
+            </value>
+            <value>
+                <fullName>Operations</fullName>
+                <default>false</default>
+                <label>Operations</label>
+            </value>
+            <value>
+                <fullName>Post Disbursement</fullName>
+                <default>false</default>
+                <label>Post Disbursement</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

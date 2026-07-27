@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_MCA_Report_Required__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>When TRUE, generate the heavy MCA Comprehensive (MCA Report ~800 KB) PDF at runtime.</description>
+    <label>Is MCA Report Required?</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

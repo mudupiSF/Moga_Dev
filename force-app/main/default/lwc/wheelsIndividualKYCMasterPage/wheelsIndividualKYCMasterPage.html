@@ -1,0 +1,1344 @@
+<template>
+
+    <div class="kyc-page-layout"
+         onopendynamiccomponentmodal={handleOpenDynamicComponentModal}
+         onintegrationprogressupdate={handleIntegrationProgressUpdate}>
+
+        <!-- ── Loading overlay ────────────────────────────────────────────── -->
+        <template if:true={isLoading}>
+            <div class="kyc-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             CARD 1 – Current Address KYC  (always visible)
+             ══════════════════════════════════════════════════════════════════ -->
+        <div class="kyc-card">
+            <div class="kyc-card-header">
+                <div class="kyc-header-overlay"></div>
+                <div class="kyc-header-content">
+                    <div class="kyc-header-icon-wrap">
+                        <lightning-icon icon-name="utility:file" size="small" class="kyc-header-icon"></lightning-icon>
+                    </div>
+                    <div class="kyc-header-text">
+                        <h1 class="kyc-header-title">Current Address KYC</h1>
+                        <p class="kyc-header-subtitle">Capture KYC for current address</p>
+                    </div>
+                </div>
+            </div>
+            <div class="kyc-card-body">
+                <div class={currentAddressDocsLayoutClass}>
+                    <div class="kyc-docs-left">
+                        <div class="kyc-fields-grid">
+
+                    <!-- Address Document Type -->
+                    <div class="kyc-field-wrap">
+                        <div class="kyc-field-cell">
+                            <div class="kyc-field-label">
+                                Address Document Type
+                                <span class="kyc-required-indicator" title="Required">*</span>
+                            </div>
+                            <div class="kyc-field-value-col">
+                                <lightning-combobox
+                                    value={addrDocumentType}
+                                    label="Address Document Type"
+                                    variant="label-hidden"
+                                    placeholder="Select document type"
+                                    options={addrDocumentTypeOptions}
+                                    disabled={isAddrDocumentTypeReadOnly}
+                                    onchange={handleAddrDocumentTypeChange}>
+                                </lightning-combobox>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CKYC ID (optional, 14-digit numeric) -->
+                    <div class="kyc-field-wrap">
+                        <div class="kyc-field-cell">
+                            <div class="kyc-field-label">CKYC ID</div>
+                            <div class="kyc-field-value-col">
+                                <lightning-input
+                                    type="text"
+                                    label="CKYC ID"
+                                    variant="label-hidden"
+                                    placeholder="14-digit CKYC identifier (optional)"
+                                    value={ckycId}
+                                    max-length="14"
+                                    disabled={isReadOnlyScreen}
+                                    onchange={handleCkycIdChange}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Side mode picker (hidden for Aadhaar Card) -->
+                    <template if:true={showDocumentSideMode}>
+                        <div class="kyc-field-wrap kyc-field-wrap-full">
+                            <div class="kyc-field-cell">
+                                <div class="kyc-field-label">
+                                    Upload Mode
+                                    <span class="kyc-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="kyc-field-value-col">
+                                    <div class="kyc-radio-group">
+                                        <label class={sideModeFullClass}>
+                                            <input type="radio" class="kyc-radio-input"
+                                                name="documentSideMode" value="Full"
+                                                checked={isSideModeFull}
+                                                disabled={isReadOnlyScreen}
+                                                onchange={handleDocumentSideModeChange} />
+                                            <span class="kyc-radio-circle"></span>
+                                            <span class="kyc-radio-text">Full Document</span>
+                                        </label>
+                                        <label class={sideModeSideClass}>
+                                            <input type="radio" class="kyc-radio-input"
+                                                name="documentSideMode" value="Side"
+                                                checked={isSideModeSide}
+                                                disabled={isReadOnlyScreen}
+                                                onchange={handleDocumentSideModeChange} />
+                                            <span class="kyc-radio-circle"></span>
+                                            <span class="kyc-radio-text">Front and Back Upload</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Aadhaar Card path: 3-method verification visual picker. -->
+                    <template if:true={showAadhaarVerificationPicker}>
+                        <div class="kyc-field-wrap kyc-field-wrap-full">
+                            <div class="kyc-field-cell">
+                                <div class="kyc-field-label">
+                                    Select Aadhaar Verification Method
+                                    <span class="kyc-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="kyc-aadhaar-tile-grid" role="radiogroup" aria-label="Aadhaar Verification Method">
+                                    <template for:each={aadhaarVerificationTiles} for:item="tile">
+                                        <button
+                                            key={tile.id}
+                                            type="button"
+                                            class={tile.tileClass}
+                                            data-method-id={tile.id}
+                                            role="radio"
+                                            aria-checked={tile.ariaPressed}
+                                            disabled={isReadOnlyScreen}
+                                            onclick={handleAadhaarMethodSelect}>
+                                            <span class="kyc-aadhaar-tile-icon-wrap">
+                                                <lightning-icon icon-name={tile.icon} size="small" alternative-text={tile.label}></lightning-icon>
+                                            </span>
+                                            <span class="kyc-aadhaar-tile-label">{tile.label}</span>
+                                            <span class="kyc-aadhaar-tile-description">{tile.description}</span>
+                                            <!--
+                                                Tile-corner state stack:
+                                                  - Info icon: eKYC OTP Verification in progress. Click "View eKYC Link" for status.
+                                                  - Tick pill: any selected tile that isn't yet verified.
+                                                  - Verified badge: post-verification, replaces both the
+                                                    tick and the info icon (per UX spec).
+                                            -->
+                                            <template if:true={tile.showInfoIcon}>
+                                                <span class="kyc-aadhaar-tile-info"
+                                                    tabindex="0"
+                                                    role="button"
+                                                    aria-label={tile.infoTooltip}
+                                                    data-tooltip={tile.infoTooltip}
+                                                    onclick={handleTileInfoClick}
+                                                    onkeydown={handleTileInfoKeydown}>
+                                                    <lightning-icon icon-name="utility:info"
+                                                        size="x-small"
+                                                        alternative-text="Verification status"></lightning-icon>
+                                                </span>
+                                            </template>
+                                            <template if:true={tile.showCheck}>
+                                                <span class="kyc-aadhaar-tile-check" aria-hidden="true">
+                                                    <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+                                                </span>
+                                            </template>
+                                            <template if:true={tile.showVerifiedPill}>
+                                                <span class="kyc-aadhaar-tile-verified-badge" aria-label="Verified">
+                                                    <lightning-icon icon-name="utility:success"
+                                                        size="x-small"
+                                                        alternative-text="Verified"></lightning-icon>
+                                                    Verified
+                                                </span>
+                                            </template>
+                                        </button>
+                                    </template>
+                                </div>
+                                <div class="kyc-aadhaar-verify-row">
+                                    <template if:true={isAadhaarVerified}>
+                                        <span class="kyc-aadhaar-verified-pill">
+                                            <lightning-icon icon-name="utility:success" size="x-small"></lightning-icon>
+                                            Aadhaar verification completed
+                                        </span>
+                                    </template>
+                                    <template if:false={isAadhaarVerified}>
+                                        <button
+                                            type="button"
+                                            class={aadhaarVerifyButtonClass}
+                                            disabled={aadhaarVerifyDisabled}
+                                            onclick={handleAadhaarVerifyClick}>
+                                            {aadhaarVerifyButtonLabel}
+                                        </button>
+                                    </template>
+                                </div>
+                                <template if:true={showAadhaarExpiredBanner}>
+                                    <div class="kyc-aadhaar-expired-banner" role="alert">
+                                        <lightning-icon icon-name="utility:warning" size="x-small" alternative-text="Warning"></lightning-icon>
+                                        <span>
+                                            eKYC link expired after 72 hours. You can retry Aadhaar or switch to a different KYC document.
+                                        </span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Others path: Verification Method dropdown (Video KYC / Digi Locker). -->
+                    <template if:true={showOtherVerificationPicker}>
+                        <div class="kyc-field-wrap kyc-field-wrap-full">
+                            <div class="kyc-field-cell">
+                                <lightning-combobox
+                                    label="Verification Method"
+                                    placeholder="Select Verification Method"
+                                    value={otherVerificationMethod}
+                                    options={otherVerificationMethodOptions}
+                                    onchange={handleOtherVerificationMethodChange}
+                                    disabled={isOtherVerificationDisabled}
+                                    required>
+                                </lightning-combobox>
+                                <div class="kyc-aadhaar-verify-row">
+                                    <template if:true={isAadhaarVerified}>
+                                        <span class="kyc-aadhaar-verified-pill">
+                                            <lightning-icon icon-name="utility:success" size="x-small"></lightning-icon>
+                                            Verification completed
+                                        </span>
+                                    </template>
+                                    <template if:false={isAadhaarVerified}>
+                                        <button
+                                            type="button"
+                                            class={aadhaarVerifyButtonClass}
+                                            disabled={aadhaarVerifyDisabled}
+                                            onclick={handleAadhaarVerifyClick}>
+                                            {aadhaarVerifyButtonLabel}
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template if:true={showProofTogglesStandalone}>
+                        <div class={proofTogglesWrapClass}>
+                            <div class="kyc-proof-toggles">
+                                <div class="kyc-proof-toggle-row">
+                                    <span class="kyc-proof-toggle-label">Is this document POA?</span>
+                                    <lightning-input
+                                        type="toggle"
+                                        label="Is this document POA?"
+                                        variant="label-hidden"
+                                        message-toggle-active="Yes"
+                                        message-toggle-inactive="No"
+                                        checked={addressProofToggle}
+                                        disabled={isReadOnlyScreen}
+                                        onchange={handleAddressProofToggleChange}>
+                                    </lightning-input>
+                                </div>
+                                <div class="kyc-proof-toggle-row">
+                                    <span class="kyc-proof-toggle-label">Is this document POI?</span>
+                                    <lightning-input
+                                        type="toggle"
+                                        label="Is this document POI?"
+                                        variant="label-hidden"
+                                        message-toggle-active="Yes"
+                                        message-toggle-inactive="No"
+                                        checked={identityProofToggle}
+                                        disabled={isReadOnlyScreen}
+                                        onchange={handleIdentityProofToggleChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                        </div>
+                    </div>
+
+                    <template if:true={showCurrentDocsRightColumn}>
+                    <div class="kyc-docs-right">
+                    <!-- Full single-file upload -->
+                    <template if:true={showAddressProofUpload}>
+                        <div class="kyc-field-wrap kyc-field-wrap-full">
+                            <c-kyc-entity-document-panel
+                                section-key="addressProof"
+                                legend-label="Upload Address Proof"
+                                file-title="Upload Address Proof"
+                                required
+                                suppress-left-column
+                                is-read-only={isReadOnlyScreen}
+                                upload-disabled={addressProofPanelUploadDisabled}
+                                upload-icon-url={chunkyUploadIconUrl}
+                                files={addressProofPanelFiles}
+                                onuploadrequest={handleAddressProofUploadRequest}
+                                onfilepreview={handleCurrentAddressPanelFilePreview}
+                                onfiledelete={handleCurrentAddressPanelFileDelete}>
+                            </c-kyc-entity-document-panel>
+                        </div>
+                    </template>
+
+                    <!-- Front + Back two-file upload -->
+                    <template if:true={showAddressProofUploadSide}>
+                        <div class="kyc-field-wrap kyc-field-wrap-full">
+                            <c-kyc-entity-document-panel
+                                section-key="addressProofFront"
+                                legend-label="Upload Front"
+                                file-title="Upload Front"
+                                required
+                                suppress-left-column
+                                is-read-only={isReadOnlyScreen}
+                                upload-disabled={addressProofFrontPanelUploadDisabled}
+                                upload-icon-url={chunkyUploadIconUrl}
+                                files={addressProofFrontPanelFiles}
+                                onuploadrequest={handleAddressProofFrontUploadRequest}
+                                onfilepreview={handleCurrentAddressPanelFilePreview}
+                                onfiledelete={handleCurrentAddressPanelFileDelete}>
+                            </c-kyc-entity-document-panel>
+                        </div>
+
+                        <div class="kyc-field-wrap kyc-field-wrap-full">
+                            <c-kyc-entity-document-panel
+                                section-key="addressProofBack"
+                                legend-label="Upload Back"
+                                file-title="Upload Back"
+                                required
+                                suppress-left-column
+                                is-read-only={isReadOnlyScreen}
+                                upload-disabled={addressProofBackPanelUploadDisabled}
+                                upload-icon-url={chunkyUploadIconUrl}
+                                files={addressProofBackPanelFiles}
+                                onuploadrequest={handleAddressProofBackUploadRequest}
+                                onfilepreview={handleCurrentAddressPanelFilePreview}
+                                onfiledelete={handleCurrentAddressPanelFileDelete}>
+                            </c-kyc-entity-document-panel>
+                        </div>
+                    </template>
+                    </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             CARD 1.5 – Extracted Document Details (OCR via Einstein)
+             Visible while extracting OR once extraction has produced data.
+             ══════════════════════════════════════════════════════════════════ -->
+        <template if:true={showCurrentStandaloneExtractedDetails}>
+            <c-kyc-extracted-details
+                is-extracting={isExtractingCurrent}
+                selected-kyc-doc={extractedDocType}
+                extracted-details={currentExtractedDetails}
+                is-read-only={extractedDetailsIsReadOnly}
+                address-section-label={extractedDocLabel}
+                onextracteddetailschange={handleExtractedDetailsChange}>
+            </c-kyc-extracted-details>
+        </template>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             CARD 2 – Address Verification
+             Visible once an address proof exists (Full file or Front+Back pair)
+             ══════════════════════════════════════════════════════════════════ -->
+        <template if:true={showAddressVerification}>
+            <div class="kyc-card">
+                <div class="kyc-card-header">
+                    <div class="kyc-header-overlay"></div>
+                    <div class="kyc-header-content">
+                        <div class="kyc-header-icon-wrap">
+                            <lightning-icon icon-name="utility:location" size="small" class="kyc-header-icon"></lightning-icon>
+                        </div>
+                        <div class="kyc-header-text">
+                            <h1 class="kyc-header-title">Address Verification</h1>
+                            <p class="kyc-header-subtitle">Confirm address details</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="kyc-card-body">
+                    <div class="kyc-docs-two-col">
+                        <div class="kyc-docs-left">
+                            <div class="kyc-fields-grid">
+
+                        <!-- Is Current Address Same As Permanent Address? -->
+                        <div class="kyc-field-wrap kyc-field-wrap-full">
+                            <div class="kyc-field-cell">
+                                <div class="kyc-field-label">Is Current Address Same As Permanent Address?</div>
+                                <div class="kyc-field-value-col">
+                                    <div class="kyc-radio-group">
+                                        <label class="kyc-radio-label">
+                                            <input type="radio" class="kyc-radio-input"
+                                                name="isCurrentAddrSameAsPermanent" value="Yes"
+                                                checked={isCurrentAddrSameAsPermanentYes}
+                                                disabled={isReadOnlyScreen}
+                                                onchange={handleIsCurrentAddrSameAsPermanentChange} />
+                                            <span class="kyc-radio-circle"></span>
+                                            <span class="kyc-radio-text">Yes</span>
+                                        </label>
+                                        <label class="kyc-radio-label">
+                                            <input type="radio" class="kyc-radio-input"
+                                                name="isCurrentAddrSameAsPermanent" value="No"
+                                                checked={isCurrentAddrSameAsPermanentNo}
+                                                disabled={isReadOnlyScreen}
+                                                onchange={handleIsCurrentAddrSameAsPermanentChange} />
+                                            <span class="kyc-radio-circle"></span>
+                                            <span class="kyc-radio-text">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Is Office Address Same As Current Address? -->
+                        <div class="kyc-field-wrap kyc-field-wrap-full">
+                            <div class="kyc-field-cell">
+                                <div class="kyc-field-label">Is Office Address Same As Current Address?</div>
+                                <div class="kyc-field-value-col">
+                                    <div class="kyc-radio-group">
+                                        <label class="kyc-radio-label">
+                                            <input type="radio" class="kyc-radio-input"
+                                                name="isOfficeAddrSameAsCurrent" value="Yes"
+                                                checked={isOfficeAddrSameAsCurrentYes}
+                                                disabled={isReadOnlyScreen}
+                                                onchange={handleIsOfficeAddrSameAsCurrentChange} />
+                                            <span class="kyc-radio-circle"></span>
+                                            <span class="kyc-radio-text">Yes</span>
+                                        </label>
+                                        <label class="kyc-radio-label">
+                                            <input type="radio" class="kyc-radio-input"
+                                                name="isOfficeAddrSameAsCurrent" value="No"
+                                                checked={isOfficeAddrSameAsCurrentNo}
+                                                disabled={isReadOnlyScreen}
+                                                onchange={handleIsOfficeAddrSameAsCurrentChange} />
+                                            <span class="kyc-radio-circle"></span>
+                                            <span class="kyc-radio-text">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </template>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             SECTION 4 – PERMANENT ADDRESS KYC
+             Rendered when isCurrentAddrSameAsPermanent === 'No'.
+        ══════════════════════════════════════════════════════════════════ -->
+        <template if:true={showPermanentSection}>
+            <div class="kyc-card">
+                <div class="kyc-card-header">
+                    <div class="kyc-header-overlay"></div>
+                    <div class="kyc-header-content">
+                        <div class="kyc-header-icon-wrap">
+                            <lightning-icon icon-name="utility:home" size="small" class="kyc-header-icon"></lightning-icon>
+                        </div>
+                        <div class="kyc-header-text">
+                            <h1 class="kyc-header-title">Permanent Address KYC</h1>
+                            <p class="kyc-header-subtitle">Capture KYC for permanent address</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="kyc-card-body">
+                    <div class={permAddressDocsLayoutClass}>
+                        <div class="kyc-docs-left">
+                            <div class="kyc-fields-grid">
+
+                        <!-- Address Document Type (picklist filtered by cross-section Aadhaar rule) -->
+                        <div class="kyc-field-wrap">
+                            <div class="kyc-field-cell">
+                                <div class="kyc-field-label">
+                                    Address Document Type
+                                    <span class="kyc-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="kyc-field-value-col">
+                                    <lightning-combobox
+                                        value={permAddrDocumentType}
+                                        label="Address Document Type"
+                                        variant="label-hidden"
+                                        placeholder="Select document type"
+                                        options={permAddrDocumentTypeOptions}
+                                        disabled={isPermAddrDocumentTypeReadOnly}
+                                        onchange={handlePermAddrDocumentTypeChange}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Side mode picker (hidden for Aadhaar Card) -->
+                        <template if:true={permShowDocumentSideMode}>
+                            <div class="kyc-field-wrap kyc-field-wrap-full">
+                                <div class="kyc-field-cell">
+                                    <div class="kyc-field-label">
+                                        Upload Mode
+                                        <span class="kyc-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="kyc-field-value-col">
+                                        <div class="kyc-radio-group">
+                                            <label class={permSideModeFullClass}>
+                                                <input type="radio" class="kyc-radio-input"
+                                                    name="permDocumentSideMode" value="Full"
+                                                    checked={permIsSideModeFull}
+                                                    disabled={isReadOnlyScreen}
+                                                    onchange={handlePermDocumentSideModeChange} />
+                                                <span class="kyc-radio-circle"></span>
+                                                <span class="kyc-radio-text">Full Document</span>
+                                            </label>
+                                            <label class={permSideModeSideClass}>
+                                                <input type="radio" class="kyc-radio-input"
+                                                    name="permDocumentSideMode" value="Side"
+                                                    checked={permIsSideModeSide}
+                                                    disabled={isReadOnlyScreen}
+                                                    onchange={handlePermDocumentSideModeChange} />
+                                                <span class="kyc-radio-circle"></span>
+                                                <span class="kyc-radio-text">Front and Back Upload</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Aadhaar Card path: 3-method verification visual picker. -->
+                        <template if:true={permShowAadhaarVerificationPicker}>
+                            <div class="kyc-field-wrap kyc-field-wrap-full">
+                                <div class="kyc-field-cell">
+                                    <div class="kyc-field-label">
+                                        Select Aadhaar Verification Method
+                                        <span class="kyc-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="kyc-aadhaar-tile-grid" role="radiogroup" aria-label="Permanent Aadhaar Verification Method">
+                                        <template for:each={permAadhaarVerificationTiles} for:item="tile">
+                                            <button
+                                                key={tile.id}
+                                                type="button"
+                                                class={tile.tileClass}
+                                                data-method-id={tile.id}
+                                                role="radio"
+                                                aria-checked={tile.ariaPressed}
+                                                disabled={isReadOnlyScreen}
+                                                onclick={handlePermAadhaarMethodSelect}>
+                                                <span class="kyc-aadhaar-tile-icon-wrap">
+                                                    <lightning-icon icon-name={tile.icon} size="small" alternative-text={tile.label}></lightning-icon>
+                                                </span>
+                                                <span class="kyc-aadhaar-tile-label">{tile.label}</span>
+                                                <span class="kyc-aadhaar-tile-description">{tile.description}</span>
+                                                <template if:true={tile.showInfoIcon}>
+                                                    <span class="kyc-aadhaar-tile-info"
+                                                        tabindex="0"
+                                                        role="button"
+                                                        aria-label={tile.infoTooltip}
+                                                        data-tooltip={tile.infoTooltip}
+                                                        onclick={handleTileInfoClick}
+                                                        onkeydown={handleTileInfoKeydown}>
+                                                        <lightning-icon icon-name="utility:info"
+                                                            size="x-small"
+                                                            alternative-text="Verification status"></lightning-icon>
+                                                    </span>
+                                                </template>
+                                                <template if:true={tile.showCheck}>
+                                                    <span class="kyc-aadhaar-tile-check" aria-hidden="true">
+                                                        <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+                                                    </span>
+                                                </template>
+                                                <template if:true={tile.showVerifiedPill}>
+                                                    <span class="kyc-aadhaar-tile-verified-badge" aria-label="Verified">
+                                                        <lightning-icon icon-name="utility:success"
+                                                            size="x-small"
+                                                            alternative-text="Verified"></lightning-icon>
+                                                        Verified
+                                                    </span>
+                                                </template>
+                                            </button>
+                                        </template>
+                                    </div>
+                                    <div class="kyc-aadhaar-verify-row">
+                                        <template if:true={permIsAadhaarVerified}>
+                                            <span class="kyc-aadhaar-verified-pill">
+                                                <lightning-icon icon-name="utility:success" size="x-small"></lightning-icon>
+                                                Aadhaar verification completed
+                                            </span>
+                                        </template>
+                                        <template if:false={permIsAadhaarVerified}>
+                                            <button
+                                                type="button"
+                                                class={permAadhaarVerifyButtonClass}
+                                                disabled={permAadhaarVerifyDisabled}
+                                                onclick={handlePermAadhaarVerifyClick}>
+                                                {permAadhaarVerifyButtonLabel}
+                                            </button>
+                                        </template>
+                                    </div>
+                                    <template if:true={permShowAadhaarExpiredBanner}>
+                                        <div class="kyc-aadhaar-expired-banner" role="alert">
+                                            <lightning-icon icon-name="utility:warning" size="x-small" alternative-text="Warning"></lightning-icon>
+                                            <span>
+                                                eKYC link expired after 72 hours. You can retry Aadhaar or switch to a different KYC document.
+                                            </span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Others path: Verification Method dropdown (Video KYC / Digi Locker). -->
+                        <template if:true={permShowOtherVerificationPicker}>
+                            <div class="kyc-field-wrap kyc-field-wrap-full">
+                                <div class="kyc-field-cell">
+                                    <lightning-combobox
+                                        label="Verification Method"
+                                        placeholder="Select Verification Method"
+                                        value={permOtherVerificationMethod}
+                                        options={permOtherVerificationMethodOptions}
+                                        onchange={handlePermOtherVerificationMethodChange}
+                                        disabled={isPermOtherVerificationDisabled}
+                                        required>
+                                    </lightning-combobox>
+                                    <div class="kyc-aadhaar-verify-row">
+                                        <template if:true={permIsAadhaarVerified}>
+                                            <span class="kyc-aadhaar-verified-pill">
+                                                <lightning-icon icon-name="utility:success" size="x-small"></lightning-icon>
+                                                Verification completed
+                                            </span>
+                                        </template>
+                                        <template if:false={permIsAadhaarVerified}>
+                                            <button
+                                                type="button"
+                                                class={permAadhaarVerifyButtonClass}
+                                                disabled={permAadhaarVerifyDisabled}
+                                                onclick={handlePermAadhaarVerifyClick}>
+                                                {permAadhaarVerifyButtonLabel}
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- POA / POI toggles (Permanent) -->
+                        <template if:true={permShowProofTogglesStandalone}>
+                            <div class={permProofTogglesWrapClass}>
+                                <div class="kyc-proof-toggles">
+                                    <div class="kyc-proof-toggle-row">
+                                        <span class="kyc-proof-toggle-label">Is this document POA?</span>
+                                        <lightning-input
+                                            type="toggle"
+                                            label="Is this document POA?"
+                                            variant="label-hidden"
+                                            message-toggle-active="Yes"
+                                            message-toggle-inactive="No"
+                                            checked={permAddressProofToggle}
+                                            disabled={isReadOnlyScreen}
+                                            onchange={handlePermAddressProofToggleChange}>
+                                        </lightning-input>
+                                    </div>
+                                    <div class="kyc-proof-toggle-row">
+                                        <span class="kyc-proof-toggle-label">Is this document POI?</span>
+                                        <lightning-input
+                                            type="toggle"
+                                            label="Is this document POI?"
+                                            variant="label-hidden"
+                                            message-toggle-active="Yes"
+                                            message-toggle-inactive="No"
+                                            checked={permIdentityProofToggle}
+                                            disabled={isReadOnlyScreen}
+                                            onchange={handlePermIdentityProofToggleChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                            </div>
+                        </div>
+                        <template if:true={showPermDocsRightColumn}>
+                        <div class="kyc-docs-right">
+                        <!-- Full single-file upload -->
+                        <template if:true={permShowAddressProofUpload}>
+                            <div class="kyc-field-wrap kyc-field-wrap-full">
+                                <c-kyc-entity-document-panel
+                                    section-key="permAddressProof"
+                                    legend-label="Upload Address Proof"
+                                    file-title="Upload Address Proof"
+                                    required
+                                    suppress-left-column
+                                    is-read-only={isReadOnlyScreen}
+                                    upload-disabled={permAddressProofPanelUploadDisabled}
+                                    upload-icon-url={chunkyUploadIconUrl}
+                                    files={permAddressProofPanelFiles}
+                                    onuploadrequest={handlePermAddressProofUploadRequest}
+                                    onfilepreview={handlePermAddressPanelFilePreview}
+                                    onfiledelete={handlePermAddressPanelFileDelete}>
+                                </c-kyc-entity-document-panel>
+                            </div>
+                        </template>
+
+                        <!-- Front + Back two-file upload -->
+                        <template if:true={permShowAddressProofUploadSide}>
+                            <div class="kyc-field-wrap kyc-field-wrap-full">
+                                <c-kyc-entity-document-panel
+                                    section-key="permAddressProofFront"
+                                    legend-label="Upload Front"
+                                    file-title="Upload Front"
+                                    required
+                                    suppress-left-column
+                                    is-read-only={isReadOnlyScreen}
+                                    upload-disabled={permAddressProofFrontPanelUploadDisabled}
+                                    upload-icon-url={chunkyUploadIconUrl}
+                                    files={permAddressProofFrontPanelFiles}
+                                    onuploadrequest={handlePermAddressProofFrontUploadRequest}
+                                    onfilepreview={handlePermAddressPanelFilePreview}
+                                    onfiledelete={handlePermAddressPanelFileDelete}>
+                                </c-kyc-entity-document-panel>
+                            </div>
+
+                            <div class="kyc-field-wrap kyc-field-wrap-full">
+                                <c-kyc-entity-document-panel
+                                    section-key="permAddressProofBack"
+                                    legend-label="Upload Back"
+                                    file-title="Upload Back"
+                                    required
+                                    suppress-left-column
+                                    is-read-only={isReadOnlyScreen}
+                                    upload-disabled={permAddressProofBackPanelUploadDisabled}
+                                    upload-icon-url={chunkyUploadIconUrl}
+                                    files={permAddressProofBackPanelFiles}
+                                    onuploadrequest={handlePermAddressProofBackUploadRequest}
+                                    onfilepreview={handlePermAddressPanelFilePreview}
+                                    onfiledelete={handlePermAddressPanelFileDelete}>
+                                </c-kyc-entity-document-panel>
+                            </div>
+                        </template>
+                        </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Permanent extracted details (Aadhaar/Others verification paths) -->
+            <template if:true={showPermStandaloneExtractedDetails}>
+                <c-kyc-extracted-details
+                    is-extracting={isExtractingPermanent}
+                    selected-kyc-doc={permExtractedDocType}
+                    extracted-details={permExtractedDetails}
+                    is-read-only={extractedDetailsIsReadOnly}
+                    address-section-label={permExtractedDocLabel}
+                    onextracteddetailschange={handlePermExtractedDetailsChange}>
+                </c-kyc-extracted-details>
+            </template>
+        </template>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             SECTION 5 — OFFICE ADDRESS DETAILS
+             Rendered when applicant is Earning AND
+             isOfficeAddrSameAsCurrent === 'No'.
+             ══════════════════════════════════════════════════════════════════ -->
+        <template if:true={showOfficeSection}>
+            <c-office-address-details
+                record-id={recordId}
+                applicant-id={applicantId}
+                existing-office-address-data={officeAddressPayload}
+                force-read-only={isReadOnlyScreen}
+                onofficechange={handleOfficeAddressChange}
+                onofficeemailverify={handleOfficeEmailVerify}>
+            </c-office-address-details>
+        </template>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             SECTION 6 — DIRECTOR DECLARATION
+             Visible when both Address Verification radios are answered.
+             ══════════════════════════════════════════════════════════════════ -->
+        <template if:true={showDirectorDeclaration}>
+            <div class="kyc-card">
+                <div class="kyc-card-header">
+                    <div class="kyc-header-overlay"></div>
+                    <div class="kyc-header-content">
+                        <div class="kyc-header-icon-wrap">
+                            <lightning-icon icon-name="utility:contract_doc" size="small" class="kyc-header-icon"></lightning-icon>
+                        </div>
+                        <div class="kyc-header-text">
+                            <h1 class="kyc-header-title">Director Declaration</h1>
+                            <p class="kyc-header-subtitle">Confirm director and officer relationships</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="kyc-card-body">
+                    <div class="kyc-fields-stack">
+
+                        <!-- isDirectorDeclaration -->
+                        <div class="kyc-declaration-item">
+                            <p class="kyc-declaration-text">
+                                With reference to RBI Circular - Master Circular - Loans and Advances - Statutory and Other
+                                Restrictions (Ref: DBR.No.Dir.BC.10/13.03.00/2015-16) dated July 1, 2014 on granting Loans and
+                                Advances to Relatives of Directors. None of the Directors of the Bank or their relatives as
+                                defined in the RBI Master Circular - Loans and Advances Statutory and Other Restrictions is a
+                                director/partner, manager, managing agent, employee or guarantor of the applicant or a subsidiary
+                                of the applicant or of the holding company of the applicant and that none of them hold substantial
+                                interest in the applicant or his/her/their subsidiary or his/her/their holding company.
+                            </p>
+                            <div class="kyc-radio-group">
+                                <label class="kyc-radio-label">
+                                    <input type="radio" class="kyc-radio-input"
+                                        name="isDirectorDeclaration" value="Yes"
+                                        checked={isDirectorDeclarationYes}
+                                        disabled={isReadOnlyScreen}
+                                        onchange={handleIsDirectorDeclarationChange} />
+                                    <span class="kyc-radio-circle"></span>
+                                    <span class="kyc-radio-text">Yes</span>
+                                </label>
+                                <label class="kyc-radio-label">
+                                    <input type="radio" class="kyc-radio-input"
+                                        name="isDirectorDeclaration" value="No"
+                                        checked={isDirectorDeclarationNo}
+                                        disabled={isReadOnlyScreen}
+                                        onchange={handleIsDirectorDeclarationChange} />
+                                    <span class="kyc-radio-circle"></span>
+                                    <span class="kyc-radio-text">No</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="kyc-declaration-divider"></div>
+
+                        <!-- isSeniorOfficerRelative -->
+                        <div class="kyc-declaration-item">
+                            <p class="kyc-declaration-text">
+                                To the best of the applicant's knowledge none of the directors of any other bank or the
+                                subsidiaries of the banks or trustees of mutual funds/venture capital funds set up by the banks
+                                or their relatives as defined in the RBI Master Circular - Loans and Advances - Statutory and
+                                Other Restrictions is a director/partner, manager, managing agent, employee or guarantor of the
+                                applicant or his/her/their subsidiary or his/her/their holding company and that none of them
+                                hold substantial interest in the applicant or his/her/their subsidiary or his/her/their holding
+                                company.
+                            </p>
+                            <div class="kyc-radio-group">
+                                <label class="kyc-radio-label">
+                                    <input type="radio" class="kyc-radio-input"
+                                        name="isSeniorOfficerRelative" value="Yes"
+                                        checked={isSeniorOfficerRelativeYes}
+                                        disabled={isReadOnlyScreen}
+                                        onchange={handleIsSeniorOfficerRelativeChange} />
+                                    <span class="kyc-radio-circle"></span>
+                                    <span class="kyc-radio-text">Yes</span>
+                                </label>
+                                <label class="kyc-radio-label">
+                                    <input type="radio" class="kyc-radio-input"
+                                        name="isSeniorOfficerRelative" value="No"
+                                        checked={isSeniorOfficerRelativeNo}
+                                        disabled={isReadOnlyScreen}
+                                        onchange={handleIsSeniorOfficerRelativeChange} />
+                                    <span class="kyc-radio-circle"></span>
+                                    <span class="kyc-radio-text">No</span>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             SECTION 7 — PEP SCREENING
+             Visible when both Director Declaration radios are answered.
+             ══════════════════════════════════════════════════════════════════ -->
+        <template if:true={showPepScreening}>
+            <div class="kyc-card">
+                <div class="kyc-card-header">
+                    <div class="kyc-header-overlay"></div>
+                    <div class="kyc-header-content">
+                        <div class="kyc-header-icon-wrap">
+                            <lightning-icon icon-name="utility:user" size="small" class="kyc-header-icon"></lightning-icon>
+                        </div>
+                        <div class="kyc-header-text">
+                            <h1 class="kyc-header-title">Politically Exposed Person</h1>
+                            <p class="kyc-header-subtitle">Regulatory PEP self-declaration</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="kyc-card-body">
+                    <div class="kyc-fields-grid">
+                        <div class="kyc-field-wrap kyc-field-wrap-full">
+                            <div class="kyc-field-cell">
+                                <div class="kyc-field-label">Are you a Politically Exposed Person?</div>
+                                <div class="kyc-field-value-col">
+                                    <div class="kyc-radio-group">
+                                        <label class="kyc-radio-label">
+                                            <input type="radio" class="kyc-radio-input"
+                                                name="isPep" value="Yes"
+                                                checked={isPepYes}
+                                                disabled={isReadOnlyScreen}
+                                                onchange={handleIsPepChange} />
+                                            <span class="kyc-radio-circle"></span>
+                                            <span class="kyc-radio-text">Yes</span>
+                                        </label>
+                                        <label class="kyc-radio-label">
+                                            <input type="radio" class="kyc-radio-input"
+                                                name="isPep" value="No"
+                                                checked={isPepNo}
+                                                disabled={isReadOnlyScreen}
+                                                onchange={handleIsPepChange} />
+                                            <span class="kyc-radio-circle"></span>
+                                            <span class="kyc-radio-text">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             SECTION 8 — CROSS-SELL ACCOUNT
+             Visible when PEP is answered. Warning banner appears when both
+             "Has bank account?" and "Interested in opening savings?" = No.
+             ══════════════════════════════════════════════════════════════════ -->
+        <template if:true={showBankAccountCheck}>
+            <div class="kyc-card">
+                <div class="kyc-card-header">
+                    <div class="kyc-header-overlay"></div>
+                    <div class="kyc-header-content">
+                        <div class="kyc-header-icon-wrap">
+                            <lightning-icon icon-name="utility:money" size="small" class="kyc-header-icon"></lightning-icon>
+                        </div>
+                        <div class="kyc-header-text">
+                            <h1 class="kyc-header-title">Cross-Sell Account</h1>
+                            <p class="kyc-header-subtitle">Banking preferences</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="kyc-card-body">
+                    <template if:true={showCrossSellWarning}>
+                        <div class="kyc-cross-sell-warning" role="status">
+                            <lightning-icon icon-name="utility:warning" size="x-small" class="kyc-cross-sell-warning-icon"></lightning-icon>
+                            <p class="kyc-cross-sell-warning-text">
+                                The applicant has no bank account. Please confirm with the applicant before proceeding.
+                            </p>
+                        </div>
+                    </template>
+                    <div class="kyc-fields-grid">
+
+                        <!-- Do you have a bank account? -->
+                        <div class="kyc-field-wrap kyc-field-wrap-full">
+                            <div class="kyc-field-cell">
+                                <div class="kyc-field-label">Do you have a bank account (across any of the banks)?</div>
+                                <div class="kyc-field-value-col">
+                                    <div class="kyc-radio-group">
+                                        <label class="kyc-radio-label">
+                                            <input type="radio" class="kyc-radio-input"
+                                                name="isBankAccountCheck" value="Yes"
+                                                checked={isBankAccountCheckYes}
+                                                disabled={isReadOnlyScreen}
+                                                onchange={handleIsBankAccountCheckChange} />
+                                            <span class="kyc-radio-circle"></span>
+                                            <span class="kyc-radio-text">Yes</span>
+                                        </label>
+                                        <label class="kyc-radio-label">
+                                            <input type="radio" class="kyc-radio-input"
+                                                name="isBankAccountCheck" value="No"
+                                                checked={isBankAccountCheckNo}
+                                                disabled={isReadOnlyScreen}
+                                                onchange={handleIsBankAccountCheckChange} />
+                                            <span class="kyc-radio-circle"></span>
+                                            <span class="kyc-radio-text">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interested in opening a savings account? -->
+                        <div class="kyc-field-wrap kyc-field-wrap-full">
+                            <div class="kyc-field-cell">
+                                <div class="kyc-field-label">Interested in opening a savings account with us?</div>
+                                <div class="kyc-field-value-col">
+                                    <div class="kyc-radio-group">
+                                        <label class="kyc-radio-label">
+                                            <input type="radio" class="kyc-radio-input"
+                                                name="isOpenSavingsAccount" value="Yes"
+                                                checked={isOpenSavingsAccountYes}
+                                                disabled={isReadOnlyScreen}
+                                                onchange={handleIsOpenSavingsAccountChange} />
+                                            <span class="kyc-radio-circle"></span>
+                                            <span class="kyc-radio-text">Yes</span>
+                                        </label>
+                                        <label class="kyc-radio-label">
+                                            <input type="radio" class="kyc-radio-input"
+                                                name="isOpenSavingsAccount" value="No"
+                                                checked={isOpenSavingsAccountNo}
+                                                disabled={isReadOnlyScreen}
+                                                onchange={handleIsOpenSavingsAccountChange} />
+                                            <span class="kyc-radio-circle"></span>
+                                            <span class="kyc-radio-text">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ETB CASA repayment-account picker. Renders when the
+                             applicant chose to open a savings account with us. -->
+                        <template lwc:if={showCrossSellAccountsPicker}>
+                            <div class="kyc-field-wrap kyc-field-wrap-full kyc-casa-picker-wrap">
+                                <div class="kyc-field-cell">
+                                    <div class="kyc-field-label">Which Account among these would be your repayment account?</div>
+                                    <div class="kyc-casa-tile-grid">
+                                        <template for:each={crossSellAccountsTiles} for:item="tile">
+                                            <div key={tile.key}
+                                                 class={tile.tileClass}
+                                                 data-account-id={tile.accountId}
+                                                 data-disabled={tile.isDisabled}
+                                                 onclick={handleCrossSellAccountSelect}>
+                                                <div class="kyc-casa-tile-header">
+                                                    <span class="kyc-casa-tile-acctid">{tile.accountId}</span>
+                                                    <template lwc:if={tile.isDisabled}>
+                                                        <span class="kyc-casa-tile-info"
+                                                              data-tooltip={tile.disabledTip}
+                                                              aria-label={tile.disabledTip}
+                                                              role="img">
+                                                            <lightning-icon icon-name="utility:info" size="x-small"></lightning-icon>
+                                                        </span>
+                                                    </template>
+                                                    <template lwc:if={tile.isSelected}>
+                                                        <span class="kyc-casa-tile-check" aria-label="Selected">
+                                                            <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+                                                        </span>
+                                                    </template>
+                                                </div>
+                                                <div class="kyc-casa-tile-row">
+                                                    <span class="kyc-casa-tile-key">Opened</span>
+                                                    <span class="kyc-casa-tile-val">{tile.acctOpenDate}</span>
+                                                </div>
+                                                <div class="kyc-casa-tile-row">
+                                                    <span class="kyc-casa-tile-key">Nature</span>
+                                                    <span class="kyc-casa-tile-val">{tile.natureOfAccount}</span>
+                                                </div>
+                                                <button type="button"
+                                                        class="kyc-casa-tile-more"
+                                                        data-account-id={tile.accountId}
+                                                        onclick={handleCrossSellShowMore}>
+                                                    Show More
+                                                </button>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             SECTION 9 — CUSTOMER IMAGE
+             Visible when both Cross-Sell radios are answered. Single-file
+             upload (no webcam). Checklist is created on upload click.
+             ══════════════════════════════════════════════════════════════════ -->
+        <template if:true={showCustomerImageCapture}>
+            <div class="kyc-card">
+                <div class="kyc-card-header">
+                    <div class="kyc-header-overlay"></div>
+                    <div class="kyc-header-content">
+                        <div class="kyc-header-icon-wrap">
+                            <lightning-icon icon-name="utility:photo" size="small" class="kyc-header-icon"></lightning-icon>
+                        </div>
+                        <div class="kyc-header-text">
+                            <h1 class="kyc-header-title">Customer Image</h1>
+                            <p class="kyc-header-subtitle">Upload the applicant&rsquo;s photograph</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="kyc-card-body">
+                    <div class="kyc-fields-grid">
+                        <div class="kyc-field-wrap kyc-field-wrap-full">
+                            <c-kyc-entity-document-panel
+                                section-key="customerImage"
+                                legend-label="Customer Photograph"
+                                file-title="Upload Customer Photograph"
+                                required
+                                suppress-left-column
+                                is-read-only={isReadOnlyScreen}
+                                upload-disabled={customerImagePanelUploadDisabled}
+                                upload-icon-url={chunkyUploadIconUrl}
+                                files={customerImagePanelFiles}
+                                onuploadrequest={handleCustomerImageUploadRequest}
+                                onfilepreview={handleCustomerImagePanelFilePreview}
+                                onfiledelete={handleCustomerImagePanelFileDelete}>
+                            </c-kyc-entity-document-panel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ── Footer ──────────────────────────────────────────────────────── -->
+        <div class="kyc-footer-wrapper">
+            <div class="kyc-footer">
+                <template if:true={isReadOnlyScreen}>
+                    <span class="kyc-read-only-hint">{readOnlyHint}</span>
+                </template>
+                <!-- NEXT is hidden on the completed / read-only screen (mirrors Basic Details);
+                     forward navigation on a completed step happens via the left-nav menu. -->
+                <template if:false={isReadOnlyScreen}>
+                    <div class="kyc-btn-wrapper">
+                        <button class={nextButtonClass} onclick={handleNextButton}>
+                            {nextButtonLabel}
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+    </div>
+
+    <template lwc:if={showCurrentAddressMagicUpload}>
+        <div class="dv-modal-overlay" onmousedown={handleCurrentAddressOverlayMouseDown} onclick={handleCurrentAddressOverlayClick}>
+            <div class="dv-modal" onclick={stopPropagationCurrentAddressDv}>
+                <div class="dv-modal-head">
+                    <span class="dv-modal-title">Advanced Document Upload</span>
+                    <button type="button" class="dv-modal-close" onclick={handleCurrentAddressMagicUploadClose} title="Close">&#10005;</button>
+                </div>
+                <div class="dv-modal-body">
+                    <c-embed-custom-file-upload
+                        record-id={currentAddressActiveUploadChecklistId}
+                        max-files-allowed={currentAddressActiveMaxFiles}
+                        allowed-extensions={currentAddressActiveAllowedTypes}
+                        enable-compression
+                        allow-merge
+                        enable-video
+                        onfilesuploaded={handleCurrentAddressMagicUploadComplete}>
+                    </c-embed-custom-file-upload>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template lwc:if={showCustomerImageMagicUpload}>
+        <div class="dv-modal-overlay" onmousedown={handleCustomerImageOverlayMouseDown} onclick={handleCustomerImageOverlayClick}>
+            <div class="dv-modal" onclick={stopPropagationCustomerImageDv}>
+                <div class="dv-modal-head">
+                    <span class="dv-modal-title">Advanced Document Upload</span>
+                    <button type="button" class="dv-modal-close" onclick={handleCustomerImageMagicUploadClose} title="Close">&#10005;</button>
+                </div>
+                <div class="dv-modal-body">
+                    <c-embed-custom-file-upload
+                        record-id={customerImageActiveUploadChecklistId}
+                        max-files-allowed={customerImageActiveMaxFiles}
+                        allowed-extensions={customerImageActiveAllowedTypes}
+                        enable-compression
+                        allow-merge
+                        enable-video
+                        onfilesuploaded={handleCustomerImageMagicUploadComplete}>
+                    </c-embed-custom-file-upload>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template lwc:if={showPermAddressMagicUpload}>
+        <div class="dv-modal-overlay" onmousedown={handlePermAddressOverlayMouseDown} onclick={handlePermAddressOverlayClick}>
+            <div class="dv-modal" onclick={stopPropagationPermAddressDv}>
+                <div class="dv-modal-head">
+                    <span class="dv-modal-title">Advanced Document Upload</span>
+                    <button type="button" class="dv-modal-close" onclick={handlePermAddressMagicUploadClose} title="Close">&#10005;</button>
+                </div>
+                <div class="dv-modal-body">
+                    <c-embed-custom-file-upload
+                        record-id={permAddressActiveUploadChecklistId}
+                        max-files-allowed={permAddressActiveMaxFiles}
+                        allowed-extensions={permAddressActiveAllowedTypes}
+                        enable-compression
+                        allow-merge
+                        enable-video
+                        onfilesuploaded={handlePermAddressMagicUploadComplete}>
+                    </c-embed-custom-file-upload>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- ── File previewer (lazy-mounted on eye-icon click) ────────────────── -->
+    <template if:true={showFilePreviewer}>
+        <c-file-previewer
+            content-document-id={previewContentDocumentId}
+            file-type={previewFileType}
+            record-id={recordId}
+            onclose={handleFilePreviewClose}>
+        </c-file-previewer>
+    </template>
+
+    <template lwc:if={showEntityEmbedFilePreview}>
+        <c-embed-file-preview
+            content-version-id={entityPreviewContentVersionId}
+            file-name={entityPreviewFileName}
+            file-extension={entityPreviewFileExtension}
+            session-id={_sessionId}
+            vf-root={_vfRoot}
+            can-download
+            onclose={handleEntityEmbedFilePreviewClose}>
+        </c-embed-file-preview>
+    </template>
+
+    <!-- ── ETB CASA account details modal (Show More on Cross-Sell tile) ──── -->
+    <template lwc:if={showAccountDetailsModal}>
+        <section class="kyc-casa-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="kyc-casa-modal-title">
+            <div class="kyc-casa-modal">
+                <header class="kyc-casa-modal-header">
+                    <h2 id="kyc-casa-modal-title" class="kyc-casa-modal-title">Account Details</h2>
+                    <button type="button" class="kyc-casa-modal-close"
+                            onclick={handleCrossSellAccountDetailsClose}
+                            aria-label="Close">
+                        <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                    </button>
+                </header>
+                <div class="kyc-casa-modal-body">
+                    <template for:each={accountDetailsModalFields} for:item="row">
+                        <div key={row.key} class="kyc-casa-modal-row">
+                            <span class="kyc-casa-modal-key">{row.label}</span>
+                            <span class="kyc-casa-modal-val">{row.value}</span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- ── Dynamic component modal (hosts otpVerification for Office Email Verify) ── -->
+    <template lwc:if={showDynamicComponentModal}>
+        <c-dynamic-component-modal
+            component-name={dynamicComponentName}
+            record-id={recordId}
+            component-props={dynamicComponentProps}
+            onclose={handleDynamicComponentModalClose}>
+        </c-dynamic-component-modal>
+    </template>
+
+    <!-- ── Integration progress modal (OCR pipeline visualization) ────────── -->
+    <template lwc:if={showIntegrationProgressModal}>
+        <c-integration-progress-modal
+            status={integrationProgressModalStatus}
+            header={integrationProgressModalHeader}
+            current-stage-index={integrationProgressModalCurrentStageIdx}
+            stages={integrationProgressModalStages}
+            error-message={integrationProgressModalErrorMessage}
+            onclose={handleIntegrationProgressModalClose}
+            onretry={handleIntegrationProgressModalRetry}
+            ondone={handleIntegrationProgressModalDone}>
+        </c-integration-progress-modal>
+    </template>
+
+    <c-embed-document-checklist></c-embed-document-checklist>
+
+    <!-- ── Aadhaar eKYC link modal ─────────────────────────────────────────── -->
+    <template lwc:if={showEkycLinkModal}>
+        <section class="kyc-ekyc-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="kyc-ekyc-title">
+            <div class="kyc-ekyc-modal">
+                <header class="kyc-ekyc-modal-header">
+                    <h2 id="kyc-ekyc-title">Aadhaar eKYC OTP Link</h2>
+                    <button type="button" class="kyc-ekyc-modal-close"
+                        onclick={handleCloseEkycLinkModal} aria-label="Close">&times;</button>
+                </header>
+                <div class="kyc-ekyc-modal-body">
+                    <p class="kyc-ekyc-modal-intro">
+                        Share this link with the customer (SMS or email). The customer enters their
+                        Aadhaar + OTP on the verification page; this screen updates as soon as consent is received.
+                    </p>
+                    <div class="kyc-ekyc-link-row">
+                        <input type="text" class="kyc-ekyc-link-input" value={eKycLinkUrl} readonly />
+                        <button type="button" class="kyc-ekyc-link-copy kyc-ekyc-link-copy-icon"
+                            onclick={handleCopyEkycLink}
+                            title={copyLinkButtonLabel}
+                            aria-label={copyLinkButtonLabel}>
+                            <lightning-icon icon-name={copyLinkButtonIcon} size="x-small"
+                                alternative-text={copyLinkButtonLabel}></lightning-icon>
+                        </button>
+                        <a class="kyc-ekyc-link-copy kyc-ekyc-link-copy-icon kyc-ekyc-link-open"
+                            href={eKycLinkUrl}
+                            target="_blank" rel="noopener noreferrer"
+                            title="Open link in a new tab"
+                            aria-label="Open eKYC verification link in a new tab">
+                            <lightning-icon icon-name="utility:new_window" size="x-small"
+                                alternative-text="Open link"></lightning-icon>
+                        </a>
+                    </div>
+                    <div class="kyc-ekyc-modal-status">
+                        <template lwc:if={isPollingConsent}>
+                            <span class="kyc-ekyc-modal-spinner-wrap">
+                                <lightning-spinner alternative-text="Polling" size="small" variant="brand"></lightning-spinner>
+                            </span>
+                            <span class="kyc-ekyc-modal-status-text">{pollingStatusLabel}</span>
+                        </template>
+                    </div>
+                </div>
+                <footer class="kyc-ekyc-modal-footer">
+                    <button type="button" class="kyc-ekyc-modal-btn-secondary"
+                        onclick={handleCloseEkycLinkModal}>Close</button>
+                </footer>
+            </div>
+        </section>
+    </template>
+
+    <!-- ── Aadhaar eKYC link modal (Permanent Address) ───────────────── -->
+    <template lwc:if={showPermEkycLinkModal}>
+        <section class="kyc-ekyc-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="kyc-ekyc-perm-title">
+            <div class="kyc-ekyc-modal">
+                <header class="kyc-ekyc-modal-header">
+                    <h2 id="kyc-ekyc-perm-title">Aadhaar eKYC OTP Link (Permanent Address)</h2>
+                    <button type="button" class="kyc-ekyc-modal-close"
+                        onclick={handleClosePermEkycLinkModal} aria-label="Close">&times;</button>
+                </header>
+                <div class="kyc-ekyc-modal-body">
+                    <p class="kyc-ekyc-modal-intro">
+                        Share this link with the customer (SMS or email). The customer enters their
+                        Aadhaar + OTP on the verification page; this screen updates as soon as consent is received.
+                    </p>
+                    <div class="kyc-ekyc-link-row">
+                        <input type="text" class="kyc-ekyc-link-input" value={permEKycLinkUrl} readonly />
+                        <button type="button" class="kyc-ekyc-link-copy kyc-ekyc-link-copy-icon"
+                            onclick={handlePermCopyEkycLink}
+                            title={permCopyLinkButtonLabel}
+                            aria-label={permCopyLinkButtonLabel}>
+                            <lightning-icon icon-name={permCopyLinkButtonIcon} size="x-small"
+                                alternative-text={permCopyLinkButtonLabel}></lightning-icon>
+                        </button>
+                        <a class="kyc-ekyc-link-copy kyc-ekyc-link-copy-icon kyc-ekyc-link-open"
+                            href={permEKycLinkUrl}
+                            target="_blank" rel="noopener noreferrer"
+                            title="Open link in a new tab"
+                            aria-label="Open eKYC verification link in a new tab">
+                            <lightning-icon icon-name="utility:new_window" size="x-small"
+                                alternative-text="Open link"></lightning-icon>
+                        </a>
+                    </div>
+                    <div class="kyc-ekyc-modal-status">
+                        <template lwc:if={permIsPollingConsent}>
+                            <span class="kyc-ekyc-modal-spinner-wrap">
+                                <lightning-spinner alternative-text="Polling" size="small" variant="brand"></lightning-spinner>
+                            </span>
+                            <span class="kyc-ekyc-modal-status-text">{permPollingStatusLabel}</span>
+                        </template>
+                    </div>
+                </div>
+                <footer class="kyc-ekyc-modal-footer">
+                    <button type="button" class="kyc-ekyc-modal-btn-secondary"
+                        onclick={handleClosePermEkycLinkModal}>Close</button>
+                </footer>
+            </div>
+        </section>
+    </template>
+
+</template>

@@ -1,0 +1,518 @@
+<template>
+    <div class="form-layout">
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">Query Details</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="form-body">
+                <div class="form-fields-grid">
+                    <template lwc:if={hasQueryCreated}>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Query #</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{queryNumber}</p></div>
+                            </div>
+                        </div>
+                    </template>
+                    <div class="form-field-wrap">
+                        <template lwc:if={hasQueryCreated}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Query Type</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{queryTypeSearchTerm}</p></div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-field-cell">
+                                <div class="searchable-dropdown">
+                                    <div class="slds-form-element">
+                                        <div class="form-field-label">
+                                            <abbr class="slds-required" title="required">* </abbr>Query Type
+                                        </div>
+                                        <div class="form-field-value-col">
+                                            <div class="slds-form-element__control">
+                                                <input type="text"
+                                                    class="slds-input"
+                                                    value={queryTypeSearchTerm}
+                                                    placeholder="Type query type"
+                                                    oninput={handleQueryTypeSearchInput}
+                                                    onfocus={handleQueryTypeLookupFocus}
+                                                    onblur={handleQueryTypeLookupBlur}
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <template if:true={queryTypeLookupOpen}>
+                                        <div class="dropdown-list" role="listbox">
+                                            <template for:each={filteredQueryTypeOptions} for:item="opt">
+                                                <div key={opt.value}
+                                                    class="dropdown-option"
+                                                    role="option"
+                                                    data-value={opt.value}
+                                                    data-label={opt.label}
+                                                    onmousedown={handleSelectQueryTypeOption}>
+                                                    {opt.label}
+                                                </div>
+                                            </template>
+                                            <template if:false={filteredQueryTypeOptions.length}>
+                                                <div class="dropdown-option slds-text-color_weak">No matching query types found</div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="form-field-wrap">
+                        <template lwc:if={hasQueryCreated}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Query Sub Type</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{querySubTypeSearchTerm}</p></div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-field-cell">
+                                <div class="searchable-dropdown">
+                                    <div class="slds-form-element">
+                                        <div class="form-field-label">
+                                            <abbr class="slds-required" title="required">* </abbr>Query Sub Type
+                                        </div>
+                                        <div class="slds-form-element__control">
+                                            <input type="text"
+                                                class="slds-input"
+                                                value={querySubTypeSearchTerm}
+                                                placeholder="Search Query Sub Type..."
+                                                oninput={handleQuerySubTypeSearchInput}
+                                                onfocus={handleQuerySubTypeLookupFocus}
+                                                onblur={handleQuerySubTypeLookupBlur}
+                                            >
+                                        </div>
+                                    </div>
+                                    <template if:true={querySubTypeLookupOpen}>
+                                        <div class="dropdown-list" role="listbox">
+                                            <template for:each={filteredQuerySubTypeOptions} for:item="opt">
+                                                <div key={opt.value}
+                                                    class="dropdown-option"
+                                                    role="option"
+                                                    data-value={opt.value}
+                                                    data-label={opt.label}
+                                                    onmousedown={handleSelectQuerySubTypeOption}>
+                                                    {opt.label}
+                                                </div>
+                                            </template>
+                                            <template if:false={filteredQuerySubTypeOptions.length}>
+                                                <div class="dropdown-option slds-text-color_weak">No matching query sub type found</div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="form-field-wrap">
+                        <template lwc:if={hasQueryCreated}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Applicant</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{selectedApplicantName}</p></div>
+                            </div>
+                        </template>
+                        <template lwc:elseif={isApplicantPopulated}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Applicant</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{selectedApplicantName}</p></div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-field-cell">
+                                <div class="slds-form-element">
+                                    <div class="form-field-label">Applicant (Optional)</div>
+                                    <div class="slds-form-element__control slds-grid slds-grid_vertical-align-center slds-gutters_xx-small">
+                                        <div class="slds-col slds-grow">
+                                            <lightning-combobox
+                                                name="applicant"
+                                                value={selectedApplicant}
+                                                placeholder="Select Applicant"
+                                                options={applicantOptions}
+                                                onchange={handleApplicantChange}
+                                                variant="label-hidden"
+                                            >
+                                            </lightning-combobox>
+                                        </div>
+                                        <div class="slds-col slds-shrink">
+                                            <lightning-button
+                                                label="Clear"
+                                                variant="neutral"
+                                                onclick={handleClearApplicant}
+                                                class="slds-var-m-bottom_x-small">
+                                            </lightning-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="form-field-wrap">
+                        <template lwc:if={hasQueryCreated}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Document Checklist</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{selectedDocumentChecklistName}</p></div>
+                            </div>
+                        </template>
+                        <template lwc:elseif={isDocumentChecklistPopulated}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Document Checklist</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{selectedDocumentChecklistName}</p></div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <template lwc:if={showDocumentChecklists}>
+                                <div class="form-field-cell">
+                                    <div class="slds-form-element">
+                                        <label class="form-field-label">Document Checklist (Optional)</label>
+                                        <div class="slds-form-element__control slds-grid slds-grid_vertical-align-center slds-gutters_xx-small">
+                                            <div class="slds-col slds-grow">
+                                                <lightning-combobox
+                                                    name="documentChecklist"
+                                                    value={selectedDocumentChecklist}
+                                                    placeholder="Select Document Checklist"
+                                                    options={documentChecklistOptions}
+                                                    onchange={handleDocumentChecklistChange}
+                                                    variant="label-hidden"
+                                                >
+                                                </lightning-combobox>
+                                            </div>
+                                            <div class="slds-col slds-shrink">
+                                                <lightning-button
+                                                    label="Clear"
+                                                    variant="neutral"
+                                                    onclick={handleClearDocumentChecklist}
+                                                    class="slds-var-m-bottom_x-small">
+                                                </lightning-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element__help slds-var-m-top_xx-small slds-text-color_weak" style="font-size: 0.75rem;">
+                                        {documentChecklistHelpMessage}
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+                    <div class="form-field-wrap">
+                        <template lwc:if={hasQueryCreated}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Description</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{queryDescription}</p></div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">Description</div>
+                                <div class="form-field-value-col">
+                                    <lightning-textarea
+                                        name="description"
+                                        variant="label-hidden"
+                                        value={queryDescription}
+                                        placeholder="Enter description"
+                                        onchange={handleInputChange}
+                                    >
+                                    </lightning-textarea>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="form-field-wrap">
+                        <template lwc:if={hasQueryCreated}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">Priority</span></div>
+                                <div class="form-info-value-wrap"><p class="form-info-value">{selectedPriority}</p></div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-field-cell">
+                                <div class="form-field-label"><abbr class="slds-required" title="required">* </abbr>Priority</div>
+                                <div class="form-field-value-col">
+                                    <lightning-combobox
+                                        name="priority"
+                                        variant="label-hidden"
+                                        value={selectedPriority}
+                                        placeholder="Select Priority"
+                                        options={priorityOptions}
+                                        onchange={handleInputChange}
+                                    >
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">User Selection</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="form-body">
+                <div class="form-fields-grid">
+                    <template lwc:if={hasQueryCreated}>
+                        <div class="form-info-cell">
+                            <div class="form-info-cell-header"><span class="form-info-label">Assigned To</span></div>
+                            <div class="form-info-value-wrap"><p class="form-info-value">{assignedToUserName}</p></div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="form-field-wrap">
+                            <div class="form-field-cell">
+                                <div class="form-field-label"><abbr class="slds-required" title="required">* </abbr>Assigned To</div>
+                                <div class="form-field-value-col">
+                                    <div class="slds-var-m-bottom_xx-small user-links">
+                                        <a onclick={handleShowApplicationUsers} class="user-link" style="cursor:pointer;color:#0070d2">Show users who worked on Loan</a>
+                                        <a onclick={handleShowAllUsers} class="user-link" style="cursor: pointer; color: #0070d2;">Select all users</a>
+                                    </div>
+                                    <template if:true={hasAssignedUser}>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-box slds-box_x-small slds-theme_shade" style="display: flex; justify-content: space-between; align-items: center;">
+                                                <span class="slds-text-body_regular">{assignedToUserName}</span>
+                                                <lightning-button-icon 
+                                                    icon-name="utility:close" 
+                                                    variant="bare" 
+                                                    alternative-text="Clear"
+                                                    title="Clear selected user"
+                                                    onclick={handleClearAssignedUser}>
+                                                </lightning-button-icon>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:false={hasAssignedUser}>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-box slds-box_x-small" style="color: #706e6b; font-style: italic;">
+                                                No user selected. Click a link above to select.
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <template lwc:if={showUserSelection}>
+                    <lightning-card class="user-selection-card">
+                        <h1 slot="title">Select User</h1>
+                        <div slot="actions">
+                            <lightning-button
+                                variant="brand"
+                                label="Close"
+                                onclick={handleCloseUserSelection}
+                            >
+                            </lightning-button>
+                        </div>
+                        <template if:true={showAllUsers}>
+                            <div class="slds-box slds-theme_shade slds-var-m-top_small slds-var-p-around_small">
+                                <div class="slds-grid slds-gutters slds-wrap">
+                                    <div class="slds-col slds-large-size_1-of-2 slds-small-size_1-of-1">
+                                        <lightning-combobox
+                                            name="productFilter"
+                                            label="Filter by Product"
+                                            value={productFilter}
+                                            placeholder="All Products"
+                                            options={productOptions}
+                                            onchange={handleProductFilterChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="slds-col slds-large-size_1-of-2 slds-small-size_1-of-1">
+                                        <div class="searchable-dropdown">
+                                            <div class="slds-form-element">
+                                                <label class="slds-form-element__label" for="eligible-owner-filter">Filter by Manager</label>
+                                                <div class="slds-form-element__control">
+                                                    <input type="text"
+                                                        id="eligible-manager-filter"
+                                                        class="slds-input"
+                                                        value={managerSearchTerm}
+                                                        placeholder="Type manager name"
+                                                        oninput={handleManagerSearchInput}
+                                                        onfocus={handleManagerLookupFocus}
+                                                        onblur={handleManagerLookupBlur}
+                                                    >
+                                                </div>
+                                            </div>
+                                            <template if:true={managerLookupOpen}>
+                                                <div class="dropdown-list" role="listbox">
+                                                    <template for:each={filteredManagerOptions} for:item="opt">
+                                                        <div key={opt.value}
+                                                            class="dropdown-option"
+                                                            role="option"
+                                                            data-value={opt.value}
+                                                            data-label={opt.label}
+                                                            onmousedown={handleSelectManager}
+                                                        >
+                                                            {opt.label}
+                                                        </div>
+                                                    </template>
+                                                    <template if:false={filteredManagerOptions.length}>
+                                                        <div class="dropdown-option slds-text-color_weak">No matching managers found</div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                                <template if:true={hasUserSelectionFilters}>
+                                    <div class="slds-var-m-top_small slds-text-align_right">
+                                        <lightning-button 
+                                            variant="neutral" 
+                                            label="Clear Filters"
+                                            icon-name="utility:clear"
+                                            onclick={handleClearFilters}>
+                                        </lightning-button>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        <div class="slds-text-body_small slds-var-m-top_small" style="color: #706e6b;">
+                            <strong>{filteredAvailableUsers.length}</strong> user(s) found. Click "Select" to assign.
+                        </div>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-var-m-top_small user-picker-table">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Name">Name</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Email">Email</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Persona">Persona</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Product">Product</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Manager">Manager</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Action">Action</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={filteredAvailableUsers} for:item="user">
+                                    <tr key={user.userId} class="slds-hint-parent">
+                                        <td>
+                                            <div class="slds-cell-wrap" title={user.userName}>{user.userName}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-cell-wrap" title={user.userEmail}>{user.userEmail}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-cell-wrap" title={user.userPersona}>{user.userPersona}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-cell-wrap" title={user.product}>{user.product}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-cell-wrap" title={user.managerName}>{user.managerName}</div>
+                                        </td>
+                                        <td>
+                                            <lightning-button 
+                                                variant="brand" 
+                                                label="Select"
+                                                data-user-id={user.userId}
+                                                disabled={user.isCurrentUser}
+                                                onclick={handleSelectUser}
+                                            >
+                                            </lightning-button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </lightning-card>
+                </template>
+            </div>
+        </div>
+        <template if:true={hasQueryCreated}>
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">File Upload</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <div class="form-field-cell">
+                                <div class="form-field-label">Upload Files (Optional)</div>
+                                <div class="form-field-value-col">
+                                    <lightning-file-upload
+                                        name="fileUpload"
+                                        variant="label-hidden"
+                                        accept="image/png,image/jpeg,image/jpg,image/gif,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+                                        record-id={queryId}
+                                        onuploadfinished={handleUploadFinished}
+                                        multiple
+                                    >
+                                    </lightning-file-upload>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header"><span class="form-info-label">View Files</span></div>
+                                <div class="form-info-value-wrap">
+                                    <template lwc:if={attachments.length}>
+                                        <ul class="slds-list_dotted attachment-list">
+                                            <template for:each={attachments} for:item="att">
+                                                <li key={att.Id} class="slds-var-m-bottom_x-small">
+                                                    <p class="form-info-value" title={att.Title}>
+                                                        <lightning-icon icon-name="doctype:attachment" size="x-small" class="slds-var-m-right_x-small"></lightning-icon>
+                                                        {att.Title}
+                                                        <template lwc:if={att.isDeleting}>
+                                                            <lightning-spinner alternative-text="Deleting" size="x-small" class="slds-var-m-left_x-small"></lightning-spinner>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            <lightning-button-icon
+                                                                icon-name="utility:delete"
+                                                                variant="bare"
+                                                                alternative-text="Delete file"
+                                                                title="Delete file"
+                                                                size="medium"
+                                                                data-document-id={att.Id}
+                                                                onclick={handleDeleteFile}
+                                                                class="slds-var-m-left_x-small"
+                                                            >
+                                                            </lightning-button-icon>
+                                                        </template>
+                                                    </p>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                    <template lwc:else>
+                                        <p class="form-info-value-small">No files uploaded yet.</p>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template if:false={hasQueryCreated}>
+            <div class="slds-align_absolute-center">
+                <lightning-button label="Create" variant="brand" onclick={handleCreateQuery}></lightning-button>
+            </div>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Date_of_Expiration__c</fullName>
+    <formula>DATEVALUE( RIGHT( Date_of_Expiration_Text__c, 4) + &apos;-&apos; +
+CASE( MID(Date_of_Expiration_Text__c, 4, 3),
+&quot;jan&quot;, &quot;01&quot;,
+&quot;feb&quot;, &quot;02&quot;,
+&quot;mar&quot;, &quot;03&quot;,
+&quot;apr&quot;, &quot;04&quot;,
+&quot;may&quot;, &quot;05&quot;,
+&quot;jun&quot;, &quot;06&quot;,
+&quot;jul&quot;, &quot;07&quot;,
+&quot;aug&quot;, &quot;08&quot;,
+&quot;sep&quot;, &quot;09&quot;,
+&quot;oct&quot;, &quot;10&quot;,
+&quot;nov&quot;, &quot;11&quot;,
+&quot;12&quot;
+)
++ &apos;-&apos; + LEFT(Date_of_Expiration_Text__c, 2) )</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Date of Expiration</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

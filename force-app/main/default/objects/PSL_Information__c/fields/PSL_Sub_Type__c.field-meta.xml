@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PSL_Sub_Type__c</fullName>
+    <label>PSL Sub Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Agri - Individual</fullName>
+                <default>false</default>
+                <label>Agri - Individual</label>
+            </value>
+            <value>
+                <fullName>Agri - Non- Individual</fullName>
+                <default>false</default>
+                <label>Agri - Non- Individual</label>
+            </value>
+            <value>
+                <fullName>MSME</fullName>
+                <default>false</default>
+                <label>MSME</label>
+            </value>
+            <value>
+                <fullName>Agri</fullName>
+                <default>false</default>
+                <label>Agri</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

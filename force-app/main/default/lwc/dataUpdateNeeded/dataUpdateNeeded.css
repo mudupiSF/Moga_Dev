@@ -1,0 +1,161 @@
+:host {
+    display: block;
+}
+
+.slds-illustration {
+    padding: 2rem 0;
+}
+
+.slds-text-color_error {
+    color: #c23934;
+}
+
+.slds-text-title_bold {
+    font-weight: 700;
+}
+
+lightning-datatable {
+    --slds-c-datatable-cell-padding: 0.5rem;
+}
+
+.slds-box.slds-theme_error {
+    background-color: #feded8;
+    border: 1px solid #c23934;
+    border-radius: 0.25rem;
+    padding: 1rem;
+}
+
+.slds-is-relative {
+    position: relative;
+}
+
+.object-group {
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.group-header {
+    padding: 0.75rem 1rem;
+    background-color: #f3f2f2;
+    border-radius: 0;
+    transition: background-color 0.1s ease;
+}
+
+.group-header:hover {
+    background-color: #e5e5e5;
+}
+
+.group-content {
+    border-radius: 0;
+    border-top: 1px solid #dddbda;
+    padding: 0;
+}
+
+.group-content lightning-datatable {
+    border: none;
+}
+
+/* Mobile Responsive Filters */
+.filter-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 0.75rem;
+}
+
+.filter-item {
+    width: 100%;
+}
+
+/* Mobile Card View */
+.mobile-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.mobile-card {
+    padding: 1rem;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f3f3f3;
+}
+
+.card-field:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.field-label {
+    font-size: 0.75rem;
+    color: #706e6b;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+
+.field-value {
+    font-size: 0.875rem;
+    color: #080707;
+    word-wrap: break-word;
+}
+
+/* Tablet and Mobile Adjustments */
+@media screen and (max-width: 768px) {
+    .filter-container {
+        grid-template-columns: 1fr;
+    }
+    
+    lightning-card {
+        margin: 0;
+    }
+    
+    .slds-m-around_medium {
+        margin: 0.5rem !important;
+    }
+}
+
+/* Small Mobile Devices */
+@media screen and (max-width: 480px) {
+    .mobile-card {
+        padding: 0.75rem;
+    }
+    
+    .field-label {
+        font-size: 0.6875rem;
+    }
+    
+    .field-value {
+        font-size: 0.8125rem;
+    }
+    
+    /* Ensure card title is readable on small screens */
+    lightning-card {
+        font-size: 0.875rem;
+    }
+    
+    /* Optimize spacing for small screens */
+    .slds-m-around_medium {
+        margin: 0.25rem !important;
+        padding: 0.5rem;
+    }
+}
+
+/* Touch-friendly button sizing for mobile */
+@media screen and (max-width: 768px) {
+    lightning-button {
+        min-height: 2.5rem;
+    }
+    
+    lightning-combobox {
+        min-height: 2.5rem;
+    }
+}

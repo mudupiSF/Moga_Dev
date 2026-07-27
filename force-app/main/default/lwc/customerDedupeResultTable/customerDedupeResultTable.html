@@ -1,0 +1,269 @@
+<template>
+    <div class="card-wrapper">
+        <div class="card">
+            <div class="card-header">
+                <div class="header-overlay"></div>
+                <div class="header-content">
+                    <div class="header-icon-wrap">
+                        <lightning-icon icon-name={headerIcon} size="small" class="header-icon"></lightning-icon>
+                    </div>
+                    <div class="header-text">
+                        <h2 class="header-title">{cardTitle}</h2>
+                        <p class="header-subtitle">{cardSubtitle}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- ── Empty State ── -->
+                <template if:true={noResults}>
+                    <div class="empty-state">
+                        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 10v4M7.5 15h.01M16.5 15h.01"/>
+                            <path d="M6.27 3.77a2 2 0 0 1 1.46-.6h8.54a2 2 0 0 1 1.46.6l3.5 3.7A2 2 0 0 1 21.77 9v10a2 2 0 0 1-2 2H4.23a2 2 0 0 1-2-2V9c0-.56.24-1.1.65-1.48z"/>
+                            <path d="M2.5 9.5h5l1.5 2h6l1.5-2h5"/>
+                        </svg>
+                        <p class="empty-text">No matching customer records found.</p>
+                    </div>
+                </template>
+                <!-- ── Desktop Table ── -->
+                <template if:false={noResults}>
+                    <div class="table-container desktop-only">
+                        <table class="dedupe-table">
+                            <thead>
+                                <tr class="table-header-row">
+                                    <th class="th-cell th-select"></th>
+                                    <th class="th-cell">Customer Details</th>
+                                    <th class="th-cell">Match Info</th>
+                                    <th class="th-cell th-center">CIF Status</th>
+                                    <th class="th-cell">Validation Flags</th>
+                                    <!-- Commented out for now as we are not using the action buttons in the table -->
+                                    <!--<th class="th-cell th-center">Actions</th>-->
+                                </tr>
+                            </thead>
+                            <tbody class="table-body">
+                                <template if:true={isDedupChecking}>
+                                    <tr class="skeleton-row">
+                                        <td colspan="5" class="skeleton-cell"><div class="skeleton-bar"></div></td>
+                                    </tr>
+                                    <tr class="skeleton-row">
+                                        <td colspan="5" class="skeleton-cell"><div class="skeleton-bar"></div></td>
+                                    </tr>
+                                </template>
+
+                                <template if:false={isDedupChecking}>
+                                    <template for:each={matchDisplayRows} for:item="match">
+                                        <tr key={match.cifId} class="match-row">
+                                            <td class="td-cell td-select">
+                                                <div class="selection-cell">
+                                                    <template if:true={match.isCheckboxMode}>
+                                                        <div class="checkbox-container">
+                                                            <input type="checkbox" class="checkbox-input" checked={match.selected}
+                                                                data-id={match.cifId} onchange={toggleSelect} aria-label="Select customer"
+                                                                disabled={isReadOnlyScreen}
+                                                            />
+                                                        </div>
+                                                    </template>
+                                                    <template if:true={match.isValidMode}>
+                                                        <div class="validation-icon validation-icon-valid" title="Valid match">
+                                                            <svg class="validation-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                                        </div>
+                                                    </template>
+                                                    <template if:true={match.isInvalidMode}>
+                                                        <div class="validation-icon validation-icon-invalid" title="Invalid match">
+                                                            <svg class="validation-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </td>
+                                            <td class="td-cell">
+                                                <div class="customer-details">
+                                                    <p class="cif-line">CIF ID: <span class="cif-value">{match.cifId}</span></p>
+                                                    <p class="customer-name">{match.name}</p>
+                                                    <div class="contact-strip">
+                                                        <span class="contact-item">
+                                                            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                                            {match.mobile}
+                                                        </span>
+                                                        <span class="contact-item">
+                                                            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                                                            {match.pan}
+                                                        </span>
+                                                        <span class="contact-item">
+                                                            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                                            {match.dob}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                           
+                                            <td class="td-cell">
+                                                <div class="match-info">
+                                                    <div class="match-info-top">
+                                                        <span class={match.matchBadgeClass}>{match.matchPercent}% Match</span>
+                                                        <span class="match-type">{match.matchType}</span>
+                                                    </div>
+                                                    <p class="retail-match">Retail Match: <span class="retail-value">{match.retailMatch}%</span></p>
+                                                </div>
+                                            </td>
+                                            <td class="td-cell td-center">
+                                                <span class="status-badge">
+                                                    <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                                    {match.status}
+                                                </span>
+                                            </td>
+                                            <td class="td-cell">
+                                                <div class="flags-grid">
+                                                    <template for:each={match.flagList} for:item="flag">
+                                                        <div key={flag.key} class={flag.className}>
+                                                            {flag.label}
+                                                            <template if:true={flag.active}>
+                                                                <svg class="icon-xxs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                                            </template>
+                                                            <template if:false={flag.active}>
+                                                                <svg class="icon-xxs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </td>
+                                            <!-- Commented out for now as we are not using the action buttons in the table -->
+                                            <!--<td class="td-cell td-center">
+                                                <div class="action-btns">
+                                                    <button type="button" class={validButtonClass} data-index={match.key} onclick={handleValidClick} disabled={validationButtonsDisabled} aria-disabled={validationButtonsDisabled}>
+                                                        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                                        <span class="action-label">Valid</span>
+                                                    </button>
+                                                    <button type="button" class={invalidButtonClass} data-index={match.key} onclick={handleInvalidClick} disabled={validationButtonsDisabled} aria-disabled={validationButtonsDisabled}>
+                                                        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                                        <span class="action-label">Invalid</span>
+                                                    </button>
+                                                </div>
+                                            </td>-->
+                                        </tr>
+                                    </template>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- ── Mobile / Tablet Card Layout ── -->
+                    <div class="mobile-cards mobile-only">
+                        <template if:true={isDedupChecking}>
+                            <div class="mobile-card skeleton-row">
+                                <div class="skeleton-bar"></div>
+                            </div>
+                            <div class="mobile-card skeleton-row">
+                                <div class="skeleton-bar"></div>
+                            </div>
+                        </template>
+
+                        <template if:false={isDedupChecking}>
+                            <template for:each={matchDisplayRows} for:item="match">
+                                <div key={match.key} class="mobile-card">
+                                    <div class="mobile-card-header">
+                                        <div class="mobile-select-row">
+                                            <template if:true={match.isCheckboxMode}>
+                                                <div class="checkbox-container">
+                                                    <input type="checkbox" class="checkbox-input" checked={match.selected}
+                                                        data-id={match.cifId} onchange={toggleSelect} aria-label="Select customer"
+                                                        disabled={isReadOnlyScreen}
+                                                    />
+                                                </div>
+                                            </template>
+                                            <template if:true={match.isValidMode}>
+                                                <div class="validation-icon validation-icon-valid" title="Valid match">
+                                                    <svg class="validation-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                                </div>
+                                            </template>
+                                            <template if:true={match.isInvalidMode}>
+                                                <div class="validation-icon validation-icon-invalid" title="Invalid match">
+                                                    <svg class="validation-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                                </div>
+                                            </template>
+                                            <div class="customer-details">
+                                                <p class="cif-line">CIF ID: <span class="cif-value">{match.cifId}</span></p>
+                                                <p class="customer-name">{match.name}</p>
+                                            </div>
+                                        </div>
+                                        <span class="status-badge">
+                                            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                            {match.status}
+                                        </span>
+                                    </div>
+
+                                    <div class="contact-strip">
+                                        <span class="contact-item">
+                                            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                            {match.mobile}
+                                        </span>
+                                        <span class="contact-item">
+                                            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                                            {match.pan}
+                                        </span>
+                                        <span class="contact-item">
+                                            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                            {match.dob}
+                                        </span>
+                                    </div>
+
+                                    <div class="mobile-match-row">
+                                        <span class={match.matchBadgeClass}>{match.matchPercent}% Match</span>
+                                        <span class="match-type">{match.matchType}</span>
+                                        <span class="retail-match-inline">Retail: {match.retailMatch}%</span>
+                                    </div>
+
+                                    <div class="flags-grid mobile-flags">
+                                        <template for:each={match.flagList} for:item="flag">
+                                            <div key={flag.key} class={flag.className}>
+                                                {flag.label}
+                                                <template if:true={flag.active}>
+                                                    <svg class="icon-xxs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                                </template>
+                                                <template if:false={flag.active}>
+                                                    <svg class="icon-xxs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="mobile-actions">
+                                        <button type="button" class={validButtonClass} data-index={match.key} onclick={handleValidClick} disabled={isValidDisabled} aria-disabled={isValidDisabled} aria-label="Mark selected customer as valid">
+                                            <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                            <span class="action-label">Valid</span>
+                                        </button>
+                                        <button type="button" class={invalidButtonClass} data-index={match.key} onclick={handleInvalidClick} disabled={isInvalidDisabled} aria-disabled={isInvalidDisabled} aria-label="Mark selected customer as invalid">
+                                            <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                            <span class="action-label">Invalid</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+                </template>
+                <!-- Success message - inside section, below table (like Add/Change Applicants status note) -->
+                <template if:true={successMessage}>
+                    <div class="status-note">
+                        <lightning-icon icon-name="utility:success" size="small" class="status-icon"></lightning-icon>
+                        <p class="status-text">{successMessage}</p>
+                    </div>
+                </template>
+            </div>
+            <div class="card-footer p4-footer-wrapper">
+                <div class="p4-footer">
+                    <div class="p4-btn-wrapper">
+                        <button type="button" class={validButtonClass} onclick={handleValidClick}
+                            disabled={isValidDisabled} aria-disabled={isValidDisabled} aria-label="Mark selected customer as valid">
+                            <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span class="action-label">Valid</span>
+                        </button>
+                        <button type="button" class={invalidButtonClass} onclick={handleInvalidClick}
+                            disabled={isInvalidDisabled} aria-disabled={isInvalidDisabled} aria-label="Mark selected customer as invalid">
+                            <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            <span class="action-label">Invalid</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PAN_No__c</fullName>
+    <description>PAN number stored as AES256 ciphertext (base64). Encrypted via IntegrationUtility.getEncryptedRequest; decrypted via IntegrationUtility.getDecryptedRequest. UI displays the masked value XXXX-XXXX-XX.</description>
+    <encryptionScheme>None</encryptionScheme>
+    <externalId>false</externalId>
+    <label>PAN No</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

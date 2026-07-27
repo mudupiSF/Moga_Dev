@@ -1,0 +1,15 @@
+<template>
+    <section class="bureau-report-viewer" aria-live="polite">
+        <template lwc:if={showUnavailableState}>
+            <div class="bureau-report-viewer-empty" role="status">
+                <lightning-icon
+                    icon-name="utility:info"
+                    size="small"
+                    class="bureau-report-viewer-empty-icon"
+                    alternative-text="Information">
+                </lightning-icon>
+                <p class="bureau-report-viewer-empty-text">{unavailableMessage}</p>
+            </div>
+        </template>
+    </section>
+</template>

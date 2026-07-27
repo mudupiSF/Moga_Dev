@@ -1,0 +1,26 @@
+<aura:component implements="lightning:recordHomeTemplate" description="15-85 Split Layout with collapsible left nav" access="global">
+    <aura:attribute name="left" type="Aura.Component[]" />
+    <aura:attribute name="right" type="Aura.Component[]" />
+    <aura:attribute name="isNavCollapsed" type="Boolean" access="PRIVATE" default="false" />
+
+    <!-- lightning:layout + layoutItem required so buttonIcon renders on the live page (not only in App Builder). -->
+    <lightning:layout class="{!'custom-template-layout' + (v.isNavCollapsed ? ' is-nav-collapsed' : '')}"
+                      horizontalAlign="spread"
+                      verticalAlign="start">
+        <lightning:layoutItem class="{!'custom-left' + (v.isNavCollapsed ? ' slds-hide' : '')}"
+                              flexibility="no-flex"
+                              size="2">
+            {!v.left}
+        </lightning:layoutItem>
+        <lightning:layoutItem flexibility="no-flex" class="nav-toggle-item">
+            <lightning:buttonIcon onclick="{!c.toggleNav}"
+                                  class="design-allow-interaction nav-toggle slds-p-around_xxx-small slds-m-horizontal_xx-small"
+                                  variant="border-filled"
+                                  iconName="{! v.isNavCollapsed ? 'utility:chevronright' : 'utility:chevronleft' }"
+                                  alternativeText="{! v.isNavCollapsed ? 'Expand Navigation' : 'Collapse Navigation' }" />
+        </lightning:layoutItem>
+        <lightning:layoutItem flexibility="auto" class="custom-right">
+            {!v.right}
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

@@ -1,0 +1,504 @@
+<template>
+    <div class="form-layout">
+        <template if:true={isLoading}>
+            <div class="form-loading-overlay" role="status" aria-live="polite">
+                <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content form-header-content--split">
+                        <div class="form-header-leading">
+                            <div class="form-header-icon-wrap">
+                                <lightning-icon
+                                    icon-name="standard:contact"
+                                    size="small"
+                                    class="form-header-icon"
+                                    alternative-text={labels.pageTitle}>
+                                </lightning-icon>
+                            </div>
+                            <div class="form-header-text">
+                                <h1 class="form-header-title">{labels.pageTitle}</h1>
+                                <p class="form-header-subtitle">{labels.pageSubtitle}</p>
+                            </div>
+                        </div>
+                        <div class="header-meta">
+                            <span class="slds-badge p4-badge-text header-stat-badge">
+                                {investigationStatus}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-body">
+                    <div class="pd-summary-grid">
+                        <template for:each={summaryCards} for:item="card">
+                            <article class="form-card pd-summary-card" key={card.key}>
+                                <p class={card.valueClass}>{card.value}</p>
+                                <p class={card.labelClass}>{card.label}</p>
+                            </article>
+                        </template>
+                    </div>
+
+                    <div class="pd-workspace">
+                        <aside class="form-card pd-sidebar" aria-label={labels.participantsTitle}>
+                            <h2 class="pd-sidebar-title">{labels.participantsTitle}</h2>
+                            <div class="pd-participant-list">
+                                <template for:each={participantItems} for:item="participant">
+                                    <button
+                                        type="button"
+                                        key={participant.verificationId}
+                                        class={participant.itemClass}
+                                        data-verification-id={participant.verificationId}
+                                        aria-selected={participant.ariaSelected}
+                                        onclick={handleParticipantSelect}>
+                                        <span class={participant.avatarClass} aria-hidden="true">
+                                            {participant.initials}
+                                        </span>
+                                        <span class="pd-participant-content">
+                                            <span class="pd-participant-name">{participant.applicantName}</span>
+                                            <span class="pd-participant-role">{participant.roleLabel}</span>
+                                        </span>
+                                        <span class={participant.statusBadgeClass}>{participant.statusLabel}</span>
+                                    </button>
+                                </template>
+                                <template if:false={hasParticipants}>
+                                    <p class="pd-empty-text">No participants found.</p>
+                                </template>
+                            </div>
+                            <p class="pd-sidebar-footer">{labels.participantsFooter}</p>
+                        </aside>
+
+                        <div class="pd-main-column">
+                            <template if:true={hasSelectedParticipant}>
+                                <template lwc:if={activeForm.flagRaised}>
+                                    <div class="pd-flag-info-banner" role="status">
+                                        <lightning-icon
+                                            icon-name="utility:warning"
+                                            size="x-small"
+                                            class="pd-flag-info-icon"
+                                            alternative-text={labels.flagRaisedLabel}>
+                                        </lightning-icon>
+                                        <span>{labels.flagRaisedInfoMessage}</span>
+                                    </div>
+                                </template>
+                                <article class="form-card pd-participant-tile" aria-label={discussionTitle}>
+                                    <div class="form-header">
+                                        <div class="form-header-overlay"></div>
+                                        <div class="form-header-content">
+                                            <div class="form-header-text">
+                                                <h2 class="form-header-title">{discussionTitle}</h2>
+                                                <p class="form-header-subtitle">{discussionSubtitle}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+
+                                <section class="form-card" aria-label={labels.discussionDetails}>
+                                    <div class="form-body">
+                                        <h2 class="p4-section-title">{labels.discussionDetails}</h2>
+                                        <div class="form-fields-grid">
+                                            <div class="form-field-wrap">
+                                                <template lwc:if={isReadOnly}>
+                                                    <div class="form-info-cell">
+                                                        <div class="form-info-cell-header">
+                                                            <span class="form-info-label">PD Type</span>
+                                                        </div>
+                                                        <div class="form-info-value-wrap">
+                                                            <p class="form-info-value">{displayValues.pdType}</p>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template lwc:else>
+                                                    <div class="form-field-cell">
+                                                        <div class="form-field-label">PD Type</div>
+                                                        <div class="form-field-value-col">
+                                                            <lightning-combobox
+                                                                label="PD Type"
+                                                                variant="label-hidden"
+                                                                value={activeForm.pdType}
+                                                                options={pdTypeOptions}
+                                                                data-field="pdType"
+                                                                onchange={handleFieldChange}>
+                                                            </lightning-combobox>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            <div class="form-field-wrap">
+                                                <template lwc:if={isReadOnly}>
+                                                    <div class="form-info-cell">
+                                                        <div class="form-info-cell-header">
+                                                            <span class="form-info-label">PD Mode</span>
+                                                        </div>
+                                                        <div class="form-info-value-wrap">
+                                                            <p class="form-info-value">{displayValues.pdMode}</p>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template lwc:else>
+                                                    <div class="form-field-cell">
+                                                        <div class="form-field-label">PD Mode</div>
+                                                        <div class="form-field-value-col">
+                                                            <lightning-combobox
+                                                                label="PD Mode"
+                                                                variant="label-hidden"
+                                                                value={activeForm.pdMode}
+                                                                options={pdModeOptions}
+                                                                data-field="pdMode"
+                                                                onchange={handleFieldChange}>
+                                                            </lightning-combobox>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            <div class="form-field-wrap">
+                                                <template lwc:if={isReadOnly}>
+                                                    <div class="form-info-cell">
+                                                        <div class="form-info-cell-header">
+                                                            <span class="form-info-label">Verification With (Name)</span>
+                                                        </div>
+                                                        <div class="form-info-value-wrap">
+                                                            <p class="form-info-value">{displayValues.verificationWith}</p>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template lwc:else>
+                                                    <div class="form-field-cell">
+                                                        <div class="form-field-label">Verification With (Name)</div>
+                                                        <div class="form-field-value-col">
+                                                            <lightning-input
+                                                                label="Verification With (Name)"
+                                                                variant="label-hidden"
+                                                                value={activeForm.verificationWith}
+                                                                data-field="verificationWith"
+                                                                onchange={handleFieldChange}>
+                                                            </lightning-input>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            <div class="form-field-wrap">
+                                                <template lwc:if={isReadOnly}>
+                                                    <div class="form-info-cell">
+                                                        <div class="form-info-cell-header">
+                                                            <span class="form-info-label">Contact Number</span>
+                                                        </div>
+                                                        <div class="form-info-value-wrap">
+                                                            <p class="form-info-value">{displayValues.contactNumber}</p>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template lwc:else>
+                                                    <div class="form-field-cell">
+                                                        <div class="form-field-label">Contact Number</div>
+                                                        <div class="form-field-value-col">
+                                                            <lightning-input
+                                                                type="tel"
+                                                                name="contactNumber"
+                                                                label="Contact Number"
+                                                                variant="label-hidden"
+                                                                value={activeForm.contactNumber}
+                                                                maxlength="10"
+                                                                data-field="contactNumber"
+                                                                onchange={handleFieldChange}
+                                                                onblur={handleContactNumberBlur}>
+                                                            </lightning-input>
+                                                            <template lwc:if={contactNumberError}>
+                                                                <p class="form-field-error">{contactNumberError}</p>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="form-card" aria-label={labels.verificationChecklist}>
+                                    <div class="form-body">
+                                        <h2 class="p4-section-title">{labels.verificationChecklist}</h2>
+                                        <template lwc:if={activeForm.flagRaised}>
+                                            <div class="pd-checklist-flag" role="status">
+                                                <span class="pd-status-badge pd-status-badge--danger">{labels.flagRaisedLabel}</span>
+                                            </div>
+                                        </template>
+                                        <div class="form-fields-grid">
+                                            <div class="form-field-wrap">
+                                                <div class="form-info-cell">
+                                                    <div class="form-info-cell-header">
+                                                        <span class="form-info-label">PD Date &amp; Time</span>
+                                                    </div>
+                                                    <div class="form-info-value-wrap">
+                                                        <p class="form-info-value">
+                                                            <lightning-formatted-date-time
+                                                                value={displayValues.pdDateTime}
+                                                                year="numeric"
+                                                                month="short"
+                                                                day="2-digit"
+                                                                hour="2-digit"
+                                                                minute="2-digit">
+                                                            </lightning-formatted-date-time>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-field-wrap">
+                                                <div class="form-info-cell">
+                                                    <div class="form-info-cell-header">
+                                                        <span class="form-info-label">Conducted By</span>
+                                                    </div>
+                                                    <div class="form-info-value-wrap">
+                                                        <p class="form-info-value">{displayValues.conductedBy}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="pd-checklist-block">
+                                            <div class="pd-checklist-list">
+                                                <template for:each={checklistItems} for:item="item">
+                                                    <div class="pd-checklist-row" key={item.key}>
+                                                        <p class="pd-checklist-label">{item.label}</p>
+                                                        <div
+                                                            class="pd-answer-group"
+                                                            role="radiogroup"
+                                                            aria-label={item.label}>
+                                                            <button
+                                                                type="button"
+                                                                class={item.yesButtonClass}
+                                                                data-checklist-key={item.key}
+                                                                data-answer="Yes"
+                                                                disabled={isReadOnly}
+                                                                onclick={handleChecklistAnswer}>
+                                                                Yes
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                class={item.noButtonClass}
+                                                                data-checklist-key={item.key}
+                                                                data-answer="No"
+                                                                disabled={isReadOnly}
+                                                                onclick={handleChecklistAnswer}>
+                                                                No
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="form-card" aria-label={labels.observationsRemarks}>
+                                    <div class="form-body">
+                                        <h2 class="p4-section-title">{labels.observationsRemarks}</h2>
+                                        <div class="form-fields-grid pd-fields-stack">
+                                            <div class="form-field-wrap">
+                                                <template lwc:if={isReadOnly}>
+                                                    <div class="form-info-cell">
+                                                        <div class="form-info-cell-header">
+                                                            <span class="form-info-label">Applicant Profile / Asset Observations</span>
+                                                        </div>
+                                                        <div class="form-info-value-wrap">
+                                                            <p class="form-info-value">{displayValues.applicantProfileObservations}</p>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template lwc:else>
+                                                    <div class="form-field-cell">
+                                                        <div class="form-field-label">Applicant Profile / Asset Observations</div>
+                                                        <div class="form-field-value-col">
+                                                            <lightning-textarea
+                                                                label="Applicant Profile / Asset Observations"
+                                                                variant="label-hidden"
+                                                                value={activeForm.applicantProfileObservations}
+                                                                data-field="applicantProfileObservations"
+                                                                onchange={handleFieldChange}>
+                                                            </lightning-textarea>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            <div class="form-field-wrap">
+                                                <template lwc:if={isReadOnly}>
+                                                    <div class="form-info-cell">
+                                                        <div class="form-info-cell-header">
+                                                            <span class="form-info-label">Overall Remarks</span>
+                                                        </div>
+                                                        <div class="form-info-value-wrap">
+                                                            <p class="form-info-value">{displayValues.overallRemarks}</p>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template lwc:else>
+                                                    <div class="form-field-cell">
+                                                        <div class="form-field-label">Overall Remarks</div>
+                                                        <div class="form-field-value-col">
+                                                            <lightning-textarea
+                                                                label="Overall Remarks"
+                                                                variant="label-hidden"
+                                                                value={activeForm.overallRemarks}
+                                                                data-field="overallRemarks"
+                                                                onchange={handleFieldChange}>
+                                                            </lightning-textarea>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            <div class="form-field-wrap">
+                                                <template lwc:if={isReadOnly}>
+                                                    <div class="form-info-cell">
+                                                        <div class="form-info-cell-header">
+                                                            <span class="form-info-label">Additional Remarks (optional)</span>
+                                                        </div>
+                                                        <div class="form-info-value-wrap">
+                                                            <p class="form-info-value">{displayValues.additionalRemarks}</p>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template lwc:else>
+                                                    <div class="form-field-cell">
+                                                        <div class="form-field-label">Additional Remarks (optional)</div>
+                                                        <div class="form-field-value-col">
+                                                            <lightning-textarea
+                                                                label="Additional Remarks (optional)"
+                                                                variant="label-hidden"
+                                                                placeholder="Any other observations..."
+                                                                value={activeForm.additionalRemarks}
+                                                                data-field="additionalRemarks"
+                                                                onchange={handleFieldChange}>
+                                                            </lightning-textarea>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="form-card" aria-label={labels.pdOutcome}>
+                                    <div class="form-body">
+                                        <h2 class="p4-section-title">{labels.pdOutcome}</h2>
+                                        <div class="form-fields-grid">
+                                            <div class="form-field-wrap">
+                                                <template lwc:if={isReadOnly}>
+                                                    <div class="form-info-cell">
+                                                        <div class="form-info-cell-header">
+                                                            <span class="form-info-label">Verification Status</span>
+                                                        </div>
+                                                        <div class="form-info-value-wrap">
+                                                            <p class="form-info-value">{displayValues.verificationStatus}</p>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template lwc:else>
+                                                    <div class="form-field-cell">
+                                                        <div class="form-field-label">
+                                                            Verification Status<span class="form-field-required-indicator">*</span>
+                                                        </div>
+                                                        <div class="form-field-value-col">
+                                                            <lightning-combobox
+                                                                label="Verification Status"
+                                                                variant="label-hidden"
+                                                                value={activeForm.verificationStatus}
+                                                                options={verificationStatusOptions}
+                                                                data-field="verificationStatus"
+                                                                required
+                                                                onchange={handleFieldChange}>
+                                                            </lightning-combobox>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            <div class="form-field-wrap">
+                                                <template lwc:if={isReadOnly}>
+                                                    <div class="form-info-cell">
+                                                        <div class="form-info-cell-header">
+                                                            <span class="form-info-label">Recommendation</span>
+                                                        </div>
+                                                        <div class="form-info-value-wrap">
+                                                            <p class="form-info-value">{displayValues.recommendation}</p>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template lwc:else>
+                                                    <div class="form-field-cell">
+                                                        <div class="form-field-label">Recommendation</div>
+                                                        <div class="form-field-value-col">
+                                                            <lightning-combobox
+                                                                label="Recommendation"
+                                                                variant="label-hidden"
+                                                                value={activeForm.recommendation}
+                                                                options={recommendationOptions}
+                                                                data-field="recommendation"
+                                                                onchange={handleFieldChange}>
+                                                            </lightning-combobox>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div class="form-field-wrap pd-final-remarks-wrap">
+                                            <template lwc:if={isReadOnly}>
+                                                <div class="form-info-cell">
+                                                    <div class="form-info-cell-header">
+                                                        <span class="form-info-label">Final Remarks</span>
+                                                    </div>
+                                                    <div class="form-info-value-wrap">
+                                                        <p class="form-info-value">{displayValues.finalRemarks}</p>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <template lwc:else>
+                                                <div class="form-field-cell">
+                                                    <div class="form-field-label">Final Remarks</div>
+                                                    <div class="form-field-value-col">
+                                                        <lightning-textarea
+                                                            label="Final Remarks"
+                                                            variant="label-hidden"
+                                                            value={activeForm.finalRemarks}
+                                                            data-field="finalRemarks"
+                                                            onchange={handleFieldChange}>
+                                                        </lightning-textarea>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </section>
+                            </template>
+                            <template if:false={hasSelectedParticipant}>
+                                <p class="pd-empty-text">{labels.selectParticipantMessage}</p>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-footer-wrapper">
+                <div class="form-footer">
+                    <div class="form-btn-wrapper">
+                        <button
+                            type="button"
+                            class="form-primary-btn"
+                            disabled={saveDisabled}
+                            onclick={handleSave}>
+                            <template if:true={isSaving}>
+                                <lightning-spinner
+                                    alternative-text={labels.save}
+                                    size="small"
+                                    class="pd-save-spinner">
+                                </lightning-spinner>
+                            </template>
+                            <span class="p4-button-text">{labels.save}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

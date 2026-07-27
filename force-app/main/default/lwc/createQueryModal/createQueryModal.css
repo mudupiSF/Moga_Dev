@@ -1,0 +1,100 @@
+.section-header {
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+}
+
+.section-container {
+    border: 1px solid #d8dde6;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+}
+
+.section-details {
+    padding: 0.75rem;
+}
+
+.searchable-dropdown .dropdown-list {
+    position: slds-is-absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 7000;
+    margin-top: slds-var-m-top_xxx-small;
+}
+
+.searchable-dropdown .dropdown-option {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    font-size: slds-text-body_regular;
+    border-bottom: 1px solid #f3f3f3;
+}
+
+.searchable-dropdown .dropdown-option:hover {
+    background-color: #f3f3f3;
+}
+
+.searchable-dropdown .dropdown-option:last-child {
+    border-bottom: none;
+}
+
+/* User selection links - stack on mobile */
+.user-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+}
+
+.user-links .user-link {
+    white-space: nowrap;
+}
+
+.user-links .user-link:not(:last-child)::after {
+    content: "|";
+    margin-left: 0.5rem;
+    color: #dddbda;
+}
+
+.user-picker-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.user-picker-table thead,
+.user-picker-table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.user-picker-table tbody {
+    display: block;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+/* Mobile adjustments for filter links */
+@media screen and (max-width: 768px) {
+    .slds-form-element a,
+    .user-links .user-link {
+        font-size: 0.75rem;
+        display: inline-block;
+        padding: 0.25rem;
+    }
+
+    .user-links {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .user-links .user-link:not(:last-child)::after {
+        display: none;
+    }
+}

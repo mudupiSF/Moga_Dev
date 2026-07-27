@@ -1,0 +1,260 @@
+<!-- Created By : Ajay Bharathan | SF -->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                controller="JWTTokenGenClass"
+                access="global" >
+    <!-- JWT Token Attributes -->
+    <aura:attribute name="personaName" type="String"/>
+    <aura:attribute name="pageTitle" type="String" default="METADATA DETAILS"/>
+    <aura:attribute name="myWrap" type="JWTTokenResponseWrapper"/>
+    <aura:attribute name="isJWTGenerated" type="Boolean" default="false"/>
+    <aura:attribute name="message" type="String"/>
+    
+    <!-- Mode Selection Attributes -->
+    <aura:attribute name="selectedMode" type="String" default="JWT"/>
+    
+    <!-- Encryption/Decryption Attributes -->
+    <aura:attribute name="inputJSON" type="String"/>
+    <aura:attribute name="outputResult" type="String"/>
+    <aura:attribute name="isProcessed" type="Boolean" default="false"/>
+    
+    <aura:attribute name="showSpinner" type="boolean" default="false"/>
+    
+    <!-- PAGE HEADER -->
+    <div class="slds-box slds-theme_default c-container" style="position: relative; height: 140px;">
+        <lightning:layout class="slds-page-header slds-page-header--object-home">
+            <lightning:layoutItem >
+                <lightning:icon iconName="standard:scan_card" alternativeText="Token Form" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="horizontal-small">
+                <div class="page-section page-header">
+                    <h1 class="slds-text-heading--label">JWT Token &amp; Encryption Utility</h1>
+                    <h2 class="slds-text-heading--small">{!v.pageTitle}</h2>
+                </div>
+            </lightning:layoutItem>
+        </lightning:layout>
+        
+        <!-- MODE TOGGLE BUTTONS -->
+        <lightning:layout horizontalAlign="center" class="slds-m-top_small">
+            <lightning:layoutItem padding="horizontal-small">
+                <lightning:buttonGroup>
+                    <lightning:button label="JWT Token" 
+                                      variant="{!v.selectedMode == 'JWT' ? 'brand' : 'neutral'}"
+                                      onclick="{!c.selectMode}"
+                                      value="JWT"/>
+                    <lightning:button label="Encrypt" 
+                                      variant="{!v.selectedMode == 'ENCRYPT' ? 'brand' : 'neutral'}"
+                                      onclick="{!c.selectMode}"
+                                      value="ENCRYPT"/>
+                    <lightning:button label="Decrypt" 
+                                      variant="{!v.selectedMode == 'DECRYPT' ? 'brand' : 'neutral'}"
+                                      onclick="{!c.selectMode}"
+                                      value="DECRYPT"/>
+                </lightning:buttonGroup>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+    
+    <aura:if isTrue="{!(notequals(v.message,null))}">
+        <!-- Load error -->
+        <div aura:id="errorDiv" class="userCreateError">
+            <ui:message title="Error" severity="error" closable="true">
+                <ui:outputText value="{!v.message}"/>
+            </ui:message>
+        </div>
+    </aura:if>	
+
+    <div class="slds-box slds-theme_default c-container">
+        
+        <!-- JWT TOKEN MODE -->
+        <aura:if isTrue="{!v.selectedMode == 'JWT'}">
+        <!-- Partner Details Section -->
+		<aura:if isTrue="{!(v.isJWTGenerated == false)}">
+			<lightning:layout class="slds-align_absolute-center slds-p-around_small">
+				<lightning:layoutItem>
+				
+					<fieldset class="slds-box slds-theme--default">
+						<form class="slds-form-element ">
+                                                        
+							<dt class="slds-item--label">Persona Name
+                            	<abbr title="required" class="slds-required">*</abbr>                            
+                            </dt>
+                            <dd class="slds-item--detail">
+                                <lightning:input value="{!v.personaName}" placeholder="Enter Profile Name" />
+                            </dd>							
+                            <br/>
+                            
+							<lightning:button variant="brand" label="Generate Tokens" onclick="{!c.generate}"/>
+							&nbsp;&nbsp;
+							<lightning:button variant="neutral" label="Reset" onclick="{!c.clearData}"/>
+						</form>
+					</fieldset>
+				
+				</lightning:layoutItem>
+			</lightning:layout>
+		</aura:if>
+		
+        <!-- Token Details Section -->
+		<aura:if isTrue="{!(v.isJWTGenerated)}">
+			<lightning:layout class="slds-align_absolute-center slds-p-around_small">
+				<lightning:layoutItem>
+                    
+					<fieldset class="slds-box slds-theme--default expand">
+						<form class="slds-form slds-wrap">
+							
+                            <dt class="slds-item--label slds-m-bottom_small">
+                                <b>JSON Web Token (RSASHA256):</b>
+                                <aura:if isTrue="{!not(empty(v.myWrap.jwtToken))}">
+                                    <lightning:buttonIcon iconName="utility:copy" 
+                                                          variant="border-filled" 
+                                                          alternativeText="Copy JWT Token"
+                                                          title="Copy JWT Token"
+                                                          onclick="{!c.copyJWTToken}"
+                                                          class="slds-m-left_medium"/>
+                                </aura:if>
+                            </dt>
+								<dd class="slds-item--detail">
+									<p style="word-wrap: break-word;">{!v.myWrap.jwtToken}</p>
+								</dd>
+                            <br/>
+						
+                            <div class="slds-form-element slds-size_1-of-1 slds-checkbox">
+								<span class="slds-form-element__label">
+                                    <b>JWT Signed &amp; Verified</b>
+                                </span>
+								<div class="slds-form-element__control">
+									<ui:outputCheckbox aura:id="output" value="{!v.myWrap.jwtSignedAndVerified}"/>
+								</div>
+                                <br/>
+                            </div>
+							<br/>
+
+                            <dt class="slds-item--label slds-m-bottom_small">
+                                <b>Salesforce Access Token:</b>
+                                <aura:if isTrue="{!not(empty(v.myWrap.access_token))}">
+                                    <lightning:buttonIcon iconName="utility:copy" 
+                                                          variant="border-filled" 
+                                                          alternativeText="Copy Access Token"
+                                                          title="Copy Access Token"
+                                                          onclick="{!c.copyAccessToken}"
+                                                          class="slds-m-left_medium"/>
+                                </aura:if>
+                            </dt>
+								<dd class="slds-item--detail">
+									<p style="word-wrap: break-word;">{!v.myWrap.access_token}</p>
+								</dd>
+							<br/>
+                            
+							<lightning:button variant="brand" label="Back" onclick="{!c.SearchAgain}"/>
+						</form>
+					</fieldset>
+				
+				</lightning:layoutItem>
+			</lightning:layout>
+		</aura:if>
+        </aura:if>
+        
+        <!-- ENCRYPTION MODE -->
+        <aura:if isTrue="{!v.selectedMode == 'ENCRYPT'}">
+            <lightning:layout class="slds-align_absolute-center slds-p-around_small">
+                <lightning:layoutItem size="10">
+                    <fieldset class="slds-box slds-theme--default">
+                        <form class="slds-form">
+                            
+                            <aura:if isTrue="{!v.isProcessed == false}">
+                                <dt class="slds-item--label">
+                                    Plain JSON Input
+                                    <abbr title="required" class="slds-required">*</abbr>
+                                </dt>
+                                <dd class="slds-item--detail">
+                                    <lightning:textarea value="{!v.inputJSON}" 
+                                                        placeholder="Enter JSON (with or without comments)"
+                                                        class="large-textarea"/>
+                                </dd>
+                                <br/>
+                                <lightning:button variant="brand" label="Encrypt" onclick="{!c.encryptData}"/>
+                                &nbsp;&nbsp;
+                                <lightning:button variant="neutral" label="Reset" onclick="{!c.resetEncryption}"/>
+                            </aura:if>
+                            
+                            <aura:if isTrue="{!v.isProcessed == true}">
+                                <dt class="slds-item--label slds-m-bottom_small">
+                                    <b>Encrypted JSON Result:</b>
+                                    <aura:if isTrue="{!not(empty(v.outputResult))}">
+                                        <lightning:buttonIcon iconName="utility:copy" 
+                                                              variant="border-filled" 
+                                                              alternativeText="Copy Encrypted Result"
+                                                              title="Copy Encrypted Result"
+                                                              onclick="{!c.copyResult}"
+                                                              class="slds-m-left_medium"/>
+                                    </aura:if>
+                                </dt>
+                                <dd class="slds-item--detail">
+                                    <div style="word-wrap: break-word; word-break: break-all; overflow-wrap: break-word; white-space: pre-wrap; font-family: monospace; background-color: #f4f6f9; padding: 10px; border-radius: 4px; overflow-x: hidden; max-width: 100%;">{!v.outputResult}</div>
+                                </dd>
+                                <br/>
+                                <lightning:button variant="brand" label="Back" onclick="{!c.resetEncryption}"/>
+                            </aura:if>
+                            
+                        </form>
+                    </fieldset>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </aura:if>
+        
+        <!-- DECRYPTION MODE -->
+        <aura:if isTrue="{!v.selectedMode == 'DECRYPT'}">
+            <lightning:layout class="slds-align_absolute-center slds-p-around_small">
+                <lightning:layoutItem size="10">
+                    <fieldset class="slds-box slds-theme--default">
+                        <form class="slds-form">
+                            
+                            <aura:if isTrue="{!v.isProcessed == false}">
+                                <dt class="slds-item--label">
+                                    Encrypted JSON Input
+                                    <abbr title="required" class="slds-required">*</abbr>
+                                </dt>
+                                <dd class="slds-item--detail">
+                                    <lightning:textarea value="{!v.inputJSON}" 
+                                                        placeholder="Enter Encrypted String or JSON with JData wrapper"
+                                                        class="large-textarea"/>
+                                </dd>
+                                <br/>
+                                <lightning:button variant="brand" label="Decrypt" onclick="{!c.decryptData}"/>
+                                &nbsp;&nbsp;
+                                <lightning:button variant="neutral" label="Reset" onclick="{!c.resetDecryption}"/>
+                            </aura:if>
+                            
+                            <aura:if isTrue="{!v.isProcessed == true}">
+                                <dt class="slds-item--label slds-m-bottom_small">
+                                    <b>Decrypted JSON Result:</b>
+                                    <aura:if isTrue="{!not(empty(v.outputResult))}">
+                                        <lightning:buttonIcon iconName="utility:copy" 
+                                                              variant="border-filled" 
+                                                              alternativeText="Copy Decrypted Result"
+                                                              title="Copy Decrypted Result"
+                                                              onclick="{!c.copyResult}"
+                                                              class="slds-m-left_medium"/>
+                                    </aura:if>
+                                </dt>
+                                <dd class="slds-item--detail">
+                                    <div style="word-wrap: break-word; word-break: break-all; overflow-wrap: break-word; white-space: pre-wrap; font-family: monospace; background-color: #f4f6f9; padding: 10px; border-radius: 4px; overflow-x: hidden; max-width: 100%;">{!v.outputResult}</div>
+                                </dd>
+                                <br/>
+                                <lightning:button variant="brand" label="Back" onclick="{!c.resetDecryption}"/>
+                            </aura:if>
+                            
+                        </form>
+                    </fieldset>
+				</lightning:layoutItem>
+			</lightning:layout>
+		</aura:if>
+            
+    </div>
+    
+    <!-- Loading Spinner -->    
+    <aura:if isTrue="{!v.showSpinner}">
+        <div class="slds-spinner_container">
+            <lightning:spinner aura:id="spinner" variant="brand" size="medium"/>
+        </div>
+    </aura:if>
+</aura:component>

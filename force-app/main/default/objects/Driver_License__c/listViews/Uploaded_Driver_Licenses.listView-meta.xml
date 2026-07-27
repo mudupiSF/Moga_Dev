@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Uploaded_Driver_Licenses</fullName>
+    <columns>NAME</columns>
+    <columns>first_name__c</columns>
+    <columns>last_name__c</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <label>Uploaded Driver Licenses</label>
+</ListView>

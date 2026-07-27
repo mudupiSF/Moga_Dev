@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>End_Use__c</fullName>
+    <label>End Use</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Purchase of Equipment /Vehicle</fullName>
+                <default>false</default>
+                <label>Purchase of Equipment /Vehicle</label>
+            </value>
+            <value>
+                <fullName>Working capital (For Refinance)</fullName>
+                <default>false</default>
+                <label>Working capital (For Refinance)</label>
+            </value>
+            <value>
+                <fullName>Margin money for purchase of vehicles (For Refinance)</fullName>
+                <default>false</default>
+                <label>Margin money for purchase of vehicles (For Refinance)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,362 @@
+<template>
+    <div class="form-layout pdts-layout">
+        <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:file" size="small"
+                                class="form-header-icon" alternative-text={labels.pageTitle}>
+                            </lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">{labels.pageTitle}</h1>
+                            <p class="form-header-subtitle">{labels.pageSubtitle}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-body">
+                    <div class="pds-kpi-grid pds-kpi-grid--four">
+                        <template for:each={summaryCards} for:item="card">
+                            <article class={card.cardClass} key={card.key}>
+                                <div class="pds-kpi-card-inner">
+                                    <lightning-icon
+                                        icon-name={card.iconName}
+                                        size="small"
+                                        class="pds-kpi-icon"
+                                        alternative-text={card.label}>
+                                    </lightning-icon>
+                                    <div class="pds-kpi-content">
+                                        <p class={card.labelClass}>{card.label}</p>
+                                        <p class={card.valueClass}>{card.value}</p>
+                                    </div>
+                                </div>
+                            </article>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <section class="form-card pdts-section-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:file" size="small"
+                                class="form-header-icon" alternative-text={labels.pddTitle}>
+                            </lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <h2 class="form-header-title">{labels.pddTitle}</h2>
+                            <p class="form-header-subtitle">{labels.pddSubtitle}</p>
+                        </div>
+                        <template if:true={showPddRefresh}>
+                            <lightning-button-icon
+                                icon-name="utility:refresh"
+                                variant="border-filled"
+                                size="small"
+                                class="pdts-refresh-btn"
+                                onclick={handleRefreshPddDocuments}
+                                alternative-text={labels.refreshPdd}
+                                title={labels.refreshPdd}>
+                            </lightning-button-icon>
+                        </template>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="pdts-table-scroll">
+                        <table class="master-table">
+                            <thead>
+                                <tr class="master-table-header-row">
+                                    <th class="master-th-cell p4-table-header" scope="col">Document</th>
+                                    <th class="master-th-cell p4-table-header" scope="col">Owner</th>
+                                    <th class="master-th-cell p4-table-header" scope="col">Expected Date</th>
+                                    <th class="master-th-cell p4-table-header" scope="col">Ageing (Days)</th>
+                                    <th class="master-th-cell p4-table-header" scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={mappedPddDocuments} for:item="row">
+                                    <tr class="master-table-row" key={row.id}>
+                                        <td class="master-td-cell"><span class="p4-field-value-normal">{row.documentName}</span></td>
+                                        <td class="master-td-cell"><span class="p4-field-value-normal">{row.owner}</span></td>
+                                        <td class="master-td-cell"><span class="p4-field-value-normal">{row.expectedDate}</span></td>
+                                        <td class="master-td-cell"><span class={row.ageingClass}>{row.ageingDays}</span></td>
+                                        <td class="master-td-cell"><span class={row.statusBadgeClass}>{row.status}</span></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <div class="pdts-card-grid">
+                <section class="form-card pdts-section-card">
+                    <div class="form-header">
+                        <div class="form-header-overlay"></div>
+                        <div class="form-header-content">
+                            <div class="form-header-icon-wrap">
+                                <lightning-icon icon-name="utility:shield" size="small"
+                                    class="form-header-icon" alternative-text={labels.hypothecationTitle}>
+                                </lightning-icon>
+                            </div>
+                            <div class="form-header-text">
+                                <h2 class="form-header-title">{labels.hypothecationTitle}</h2>
+                                <p class="form-header-subtitle">{labels.hypothecationSubtitle}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-body">
+                        <div class="pdts-detail-grid">
+                            <template for:each={mappedHypothecationFields} for:item="field">
+                                <div class="form-info-cell" key={field.label}>
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">{field.label}</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <template if:true={field.showBadge}>
+                                            <span class={field.badgeClass}>{field.badgeLabel}</span>
+                                        </template>
+                                        <template if:false={field.showBadge}>
+                                            <p class="form-info-value">{field.value}</p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <template if:true={hypothecationAlert}>
+                            <div class="pdts-alert-banner" role="status">
+                                <lightning-icon icon-name="utility:warning" size="x-small"
+                                    class="pdts-alert-icon" alternative-text="Alert">
+                                </lightning-icon>
+                                <span class="p4-body-text">{hypothecationAlert}</span>
+                            </div>
+                        </template>
+                    </div>
+                </section>
+
+                <section class="form-card pdts-section-card">
+                    <div class="form-header">
+                        <div class="form-header-overlay"></div>
+                        <div class="form-header-content">
+                            <div class="form-header-icon-wrap">
+                                <lightning-icon icon-name="utility:contract_doc" size="small"
+                                    class="form-header-icon" alternative-text={labels.insuranceTitle}>
+                                </lightning-icon>
+                            </div>
+                            <div class="form-header-text">
+                                <h2 class="form-header-title">{labels.insuranceTitle}</h2>
+                                <p class="form-header-subtitle">{labels.insuranceSubtitle}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-body">
+                        <div class="pdts-detail-grid">
+                            <template for:each={mappedInsuranceFields} for:item="field">
+                                <div class="form-info-cell" key={field.label}>
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">{field.label}</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <template if:true={field.showBadge}>
+                                            <span class={field.badgeClass}>{field.badgeLabel}</span>
+                                        </template>
+                                        <template if:false={field.showBadge}>
+                                            <p class="form-info-value">{field.value}</p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <section class="form-card pdts-section-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:sync" size="small"
+                                class="form-header-icon" alternative-text={labels.repaymentTitle}>
+                            </lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <h2 class="form-header-title">{labels.repaymentTitle}</h2>
+                            <p class="form-header-subtitle">{labels.repaymentSubtitle}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="pdts-fields-grid pdts-fields-grid--four">
+                        <template for:each={mappedRepaymentFields} for:item="field">
+                            <div class="form-info-cell" key={field.label}>
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">{field.label}</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <template if:true={field.showBadge}>
+                                        <span class={field.badgeClass}>{field.badgeLabel}</span>
+                                    </template>
+                                    <template if:false={field.showBadge}>
+                                        <p class="form-info-value">{field.value}</p>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <div class="pdts-card-grid">
+                <section class="form-card pdts-section-card">
+                    <div class="form-header">
+                        <div class="form-header-overlay"></div>
+                        <div class="form-header-content">
+                            <div class="form-header-icon-wrap">
+                                <lightning-icon icon-name="utility:email" size="small"
+                                    class="form-header-icon" alternative-text={labels.communicationTitle}>
+                                </lightning-icon>
+                            </div>
+                            <div class="form-header-text">
+                                <h2 class="form-header-title">{labels.communicationTitle}</h2>
+                                <p class="form-header-subtitle">{labels.communicationSubtitle}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-body">
+                        <ul class="pdts-communication-list">
+                            <template for:each={mappedCommunications} for:item="item">
+                                <li class="pdts-communication-item" key={item.id}>
+                                    <div class="pdts-communication-label-wrap">
+                                        <lightning-icon icon-name={item.iconName} size="x-small"
+                                            class={item.iconClass} alternative-text={item.iconAlt}>
+                                        </lightning-icon>
+                                        <span class="p4-body-text">{item.label}</span>
+                                    </div>
+                                    <template if:true={item.showDispatch}>
+                                        <button type="button" class={primaryBtnClass}
+                                            data-communication-id={item.id}
+                                            disabled={isScreenDisabled}
+                                            onclick={handleDispatch}>
+                                            {labels.dispatch}
+                                        </button>
+                                    </template>
+                                    <template if:true={item.showDone}>
+                                        <span class="pdts-done">
+                                            <lightning-icon icon-name="utility:success" size="x-small"
+                                                class="pdts-done-icon" alternative-text={labels.done}>
+                                            </lightning-icon>
+                                            {labels.done}
+                                        </span>
+                                    </template>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="form-card pdts-section-card">
+                    <div class="form-header">
+                        <div class="form-header-overlay"></div>
+                        <div class="form-header-content">
+                            <div class="form-header-icon-wrap">
+                                <lightning-icon icon-name="utility:database" size="small"
+                                    class="form-header-icon" alternative-text={labels.bureauTitle}>
+                                </lightning-icon>
+                            </div>
+                            <div class="form-header-text">
+                                <h2 class="form-header-title">{labels.bureauTitle}</h2>
+                                <p class="form-header-subtitle">{labels.bureauSubtitle}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-body">
+                        <div class="pdts-detail-grid">
+                            <template for:each={mappedBureauFields} for:item="field">
+                                <div class="form-info-cell" key={field.label}>
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">{field.label}</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <template if:true={field.showBadge}>
+                                            <span class={field.badgeClass}>{field.badgeLabel}</span>
+                                        </template>
+                                        <template if:false={field.showBadge}>
+                                            <p class="form-info-value">{field.value}</p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <template if:true={showFlagForReporting}>
+                            <div class="pdts-bureau-action">
+                                <button type="button" class={primaryBtnClass}
+                                    disabled={isScreenDisabled}
+                                    onclick={handleFlagForReporting}>
+                                    {labels.flagForReporting}
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                </section>
+            </div>
+
+            <section class="form-card pdts-section-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:checkin" size="small"
+                                class="form-header-icon" alternative-text={labels.qcTitle}>
+                            </lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <h2 class="form-header-title">{labels.qcTitle}</h2>
+                            <p class="form-header-subtitle">{labels.qcSubtitle}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="pdts-qc-review-row">
+                        <span class="p4-body-text">{labels.qcReviewTitle}</span>
+                        <button type="button" class={primaryBtnClass}
+                            disabled={signOffDisabled}
+                            onclick={handleSignOff}>
+                            {labels.signOff}
+                        </button>
+                    </div>
+                    <ul class="pdts-qc-list">
+                        <template for:each={mappedQcChecklist} for:item="item">
+                            <li class="pdts-qc-item" key={item.id}>
+                                <lightning-icon icon-name={item.iconName} size="x-small"
+                                    class={item.iconClass} alternative-text={item.label}>
+                                </lightning-icon>
+                                <span class="p4-body-text">{item.label}</span>
+                            </li>
+                        </template>
+                    </ul>
+                    <div class="pdts-qc-footer-note p4-help-text" role="status">
+                        <lightning-icon icon-name="utility:warning" size="x-small"
+                            class="pdts-icon-warning" alternative-text="Note">
+                        </lightning-icon>
+                        <span>{labels.qcFooterNote}</span>
+                    </div>
+                    <div class="pdts-qc-action-bar">
+                        <button type="button" class={primaryBtnClass}
+                            disabled={closeHandoverDisabled}
+                            onclick={handleCloseHandover}>
+                            <template if:false={closeHandoverDisabled}>
+                                <lightning-icon icon-name="utility:success" size="x-small"
+                                    class="form-btn-icon" alternative-text={labels.closeHandover}>
+                                </lightning-icon>
+                            </template>
+                            {labels.closeHandover}
+                        </button>
+                    </div>
+                </div>
+            </section>
+    </div>
+</template>

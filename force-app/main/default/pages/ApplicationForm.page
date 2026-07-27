@@ -1,0 +1,366 @@
+<apex:page controller="ApplicationFormController"
+           renderAs="{!IF(renderAsPdf, 'pdf', '')}"
+           showHeader="false"
+           sidebar="false"
+           standardStylesheets="false"
+           docType="html-5.0">
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; font-size: 12.5px; color: #222; background: #fff; padding: 28px 40px; }
+
+        /* ── Header ── */
+        .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 2px solid rgb(137, 39, 39); padding-bottom: 10px; }
+        .bank-name   { font-size: 20px; font-weight: bold; color: rgb(137, 39, 39); letter-spacing: 0.5px; }
+        .bank-tagline{ font-size: 10px; color: #555; margin-top: 2px; }
+        .page-title  { font-size: 15px; font-weight: bold; text-decoration: underline; text-align: center; margin-bottom: 14px; }
+        .app-ref     { font-size: 11px; color: #444; text-align: right; }
+
+        /* ── Section headings ── */
+        .section-heading { background: rgb(137, 39, 39); color: #fff; font-weight: bold; font-size: 12px; padding: 4px 10px; margin: 14px 0 8px; letter-spacing: 0.3px; }
+
+        /* ── Field grid ── */
+        .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; }
+        .field-grid.three-col { grid-template-columns: 1fr 1fr 1fr; }
+        .field-row  { display: flex; flex-direction: column; }
+        .field-label{ font-size: 10.5px; color: #666; margin-bottom: 2px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.2px; }
+        .field-value{ font-size: 12.5px; color: #111; border-bottom: 1px solid #ddd; padding-bottom: 3px; }
+
+        /* ── Declaration ── */
+        .declaration { margin-top: 16px; font-size: 12px; line-height: 1.7; text-align: justify; }
+        .declaration b { font-weight: bold; }
+        .declaration .auth-text { color: #c0392b; font-style: italic; margin-top: 8px; }
+
+        /* ── Terms checkbox ── */
+        .terms-row { margin-top: 14px; display: flex; align-items: center; gap: 6px; font-size: 12px; }
+        .terms-row input[type="checkbox"] { width: 13px; height: 13px; cursor: default; }
+        .terms-row a { color: #1a6fba; text-decoration: underline; }
+
+        /* ── Loan Details table ── */
+        .loan-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 11.5px; }
+        .loan-table th, .loan-table td { border: 1px solid #ccc; padding: 5px 8px; vertical-align: middle; }
+        .loan-th-empty { background: #fff; width: 22%; }
+        .loan-th-col   { background: #fff; font-weight: bold; font-size: 11px; text-align: center; color: #111; }
+        .loan-row-label{ background: #fafafa; color: #333; font-size: 11px; white-space: nowrap; }
+        .loan-cell     { text-align: center; color: #111; font-size: 11.5px; }
+        .loan-cell-check { text-align: center; }
+        .loan-cell-check input[type="checkbox"] { width: 12px; height: 12px; cursor: default; }
+
+        /* ── Signature area ── */
+        .sig-section { display: flex; justify-content: space-between; margin-top: 30px; }
+        .sig-box     { width: 45%; }
+        .sig-line    { border-top: 1px solid #333; margin-top: 36px; }
+        .sig-label   { font-size: 11px; color: #555; margin-top: 4px; text-align: center; }
+
+        /* ── Buttons ── */
+        .btn-row { margin-top: 28px; display: flex; justify-content: center; gap: 20px; }
+        .btn { padding: 10px 32px; font-size: 13px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; color: #fff; background: rgb(137, 39, 39); }
+        .btn:hover { opacity: 0.88; }
+
+        /* ── Status messages ── */
+        .status-box { margin-top: 40px; padding: 20px 30px; border-radius: 6px; text-align: center; font-size: 15px; font-weight: bold; }
+        .status-agreed    { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status-disagreed { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        @media print { .btn-row { display: none; } }
+    </style>
+</head>
+<body>
+
+<apex:form >
+<apex:outputPanel id="mainContent">
+
+    <!-- ── Status: Agreed ── -->
+    <apex:outputPanel rendered="{!consentStatus == 'agreed'}">
+        <div class="page-header">
+            <div>
+                <div class="bank-name">Bandhan Bank</div>
+                <div class="bank-tagline">Aapka Bhala, Sabki Bhalai</div>
+            </div>
+        </div>
+        <div class="status-box status-agreed">
+            Application Form consent has been submitted successfully. Thank you, {!applicantName}.
+        </div>
+    </apex:outputPanel>
+
+    <!-- ── Status: Disagreed ── -->
+    <apex:outputPanel rendered="{!consentStatus == 'disagreed'}">
+        <div class="page-header">
+            <div>
+                <div class="bank-name">Bandhan Bank</div>
+                <div class="bank-tagline">Aapka Bhala, Sabki Bhalai</div>
+            </div>
+        </div>
+        <div class="status-box status-disagreed">
+            Application Form consent has been provided as Disagree for application {!applicationNumber}.
+        </div>
+    </apex:outputPanel>
+
+    <!-- ── Main form content ── -->
+    <apex:outputPanel rendered="{!consentStatus == 'initial'}">
+
+        <!-- Header -->
+        <div class="page-header">
+            <div>
+                <div class="bank-name">Bandhan Bank</div>
+                <div class="bank-tagline">Aapka Bhala, Sabki Bhalai</div>
+            </div>
+            <div class="app-ref">
+                Application No: <b>{!applicationNumber}</b>
+            </div>
+        </div>
+
+        <div class="page-title">Loan Application Form</div>
+
+        <!-- Section 1: Applicant Details -->
+        <div class="section-heading">1. Applicant Details</div>
+        <div class="field-grid">
+            <div class="field-row">
+                <span class="field-label">Full Name</span>
+                <span class="field-value">{!applicantName}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Date of Birth</span>
+                <span class="field-value">{!applicantDOB}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">PAN Number</span>
+                <span class="field-value">{!applicantPAN}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Aadhaar Number</span>
+                <span class="field-value">{!applicantAadhaar}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Mobile Number</span>
+                <span class="field-value">{!applicantMobile}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Email Address</span>
+                <span class="field-value">{!applicantEmail}</span>
+            </div>
+            <div class="field-row" style="grid-column: 1 / -1;">
+                <span class="field-label">Residential Address</span>
+                <span class="field-value">{!applicantAddress}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">City</span>
+                <span class="field-value">{!applicantCity}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">State</span>
+                <span class="field-value">{!applicantState}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">PIN Code</span>
+                <span class="field-value">{!applicantPincode}</span>
+            </div>
+        </div>
+
+        <!-- Section 2: Co-applicant Details -->
+        <div class="section-heading">2. Co-Applicant Details</div>
+        <div class="field-grid">
+            <div class="field-row">
+                <span class="field-label">Co-Applicant Name</span>
+                <span class="field-value">{!coApplicantName}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Relationship</span>
+                <span class="field-value">{!coApplicantRelation}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Mobile Number</span>
+                <span class="field-value">{!coApplicantMobile}</span>
+            </div>
+        </div>
+
+        <!-- Section 3: Employment & Income -->
+        <div class="section-heading">3. Employment &amp; Income Details</div>
+        <div class="field-grid">
+            <div class="field-row">
+                <span class="field-label">Employment Type</span>
+                <span class="field-value">{!employmentType}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Employer / Business Name</span>
+                <span class="field-value">{!employerName}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Monthly Income</span>
+                <span class="field-value">{!monthlyIncome}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Annual Income</span>
+                <span class="field-value">{!annualIncome}</span>
+            </div>
+        </div>
+
+        <!-- Section 4: Bank Details -->
+        <div class="section-heading">4. Bank Account Details</div>
+        <div class="field-grid">
+            <div class="field-row">
+                <span class="field-label">Bank Name</span>
+                <span class="field-value">{!bankName}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Account Type</span>
+                <span class="field-value">{!accountType}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Account Number</span>
+                <span class="field-value">{!accountNumber}</span>
+            </div>
+            <div class="field-row">
+                <span class="field-label">IFSC Code</span>
+                <span class="field-value">{!ifscCode}</span>
+            </div>
+        </div>
+
+        <!-- Section 5: Loan Details -->
+        <div class="section-heading">5. Loan Details:</div>
+        <table class="loan-table">
+            <thead>
+                <tr>
+                    <th class="loan-th-empty"></th>
+                    <th class="loan-th-col">ACE HYDRAULIC MOBILE CRANE MODEL 14XW</th>
+                    <th class="loan-th-col">DAI1217CT CE</th>
+                    <th class="loan-th-col">DAI1217CT CE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="loan-row-label">Term Loan Type</td>
+                    <td class="loan-cell"></td>
+                    <td class="loan-cell">Term Loan 1</td>
+                    <td class="loan-cell">Term Loan 2</td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">Requested Loan Amount</td>
+                    <td class="loan-cell">1000000</td>
+                    <td class="loan-cell">1000000.00</td>
+                    <td class="loan-cell">1200000.00</td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">Requested Tenure</td>
+                    <td class="loan-cell">48</td>
+                    <td class="loan-cell">48</td>
+                    <td class="loan-cell">24</td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">Required CRM IRR</td>
+                    <td class="loan-cell">12.00</td>
+                    <td class="loan-cell">13</td>
+                    <td class="loan-cell">13</td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">Motor Insurance from Bandhan</td>
+                    <td class="loan-cell-check"><input type="checkbox" disabled="disabled"/></td>
+                    <td class="loan-cell-check"><input type="checkbox" disabled="disabled"/></td>
+                    <td class="loan-cell-check"><input type="checkbox" disabled="disabled"/></td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">Funded</td>
+                    <td class="loan-cell-check"><input type="checkbox" disabled="disabled"/></td>
+                    <td class="loan-cell-check"><input type="checkbox" disabled="disabled"/></td>
+                    <td class="loan-cell-check"><input type="checkbox" disabled="disabled"/></td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">Non-Funded</td>
+                    <td class="loan-cell-check"><input type="checkbox" checked="checked" disabled="disabled"/></td>
+                    <td class="loan-cell-check"><input type="checkbox" checked="checked" disabled="disabled"/></td>
+                    <td class="loan-cell-check"><input type="checkbox" checked="checked" disabled="disabled"/></td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">1st Year Insurance Premium</td>
+                    <td class="loan-cell">100</td>
+                    <td class="loan-cell">100</td>
+                    <td class="loan-cell">100</td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">Service Charges</td>
+                    <td class="loan-cell">INR 100.00</td>
+                    <td class="loan-cell">INR 1,000.00</td>
+                    <td class="loan-cell">INR 100.00</td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">Documentation Charges</td>
+                    <td class="loan-cell">INR 100.00</td>
+                    <td class="loan-cell">INR 1,000.00</td>
+                    <td class="loan-cell">INR 100.00</td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">Basic Price</td>
+                    <td class="loan-cell">1500000</td>
+                    <td class="loan-cell">1500000</td>
+                    <td class="loan-cell">1500000</td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">GST Amount</td>
+                    <td class="loan-cell">75000</td>
+                    <td class="loan-cell">75000</td>
+                    <td class="loan-cell">75000</td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">Invoice Price</td>
+                    <td class="loan-cell"></td>
+                    <td class="loan-cell"></td>
+                    <td class="loan-cell"></td>
+                </tr>
+                <tr>
+                    <td class="loan-row-label">Dealer Salesman</td>
+                    <td class="loan-cell"></td>
+                    <td class="loan-cell"></td>
+                    <td class="loan-cell"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Declaration -->
+        <div class="declaration">
+            <b>Declaration:</b> I / We hereby declare that all the information provided in this application
+            is true, correct and complete to the best of my / our knowledge and belief. I / We authorise
+            Bandhan Bank Limited to verify the information provided and to make enquiries as it deems
+            necessary. I / We understand that any misrepresentation or suppression of material facts
+            will render the application liable for rejection.
+            <div class="auth-text">
+                I hereby authorize Bandhan Bank to share my Pan Card / CKYC / Aadhaar details for the
+                purpose of loan processing and credit bureau enquiry only.
+            </div>
+        </div>
+
+        <!-- Terms checkbox -->
+        <div class="terms-row">
+            <input type="checkbox" checked="checked" disabled="disabled" />
+            <span>I/We have read and agreed as per <a href="https://www.google.com" target="_blank">Terms and Conditions</a></span>
+        </div>
+
+        <!-- Signature area -->
+        <div class="sig-section">
+            <div class="sig-box">
+                <div class="sig-line"></div>
+                <div class="sig-label">Signature of Applicant<br/>{!applicantName}</div>
+            </div>
+            <div class="sig-box">
+                <div class="sig-line"></div>
+                <div class="sig-label">Signature of Co-Applicant<br/>{!coApplicantName}</div>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <apex:outputPanel rendered="{!NOT(renderAsPdf)}">
+            <div class="btn-row">
+                <apex:commandButton value="Agree"    action="{!doAgree}"    styleClass="btn" reRender="mainContent"/>
+                <apex:commandButton value="Disagree" action="{!doDisagree}" styleClass="btn" reRender="mainContent"/>
+            </div>
+        </apex:outputPanel>
+
+    </apex:outputPanel>
+
+</apex:outputPanel>
+</apex:form>
+
+</body>
+</html>
+</apex:page>

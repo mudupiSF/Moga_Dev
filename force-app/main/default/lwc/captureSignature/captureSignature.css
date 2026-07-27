@@ -1,0 +1,27 @@
+.capture-signature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.capture-signature__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.capture-signature__canvas-wrap {
+  width: 100%;
+}
+
+.capture-signature__canvas {
+  width: 100%;
+  max-width: 560px;
+  height: 180px;
+  border: 2px solid #cbd5e1;
+  border-radius: 0.5rem;
+  background: #fff;
+  touch-action: none;
+}

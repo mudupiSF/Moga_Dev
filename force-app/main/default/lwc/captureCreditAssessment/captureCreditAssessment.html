@@ -1,0 +1,1213 @@
+<template>
+    <div class="cca-page-layout">
+
+        <!-- Proposal Justification -->
+        <template if:false={renderAsReadOnly}>
+            <div class="cca-shell">
+                <div class="cca-card-header">
+                    <div class="cca-header-overlay"></div>
+                    <div class="cca-header-content">
+                        <div class="cca-header-icon-wrap">
+                            <lightning-icon
+                                icon-name="utility:approval"
+                                size="small"
+                                class="cca-header-icon">
+                            </lightning-icon>
+                        </div>
+                        <div class="cca-header-text">
+                            <h1 class="cca-header-title">{headerTitle}</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cca-body">
+                    <div class="cca-section">
+                        <template lwc:if={isScreenEditable}>
+                            <div class="bmp-editable-section">
+                                <label class="bmp-editable-label">{sectionLabel}</label>
+                                <div class="bmp-editable-input-wrap bmp-editable-input-wrap--wide cca-justification-input-wrap">
+                                    <textarea
+                                        class="bmp-input bmp-textarea bmp-textarea--editable"
+                                        placeholder={remarksPlaceholder}
+                                        oninput={handleRemarksChange}>{remarksValue}</textarea>
+                                    <span class="bmp-editable-badge bmp-editable-badge--visible">Editable</span>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-editable-section">
+                                <label class="bmp-editable-label">{sectionLabel}</label>
+                                <div class="bmp-editable-input-wrap bmp-editable-input-wrap--wide">
+                                    <textarea
+                                        class="bmp-input bmp-textarea bmp-textarea--readonly"
+                                        readonly
+                                        aria-readonly="true">{remarksValue}</textarea>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- PSL Information (PV / CV Borrower) -->
+        <template lwc:if={showPslSection}>
+            <div class="cca-shell">
+                <div class="cca-card-header">
+                    <div class="cca-header-overlay"></div>
+                    <div class="cca-header-content">
+                        <div class="cca-header-icon-wrap">
+                            <lightning-icon
+                                icon-name="utility:topic"
+                                size="small"
+                                class="cca-header-icon">
+                            </lightning-icon>
+                        </div>
+                        <div class="cca-header-text">
+                            <h2 class="cca-header-title">PSL Information</h2>
+                            <p class="cca-header-subtitle">Priority Sector Lending details</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cca-body">
+                    <div class="bmp-fields-grid">
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isScreenEditable}>
+                                <template lwc:if={isEndUseLocked}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">End Use</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{fieldDisplay.endUse}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="bmp-field-cell">
+                                        <div class="bmp-field-label">
+                                            End Use
+                                            <span class="bmp-required-indicator" title="Required">*</span>
+                                        </div>
+                                        <div class="bmp-field-value-col">
+                                            <lightning-combobox
+                                                value={endUseValue}
+                                                label="End Use"
+                                                variant="label-hidden"
+                                                options={endUseOptions}
+                                                placeholder="Select End Use"
+                                                required
+                                                onchange={handleEndUseChange}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">End Use</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{fieldDisplay.endUse}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isScreenEditable}>
+                                <template lwc:if={isLoanCategorizationLocked}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Loan Categorization</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{fieldDisplay.loanCategorization}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="bmp-field-cell">
+                                        <div class="bmp-field-label">
+                                            Loan Categorization
+                                            <span class="bmp-required-indicator" title="Required">*</span>
+                                        </div>
+                                        <div class="bmp-field-value-col">
+                                            <lightning-combobox
+                                                value={loanCategorizationValue}
+                                                label="Loan Categorization"
+                                                variant="label-hidden"
+                                                options={loanCategorizationOptions}
+                                                placeholder="Select Loan Categorization"
+                                                required
+                                                onchange={handleLoanCategorizationChange}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Loan Categorization</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{fieldDisplay.loanCategorization}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <template lwc:if={showNonPslCategory}>
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isScreenEditable}>
+                                    <template lwc:if={isNonPslCategorizationLocked}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Categorization</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{fieldDisplay.nonPslCategorization}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="bmp-field-cell">
+                                            <div class="bmp-field-label">
+                                                Categorization
+                                                <span class="bmp-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="bmp-field-value-col">
+                                                <lightning-combobox
+                                                    value={nonPslCategorizationValue}
+                                                    label="Categorization"
+                                                    variant="label-hidden"
+                                                    options={nonPslCategorizationOptions}
+                                                    placeholder="Select Non-PSL Categorization"
+                                                    required
+                                                    onchange={handleNonPslCategorizationChange}>
+                                                </lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Categorization</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{fieldDisplay.nonPslCategorization}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <template lwc:if={showPslCategory}>
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isScreenEditable}>
+                                    <template lwc:if={isPslSubTypeLocked}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">PSL Sub Type</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{fieldDisplay.pslSubType}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="bmp-field-cell">
+                                            <div class="bmp-field-label">
+                                                PSL Sub Type
+                                                <span class="bmp-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="bmp-field-value-col">
+                                                <lightning-combobox
+                                                    value={pslSubTypeValue}
+                                                    label="PSL Sub Type"
+                                                    variant="label-hidden"
+                                                    options={pslSubTypeOptions}
+                                                    placeholder="Select PSL Sub-Type"
+                                                    required
+                                                    onchange={handlePslSubTypeChange}>
+                                                </lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">PSL Sub Type</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{fieldDisplay.pslSubType}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MSME -->
+            <template lwc:if={showMsmeBlock}>
+                <div class="cca-shell">
+                    <div class="cca-card-header">
+                        <div class="cca-header-overlay"></div>
+                        <div class="cca-header-content">
+                            <div class="cca-header-icon-wrap">
+                                <lightning-icon
+                                    icon-name="utility:company"
+                                    size="small"
+                                    class="cca-header-icon">
+                                </lightning-icon>
+                            </div>
+                            <div class="cca-header-text">
+                                <h2 class="cca-header-title">MSME</h2>
+                                <p class="cca-header-subtitle">Micro, Small and Medium Enterprise details</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cca-body">
+                        <div class="bmp-fields-grid">
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isScreenEditable}>
+                                    <template lwc:if={isTypeOfActivityLocked}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Type Of Activity</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{fieldDisplay.typeOfActivity}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="bmp-field-cell">
+                                            <div class="bmp-field-label">
+                                                Type Of Activity
+                                                <span class="bmp-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="bmp-field-value-col">
+                                                <lightning-combobox
+                                                    value={typeOfActivityValue}
+                                                    label="Type Of Activity"
+                                                    variant="label-hidden"
+                                                    options={typeOfActivityOptions}
+                                                    placeholder="Select Type Of Activity"
+                                                    required
+                                                    onchange={handleTypeOfActivityChange}>
+                                                </lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Type Of Activity</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{fieldDisplay.typeOfActivity}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isScreenEditable}>
+                                    <template lwc:if={isTypeOfEnterpriseLocked}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Type Of Enterprise</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{fieldDisplay.typeOfEnterprise}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="bmp-field-cell">
+                                            <div class="bmp-field-label">
+                                                Type Of Enterprise
+                                                <span class="bmp-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="bmp-field-value-col">
+                                                <lightning-combobox
+                                                    value={typeOfEnterpriseValue}
+                                                    label="Type Of Enterprise"
+                                                    variant="label-hidden"
+                                                    options={typeOfEnterpriseOptions}
+                                                    placeholder="Select Type Of Enterprise"
+                                                    required
+                                                    onchange={handleTypeOfEnterpriseChange}>
+                                                </lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Type Of Enterprise</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{fieldDisplay.typeOfEnterprise}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="bmp-field-wrap bmp-field-wrap--full">
+                                <template lwc:if={isScreenEditable}>
+                                    <template lwc:if={isGstStatusLocked}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">GST Status</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{fieldDisplay.gstStatus}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="bmp-field-cell">
+                                            <div class="bmp-field-label">
+                                                GST Status
+                                                <span class="bmp-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="bmp-field-value-col bmp-field-value-col--wide">
+                                                <div class="bmp-radio-group">
+                                                    <template for:each={gstStatusRadioOptions} for:item="opt">
+                                                        <label class="bmp-radio-label" key={opt.value}>
+                                                            <input
+                                                                type="radio"
+                                                                class="bmp-radio-input"
+                                                                name="gstStatus"
+                                                                value={opt.value}
+                                                                checked={opt.isSelected}
+                                                                onchange={handleGstStatusChange} />
+                                                            <span class="bmp-radio-circle"></span>
+                                                            <span class="bmp-radio-text">{opt.label}</span>
+                                                        </label>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">GST Status</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{fieldDisplay.gstStatus}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isScreenEditable}>
+                                    <template lwc:if={isUdhyamLocked}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Udhyam Registration No</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{fieldDisplay.udhyamRegistrationNo}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="bmp-field-cell">
+                                            <div class="bmp-field-label">
+                                                Udhyam Registration No
+                                                <span class="bmp-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="bmp-field-value-col">
+                                                <div class="bmp-editable-input-wrap">
+                                                    <input
+                                                        type="text"
+                                                        class="bmp-input"
+                                                        value={udhyamRegistrationNoValue}
+                                                        placeholder="Enter Udhyam Registration No"
+                                                        oninput={handleUdhyamNoChange} />
+                                                    <span class="bmp-editable-badge">Editable</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Udhyam Registration No</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{fieldDisplay.udhyamRegistrationNo}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isScreenEditable}>
+                                    <template lwc:if={isUdhyamLocked}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Udhyam Registration Date</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{fieldDisplay.udhyamRegistrationDate}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">
+                                                Udhyam Registration Date
+                                                <span class="form-field-required-indicator" title="Required">*</span>
+                                            </label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <input
+                                                    type="date"
+                                                    class="form-field-editable-input form-field-editable-input--date"
+                                                    value={udhyamRegistrationDateValue}
+                                                    placeholder="Select Udhyam Registration Date"
+                                                    onclick={handleDateInputClick}
+                                                    onchange={handleUdhyamDateChange}
+                                                    oninput={handleUdhyamDateChange} />
+                                                <span class="form-field-editable-badge">Editable</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Udhyam Registration Date</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{fieldDisplay.udhyamRegistrationDate}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NIC -->
+                <div class="cca-shell">
+                    <div class="cca-card-header">
+                        <div class="cca-header-overlay"></div>
+                        <div class="cca-header-content">
+                            <div class="cca-header-icon-wrap">
+                                <lightning-icon
+                                    icon-name="utility:search"
+                                    size="small"
+                                    class="cca-header-icon">
+                                </lightning-icon>
+                            </div>
+                            <div class="cca-header-text">
+                                <h2 class="cca-header-title">NIC</h2>
+                                <p class="cca-header-subtitle">National Industrial Classification</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cca-body">
+                        <template lwc:if={showNicEditor}>
+                            <div class="bmp-fields-grid bmp-fields-grid--nic">
+                                <div class="bmp-field-wrap">
+                                    <div class="bmp-field-cell">
+                                        <div class="bmp-field-label">NIC (5 digits)</div>
+                                        <div class="bmp-field-value-col">
+                                            <div class="bmp-editable-input-wrap">
+                                                <input
+                                                    type="text"
+                                                    class="bmp-input"
+                                                    value={nicCode}
+                                                    maxlength="5"
+                                                    placeholder="Enter 5-digit code"
+                                                    oninput={handleNicCodeChange} />
+                                                <span class="bmp-editable-badge">Editable</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bmp-field-wrap">
+                                    <div class="cca-nic-actions">
+                                        <button
+                                            type="button"
+                                            class="cca-primary-btn cca-btn-compact"
+                                            onclick={handleNicAdd}>
+                                            Add
+                                        </button>
+                                        <span class="cca-or-divider">OR</span>
+                                        <button
+                                            type="button"
+                                            class="cca-secondary-btn cca-btn-compact"
+                                            onclick={handleToggleNicSearch}>
+                                            {nicSearchBtnLabel}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <template lwc:if={showNicSearchPanel}>
+                                <div class="cca-search-panel">
+                                    <div class="bmp-fields-grid">
+                                        <div class="bmp-field-wrap">
+                                            <div class="bmp-field-cell">
+                                                <div class="bmp-field-label">Group</div>
+                                                <div class="bmp-field-value-col">
+                                                    <lightning-combobox
+                                                        label="Group"
+                                                        variant="label-hidden"
+                                                        value={nicGroupValue}
+                                                        options={nicGroupOptions}
+                                                        placeholder="Select NIC Group"
+                                                        onchange={handleNicGroupChange}>
+                                                    </lightning-combobox>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="bmp-field-wrap">
+                                            <div class="bmp-field-cell">
+                                                <div class="bmp-field-label">Class</div>
+                                                <div class="bmp-field-value-col">
+                                                    <lightning-combobox
+                                                        label="Class"
+                                                        variant="label-hidden"
+                                                        value={nicClassValue}
+                                                        options={nicClassOptions}
+                                                        placeholder="Select NIC Class"
+                                                        onchange={handleNicClassChange}>
+                                                    </lightning-combobox>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="bmp-field-wrap">
+                                            <div class="bmp-field-cell">
+                                                <div class="bmp-field-label">Sub Class</div>
+                                                <div class="bmp-field-value-col">
+                                                    <lightning-combobox
+                                                        label="Sub Class"
+                                                        variant="label-hidden"
+                                                        value={nicSubClassValue}
+                                                        options={nicSubClassOptions}
+                                                        placeholder="Select NIC Sub Class"
+                                                        onchange={handleNicSubClassChange}>
+                                                    </lightning-combobox>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cca-search-panel-actions">
+                                        <button
+                                            type="button"
+                                            class="cca-secondary-btn"
+                                            onclick={handleToggleNicSearch}>
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="cca-primary-btn"
+                                            onclick={handleNicSearchAdd}>
+                                            Add Selected
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+
+                        <div class="cca-nic-list">
+                            <template lwc:if={showNicList}>
+                                <div class="master-table-scroll">
+                                    <table class="master-table">
+                                        <thead>
+                                            <tr class="master-table-header-row">
+                                                <th scope="col" class="master-th-cell">NIC Code</th>
+                                                <th scope="col" class="master-th-cell">Group</th>
+                                                <th scope="col" class="master-th-cell">Class</th>
+                                                <th scope="col" class="master-th-cell">Sub Class</th>
+                                                <template lwc:if={showNicEditor}>
+                                                    <th scope="col" class="master-th-cell">Action</th>
+                                                </template>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="master-table-body">
+                                            <template for:each={nicDataResponse} for:item="nic">
+                                                <tr key={nic.nicCode} class="master-table-row">
+                                                    <td class="master-td-cell">{nic.nicCode}</td>
+                                                    <td class="master-td-cell cca-cell-wrap">{nic.nicGroupDescription}</td>
+                                                    <td class="master-td-cell cca-cell-wrap">{nic.nicClassDescription}</td>
+                                                    <td class="master-td-cell cca-cell-wrap">{nic.nicSubClassDescription}</td>
+                                                    <template lwc:if={showNicEditor}>
+                                                        <td class="master-td-cell">
+                                                            <lightning-button-icon
+                                                                icon-name="utility:delete"
+                                                                variant="border-filled"
+                                                                alternative-text="Delete"
+                                                                title="Delete"
+                                                                data-key={nic.nicCode}
+                                                                onclick={handleNicDelete}>
+                                                            </lightning-button-icon>
+                                                        </td>
+                                                    </template>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <p class="cca-empty-text">No NIC data available</p>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Investment -->
+                <div class="cca-shell">
+                    <div class="cca-card-header">
+                        <div class="cca-header-overlay"></div>
+                        <div class="cca-header-content">
+                            <div class="cca-header-icon-wrap">
+                                <lightning-icon
+                                    icon-name="utility:currency"
+                                    size="small"
+                                    class="cca-header-icon">
+                                </lightning-icon>
+                            </div>
+                            <div class="cca-header-text">
+                                <h2 class="cca-header-title">Investment in P&amp;M</h2>
+                                <p class="cca-header-subtitle">Other than Lands &amp; Buildings, in INR</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cca-body">
+                        <div class="master-table-scroll">
+                            <table class="master-table">
+                                <thead>
+                                    <tr class="master-table-header-row">
+                                        <th scope="col" class="master-th-cell">Year Range</th>
+                                        <th scope="col" class="master-th-cell">Investment Amount (INR)</th>
+                                        <th scope="col" class="master-th-cell">Audit Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="master-table-body">
+                                    <template lwc:if={isScreenEditable}>
+                                        <template lwc:if={isTableInputLocked}>
+                                            <template for:each={fieldDisplay.investmentRows} for:item="row">
+                                                <tr key={row.id} class="master-table-row">
+                                                    <td class="master-td-cell">{row.yearRange}</td>
+                                                    <td class="master-td-cell"><p class="form-info-value">{row.amountDisplay}</p></td>
+                                                    <td class="master-td-cell"><p class="form-info-value">{row.auditedDisplay}</p></td>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                        <template lwc:else>
+                                            <template for:each={investmentTableRows} for:item="row">
+                                                <tr key={row.id} class="master-table-row">
+                                                    <td class="master-td-cell">{row.yearRange}</td>
+                                                    <td class="master-td-cell">
+                                                        <input
+                                                            type="number"
+                                                            class="bmp-input"
+                                                            data-id={row.id}
+                                                            value={row.amount}
+                                                            oninput={handleInvestmentChange} />
+                                                    </td>
+                                                    <td class="master-td-cell">
+                                                        <div class="bmp-radio-group bmp-radio-group--compact">
+                                                            <template for:each={row.optionsWithState} for:item="auditOpt">
+                                                                <label class="bmp-radio-label bmp-radio-label--compact" key={auditOpt.value}>
+                                                                    <input
+                                                                        type="radio"
+                                                                        class="bmp-radio-input"
+                                                                        name={row.radioName}
+                                                                        value={auditOpt.value}
+                                                                        data-id={row.id}
+                                                                        checked={auditOpt.isSelected}
+                                                                        onchange={handleInvestmentRadioChange} />
+                                                                    <span class="bmp-radio-circle"></span>
+                                                                    <span class="bmp-radio-text">{auditOpt.label}</span>
+                                                                </label>
+                                                            </template>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                    </template>
+                                    <template lwc:else>
+                                        <template for:each={fieldDisplay.investmentRows} for:item="row">
+                                            <tr key={row.id} class="master-table-row">
+                                                <td class="master-td-cell">{row.yearRange}</td>
+                                                <td class="master-td-cell"><p class="form-info-value">{row.amountDisplay}</p></td>
+                                                <td class="master-td-cell"><p class="form-info-value">{row.auditedDisplay}</p></td>
+                                            </tr>
+                                        </template>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Turnover -->
+                <div class="cca-shell">
+                    <div class="cca-card-header">
+                        <div class="cca-header-overlay"></div>
+                        <div class="cca-header-content">
+                            <div class="cca-header-icon-wrap">
+                                <lightning-icon
+                                    icon-name="utility:trending"
+                                    size="small"
+                                    class="cca-header-icon">
+                                </lightning-icon>
+                            </div>
+                            <div class="cca-header-text">
+                                <h2 class="cca-header-title">Turnover in INR</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cca-body">
+                        <div class="master-table-scroll">
+                            <table class="master-table">
+                                <thead>
+                                    <tr class="master-table-header-row">
+                                        <th scope="col" class="master-th-cell">Year Range</th>
+                                        <th scope="col" class="master-th-cell">Turnover Amount (INR)</th>
+                                        <th scope="col" class="master-th-cell">Audit Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="master-table-body">
+                                    <template lwc:if={isScreenEditable}>
+                                        <template lwc:if={isTableInputLocked}>
+                                            <template for:each={fieldDisplay.turnoverRows} for:item="row">
+                                                <tr key={row.id} class="master-table-row">
+                                                    <td class="master-td-cell">{row.yearRange}</td>
+                                                    <td class="master-td-cell"><p class="form-info-value">{row.amountDisplay}</p></td>
+                                                    <td class="master-td-cell"><p class="form-info-value">{row.auditedDisplay}</p></td>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                        <template lwc:else>
+                                            <template for:each={turnoverTableRows} for:item="row">
+                                                <tr key={row.id} class="master-table-row">
+                                                    <td class="master-td-cell">{row.yearRange}</td>
+                                                    <td class="master-td-cell">
+                                                        <input
+                                                            type="number"
+                                                            class="bmp-input"
+                                                            data-id={row.id}
+                                                            value={row.amount}
+                                                            oninput={handleTurnOverChange} />
+                                                    </td>
+                                                    <td class="master-td-cell">
+                                                        <div class="bmp-radio-group bmp-radio-group--compact">
+                                                            <template for:each={row.optionsWithState} for:item="auditOpt">
+                                                                <label class="bmp-radio-label bmp-radio-label--compact" key={auditOpt.value}>
+                                                                    <input
+                                                                        type="radio"
+                                                                        class="bmp-radio-input"
+                                                                        name={row.radioName}
+                                                                        value={auditOpt.value}
+                                                                        data-id={row.id}
+                                                                        checked={auditOpt.isSelected}
+                                                                        onchange={handleTurnoverRadioChange} />
+                                                                    <span class="bmp-radio-circle"></span>
+                                                                    <span class="bmp-radio-text">{auditOpt.label}</span>
+                                                                </label>
+                                                            </template>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                    </template>
+                                    <template lwc:else>
+                                        <template for:each={fieldDisplay.turnoverRows} for:item="row">
+                                            <tr key={row.id} class="master-table-row">
+                                                <td class="master-td-cell">{row.yearRange}</td>
+                                                <td class="master-td-cell"><p class="form-info-value">{row.amountDisplay}</p></td>
+                                                <td class="master-td-cell"><p class="form-info-value">{row.auditedDisplay}</p></td>
+                                            </tr>
+                                        </template>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Upload -->
+                <div class="cca-shell">
+                    <div class="cca-card-header">
+                        <div class="cca-header-overlay"></div>
+                        <div class="cca-header-content">
+                            <div class="cca-header-icon-wrap">
+                                <lightning-icon
+                                    icon-name="utility:upload"
+                                    size="small"
+                                    class="cca-header-icon">
+                                </lightning-icon>
+                            </div>
+                            <div class="cca-header-text">
+                                <h2 class="cca-header-title">Document Upload</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cca-body">
+                        <div class="bmp-fields-grid">
+                            <div class="bmp-field-wrap">
+                                <div class="dv-file-card">
+                            <span class="dv-file-legend">
+                                Udhyam Registration Certificate
+                                <template lwc:if={isScreenEditable}>
+                                    <span class="dv-file-req" title="Required">*</span>
+                                </template>
+                            </span>
+                            <p class="dv-file-title">Upload Udhyam Registration Certificate</p>
+
+                            <template lwc:if={udhyamShowUploadBtn}>
+                                <button type="button" class="dv-upload-btn" onclick={handleUdhyamChunkyUpload}
+                                    title="Upload Udhyam Registration Certificate" disabled={isLoading}>
+                                    <img src={chunkyUploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                                    <span class="dv-upload-btn-text">Select Files</span>
+                                </button>
+                            </template>
+                            <template lwc:if={udhyamShowEmptyPlaceholder}>
+                                <p class="dv-file-empty">No file uploaded</p>
+                            </template>
+
+                            <template lwc:if={udhyamFilesSingle}>
+                                <div class="dv-file-row dv-file-row--single">
+                                    <div class="dv-file-row-left">
+                                        <span class="dv-file-check">
+                                            <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"
+                                                alternative-text="Uploaded">
+                                            </lightning-icon>
+                                        </span>
+                                        <div class="dv-file-meta">
+                                            <span class="dv-file-name">{udhyamSingleFile.name}</span>
+                                            <span class="dv-file-status">Uploaded</span>
+                                        </div>
+                                    </div>
+                                    <div class="dv-file-row-actions">
+                                        <button type="button" class="dv-file-action dv-file-action--preview"
+                                            data-content-version-id={udhyamSingleFile.contentVersionId}
+                                            data-file-name={udhyamSingleFile.name}
+                                            data-file-extension={udhyamSingleFile.extension}
+                                            onclick={handleFilePreviewClick} title="Preview">
+                                            <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                        </button>
+                                        <template lwc:if={isScreenEditable}>
+                                            <button type="button" class="dv-file-action dv-file-action--danger"
+                                                data-id={udhyamSingleFile.id}
+                                                onclick={handleUdhyamFileDelete} title="Delete">
+                                                <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template lwc:if={udhyamFilesMulti}>
+                                <div class="dv-file-multi">
+                                    <button type="button" class="dv-file-multi-head" onclick={toggleUdhyamFilesExpand}>
+                                        <div class="dv-file-row-left">
+                                            <span class="dv-file-check">
+                                                <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"
+                                                    alternative-text="Uploaded">
+                                                </lightning-icon>
+                                            </span>
+                                            <div class="dv-file-meta">
+                                                <span class="dv-file-name">Multiple Files Uploaded</span>
+                                                <span class="dv-file-status">{udhyamFilesCountLabel}</span>
+                                            </div>
+                                        </div>
+                                        <lightning-icon icon-name={udhyamFilesChevron} size="x-small"
+                                            alternative-text="toggle">
+                                        </lightning-icon>
+                                    </button>
+                                    <template lwc:if={isUdhyamFilesExpanded}>
+                                        <div class="dv-file-multi-list">
+                                            <template for:each={udhyamFilesView} for:item="file">
+                                                <div key={file.id} class="dv-file-row">
+                                                    <div class="dv-file-row-left">
+                                                        <lightning-icon icon-name="utility:file" size="x-small"
+                                                            alternative-text="File">
+                                                        </lightning-icon>
+                                                        <span class="dv-file-name">{file.name}</span>
+                                                    </div>
+                                                    <div class="dv-file-row-actions">
+                                                        <button type="button" class="dv-file-action dv-file-action--preview"
+                                                            data-content-version-id={file.contentVersionId}
+                                                            data-file-name={file.name}
+                                                            data-file-extension={file.extension}
+                                                            onclick={handleFilePreviewClick} title="Preview">
+                                                            <lightning-icon icon-name="utility:preview" size="x-small">
+                                                            </lightning-icon>
+                                                        </button>
+                                                        <template lwc:if={isScreenEditable}>
+                                                            <button type="button" class="dv-file-action dv-file-action--danger"
+                                                                data-id={file.id}
+                                                                onclick={handleUdhyamFileDelete} title="Delete">
+                                                                <lightning-icon icon-name="utility:delete" size="x-small">
+                                                                </lightning-icon>
+                                                            </button>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Agri -->
+            <template lwc:if={showAgriBlock}>
+                <div class="cca-shell">
+                    <div class="cca-card-header">
+                        <div class="cca-header-overlay"></div>
+                        <div class="cca-header-content">
+                            <div class="cca-header-icon-wrap">
+                                <lightning-icon
+                                    icon-name="utility:world"
+                                    size="small"
+                                    class="cca-header-icon">
+                                </lightning-icon>
+                            </div>
+                            <div class="cca-header-text">
+                                <h2 class="cca-header-title">Agri</h2>
+                                <p class="cca-header-subtitle">Agriculture sector lending details</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cca-body">
+                        <div class="bmp-fields-grid">
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isScreenEditable}>
+                                    <template lwc:if={isAgriTypeLocked}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Agri Type</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{fieldDisplay.agriType}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="bmp-field-cell">
+                                            <div class="bmp-field-label">
+                                                Agri Type
+                                                <span class="bmp-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="bmp-field-value-col">
+                                                <lightning-combobox
+                                                    value={agriTypeValue}
+                                                    label="Agri Type"
+                                                    variant="label-hidden"
+                                                    options={agriTypeOptions}
+                                                    placeholder="Select Agri Type"
+                                                    required
+                                                    onchange={handleAgriTypeChange}>
+                                                </lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Agri Type</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{fieldDisplay.agriType}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isScreenEditable}>
+                                    <template lwc:if={isBorrowerCategoryLocked}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Borrower Category</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{fieldDisplay.borrowerCategory}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="bmp-field-cell">
+                                            <div class="bmp-field-label">
+                                                Borrower Category
+                                                <span class="bmp-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="bmp-field-value-col">
+                                                <lightning-combobox
+                                                    value={borrowerCategoryValue}
+                                                    label="Borrower Category"
+                                                    variant="label-hidden"
+                                                    options={borrowerCategoryOptions}
+                                                    placeholder="Select Borrower Category"
+                                                    required
+                                                    onchange={handleBorrowerCategoryChange}>
+                                                </lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Borrower Category</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{fieldDisplay.borrowerCategory}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="bmp-field-wrap">
+                                <template lwc:if={isScreenEditable}>
+                                    <template lwc:if={isAcreCategoryLocked}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Acre Category</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{fieldDisplay.acreCategory}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="bmp-field-cell">
+                                            <div class="bmp-field-label">
+                                                Acre Category
+                                                <span class="bmp-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="bmp-field-value-col">
+                                                <lightning-combobox
+                                                    value={acreCategoryValue}
+                                                    label="Acre Category"
+                                                    variant="label-hidden"
+                                                    options={acreCategoryOptions}
+                                                    placeholder="Select Acre Category"
+                                                    required
+                                                    onchange={handleAcreCategoryChange}>
+                                                </lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Acre Category</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{fieldDisplay.acreCategory}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </template>
+
+        <template lwc:if={showMagicUpload}>
+            <div class="dv-modal-overlay" onmousedown={handleOverlayMouseDown} onclick={handleOverlayClick}>
+                <div class="dv-modal" onclick={stopPropagationDv}>
+                    <div class="dv-modal-head">
+                        <span class="dv-modal-title">Advanced Document Upload</span>
+                        <button type="button" class="dv-modal-close" onclick={handleMagicUploadClose} title="Close">&#10005;</button>
+                    </div>
+                    <div class="dv-modal-body">
+                        <c-embed-custom-file-upload
+                            record-id={activeUploadChecklistId}
+                            max-files-allowed={activeMaxFiles}
+                            allowed-extensions={activeAllowedTypes}
+                            enable-compression
+                            allow-merge
+                            enable-video
+                            onfilesuploaded={handleMagicUploadComplete}>
+                        </c-embed-custom-file-upload>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <c-embed-document-checklist></c-embed-document-checklist>
+
+        <template lwc:if={showFilePreviewer}>
+            <c-embed-file-preview
+                content-version-id={previewContentVersionId}
+                file-name={previewFileName}
+                file-extension={previewFileExtension}
+                session-id={previewSessionId}
+                vf-root={previewVfRoot}
+                can-download
+                onclose={handleFilePreviewClose}>
+            </c-embed-file-preview>
+        </template>
+
+        <template lwc:if={isScreenEditable}>
+            <div class="cca-footer-wrapper">
+                <div class="cca-footer">
+                    <div class="cca-btn-wrapper">
+                        <button
+                            type="button"
+                            class="cca-primary-btn"
+                            disabled={isLoading}
+                            onclick={handleNextButton}>
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template lwc:if={showIntegrationProgressModal}>
+            <c-integration-progress-modal
+                status={integrationProgressModalStatus}
+                current-stage-index={integrationProgressModalCurrentStageIdx}
+                stages={integrationProgressModalStages}
+                error-message={integrationProgressModalErrorMessage}
+                onclose={handleIntegrationProgressModalClose}
+                ondone={handleIntegrationProgressModalClose}>
+            </c-integration-progress-modal>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Do_Issuance_Mode__c</fullName>
+    <label>Do Issuance Mode</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Along_with_payment</fullName>
+                <default>false</default>
+                <label>Along with payment</label>
+            </value>
+            <value>
+                <fullName>Separate</fullName>
+                <default>false</default>
+                <label>Separate</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

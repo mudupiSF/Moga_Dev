@@ -1,0 +1,199 @@
+<!--
+    @description Pay In / Pay Out Modal Content
+    Modal content for changing payment charges including service charges,
+    documentation charges, stamping charges, and related fields.
+    Wrapped by dynamicComponentModal.
+-->
+<template>
+    <div class="pipm-container">
+
+        <!-- Loading spinner -->
+        <template if:true={isLoading}>
+            <div class="pipm-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Pay In Card -->
+        <div class="pipm-card">
+            <!-- Card Header -->
+            <div class="pipm-card-header">
+                <div class="pipm-header-overlay"></div>
+                <div class="pipm-header-content">
+                    <div class="pipm-header-icon-wrap">
+                        <lightning-icon icon-name="utility:currency" 
+                                        size="small" 
+                                        class="pipm-header-icon">
+                        </lightning-icon>
+                    </div>
+                    <div class="pipm-header-text">
+                        <h1 class="pipm-header-title">Change Pay-In/ Pay-Out</h1>
+                        <p class="pipm-header-subtitle">Review and update pay-in/ pay-out values</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="pipm-card-body">
+                <div class="pipm-fields-grid">
+
+                    <!-- Service Charges -->
+                    <div class="pipm-field-wrap">
+                        <div class="pipm-field-cell">
+                            <div class="pipm-field-label">
+                                Service Charges
+                                <span class="pipm-required-indicator">*</span>
+                            </div>
+                            <div class="pipm-field-value-col">
+                                <input type="number"
+                                       class="pipm-input"
+                                       value={serviceCharges}
+                                       step="0.01"
+                                       placeholder="Enter service charges"
+                                       oninput={handleServiceChargesChange} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documentation Charges -->
+                    <div class="pipm-field-wrap">
+                        <div class="pipm-field-cell">
+                            <div class="pipm-field-label">
+                                Documentation Charges
+                                <span class="pipm-required-indicator">*</span>
+                            </div>
+                            <div class="pipm-field-value-col">
+                                <input type="number"
+                                       class="pipm-input"
+                                       value={documentationCharges}
+                                       step="0.01"
+                                       placeholder="Enter documentation charges"
+                                       oninput={handleDocumentationChargesChange} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Applicable Stamping Charges -->
+                    <div class="pipm-field-wrap">
+                        <div class="pipm-field-cell">
+                            <div class="pipm-field-label">
+                                Applicable Stamping Charges
+                                <span class="pipm-required-indicator">*</span>
+                            </div>
+                            <div class="pipm-field-value-col">
+                                <input type="number"
+                                       class="pipm-input"
+                                       value={applicableStampingCharges}
+                                       step="0.01"
+                                       placeholder="Enter applicable stamping charges"
+                                       oninput={handleApplicableStampingChargesChange} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cess -->
+                    <div class="pipm-field-wrap">
+                        <div class="pipm-field-cell">
+                            <div class="pipm-field-label">
+                                Cess
+                                <span class="pipm-required-indicator">*</span>
+                            </div>
+                            <div class="pipm-field-value-col">
+                                <input type="number"
+                                       class="pipm-input"
+                                       value={cess}
+                                       step="0.01"
+                                       placeholder="Enter cess"
+                                       oninput={handleCessChange} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Applicable Stamping Charges -->
+                    <div class="pipm-field-wrap">
+                        <div class="pipm-field-cell">
+                            <div class="pipm-field-label">
+                                Total Applicable Stamping Charges
+                                <span class="pipm-required-indicator">*</span>
+                            </div>
+                            <div class="pipm-field-value-col">
+                                <input type="number"
+                                       class="pipm-input"
+                                       value={totalApplicableStampingCharges}
+                                       step="0.01"
+                                       placeholder="Total stamping charges"
+                                       oninput={handleTotalApplicableStampingChargesChange} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stamping Charges Paid By -->
+                    <div class="pipm-field-wrap">
+                        <div class="pipm-field-cell">
+                            <div class="pipm-field-label">
+                                Stamping Charges Paid By
+                            </div>
+                            <div class="pipm-field-value-col">
+                                <div class="pipm-radio-group">
+                                    <label class="pipm-radio-label">
+                                        <input type="radio"
+                                               class="pipm-radio-input"
+                                               name="stampingPaidBy"
+                                               value="Bank"
+                                               checked={isStampingPaidByBank}
+                                               onchange={handleStampingChargesPaidByChange} />
+                                        <span class="pipm-radio-circle"></span>
+                                        <span class="pipm-radio-text">Bank</span>
+                                    </label>
+                                    <label class="pipm-radio-label">
+                                        <input type="radio"
+                                               class="pipm-radio-input"
+                                               name="stampingPaidBy"
+                                               value="Customer"
+                                               checked={isStampingPaidByCustomer}
+                                               onchange={handleStampingChargesPaidByChange} />
+                                        <span class="pipm-radio-circle"></span>
+                                        <span class="pipm-radio-text">Customer</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stamping Charges/Stamp Paper Collected -->
+                    <div class="pipm-field-wrap">
+                        <div class="pipm-field-cell">
+                            <div class="pipm-field-label">
+                                Stamping Charges/Stamp Paper Collected
+                                <span class="pipm-required-indicator">*</span>
+                            </div>
+                            <div class="pipm-field-value-col">
+                                <input type="number"
+                                       class="pipm-input"
+                                       value={stampingChargesCollected}
+                                       step="0.01"
+                                       placeholder="Enter collected charges"
+                                       oninput={handleStampingChargesCollectedChange} />
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /pipm-fields-grid -->
+            </div><!-- /pipm-card-body -->
+        </div><!-- /pipm-card -->
+
+        <!-- Footer Actions -->
+        <div class="pipm-footer-actions">
+            <button class="slds-button slds-button_neutral" 
+                    onclick={handleClose}>
+                Cancel
+            </button>
+            <button class="slds-button slds-button_brand pipm-submit-btn" 
+                    onclick={handleSubmit}
+                    disabled={isLoading}>
+                Submit
+            </button>
+        </div>
+
+    </div><!-- /pipm-container -->
+</template>

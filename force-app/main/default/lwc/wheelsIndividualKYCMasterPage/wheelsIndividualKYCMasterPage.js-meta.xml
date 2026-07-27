@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>65.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__Tab</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="recordId"    type="String"  description="Application__c record ID" />
+            <property name="applicantId" type="String"  description="Applicant record ID" />
+            <property name="tab"         type="String"  description="Stage tab label (e.g. KYC Details)" />
+            <property name="stagePhrase" type="String"  description="Stage phrase for losnextstage navigation" />
+            <property name="isStagePast" type="Boolean" description="True when navigated back to a completed stage; renders all fields read-only" default="false" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

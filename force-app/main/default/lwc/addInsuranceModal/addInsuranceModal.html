@@ -1,0 +1,149 @@
+<template>
+    <div class="idm-root">
+
+        <!-- Dark Blue Header Strip -->
+        <div class="idm-card-header">
+            <div class="idm-header-overlay"></div>
+            <div class="idm-header-content">
+                <div class="idm-header-icon-wrap">
+                    <lightning-icon icon-name="utility:shield" size="small" class="idm-header-icon"></lightning-icon>
+                </div>
+                <div class="idm-header-text">
+                    <h1 class="idm-header-title">Insurance Details</h1>
+                    <p class="idm-header-subtitle">Select and configure insurance plans</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="idm-body">
+
+            <!-- Loading overlay -->
+            <template if:true={isLoading}>
+                <div class="idm-loading-overlay">
+                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Type of Customer -->
+            <div class="idm-customer-section">
+                <label class="idm-field-label">
+                    Type of Customer
+                    <span class="idm-required">*</span>
+                </label>
+                <select class="idm-select" onchange={handleCustomerTypeChange}>
+                    <template for:each={customerTypeOptions} for:item="opt">
+                        <option key={opt.value} value={opt.value} selected={opt.isSelected}>{opt.label}</option>
+                    </template>
+                </select>
+            </div>
+
+            <!-- Insurance Plan Cards (looped) -->
+            <template for:each={computedPlans} for:item="plan">
+                <div key={plan.id} class="idm-plan-card">
+
+                    <!-- Plan header row -->
+                    <div class="idm-plan-header">
+                        <label class="idm-checkbox-wrap">
+                            <input type="checkbox"
+                                   class="idm-checkbox-input"
+                                   checked={plan.isSelected}
+                                   data-plan-id={plan.id}
+                                   onchange={handlePlanToggle} />
+                            <span class="idm-checkbox-box"></span>
+                        </label>
+                        <div class="idm-plan-info">
+                            <span class="idm-plan-name">{plan.name}</span>
+                            <span class="idm-plan-desc">{plan.description}</span>
+                            <div class="idm-plan-pills">
+                                <span class="idm-pill">Premium: {plan.premium}</span>
+                                <span class="idm-pill">Coverage: {plan.coverage}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Expanded details when plan is selected -->
+                    <template if:true={plan.isSelected}>
+                        <div class="idm-plan-details">
+
+                            <!-- Plan dropdown -->
+                            <div class="idm-detail-field">
+                                <label class="idm-field-label">
+                                    Plan
+                                    <span class="idm-required">*</span>
+                                </label>
+                                <select class="idm-select idm-select--white"
+                                        data-plan-id={plan.id}
+                                        onchange={handlePlanChange}>
+                                    <option value="">Select plan</option>
+                                    <template for:each={plan.planOptionsWithSelected} for:item="opt">
+                                        <option key={opt.value} value={opt.value} selected={opt.isSelected}>{opt.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- Is Funded radio -->
+                            <div class="idm-detail-field">
+                                <label class="idm-field-label">Is Funded?</label>
+                                <div class="idm-radio-group">
+                                    <label class="idm-radio-label">
+                                        <input type="radio"
+                                               class="idm-radio-input"
+                                               name={plan.id}
+                                               value="yes"
+                                               checked={plan.isFundedYes}
+                                               data-plan-id={plan.id}
+                                               onchange={handleFundedChange} />
+                                        <span class="idm-radio-circle"></span>
+                                        <span class="idm-radio-text">Yes</span>
+                                    </label>
+                                    <label class="idm-radio-label">
+                                        <input type="radio"
+                                               class="idm-radio-input"
+                                               name={plan.id}
+                                               value="no"
+                                               checked={plan.isFundedNo}
+                                               data-plan-id={plan.id}
+                                               onchange={handleFundedChange} />
+                                        <span class="idm-radio-circle"></span>
+                                        <span class="idm-radio-text">No</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+
+                </div>
+            </template>
+
+            <!-- Footer -->
+            <div class="idm-footer">
+                <button class="slds-button slds-button_neutral" onclick={handleCancel}>
+                    Cancel
+                </button>
+                <button class="slds-button slds-button_brand idm-compute-btn"
+                        onclick={handleComputePremium}
+                        disabled={isLoading}>
+                    Compute Premium
+                </button>
+            </div>
+
+        </div><!-- /idm-body -->
+    </div><!-- /idm-root -->
+
+    <!-- Integration Progress Modal -->
+    <template if:true={showIntegrationModal}>
+        <c-integration-progress-modal
+            status={integrationStatus}
+            header={integrationHeader}
+            stages={integrationStages}
+            current-stage-index={integrationCurrentStageIndex}
+            success-message={integrationSuccessMessage}
+            onclose={handleIntegrationModalClose}
+            ondone={handleIntegrationDone}
+            onretry={handleComputePremium}>
+        </c-integration-progress-modal>
+    </template>
+
+</template>

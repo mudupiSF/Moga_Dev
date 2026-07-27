@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>State_Master__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>State Master</label>
+    <referenceTo>State_Master__c</referenceTo>
+    <relationshipLabel>District Master</relationshipLabel>
+    <relationshipName>District_Master</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

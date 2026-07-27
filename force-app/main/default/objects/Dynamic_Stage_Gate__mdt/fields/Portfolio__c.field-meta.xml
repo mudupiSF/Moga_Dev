@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Portfolio__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Portfolio</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Mortgage</fullName>
+                <default>true</default>
+                <label>Mortgage</label>
+            </value>
+            <value>
+                <fullName>Education Loan</fullName>
+                <default>false</default>
+                <label>Education Loan</label>
+            </value>
+            <value>
+                <fullName>Personal Loan</fullName>
+                <default>false</default>
+                <label>Personal Loan</label>
+            </value>
+            <value>
+                <fullName>Business Loan</fullName>
+                <default>false</default>
+                <label>Business Loan</label>
+            </value>
+            <value>
+                <fullName>Wheels</fullName>
+                <default>false</default>
+                <label>Wheels</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

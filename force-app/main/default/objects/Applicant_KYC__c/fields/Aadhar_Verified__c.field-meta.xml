@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Aadhar_Verified__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Flipped TRUE only after the Aadhaar eKYC verification completes successfully.</description>
+    <label>Aadhaar Verified</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

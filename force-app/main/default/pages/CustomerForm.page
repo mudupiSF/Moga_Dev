@@ -1,0 +1,19 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+    <apex:slds />
+    <apex:includeLightning />
+    <div id="LightningComponentid"></div>
+    <script>
+        $Lightning.use('c:customerFormAuraLightningApp', function () {
+            $Lightning.createComponent(
+                'c:customerFormHost',
+                {
+                    applicantId: '{!JSENCODE($CurrentPage.parameters.applicantId)}',
+                    formName: '{!JSENCODE($CurrentPage.parameters.formname)}',
+                    callingFromVf: 'true'
+                },
+                'LightningComponentid',
+                function () {}
+            );
+        });
+    </script>
+</apex:page>

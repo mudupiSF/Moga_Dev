@@ -1,0 +1,30 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+    <apex:slds />
+    <apex:includeLightning />
+    <style>
+        html, body, #LightningComponentid {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+    </style>
+    <div id="LightningComponentid"></div>
+    <script>
+        $Lightning.use('c:financialGridAuraLightningApp', function () {
+            $Lightning.createComponent(
+                'c:financeGridContent',
+                {
+                    recordId: '{!$CurrentPage.parameters.loanId}',
+                    loanId: '{!$CurrentPage.parameters.loanId}'
+                },
+                'LightningComponentid',
+                function (cmp) {
+                    console.log('Finance grid LWC loaded.');
+                }
+            );
+        });
+    </script>
+</apex:page>

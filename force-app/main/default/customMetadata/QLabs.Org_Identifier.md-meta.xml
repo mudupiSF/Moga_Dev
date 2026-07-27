@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Org Identifier</label>
+    <protected>false</protected>
+    <values>
+        <field>Identifier__c</field>
+        <value xsi:type="xsd:string">b4c50ff5-136a-097b-89b3-c1d8a7583c89</value>
+    </values>
+</CustomMetadata>

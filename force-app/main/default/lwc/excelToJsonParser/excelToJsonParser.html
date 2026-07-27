@@ -1,0 +1,16 @@
+<template>
+    <div class="fg-excel-upload">
+        <template lwc:if={libraryLoaded}>
+            <lightning-input
+                type="file"
+                label={title}
+                accept=".xlsx,.xls"
+                onchange={handleFilesChange}>
+            </lightning-input>
+            <p class="fg-excel-upload__hint">{message}</p>
+        </template>
+        <template lwc:else>
+            <p class="fg-excel-upload__hint">Loading Excel parser…</p>
+        </template>
+    </div>
+</template>

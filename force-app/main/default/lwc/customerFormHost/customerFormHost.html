@@ -1,0 +1,30 @@
+<template>
+    <div class="host-shell">
+
+        <template lwc:if={showLoading}>
+            <div class="host-message host-loading" role="status">Loading form data from Apex…</div>
+        </template>
+
+        <template lwc:if={showError}>
+            <div class="host-message host-error" role="alert">{errorMessage}</div>
+        </template>
+
+        <template lwc:if={showConsentMessage}>
+            <div class="host-message host-consent" role="status">{consentMessage}</div>
+        </template>
+
+        <template lwc:if={showRenderer}>
+            <c-p-d-fforce-renderer
+                template-id={templateId}
+                record-id={documentChecklistId}
+                form-name={formName}
+                file-name={fileName}
+                show-preview
+                calling-from-vf={callingFromVf}
+                input-j-s-o-n={inputJSON}
+                onformsubmitted={handleFormSubmitted}
+            ></c-p-d-fforce-renderer>
+        </template>
+       
+    </div>
+</template>

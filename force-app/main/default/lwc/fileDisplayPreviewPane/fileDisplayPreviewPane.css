@@ -1,0 +1,16 @@
+.unsupported {
+    width: 100%;
+    padding: 2rem;
+    text-align: center;
+    color: #666;
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
+    background: #fff;
+}
+
+.router-toolbar {
+    background: #f3f3f3;
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
+    padding: 0.35rem 0.5rem;
+}

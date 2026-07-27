@@ -1,0 +1,140 @@
+<template>
+    <div class="page-layout">
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <div class="loading-container">
+                <lightning-spinner alternative-text="Loading..." size="large"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Page Content -->
+        <template if:false={isLoading}>
+            <!-- Customer Dedupe Result Table -->
+            <template if:true={showResultTable}>
+                <c-customer-dedupe-result-table
+                    record-id={recordId}
+                    applicant-id={applicantId}
+                    handler-name="customerDedupeCheck"
+                    matches={matches}
+                    customer-code={customerCode}
+                    is-dedup-checking={isLoading}
+                    is-read-only-screen={isReadOnlyScreen}
+                    validation-complete-from-server={validationButtonsDisabled}
+                    match-validated={matchValidated}
+                    match-confirmed-invalid={matchConfirmedInvalid}
+                    invalidated-match-cif-id={invalidatedMatchCifId}
+                    valid-invalid-clicked={validInvalidClicked}
+                    check-eligibility-clicked={checkEligibilityClicked}
+                    check-eligibility-processing={checkEligibilityProcessing}
+                    onselectionchange={handleSelectionChange}
+                    onmatchvalidated={handleMatchValidated}
+                    onintegrationcomplete={handleIntegrationComplete}
+                    oncheckeligibility={handleCheckEligibility}
+                    oncheckeligibilityvalidation={handleCheckEligibilityValidation}>
+                </c-customer-dedupe-result-table>
+            </template>
+
+            <!-- Add/Change Applicants Section -->
+            <template if:true={showAddApplicantsSection}>
+                <c-add-applicants-section
+                    key={addApplicantsSectionKey}
+                    record-id={recordId}
+                    can-add-guarantor={canAddGuarantor}
+                    can-add-beneficiary={canAddBeneficiary}
+                    show-add-buttons={eligibilityChecked}
+                    guarantor-count={guarantorCount}
+                    co-borrower-count={coBorrowerCount}
+                    beneficiary-count={beneficiaryCount}
+                    removable-applicants={removableApplicants}
+                    application-type={applicationType}
+                    is-non-individual={isNonIndividual}
+                    is-two-wheeler={isTwoWheeler}
+                    is-read-only-screen={isReadOnlyScreen}
+                    is-remove-read-only={isReadOnlyScreen}
+                    has-non-individual-guarantor={hasNonIndividualGuarantor}
+                    has-non-individual-beneficiary={hasNonIndividualBeneficiary}
+                    lock-for-journey-in-progress={anyNonBorrowerJourneyInProgress}
+                    onselectionchange={handleAddApplicantsSelectionChange}
+                    onrequestremoveconfirm={handleRequestRemoveConfirm}>
+                </c-add-applicants-section>
+            </template>
+
+            <!-- Footer with Get Existing EMI and Next Button -->
+            <template if:true={showPageFooter}>
+            <div class="page-footer">
+                <div class="footer-wrapper">
+                    <div class="button-wrapper">
+                        <template if:true={showGetExistingEmiButton}>
+                        <button 
+                            type="button" 
+                            class={getEmiButtonClass}
+                            onclick={handleGetExistingEmi}
+                            disabled={isGetEmiButtonDisabled}>
+                            <template if:true={isGetEmiConfirmed}>
+                                <svg class="footer-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            </template>
+                            Get Existing EMI
+                        </button>
+                        </template>
+                        <template if:true={showCheckEligibilityFooter}>
+                            <button
+                                type="button"
+                                class={checkEligibilityButtonClass}
+                                onclick={handleFooterCheckEligibility}
+                                disabled={isCheckEligibilityButtonDisabled}
+                                aria-disabled={isCheckEligibilityButtonDisabled}>
+                                <template if:true={checkEligibilityProcessing}>
+                                    <lightning-spinner alternative-text="Checking eligibility..." size="small"></lightning-spinner>
+                                </template>
+                                <template if:false={checkEligibilityProcessing}>
+                                    <template if:true={isCheckEligibilityConfirmed}>
+                                        <svg class="footer-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    </template>
+                                    Check Eligibility
+                                </template>
+                            </button>
+                        </template>
+                        <template if:true={showNextButton}>
+                            <button 
+                                type="button" 
+                                class={nextButtonClass}
+                                onclick={handleNextButton}
+                                disabled={isNextButtonDisabled}>
+                                <template if:true={isSaving}>
+                                    <lightning-spinner alternative-text="Saving..." size="small"></lightning-spinner>
+                                </template>
+                                <template if:false={isSaving}>
+                                    Next
+                                </template>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+            </template>
+        </template>
+
+        <!-- Confirmation Modal -->
+        <template if:true={showConfirmModal}>
+            <c-dynamic-component-modal
+                component-name="confirmation"
+                component-props={confirmModalProps}
+                onclose={handleConfirmModalClose}
+                onaction={handleConfirmModalAction}>
+            </c-dynamic-component-modal>
+        </template>
+
+        <template if:true={showIntegrationProgressModal}>
+            <c-integration-progress-modal 
+                status={integrationProgressModalStatus}
+                current-stage-index={integrationProgressModalCurrentStageIndex} 
+                stages={integrationProgressModalStages}
+                error-message={integrationProgressModalErrorMessage} 
+                onclose={handleIntegrationProgressModalClose}
+                onretry={handleIntegrationProgressModalRetry} 
+                ondone={handleIntegrationProgressModalDone}
+                success-message={integrationProgressModalSuccessMessage}>
+            </c-integration-progress-modal>
+        </template>
+    </div>
+</template>

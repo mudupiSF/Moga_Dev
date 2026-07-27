@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Probe42_Company__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The Corporate Probe42 Entity (NI company) this checklist was generated for. Set by Probe42Service when a Probe42 report runs. Enables querying all Probe42 reports per company.</description>
+    <label>Probe42 Company</label>
+    <referenceTo>Corporate_Probe42_Entity__c</referenceTo>
+    <relationshipLabel>Integration Checklists</relationshipLabel>
+    <relationshipName>Integration_Checklists</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FieldNametoShowas_Label__c</fullName>
+    <description>when multiple records are there ,  tis field will tell which field to use. Name is generally used.  Name sometimes will be auto number. hence lets query meaningful field. Ex: while diplaying applicant , show firstname.while showing address , show address type</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>FieldNametoShowas Label</label>
+    <length>100</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

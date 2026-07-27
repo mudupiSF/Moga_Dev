@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Gender__c</fullName>
+    <label>Gender</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>MALE</fullName>
+                <default>false</default>
+                <label>MALE</label>
+            </value>
+            <value>
+                <fullName>FEMALE</fullName>
+                <default>false</default>
+                <label>FEMALE</label>
+            </value>
+            <value>
+                <fullName>OTHERS MALE</fullName>
+                <default>false</default>
+                <label>OTHERS MALE</label>
+            </value>
+            <value>
+                <fullName>OTHERS FEMALE</fullName>
+                <default>false</default>
+                <label>OTHERS FEMALE</label>
+            </value>
+            <value>
+                <fullName>OTHERS PREFER NOT TO DISCLOSE</fullName>
+                <default>false</default>
+                <label>OTHERS PREFER NOT TO DISCLOSE</label>
+            </value>
+            <value>
+                <fullName>Null</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Null</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

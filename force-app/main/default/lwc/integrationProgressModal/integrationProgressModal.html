@@ -1,0 +1,80 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <section role="dialog" class="slds-modal slds-fade-in-open modal-zindex" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+        <div class="slds-modal__container modal-container-narrow">
+            <template if:true={showHeader}>
+                <header class="slds-modal__header modal-header-compact">
+                    <h2 class="slds-modal__title">{header}</h2>
+                </header>
+            </template>
+
+            <div class="slds-modal__content modal-content-compact" id="modal-content-id-1">
+                <!-- Error View -->
+                <template if:true={isError}>
+                    <div class="progress-modal-body">
+                        <div class="progress-icon-wrap progress-icon-error">
+                            <lightning-icon icon-name="utility:error" size="large" alternative-text="Error"></lightning-icon>
+                        </div>
+                        <h3 class="progress-title">Process Failed</h3>
+                        <p class="progress-message">{errorMessage}</p>
+                    </div>
+                </template>
+
+                <!-- Success View -->
+                <template if:true={isSuccess}>
+                    <div class="progress-modal-body">
+                        <div class="progress-icon-wrap progress-icon-success">
+                            <lightning-icon icon-name="utility:success" size="large" alternative-text="Success"></lightning-icon>
+                        </div>
+                        <h3 class="progress-title">Update Successful</h3>
+                        <p class="progress-message">{successMessage}</p>
+                    </div>
+                </template>
+
+                <!-- Loading/Progress View -->
+                <template if:true={isLoading}>
+                    <div class="progress-modal-body">
+                        <!--<div class="progress-spinner-wrap">
+                            <div class="progress-spinner-icon">
+                                <lightning-spinner alternative-text="Processing" size="small" class="progress-spinner"></lightning-spinner>
+                            </div>
+                        </div>-->
+                        <h3 class="progress-title">Processing Updates</h3>
+                        <p class="progress-message">This process is running in the background. Please do not close the window.</p>
+                        <div class="progress-stages">
+                            <template for:each={stagesWithStatus} for:item="stage">
+                                <div key={stage.key} class={stage.stageClass}>
+                                    <div class={stage.badgeClass}>
+                                        <template if:true={stage.isComplete}>
+                                            <lightning-icon icon-name="utility:check" size="x-small" alternative-text="Done" class="badge-check"></lightning-icon>
+                                        </template>
+                                        <template if:false={stage.isComplete}>
+                                            <span class="stage-number">{stage.number}</span>
+                                        </template>
+                                    </div>
+                                    <span class={stage.labelClass}>{stage.label}</span>
+                                    <!--<template if:true={stage.isCurrent}>
+                                        <lightning-spinner alternative-text="In progress" size="x-small" class="stage-spinner"></lightning-spinner>
+                                    </template>-->
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <footer class="slds-modal__footer modal-footer-compact">
+                <template if:true={isError}>
+                    <lightning-button label="Close" onclick={handleClose} class="progress-btn-close"></lightning-button>
+                    <lightning-button label="Retry" variant="brand" onclick={handleRetry} class="progress-btn-retry slds-var-m-left_x-small"></lightning-button>
+                </template>
+                <template if:true={isSuccess}>
+                    <lightning-button label="Done" variant="brand" onclick={handleDone} class="progress-btn-done"></lightning-button>
+                </template>
+                <template if:true={isLoading}>
+                    <lightning-button label="Close" onclick={handleClose} class="progress-btn-close"></lightning-button>
+                </template>
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" style="height: 300vh !important;"></div>
+</template>

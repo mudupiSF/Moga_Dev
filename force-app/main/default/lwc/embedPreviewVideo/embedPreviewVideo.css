@@ -1,0 +1,87 @@
+.video-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+}
+
+.video-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
+    gap: 8px;
+}
+.video-filename {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #111;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+}
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.toolbar-btn {
+    background: #f3f4f6;
+    border: 1px solid #d0d5dd;
+    border-radius: 4px;
+    padding: 5px 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+.toolbar-btn:hover { background: #e0e7fe; border-color: #1E1B4B; color: #1E1B4B; }
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: #666;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+.close-btn:hover { background: #fde8e8; color: #c23934; }
+
+.video-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a2e;
+    overflow: hidden;
+    min-height: 300px;
+}
+
+.video-error {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fbbf24;
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    margin: 20px;
+}
+
+video {
+    max-height: 560px;
+    background: #000;
+}
+
+.toolbar-btn, .close-btn { touch-action: manipulation; }
+
+@media (max-width: 599px) {
+    .video-body    { min-height: 200px; }
+    video          { max-height: 260px; }
+    .toolbar-btn   { min-height: 40px; padding: 8px 12px; }
+    .close-btn     { min-width: 40px; min-height: 40px; font-size: 1.3rem; }
+    .video-header  { padding: 8px 12px; }
+}

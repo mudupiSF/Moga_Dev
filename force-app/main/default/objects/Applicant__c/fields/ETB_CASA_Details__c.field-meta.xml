@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ETB_CASA_Details__c</fullName>
+    <description>JSON array of Existing-to-Bank Current/Savings accounts returned by the ETB CASA integration. Drives the Cross-Sell repayment-account picker on the KYC Details screen.</description>
+    <encryptionScheme>None</encryptionScheme>
+    <label>ETB CASA Details</label>
+    <length>131072</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

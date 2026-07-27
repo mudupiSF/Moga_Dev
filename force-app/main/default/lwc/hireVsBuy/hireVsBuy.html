@@ -1,0 +1,110 @@
+<template>
+    <div class="lt-page-layout">
+        <template if:true={isLoading}>
+            <div class="lt-loading-overlay">
+                <lightning-spinner alternative-text="Loading Hire vs Buy" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template for:each={sections} for:item="section">
+            <div key={section.key} class="lt-card">
+                <div class="lt-card-header">
+                    <div class="lt-header-overlay"></div>
+                    <div class="lt-header-content">
+                        <div class="lt-header-icon-wrap">
+                            <lightning-icon icon-name={section.icon} size="small" class="lt-header-icon"></lightning-icon>
+                        </div>
+                        <div class="lt-header-text">
+                            <h1 class="lt-header-title">{section.title}</h1>
+                            <p class="lt-header-subtitle">{section.subtitle}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="lt-card-body">
+                    <div class="lt-fields-grid">
+                        <template for:each={section.fields} for:item="field">
+                            <div key={field.key} class={field.wrapClass}>
+                                <template lwc:if={field.showAsReadOnly}>
+                                    <div class="lt-info-cell lt-info-cell-readonly">
+                                        <div class="lt-info-cell-header">
+                                            <span class="lt-info-label">{field.label}</span>
+                                        </div>
+                                        <div class="lt-info-value-wrap">
+                                            <p class="lt-info-value">{field.displayValue}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="lt-field-cell inv-field-editable">
+                                        <div class="lt-field-label">{field.label}</div>
+                                        <div class="lt-field-value-col">
+                                            <template lwc:if={field.isNumber}>
+                                                <template lwc:if={field.hasInputMax}>
+                                                    <input
+                                                        type="number"
+                                                        class="lt-field-input"
+                                                        data-key={field.key}
+                                                        value={field.value}
+                                                        step="0.01"
+                                                        min="0"
+                                                        max={field.inputMax}
+                                                        oninput={handleFieldUpdate}
+                                                        onchange={handleFieldUpdate} />
+                                                </template>
+                                                <template lwc:else>
+                                                    <input
+                                                        type="number"
+                                                        class="lt-field-input"
+                                                        data-key={field.key}
+                                                        value={field.value}
+                                                        step="0.01"
+                                                        oninput={handleFieldUpdate}
+                                                        onchange={handleFieldUpdate} />
+                                                </template>
+                                            </template>
+                                            <template lwc:else>
+                                                <input
+                                                    type="text"
+                                                    class="lt-field-input"
+                                                    data-key={field.key}
+                                                    value={field.value}
+                                                    oninput={handleFieldUpdate}
+                                                    onchange={handleFieldUpdate} />
+                                            </template>
+                                            <template lwc:if={field.fieldError}>
+                                                <p class="hvb-field-error">{field.fieldError}</p>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={errorMessage}>
+            <div class="slds-text-color_error hvb-error">{errorMessage}</div>
+        </template>
+
+        <template if:false={isReadOnlyMode}>
+            <div class="hvb-footer">
+                <button
+                    type="button"
+                    class="p4-secondary-btn p4-button-text"
+                    disabled={isLoading}
+                    onclick={handleCancel}>
+                    Cancel
+                </button>
+                <button
+                    type="button"
+                    class="p4-primary-btn p4-button-text"
+                    disabled={isSaveDisabled}
+                    onclick={handleSave}>
+                    Save
+                </button>
+            </div>
+        </template>
+    </div>
+</template>

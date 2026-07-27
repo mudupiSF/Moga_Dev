@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Location_of_Vehicle_Inspection__c</fullName>
+    <label>Location of Vehicle Inspection</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Buyer place</fullName>
+                <default>false</default>
+                <label>Buyer place</label>
+            </value>
+            <value>
+                <fullName>Customer place</fullName>
+                <default>false</default>
+                <label>Customer place</label>
+            </value>
+            <value>
+                <fullName>Seller place</fullName>
+                <default>false</default>
+                <label>Seller place</label>
+            </value>
+            <value>
+                <fullName>Yard</fullName>
+                <default>false</default>
+                <label>Yard</label>
+            </value>
+            <value>
+                <fullName>Bank office</fullName>
+                <default>false</default>
+                <label>Bank office</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

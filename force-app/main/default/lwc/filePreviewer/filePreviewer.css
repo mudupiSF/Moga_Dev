@@ -1,0 +1,212 @@
+/*
+ * sfLOSFilePreviewer
+ *
+ * Modal layered above:
+ *   - LOS card content (z-index: 1)
+ *   - sfLOSGlobalLoader backdrop (z-index: 8500)
+ *   - sfLOSGlobalLoader spinner (z-index: 8501)
+ *   - SLDS standard backdrop (8000) and modal (9000)
+ * and below:
+ *   - SLDS toasts (10000)
+ *
+ * Backdrop sits at 9050, modal at 9051 so the preview always wins against
+ * the global loader without ever covering toast notifications.
+ *
+ * Sizing strategy (matches the reference screenshot):
+ *   - Desktop  : centered modal, ~720px wide, height shrinks to (header +
+ *                content + footer) so there is NO trailing whitespace below
+ *                the footer; capped at 85vh so very tall content scrolls in
+ *                the body. Image fits via object-fit:contain so portrait IDs
+ *                (PAN, passport) show whole, never cropped.
+ *   - Tablet   : 92vw / 90vh, same shrink-to-content behavior.
+ *   - Mobile   : full-screen, no rounded corners.
+ *
+ * Body scroll-lock is applied imperatively in JS (document.body) because a
+ * style on :host cannot affect the page background.
+ */
+
+/* ── Backdrop ───────────────────────────────────────────────────────────── */
+.sflos-preview-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 9050;
+    cursor: pointer;
+
+    animation: sflos-preview-fade 120ms ease-out;
+}
+
+@keyframes sflos-preview-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── Modal positioning ──────────────────────────────────────────────────── */
+.sflos-preview-modal {
+    z-index: 9051;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── Desktop modal container ────────────────────────────────────────────────
+ * `height: auto` + `min-height: 0` make the container shrink-wrap its
+ *  children (header + body + footer). `max-height: 85vh` is the only ceiling
+ *  for tall content; when reached, the body's overflow:auto kicks in.
+ *
+ *  We qualify with the SLDS class `.slds-modal__container` (which is also on
+ *  the same element) to lift specificity to (0,3,0), beating SLDS' own
+ *  `.slds-modal_medium .slds-modal__container` rule (0,2,0). `!important` is
+ *  belt-and-braces against any SLDS rules that also use !important on height.
+ */
+.sflos-preview-modal .sflos-preview-container.slds-modal__container {
+    width: min(720px, 90vw);
+    max-width: 90vw;
+
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: 85vh !important;
+
+    /* Kill any container-level top/bottom padding SLDS may add — that padding
+     * lives outside the flex children and otherwise looks like "ghost" white
+     * space below the footer. */
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    background: #ffffff;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Header ────────────────────────────────────────────────────────────── */
+.sflos-preview-modal .sflos-preview-header {
+    flex: 0 0 auto;
+    background: #ffffff;
+    position: relative;
+}
+
+/* ── Close (X) button — make clearly visible on white header ─────────────
+ *  SLDS .slds-modal__close + .slds-button_icon-inverse renders the icon
+ *  white, which is invisible on our white header. We override to a dark
+ *  circle button (charcoal icon, light hover background, subtle border)
+ *  so it reads clearly against any header colour.
+ */
+.sflos-preview-modal .sflos-preview-close {
+    color: #181818;
+    background: #ffffff;
+    border: 1px solid #c9c9c9;
+    border-radius: 9999px;
+    width: 1.75rem;
+    height: 1.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.sflos-preview-modal .sflos-preview-close:hover,
+.sflos-preview-modal .sflos-preview-close:focus {
+    background: #f3f3f3;
+    color: #000000;
+    box-shadow: 0 0 0 1px #747474 inset;
+    outline: 0;
+}
+/* Force the actual SVG inside lightning-icon to a dark fill (overrides
+ * SLDS inverse variant). Targets every depth the SVG might live at so
+ * we are robust to lightning-icon's internal markup changes. */
+.sflos-preview-modal .sflos-preview-close lightning-icon,
+.sflos-preview-modal .sflos-preview-close .slds-icon,
+.sflos-preview-modal .sflos-preview-close svg {
+    fill: #181818;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────────── */
+.sflos-preview-modal .sflos-preview-footer {
+    flex: 1 0 auto;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background: #ffffff;
+    border-top: 1px solid #e5e5e5;
+}
+
+/* ── Body (scroll surface) ──────────────────────────────────────────────────
+ *  flex: 0 1 auto so the body sizes to its CONTENT (no forced growth that
+ *  would leave whitespace below short images). overflow:auto + min-height:0
+ *  let it scroll when the container hits its 85vh max-height.
+ */
+.sflos-preview-modal .sflos-preview-body {
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow: auto;
+    background: #f3f3f3;
+    -webkit-overflow-scrolling: touch;
+}
+
+.sflos-preview-modal .sflos-preview-spinner {
+    position: relative;
+    min-height: 8rem;
+}
+
+/* ── Image fit ──────────────────────────────────────────────────────────── */
+.sflos-preview-modal .sflos-preview-image-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.sflos-preview-modal .sflos-preview-image {
+    max-width: 100%;
+    /* Cap relative to viewport so very tall photos don't push the modal past
+     * its 85vh max-height; smaller images stay at their natural size. */
+    max-height: calc(85vh - 9.25rem);
+    height: auto;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
+/* ── Iframe (PDF / Office) ──────────────────────────────────────────────── */
+.sflos-preview-modal .sflos-preview-iframe {
+    width: 100%;
+    height: calc(85vh - 9.25rem);
+    min-height: 360px;
+    border: 0;
+    display: block;
+}
+
+/* ── Tablet (≤ 1024px) ──────────────────────────────────────────────────── */
+@media screen and (max-width: 1024px) {
+
+    .sflos-preview-modal .sflos-preview-container.slds-modal__container {
+        width: 92vw;
+        max-width: 92vw;
+        max-height: 90vh !important;
+    }
+    .sflos-preview-modal .sflos-preview-image {
+        max-height: calc(90vh - 9.25rem);
+    }
+    .sflos-preview-modal .sflos-preview-iframe {
+        height: calc(90vh - 9.25rem);
+    }
+}
+
+/* ── Phone (≤ 768px) — full-screen ──────────────────────────────────────── */
+@media screen and (max-width: 768px) {
+    .sflos-preview-modal .sflos-preview-container.slds-modal__container {
+        width: 100vw;
+        max-width: 100vw;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        border-radius: 0;
+    }
+    .sflos-preview-modal .sflos-preview-image {
+        max-height: calc(100vh - 9.25rem);
+    }
+    .sflos-preview-modal .sflos-preview-iframe {
+        height: calc(100vh - 9.25rem);
+    }
+}

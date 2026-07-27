@@ -1,0 +1,87 @@
+<template>
+    <template lwc:if={isLoading}>
+        <div class="li-loading">
+            <lightning-spinner alternative-text="Loading lead information" size="small"></lightning-spinner>
+        </div>
+    </template>
+
+    <template lwc:else>
+        <div class="li-card-wrapper">
+            <div class={cardClass}>
+
+                <!-- ── Header (navy bar with title + actions + collapse toggle) ── -->
+                <header class="li-header">
+                    <div class="li-header-left">
+                        <div class="li-header-icon-wrap" aria-hidden="true">
+                            <lightning-icon
+                                icon-name="standard:lead"
+                                size="small"
+                                variant="inverse"
+                                class="li-header-icon">
+                            </lightning-icon>
+                        </div>
+                        <div class="li-header-text">
+                            <span class="li-header-title">Application Information</span>
+                        </div>
+                        <lightning-icon
+                            icon-name={collapseIconName}
+                            size="small"
+                            class="li-collapse-icon"
+                            title={collapseIconTitle}
+                            onclick={handleToggleCollapse}>
+                        </lightning-icon>
+                    </div>
+
+                    <template lwc:if={isExpanded}>
+                        <div class="li-actions" role="group" aria-label="Application actions">
+                            <button class="li-action-btn li-action-btn--danger" type="button" onclick={handleRevoke}>
+                                <lightning-icon icon-name="utility:undo"    size="x-small" class="li-action-icon li-action-icon--danger"  alternative-text=""></lightning-icon>
+                                <span class="li-action-label">Revoke</span>
+                            </button>
+                            <button class="li-action-btn li-action-btn--danger" type="button" onclick={handleWithdraw}>
+                                <lightning-icon icon-name="utility:close"   size="x-small" class="li-action-icon li-action-icon--danger"  alternative-text=""></lightning-icon>
+                                <span class="li-action-label">Withdraw</span>
+                            </button>
+                            <button class="li-action-btn li-action-btn--primary" type="button" onclick={handleTransfer}>
+                                <lightning-icon icon-name="utility:forward" size="x-small" class="li-action-icon li-action-icon--primary" alternative-text=""></lightning-icon>
+                                <span class="li-action-label">Transfer</span>
+                            </button>
+                        </div>
+                    </template>
+                </header>
+
+                <!-- ── Body (4 read-only field cells) ─────────────────────────── -->
+                <template lwc:if={isExpanded}>
+                    <div class="form-body">
+                        <template lwc:if={hasError}>
+                            <p class="li-error">Unable to load application information.</p>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-fields-grid">
+                                <template for:each={displayFields} for:item="field">
+                                    <div key={field.key} class="form-field-wrap">
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <!--<lightning-icon
+                                                    icon-name={field.iconName}
+                                                    size="x-small"
+                                                    class="li-field-icon"
+                                                    alternative-text="">
+                                                </lightning-icon>-->
+                                                <span class="form-info-label">{field.label}</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{field.displayValue}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+            </div>
+        </div>
+    </template>
+</template>

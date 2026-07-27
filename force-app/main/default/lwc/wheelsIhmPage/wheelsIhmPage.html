@@ -1,0 +1,481 @@
+<template>
+    <div class={rootLayoutClass}>
+
+        <!-- ══ LOADING OVERLAY ══════════════════════════════════════════════ -->
+        <template if:true={isLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ══ SECTION 1 — TOTAL AMOUNT PAID BY CUSTOMER TO DEALER (New) ════ -->
+        <div class="form-card" if:true={isNewVehicleType}>
+            <div class="form-card-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content ihm-header-with-action">
+                    <div class="ihm-header-left">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:contract_payment" size="small" class="form-header-icon" alternative-text="Dealer payments"></lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Total Amount Paid by Customer to Dealer</h1>
+                            <p class="form-header-subtitle">Upload and manage payment receipts</p>
+                        </div>
+                    </div>
+                    <button type="button" class="ihm-add-row-btn" onclick={handleAddRow} disabled={isReadOnly} aria-label="Add new receipt row" title="Add new receipt row">+ Add Row</button>
+                </div>
+            </div>
+            <div class="form-card-body">
+                <template if:true={showTable}>
+                    <div class="ihm-table-wrapper">
+                        <div class="ihm-table">
+                            <div class="ihm-table-head">
+                                <div class="ihm-th">Upload Receipt</div>
+                                <div class="ihm-th">Receipt No</div>
+                                <div class="ihm-th">Receipt Date</div>
+                                <div class="ihm-th">Amount</div>
+                                <div class="ihm-th">Remarks</div>
+                                <div class="ihm-th ihm-th-actions">Actions</div>
+                            </div>
+                            <template for:each={dealerPaymentRows} for:item="row" for:index="index">
+                                <div key={row.id} class={row.rowClass}>
+                                    <div class="ihm-td">
+                                        <template if:true={row.isUploaded}>
+                                            <div class="ihm-action-icons">
+                                                <lightning-icon icon-name="utility:preview" size="small" class="ihm-icon-btn" alternative-text="Preview file"
+                                                    data-content-document-id={row.contentDocumentId}
+                                                    data-file-type={row.fileType}
+                                                    onclick={handleFilePreviewClick}></lightning-icon>
+                                                <template if:false={isReadOnly}>
+                                                    <lightning-icon icon-name="utility:delete" size="small" class="ihm-icon-btn ihm-icon-delete" alternative-text="Delete file" data-index={index} onclick={handleDeleteFile}></lightning-icon>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template if:false={row.isUploaded}>
+                                            <template if:true={row.hasPendingFile}>
+                                                <div class="ihm-pending-file">
+                                                    <lightning-icon icon-name="utility:attach" size="xx-small" class="ihm-pending-icon" alternative-text="File attached"></lightning-icon>
+                                                    <span class="ihm-pending-filename" title={row.pendingFileName}>{row.pendingFileName}</span>
+                                                    <button class="ihm-remove-file-btn" onclick={handleRemovePendingFile} data-index={index} title="Remove staged file" aria-label="Remove staged file">×</button>
+                                                </div>
+                                            </template>
+                                            <template if:false={row.hasPendingFile}>
+                                                <button class="ihm-upload-btn" onclick={handleUploadReceipt} data-index={index} disabled={isReadOnly} title="Upload receipt file">Upload</button>
+                                            </template>
+                                        </template>
+                                    </div>
+                                    <div class="ihm-td">
+                                        <lightning-input type="text" label="Receipt No" name="receiptNo" value={row.receiptNo} data-index={index} onchange={handleIHMReceiptChange} readonly={isReadOnly} variant="label-hidden" class="form-lightning-input ihm-table-input"></lightning-input>
+                                    </div>
+                                    <div class="ihm-td">
+                                        <lightning-input type="date" label="Receipt Date" name="receiptDate" value={row.receiptDate} data-index={index} onchange={handleIHMReceiptChange} readonly={isReadOnly} variant="label-hidden" class="form-lightning-input ihm-table-input"></lightning-input>
+                                    </div>
+                                    <div class="ihm-td">
+                                        <lightning-input type="number" label="IHM Amount" name="amount" value={row.amount} data-index={index} onchange={handleIHMReceiptChange} readonly={isReadOnly} variant="label-hidden" placeholder="Enter amount" class="form-lightning-input ihm-table-input"></lightning-input>
+                                    </div>
+                                    <div class="ihm-td">
+                                        <lightning-input type="text" label="Remarks" name="remarks" value={row.remarks} data-index={index} onchange={handleIHMReceiptChange} readonly={isReadOnly} variant="label-hidden" placeholder="Enter remarks" class="form-lightning-input ihm-table-input"></lightning-input>
+                                    </div>
+                                    <div class="ihm-td ihm-td-actions">
+                                        <button class="ihm-delete-btn" data-index={index} onclick={handleDeleteRow} disabled={isReadOnly} title="Delete row">Delete</button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+                <div class="form-fields-grid ihm-summary-row">
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Total Amount Paid by Customer to Dealer</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Total Amount Paid by Customer to Dealer" type="text" value={ihmData.totalAmountPaidToDealer} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ SECTION 2 — IHM CALCULATION (New) ════════════════════════════ -->
+        <div class="form-card" if:true={isNewVehicleType}>
+            <div class="form-card-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:formula" size="small" class="form-header-icon" alternative-text="IHM Calculation"></lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">IHM Calculation
+                        </h1>
+                        <p class="form-header-subtitle">Pay-ins breakdown and Invoice Held Margin summary</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-card-body">
+
+                <!-- Pay-ins sub-section -->
+                <div class="ihm-subsection-header">
+                    <span class="ihm-subsection-title">Pay-ins</span>
+                </div>
+                <div class="form-fields-grid">
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Service charges</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Service charges" type="text" value={ihmData.serviceCharges} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Trade certificate fee</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Trade certificate fee" type="text" value={ihmData.tradeCertificate} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Documentation charges</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Documentation charges" type="text" value={ihmData.documentationCharges} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Due date shift charges</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Due date shift charges" type="text" value={ihmData.dueDateShiftCharges} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Stamping charges</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Stamping charges" type="text" value={ihmData.stampingCharges} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Total Pay-ins</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Total Pay-ins" type="text" value={ihmData.totalPayIns} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IHM Calculation sub-section -->
+                <div class="ihm-subsection-header ihm-subsection-header--gap">
+                    <span class="ihm-subsection-title">IHM Calculation</span>
+                </div>
+                <div class="form-fields-grid">
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Loan amount sanctioned - excl. funded insurance</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Loan amount sanctioned" type="text" value={ihmData.loanAmtSanctionedFexclFundInsu} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Total amount to be paid by customer</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Total amount to be paid by customer" type="text" value={totalAmountToBePaid} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Total amount customer paid to bank</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Total amount customer paid to bank" type="text" value={ihmData.totalAmountPaidToBank} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Total amount customer paid to dealer</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Total amount customer paid to dealer" type="text" value={ihmData.totalAmountPaidToDealer} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Does the customer need to pay an additional amount to the dealer?</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Does customer need to pay additional amount" type="text" value={ihmData.doesCustomerNeedToPay} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Additional amount to be paid</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Additional amount to be paid" type="text" value={ihmData.additionalIhmAmount} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ SECTION 3 — IHM CALCULATION (Used/Ref) ═══════════════════════ -->
+        <div class="form-card" if:false={isNewVehicleType}>
+            <div class="form-card-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:formula" size="small" class="form-header-icon" alternative-text="IHM Calculation Used/Ref"></lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">IHM Calculation
+                        </h1>
+                        <p class="form-header-subtitle">Invoice Held Margin computation for used / refinance vehicles</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-card-body">
+                <div class="form-fields-grid">
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Service charges</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Service charges" type="text" value={ihmData.serviceCharges} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Trade certificate fee</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Trade certificate fee" type="text" value={ihmData.tradeCertificate} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Documentation charges</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Documentation charges" type="text" value={ihmData.documentationCharges} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Stamping charges</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Stamping charges" type="text" value={ihmData.stampingCharges} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Total Pay-ins</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Total Pay-ins" type="text" value={ihmData.totalPayIns} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Total non-funded insurance</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Total non-funded insurance" type="text" value={ihmData.totalNonFundedInsurance} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Advance EMI amount</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Advance EMI amount" type="text" value={ihmData.totalEmiToBeConsideredForIhm} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Valuation charges paid by</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-combobox  if:false={isReadOnly}
+                                    label="Valuation charges paid by"
+                                    value={ihmData.valuationChargePaidBy}
+                                    options={valuationChargePaidByOptions}
+                                    onchange={handleValuationChargePaidBy}
+                                    variant="label-hidden"
+                                    placeholder="Please select..."
+                                    class="form-lightning-input"
+                                    readonly={isReadOnly}>
+                                </lightning-combobox>
+                                <lightning-input if:true={isReadOnly} label="Valuation charges paid by" type="text" value={ihmData.valuationChargePaidBy} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Valuation charges</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Valuation charges" type="text" value={ihmData.valuationCharge} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Total margin money to be deducted from disbursement</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-input label="Total margin money to be deducted" type="text" value={ihmData.totalMarginMoneyToBeDeductedForIhm} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-card" if:true={isOperationsStage}>
+            <c-operations-section-header
+                subtitle="Verify IHM document and acceptance">
+            </c-operations-section-header>
+            <div class="form-card-body">
+                <div class="form-fields-grid">
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Are all details correct?</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col">
+                                <lightning-combobox if:false={isOpsReadOnly}
+                                    label="Are all details correct?"
+                                    value={ihmData.areAllDetailsCorrect}
+                                    options={yesNoOptions}
+                                    onchange={handleIsAllDetailsCorrectChange}
+                                    variant="label-hidden"
+                                    placeholder="Please select..."
+                                    class="form-lightning-input"
+                                    readonly={isOpsReadOnly}>
+                                </lightning-combobox>
+                                <lightning-input if:true={isOpsReadOnly} label="Are all details correct?" type="text" value={ihmData.areAllDetailsCorrect} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field-wrap">
+                        <div class="lt-info-cell">
+                            <div class="lt-info-cell-header">
+                                <span class="lt-info-bullet"></span>
+                                <span class="lt-info-label">Remarks</span>
+                            </div>
+                            <div class="lt-info-value-wrap form-field-value-col" >
+                                <textarea class="ihm-textarea-field"
+                                    placeholder="Enter any additional remarks..."
+                                    onchange={handleRemarksChange}
+                                    rows="3"
+                                    readonly={isOpsReadOnly}
+                                    aria-label="Remarks" if:false={isOpsReadOnly}>{ihmData.remarks}</textarea>
+                                <lightning-input if:true={isOpsReadOnly} label="Remarks" type="text" value={ihmData.remarks} readonly variant="label-hidden" class="form-lightning-input"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ FOOTER ════════════════════════════════════════════════════════ -->
+        <div class="form-footer-wrapper" if:false={isStagePast}>
+            <div class="form-footer">
+                <div class="form-btn-wrapper">
+                    <button type="button" class="ihm-submit-btn" onclick={handleSubmit} disabled={disableSubmitButton} aria-label="Submit IHM" if:false={isStagePast}>Submit</button>
+                    <button type="button" class="form-primary-btn" onclick={handleNext} disabled={nextButtonDisabled} aria-label="Next step" if:false={fromAssetList}>
+                        <lightning-icon icon-name="utility:forward" size="x-small" class="form-btn-icon" alternative-text="Next"></lightning-icon>
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <template lwc:if={showFilePreviewer}>
+        <c-file-previewer
+            content-document-id={previewContentDocumentId}
+            file-type={previewFileType}
+            record-id={recordId}
+            onclose={handleFilePreviewClose}>
+        </c-file-previewer>
+    </template>
+</template>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_Verification_Code_Generated_Time__c</fullName>
+    <description>Timestamp when the Email verification code was generated and sent.</description>
+    <encryptionScheme>None</encryptionScheme>
+    <label>Email Verification Code Generated Time</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

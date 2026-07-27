@@ -1,0 +1,1492 @@
+<template>
+
+    <div class="kyc-page-layout">
+
+        <template if:true={isLoading}>
+            <div class="kyc-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- CARD 1 — Upload CIN -->
+        <template if:true={showCinSection}>
+        <div class="kyc-card">
+            <div class="kyc-card-header">
+                <div class="kyc-header-overlay"></div>
+                <div class="kyc-header-content">
+                    <div class="kyc-header-icon-wrap">
+                        <lightning-icon icon-name="utility:company" size="small" class="kyc-header-icon"></lightning-icon>
+                    </div>
+                    <div class="kyc-header-text">
+                        <h1 class="kyc-header-title">Upload CIN</h1>
+                        <p class="kyc-header-subtitle">Certificate of Incorporation / CIN document</p>
+                    </div>
+                </div>
+            </div>
+            <div class="kyc-card-body">
+                <c-kyc-entity-document-panel
+                    section-key="cin"
+                    legend-label="CIN Document"
+                    file-title="Upload CIN document"
+                    required
+                    is-read-only={isReadOnlyScreen}
+                    upload-disabled={cinUploadDisabled}
+                    upload-icon-url={chunkyUploadIconUrl}
+                    files={cinPanelFiles}
+                    onuploadrequest={handleEntityPanelUploadRequest}
+                    onfilepreview={handleEntityPanelFilePreview}
+                    onfiledelete={handleEntityPanelFileDelete}>
+                    <div slot="left">
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap form-field-wrap--full">
+                                    <template if:false={cinFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                CIN#
+                                                <span class="kyc-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <template if:true={cinNumberIsPicklist}>
+                                                    <lightning-combobox
+                                                        data-doc="cin"
+                                                        value={cinNumber}
+                                                        label="CIN#"
+                                                        variant="label-hidden"
+                                                        placeholder="Select CIN#"
+                                                        options={cinNumberOptions}
+                                                        onchange={handleEntityDocNumberChange}>
+                                                    </lightning-combobox>
+                                                </template>
+                                                <template if:false={cinNumberIsPicklist}>
+                                                    <lightning-input
+                                                        type="text"
+                                                        data-doc="cin"
+                                                        label="CIN#"
+                                                        variant="label-hidden"
+                                                        placeholder="Enter CIN#"
+                                                        value={cinNumber}
+                                                        onchange={handleEntityDocNumberChange}>
+                                                    </lightning-input>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={cinFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">CIN#</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{cinNumberDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                        </div>
+                    </div>
+                </c-kyc-entity-document-panel>
+            </div>
+        </div>
+        </template>
+
+        <!-- CARD 2 — Upload GST -->
+        <template if:true={showGstSection}>
+        <div class="kyc-card">
+            <div class="kyc-card-header">
+                <div class="kyc-header-overlay"></div>
+                <div class="kyc-header-content">
+                    <div class="kyc-header-icon-wrap">
+                        <lightning-icon icon-name="utility:file" size="small" class="kyc-header-icon"></lightning-icon>
+                    </div>
+                    <div class="kyc-header-text">
+                        <h1 class="kyc-header-title">Upload GST</h1>
+                        <p class="kyc-header-subtitle">GST registration certificate</p>
+                    </div>
+                </div>
+            </div>
+            <div class="kyc-card-body">
+                <c-kyc-entity-document-panel
+                    section-key="gst"
+                    legend-label="GST Document"
+                    file-title="Upload GST document"
+                    required
+                    scrollable-left-pane
+                    is-read-only={isReadOnlyScreen}
+                    upload-disabled={gstUploadDisabled}
+                    upload-icon-url={chunkyUploadIconUrl}
+                    files={gstPanelFiles}
+                    onuploadrequest={handleEntityPanelUploadRequest}
+                    onfilepreview={handleEntityPanelFilePreview}
+                    onfiledelete={handleEntityPanelFileDelete}>
+                    <div slot="left" class="kyc-scroll-left">
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap form-field-wrap--full">
+                                    <template if:false={gstFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                GST#
+                                                <span class="kyc-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <template if:true={gstNumberIsPicklist}>
+                                                    <lightning-combobox
+                                                        data-doc="gst"
+                                                        value={gstNumber}
+                                                        label="GST#"
+                                                        variant="label-hidden"
+                                                        placeholder="Select GST#"
+                                                        options={gstNumberOptions}
+                                                        onchange={handleEntityDocNumberChange}>
+                                                    </lightning-combobox>
+                                                </template>
+                                                <template if:false={gstNumberIsPicklist}>
+                                                    <lightning-input
+                                                        type="text"
+                                                        data-doc="gst"
+                                                        label="GST#"
+                                                        variant="label-hidden"
+                                                        placeholder="Enter GST#"
+                                                        value={gstNumber}
+                                                        onchange={handleEntityDocNumberChange}>
+                                                    </lightning-input>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={gstFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">GST#</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{gstNumberDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap form-field-wrap--full">
+                                    <template if:false={gstFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                Address Line 1
+                                                <span class="kyc-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    data-field="kycAddressLine1"
+                                                    label="Address Line 1"
+                                                    variant="label-hidden"
+                                                    placeholder="Address Line 1"
+                                                    value={gstFieldValues.kycAddressLine1}
+                                                    onchange={handleGstFieldChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={gstFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Address Line 1</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{gstAddressLine1Display}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap form-field-wrap--full">
+                                    <template if:false={gstFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                Address Line 2
+                                                <span class="kyc-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    data-field="kycAddressLine2"
+                                                    label="Address Line 2"
+                                                    variant="label-hidden"
+                                                    placeholder="Address Line 2"
+                                                    value={gstFieldValues.kycAddressLine2}
+                                                    onchange={handleGstFieldChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={gstFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Address Line 2</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{gstAddressLine2Display}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={gstFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                Pin Code
+                                                <span class="kyc-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    data-field="kycPinCode"
+                                                    label="Pin Code"
+                                                    variant="label-hidden"
+                                                    placeholder="Pin Code"
+                                                    value={gstFieldValues.kycPinCode}
+                                                    maxlength="6"
+                                                    onchange={handleGstFieldChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={gstFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Pin Code</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{gstPinCodeDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={gstFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                State
+                                                <span class="kyc-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    label="State"
+                                                    variant="label-hidden"
+                                                    placeholder="State"
+                                                    value={gstFieldValues.state}
+                                                    disabled>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={gstFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">State</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{gstStateDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={gstFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                District
+                                                <span class="kyc-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-combobox
+                                                    data-field="district"
+                                                    value={gstFieldValues.district}
+                                                    label="District"
+                                                    variant="label-hidden"
+                                                    placeholder="Select District"
+                                                    options={gstDistrictOptions}
+                                                    onchange={handleGstFieldChange}>
+                                                </lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={gstFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">District</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{gstDistrictDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={gstFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                City
+                                                <span class="kyc-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    label="City"
+                                                    variant="label-hidden"
+                                                    placeholder="City"
+                                                    value={gstFieldValues.city}
+                                                    disabled>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={gstFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">City</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{gstCityDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                        </div>
+                    </div>
+                    <div slot="right">
+                        <template if:true={hasGstFile}>
+                            <div class="kyc-panel-right-field">
+                                <template if:false={gstFieldReadOnly}>
+                                    <div class="form-field-cell">
+                                        <div class="form-field-label">
+                                            Is GST your Registered Address?
+                                            <span class="form-required-indicator" title="Required">*</span>
+                                        </div>
+                                        <div class="form-field-value-col">
+                                            <div class="form-radio-group">
+                                                <label class="form-radio-label">
+                                                    <input type="radio" class="form-radio-input"
+                                                        name="gstIsRegisteredAddress" value="Yes"
+                                                        checked={gstIsRegisteredAddressYes}
+                                                        onchange={handleGstIsRegisteredAddressChange} />
+                                                    <span class="form-radio-circle"></span>
+                                                    <span class="form-radio-text">Yes</span>
+                                                </label>
+                                                <label class="form-radio-label">
+                                                    <input type="radio" class="form-radio-input"
+                                                        name="gstIsRegisteredAddress" value="No"
+                                                        checked={gstIsRegisteredAddressNo}
+                                                        onchange={handleGstIsRegisteredAddressChange} />
+                                                    <span class="form-radio-circle"></span>
+                                                    <span class="form-radio-text">No</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={gstFieldReadOnly}>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Is GST your Registered Address?</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{gstRegisteredAddressDisplay}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </c-kyc-entity-document-panel>
+            </div>
+        </div>
+        </template>
+
+        <!-- Registered Address -->
+        <template if:true={showRegisteredAddressSection}>
+            <div class="kyc-card">
+                <div class="kyc-card-header">
+                    <div class="kyc-header-overlay"></div>
+                    <div class="kyc-header-content">
+                        <div class="kyc-header-icon-wrap">
+                            <lightning-icon icon-name="utility:home" size="small" class="kyc-header-icon"></lightning-icon>
+                        </div>
+                        <div class="kyc-header-text">
+                            <h1 class="kyc-header-title">Registered Address</h1>
+                            <p class="kyc-header-subtitle">Entity registered address details</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="kyc-card-body">
+                    <c-kyc-entity-document-panel
+                        section-key="registered"
+                        legend-label={registeredPanelLegendLabel}
+                        file-title={registeredPanelFileTitle}
+                        required
+                        is-read-only={registeredPanelReadOnly}
+                        upload-disabled={registeredUploadDisabled}
+                        hide-right-column={registeredHideUploadPanel}
+                        upload-icon-url={chunkyUploadIconUrl}
+                        files={registeredPanelFiles}
+                        onuploadrequest={handleEntityPanelUploadRequest}
+                        onfilepreview={handleEntityPanelFilePreview}
+                        onfiledelete={handleEntityPanelFileDelete}>
+                        <div slot="left">
+                            <div class="form-fields-grid">
+                                <template if:true={isRegisteredAddressReadOnly}>
+                                    <div class="form-field-wrap form-field-wrap--full">
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Address Proof</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">GST</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:false={isRegisteredAddressReadOnly}>
+                                <div class="form-field-wrap form-field-wrap--full">
+                                    <template if:true={isReadOnlyScreen}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Address Proof</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{registeredAddressProofDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:false={isReadOnlyScreen}>
+                                        <template if:true={registeredAddressProofLocked}>
+                                            <div class="form-field-cell">
+                                                <div class="form-field-label">
+                                                    Address Proof
+                                                    <span class="form-required-indicator" title="Required">*</span>
+                                                </div>
+                                                <div class="form-field-value-col">
+                                                    <div class="form-info-cell form-info-cell--inline">
+                                                        <p class="form-info-value">{registeredAddressProofDisplay}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template if:false={registeredAddressProofLocked}>
+                                            <div class="form-field-cell">
+                                                <div class="form-field-label">
+                                                    Address Proof
+                                                    <span class="form-required-indicator" title="Required">*</span>
+                                                </div>
+                                                <div class="form-field-value-col">
+                                                    <lightning-combobox
+                                                        data-scope="registered"
+                                                        data-field="addressProof"
+                                                        value={registeredAddressFieldValues.addressProof}
+                                                        label="Address Proof"
+                                                        variant="label-hidden"
+                                                        placeholder="Select address proof"
+                                                        options={registeredAddressProofOptions}
+                                                        disabled={isRegisteredSectionDisabled}
+                                                        onchange={handleEntityAddressChange}>
+                                                    </lightning-combobox>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                                </template>
+
+                                <div class="form-field-wrap form-field-wrap--full">
+                                    <template if:false={registeredAddressFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                Address Line 1
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    data-scope="registered"
+                                                    data-field="kycAddressLine1"
+                                                    label="Address Line 1"
+                                                    variant="label-hidden"
+                                                    placeholder="Address Line 1"
+                                                    value={registeredAddressFieldValues.kycAddressLine1}
+                                                    onchange={handleEntityAddressChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={registeredAddressFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Address Line 1</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{registeredAddressLine1Display}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap form-field-wrap--full">
+                                    <template if:false={registeredAddressFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                Address Line 2
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    data-scope="registered"
+                                                    data-field="kycAddressLine2"
+                                                    label="Address Line 2"
+                                                    variant="label-hidden"
+                                                    placeholder="Address Line 2"
+                                                    value={registeredAddressFieldValues.kycAddressLine2}
+                                                    onchange={handleEntityAddressChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={registeredAddressFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Address Line 2</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{registeredAddressLine2Display}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={registeredAddressFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                Pin Code
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    data-scope="registered"
+                                                    data-field="kycPinCode"
+                                                    label="Pin Code"
+                                                    variant="label-hidden"
+                                                    placeholder="Pin Code"
+                                                    value={registeredAddressFieldValues.kycPinCode}
+                                                    maxlength="6"
+                                                    onchange={handleEntityAddressChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={registeredAddressFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Pin Code</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{registeredPinCodeDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={registeredAddressFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                State
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    label="State"
+                                                    variant="label-hidden"
+                                                    placeholder="State"
+                                                    value={registeredAddressFieldValues.state}
+                                                    disabled>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={registeredAddressFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">State</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{registeredStateDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={registeredAddressFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                District
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-combobox
+                                                    data-scope="registered"
+                                                    data-field="district"
+                                                    value={registeredAddressFieldValues.district}
+                                                    label="District"
+                                                    variant="label-hidden"
+                                                    placeholder="Select District"
+                                                    options={registeredDistrictOptions}
+                                                    onchange={handleEntityAddressChange}>
+                                                </lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={registeredAddressFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">District</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{registeredDistrictDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={registeredAddressFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                City
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    label="City"
+                                                    variant="label-hidden"
+                                                    placeholder="City"
+                                                    value={registeredAddressFieldValues.city}
+                                                    disabled>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={registeredAddressFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">City</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{registeredCityDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                        <div slot="right">
+                            <template if:true={showOfficeSameAsRegisteredQuestion}>
+                                <div class="kyc-panel-right-field">
+                                    <template if:true={isReadOnlyScreen}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Office Address is same as Registered Address</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{officeSameAsRegisteredDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:false={isReadOnlyScreen}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                Office Address is same as Registered Address
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <div class="form-radio-group">
+                                                    <label class="form-radio-label">
+                                                        <input type="radio" class="form-radio-input"
+                                                            name="officeSameAsRegistered" value="Yes"
+                                                            checked={officeSameAsRegisteredYes}
+                                                            onchange={handleOfficeSameAsRegisteredChange} />
+                                                        <span class="form-radio-circle"></span>
+                                                        <span class="form-radio-text">Yes</span>
+                                                    </label>
+                                                    <label class="form-radio-label">
+                                                        <input type="radio" class="form-radio-input"
+                                                            name="officeSameAsRegistered" value="No"
+                                                            checked={officeSameAsRegisteredNo}
+                                                            onchange={handleOfficeSameAsRegisteredChange} />
+                                                        <span class="form-radio-circle"></span>
+                                                        <span class="form-radio-text">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </c-kyc-entity-document-panel>
+                </div>
+            </div>
+        </template>
+
+        <!-- Office Address -->
+        <template if:true={showEntityOfficeAddressSection}>
+            <div class="kyc-card">
+                <div class="kyc-card-header">
+                    <div class="kyc-header-overlay"></div>
+                    <div class="kyc-header-content">
+                        <div class="kyc-header-icon-wrap">
+                            <lightning-icon icon-name="utility:company" size="small" class="kyc-header-icon"></lightning-icon>
+                        </div>
+                        <div class="kyc-header-text">
+                            <h1 class="kyc-header-title">Office Address</h1>
+                            <p class="kyc-header-subtitle">Entity office address details</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="kyc-card-body">
+                    <c-kyc-entity-document-panel
+                        section-key="office"
+                        legend-label={officePanelLegendLabel}
+                        file-title={officePanelFileTitle}
+                        required
+                        is-read-only={officePanelReadOnly}
+                        upload-disabled={officeUploadDisabled}
+                        hide-right-column={officeHideUploadPanel}
+                        upload-icon-url={chunkyUploadIconUrl}
+                        files={officePanelFiles}
+                        onuploadrequest={handleEntityPanelUploadRequest}
+                        onfilepreview={handleEntityPanelFilePreview}
+                        onfiledelete={handleEntityPanelFileDelete}>
+                        <div slot="left">
+                            <div class="form-fields-grid">
+                                <template if:true={officeShowOwnProofSelector}>
+                                    <div class="form-field-wrap form-field-wrap--full">
+                                        <template if:true={isReadOnlyScreen}>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header">
+                                                    <span class="form-info-label">Address Proof</span>
+                                                </div>
+                                                <div class="form-info-value-wrap">
+                                                    <p class="form-info-value">{officeAddressProofDisplay}</p>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template if:false={isReadOnlyScreen}>
+                                            <template if:true={officeAddressProofLocked}>
+                                                <div class="form-field-cell">
+                                                    <div class="form-field-label">
+                                                        Address Proof
+                                                        <span class="form-required-indicator" title="Required">*</span>
+                                                    </div>
+                                                    <div class="form-field-value-col">
+                                                        <div class="form-info-cell form-info-cell--inline">
+                                                            <p class="form-info-value">{officeAddressProofDisplay}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <template if:false={officeAddressProofLocked}>
+                                                <div class="form-field-cell">
+                                                    <div class="form-field-label">
+                                                        Address Proof
+                                                        <span class="form-required-indicator" title="Required">*</span>
+                                                    </div>
+                                                    <div class="form-field-value-col">
+                                                        <lightning-combobox
+                                                            data-scope="office"
+                                                            data-field="addressProof"
+                                                            value={officeAddressFieldValues.addressProof}
+                                                            label="Address Proof"
+                                                            variant="label-hidden"
+                                                            placeholder="Select address proof"
+                                                            options={officeAddressProofOptions}
+                                                            disabled={isOfficeSectionDisabled}
+                                                            onchange={handleEntityAddressChange}>
+                                                        </lightning-combobox>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <div class="form-field-wrap form-field-wrap--full">
+                                    <template if:false={officeAddressFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                Address Line 1
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    data-scope="office"
+                                                    data-field="kycAddressLine1"
+                                                    label="Address Line 1"
+                                                    variant="label-hidden"
+                                                    placeholder="Address Line 1"
+                                                    value={officeAddressFieldValues.kycAddressLine1}
+                                                    onchange={handleEntityAddressChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={officeAddressFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Address Line 1</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{officeAddressLine1Display}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap form-field-wrap--full">
+                                    <template if:false={officeAddressFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                Address Line 2
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    data-scope="office"
+                                                    data-field="kycAddressLine2"
+                                                    label="Address Line 2"
+                                                    variant="label-hidden"
+                                                    placeholder="Address Line 2"
+                                                    value={officeAddressFieldValues.kycAddressLine2}
+                                                    onchange={handleEntityAddressChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={officeAddressFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Address Line 2</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{officeAddressLine2Display}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={officeAddressFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                Pin Code
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    data-scope="office"
+                                                    data-field="kycPinCode"
+                                                    label="Pin Code"
+                                                    variant="label-hidden"
+                                                    placeholder="Pin Code"
+                                                    value={officeAddressFieldValues.kycPinCode}
+                                                    maxlength="6"
+                                                    onchange={handleEntityAddressChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={officeAddressFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Pin Code</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{officePinCodeDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={officeAddressFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                State
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    label="State"
+                                                    variant="label-hidden"
+                                                    placeholder="State"
+                                                    value={officeAddressFieldValues.state}
+                                                    disabled>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={officeAddressFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">State</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{officeStateDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={officeAddressFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                District
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-combobox
+                                                    data-scope="office"
+                                                    data-field="district"
+                                                    value={officeAddressFieldValues.district}
+                                                    label="District"
+                                                    variant="label-hidden"
+                                                    placeholder="Select District"
+                                                    options={officeLocationOptions.district}
+                                                    onchange={handleEntityAddressChange}>
+                                                </lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={officeAddressFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">District</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{officeDistrictDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={officeAddressFieldReadOnly}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                City
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    label="City"
+                                                    variant="label-hidden"
+                                                    placeholder="City"
+                                                    value={officeAddressFieldValues.city}
+                                                    disabled>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={officeAddressFieldReadOnly}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">City</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{officeCityDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </c-kyc-entity-document-panel>
+                </div>
+            </div>
+        </template>
+
+        <!-- Darpan Details -->
+        <template if:true={showDarpanSection}>
+            <div class="kyc-card">
+                <div class="kyc-card-header">
+                    <div class="kyc-header-overlay"></div>
+                    <div class="kyc-header-content kyc-header-content--split">
+                        <div class="kyc-header-left">
+                            <div class="kyc-header-icon-wrap">
+                                <lightning-icon icon-name="utility:checkin" size="small" class="kyc-header-icon"></lightning-icon>
+                            </div>
+                            <div class="kyc-header-text">
+                                <h1 class="kyc-header-title">Darpan Details</h1>
+                                <p class="kyc-header-subtitle">Capture Darpan details and upload mandatory documents</p>
+                            </div>
+                        </div>
+                        <template if:true={showDarpanMandatoryDocsButton}>
+                            <button type="button"
+                                class="kyc-header-action-btn"
+                                onclick={handleOpenDarpanMandatoryDocsModal}>
+                                Mandatory Documents
+                            </button>
+                        </template>
+                    </div>
+                </div>
+                <div class="kyc-card-body">
+                    <div class="darpan-split-layout">
+                        <div class="darpan-split-left">
+                            <div class="form-fields-grid darpan-fields-grid">
+                                <div class="form-field-wrap">
+                                    <template if:false={showEditableDarpanStatusFields}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Are you an NPO?</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{darpanNpoStatusDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={showEditableDarpanStatusFields}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                Are you an NPO?
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <div class="form-radio-group">
+                                                    <label class="form-radio-label">
+                                                        <input type="radio" class="form-radio-input"
+                                                            name="darpanNpoStatus" value="NPO"
+                                                            checked={darpanNpoYes}
+                                                            onchange={handleDarpanNpoStatusChange} />
+                                                        <span class="form-radio-circle"></span>
+                                                        <span class="form-radio-text">NPO</span>
+                                                    </label>
+                                                    <label class="form-radio-label">
+                                                        <input type="radio" class="form-radio-input"
+                                                            name="darpanNpoStatus" value="Not an NPO"
+                                                            checked={darpanNotNpoYes}
+                                                            onchange={handleDarpanNpoStatusChange} />
+                                                        <span class="form-radio-circle"></span>
+                                                        <span class="form-radio-text">Not an NPO</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:false={showEditableDarpanStatusFields}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Deferral Approval</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{darpanDeferralApprovalDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={showEditableDarpanStatusFields}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">
+                                                Deferral Approval
+                                                <span class="form-required-indicator" title="Required">*</span>
+                                            </div>
+                                            <div class="form-field-value-col">
+                                                <div class="form-radio-group">
+                                                    <label class="form-radio-label">
+                                                        <input type="radio" class="form-radio-input"
+                                                            name="darpanDeferralApproval" value="Yes"
+                                                            checked={darpanDeferralYes}
+                                                            onchange={handleDarpanDeferralApprovalChange} />
+                                                        <span class="form-radio-circle"></span>
+                                                        <span class="form-radio-text">Yes</span>
+                                                    </label>
+                                                    <label class="form-radio-label">
+                                                        <input type="radio" class="form-radio-input"
+                                                            name="darpanDeferralApproval" value="No"
+                                                            checked={darpanDeferralNo}
+                                                            onchange={handleDarpanDeferralApprovalChange} />
+                                                        <span class="form-radio-circle"></span>
+                                                        <span class="form-radio-text">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:true={isReadOnlyScreen}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Darpan Id</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{darpanIdDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:false={isReadOnlyScreen}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">Darpan Id</div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="text"
+                                                    label="Darpan Id"
+                                                    variant="label-hidden"
+                                                    placeholder="Enter Darpan Id"
+                                                    value={darpanIdValue}
+                                                    disabled={darpanIdInputDisabled}
+                                                    onchange={handleDarpanIdChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template if:true={isReadOnlyScreen}>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">Date of Registration</span>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <p class="form-info-value">{darpanRegistrationDateDisplay}</p>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:false={isReadOnlyScreen}>
+                                        <div class="form-field-cell">
+                                            <div class="form-field-label">Date of Registration</div>
+                                            <div class="form-field-value-col">
+                                                <lightning-input
+                                                    type="datetime-local"
+                                                    label="Date of Registration"
+                                                    variant="label-hidden"
+                                                    value={darpanRegistrationDateValue}
+                                                    disabled={darpanRegistrationDateDisabled}
+                                                    onchange={handleDarpanRegistrationDateChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="darpan-split-right">
+                            <div class="darpan-upload-grid">
+                                <template for:each={darpanUploadCards} for:item="uploadCard">
+                                    <div key={uploadCard.id} class="darpan-upload-grid-item">
+                                        <c-kyc-entity-document-panel
+                                            section-key={uploadCard.sectionKey}
+                                            legend-label={uploadCard.legendLabel}
+                                            file-title={uploadCard.fileTitle}
+                                            hide-file-title={uploadCard.hideFileTitle}
+                                            required
+                                            is-read-only={isReadOnlyScreen}
+                                            upload-disabled={uploadCard.uploadDisabled}
+                                            upload-icon-url={chunkyUploadIconUrl}
+                                            files={uploadCard.files}
+                                            suppress-left-column
+                                            onuploadrequest={handleEntityPanelUploadRequest}
+                                            onfilepreview={handleEntityPanelFilePreview}
+                                            onfiledelete={handleEntityPanelFileDelete}>
+                                        </c-kyc-entity-document-panel>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <template if:true={darpanError}>
+                        <p class="kyc-field-error">{darpanError}</p>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        <!-- Additional Documents -->
+        <template if:true={showEntityAdditionalSection}>
+        <div class="kyc-card">
+            <div class="kyc-card-header">
+                <div class="kyc-header-overlay"></div>
+                <div class="kyc-header-content kyc-header-content--split">
+                    <div class="kyc-header-left">
+                        <div class="kyc-header-icon-wrap">
+                            <lightning-icon icon-name="utility:file" size="small" class="kyc-header-icon"></lightning-icon>
+                        </div>
+                        <div class="kyc-header-text">
+                            <h1 class="kyc-header-title">Additional Documents</h1>
+                            <p class="kyc-header-subtitle">Upload mandatory and supporting documents as per entity constitution</p>
+                        </div>
+                    </div>
+                    <template if:true={showEntityMandatoryDocsButton}>
+                        <button type="button"
+                            class="kyc-header-action-btn"
+                            onclick={handleOpenEntityMandatoryDocsModal}>
+                            Mandatory Documents
+                        </button>
+                    </template>
+                </div>
+            </div>
+            <div class="kyc-card-body">
+                <c-kyc-entity-document-panel
+                    section-key="additional"
+                    legend-label={entityAdditionalLegendLabel}
+                    file-title={entityAdditionalFileTitle}
+                    is-read-only={isReadOnlyScreen}
+                    suppress-left-column={isReadOnlyScreen}
+                    hide-right-column={entityAdditionalHideUploadPanel}
+                    upload-disabled={entityAdditionalUploadDisabled}
+                    upload-icon-url={chunkyUploadIconUrl}
+                    files={entityAdditionalPanelFiles}
+                    persistent-upload
+                    onuploadrequest={handleEntityPanelUploadRequest}
+                    onfilepreview={handleEntityPanelFilePreview}
+                    onfiledelete={handleEntityPanelFileDelete}>
+                    <div slot="left" class="kyc-ext-item kyc-ext-item--full">
+                        <template if:false={isReadOnlyScreen}>
+                        <span class="kyc-ext-label">Document type</span>
+                        <div class="kyc-ext-field-control">
+                                <lightning-combobox
+                                    value={entityAdditionalDocumentType}
+                                    label="Document type"
+                                    variant="label-hidden"
+                                    placeholder="Select document type"
+                                    options={entityAdditionalDocumentTypeOptions}
+                                    onchange={handleEntityAdditionalDocumentTypeChange}>
+                                </lightning-combobox>
+                        </div>
+                        <template if:true={entityMandatoryDocsError}>
+                            <p class="kyc-field-error">{entityMandatoryDocsError}</p>
+                        </template>
+                        </template>
+                    </div>
+                </c-kyc-entity-document-panel>
+            </div>
+        </div>
+        </template>
+
+        <div class="kyc-footer-wrapper">
+            <div class="kyc-footer">
+                <template if:true={isReadOnlyScreen}>
+                    <span class="kyc-read-only-hint">{readOnlyHint}</span>
+                </template>
+                <!-- NEXT is hidden on the completed / read-only screen (mirrors Basic Details);
+                     forward navigation on a completed step happens via the left-nav menu. -->
+                <template if:false={isReadOnlyScreen}>
+                    <div class="kyc-btn-wrapper">
+                        <button class={nextButtonClass} disabled={isNextDisabled} onclick={handleNextButton}>
+                            {nextButtonLabel}
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+    </div>
+
+    <template if:true={showFilePreviewer}>
+        <c-file-previewer
+            content-document-id={previewContentDocumentId}
+            file-type={previewFileType}
+            record-id={recordId}
+            onclose={handleFilePreviewClose}>
+        </c-file-previewer>
+    </template>
+
+    <template lwc:if={showEntityEmbedFilePreview}>
+        <c-embed-file-preview
+            content-version-id={entityPreviewContentVersionId}
+            file-name={entityPreviewFileName}
+            file-extension={entityPreviewFileExtension}
+            session-id={_sessionId}
+            vf-root={_vfRoot}
+            can-download
+            onclose={handleEntityEmbedFilePreviewClose}>
+        </c-embed-file-preview>
+    </template>
+
+    <template lwc:if={showIntegrationProgressModal}>
+        <c-integration-progress-modal
+            status={integrationProgressModalStatus}
+            current-stage-index={integrationProgressModalCurrentStageIdx}
+            stages={integrationProgressModalStages}
+            error-message={integrationProgressModalErrorMessage}
+            onclose={handleIntegrationProgressModalClose}
+            onretry={handleIntegrationProgressModalRetry}
+            ondone={handleIntegrationProgressModalDone}>
+        </c-integration-progress-modal>
+    </template>
+
+    <template lwc:if={showEntityMandatoryDocsModal}>
+        <section class="kyc-mandatory-docs-modal-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="entity-mandatory-docs-modal-title"
+            onclick={handleEntityMandatoryDocsModalOverlayClick}>
+            <div class="kyc-mandatory-docs-modal" onclick={stopPropagationEntityDv}>
+                <header class="kyc-mandatory-docs-modal-header">
+                    <h2 id="entity-mandatory-docs-modal-title" class="kyc-mandatory-docs-modal-title">
+                        Mandatory Documents
+                    </h2>
+                    <button type="button"
+                        class="kyc-mandatory-docs-modal-close"
+                        onclick={handleCloseEntityMandatoryDocsModal}
+                        aria-label="Close">&times;</button>
+                </header>
+                <div class="kyc-mandatory-docs-modal-body">
+                    <p class="kyc-mandatory-docs-modal-intro">
+                        Upload mandatory and supporting documents as per entity constitution.
+                    </p>
+                    <ul class="kyc-mandatory-docs-list">
+                        <template for:each={entityMandatoryDocListItems} for:item="docItem">
+                            <li key={docItem.id} class="kyc-mandatory-docs-list-item kyc-mandatory-docs-list-item--doc">
+                                <span class="kyc-mandatory-doc-name">{docItem.name}</span>
+                                <template if:true={docItem.isUploaded}>
+                                    <span class="kyc-mandatory-doc-check" title="Collected">
+                                        <lightning-icon icon-name="utility:check" size="xx-small" variant="inverse" alternative-text="Collected"></lightning-icon>
+                                    </span>
+                                </template>
+                            </li>
+                        </template>
+                        <template if:true={showEntityAdhocDocumentsRow}>
+                            <li class="kyc-mandatory-docs-list-item kyc-mandatory-docs-list-item--adhoc">
+                                <div class="kyc-mandatory-adhoc-head">
+                                    <span class="kyc-mandatory-docs-adhoc-intro">{entityAdhocDocumentsIntro}</span>
+                                    <template if:true={entityAdhocGroupSatisfied}>
+                                        <span class="kyc-mandatory-doc-check kyc-mandatory-doc-check--group" title="Requirement met">
+                                            <lightning-icon icon-name="utility:check" size="xx-small" variant="inverse" alternative-text="Requirement met"></lightning-icon>
+                                        </span>
+                                    </template>
+                                </div>
+                                <ul class="kyc-mandatory-adhoc-items">
+                                    <template for:each={entityAdhocDocItems} for:item="adhocItem">
+                                        <li key={adhocItem.id} class="kyc-mandatory-adhoc-item">
+                                            <span class="kyc-mandatory-doc-name">{adhocItem.name}</span>
+                                            <template if:true={adhocItem.isUploaded}>
+                                                <span class="kyc-mandatory-doc-check" title="Collected">
+                                                    <lightning-icon icon-name="utility:check" size="xx-small" variant="inverse" alternative-text="Collected"></lightning-icon>
+                                                </span>
+                                            </template>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template lwc:if={showDarpanMandatoryDocsModal}>
+        <section class="kyc-mandatory-docs-modal-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="darpan-mandatory-docs-modal-title"
+            onclick={handleDarpanMandatoryDocsModalOverlayClick}>
+            <div class="kyc-mandatory-docs-modal" onclick={stopPropagationEntityDv}>
+                <header class="kyc-mandatory-docs-modal-header">
+                    <h2 id="darpan-mandatory-docs-modal-title" class="kyc-mandatory-docs-modal-title">
+                        Darpan Mandatory Documents
+                    </h2>
+                    <button type="button"
+                        class="kyc-mandatory-docs-modal-close"
+                        onclick={handleCloseDarpanMandatoryDocsModal}
+                        aria-label="Close">&times;</button>
+                </header>
+                <div class="kyc-mandatory-docs-modal-body">
+                    <p class="kyc-mandatory-docs-modal-intro">
+                        Upload the mandatory Darpan document(s) based on NPO status and deferral selection.
+                    </p>
+                    <ul class="kyc-mandatory-docs-list">
+                        <template for:each={darpanRequiredListItems} for:item="docItem">
+                            <li key={docItem.id} class="kyc-mandatory-docs-list-item kyc-mandatory-docs-list-item--doc">
+                                <span class="kyc-mandatory-doc-name">{docItem.name}</span>
+                                <template if:true={docItem.isUploaded}>
+                                    <span class="kyc-mandatory-doc-check" title="Collected">
+                                        <lightning-icon icon-name="utility:check" size="xx-small" variant="inverse" alternative-text="Collected"></lightning-icon>
+                                    </span>
+                                </template>
+                            </li>
+                        </template>
+                        <template if:true={showDarpanAdhocDocumentsRow}>
+                            <li class="kyc-mandatory-docs-list-item kyc-mandatory-docs-list-item--adhoc">
+                                <div class="kyc-mandatory-adhoc-head">
+                                    <span class="kyc-mandatory-docs-adhoc-intro">Upload at least one supporting document from:</span>
+                                    <template if:true={darpanAdhocGroupSatisfied}>
+                                        <span class="kyc-mandatory-doc-check kyc-mandatory-doc-check--group" title="Requirement met">
+                                            <lightning-icon icon-name="utility:check" size="xx-small" variant="inverse" alternative-text="Requirement met"></lightning-icon>
+                                        </span>
+                                    </template>
+                                </div>
+                                <ul class="kyc-mandatory-adhoc-items">
+                                    <template for:each={darpanAdhocItems} for:item="adhocItem">
+                                        <li key={adhocItem.id} class="kyc-mandatory-adhoc-item">
+                                            <span class="kyc-mandatory-doc-name">{adhocItem.name}</span>
+                                            <template if:true={adhocItem.isUploaded}>
+                                                <span class="kyc-mandatory-doc-check" title="Collected">
+                                                    <lightning-icon icon-name="utility:check" size="xx-small" variant="inverse" alternative-text="Collected"></lightning-icon>
+                                                </span>
+                                            </template>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template lwc:if={showEntityMagicUpload}>
+        <div class="dv-modal-overlay" onmousedown={handleEntityOverlayMouseDown} onclick={handleEntityOverlayClick}>
+            <div class="dv-modal" onclick={stopPropagationEntityDv}>
+                <div class="dv-modal-head">
+                    <span class="dv-modal-title">Advanced Document Upload</span>
+                    <button type="button" class="dv-modal-close" onclick={handleEntityMagicUploadClose} title="Close">&#10005;</button>
+                </div>
+                <div class="dv-modal-body">
+                    <c-embed-custom-file-upload
+                        record-id={entityActiveUploadChecklistId}
+                        max-files-allowed={entityActiveMaxFiles}
+                        allowed-extensions={entityActiveAllowedTypes}
+                        enable-compression
+                        allow-merge
+                        enable-video
+                        onfilesuploaded={handleEntityMagicUploadComplete}>
+                    </c-embed-custom-file-upload>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <c-embed-document-checklist></c-embed-document-checklist>
+
+</template>

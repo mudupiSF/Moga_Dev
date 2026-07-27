@@ -1,0 +1,68 @@
+/*
+ * globalLoader
+ * Single full-screen backdrop + centered spinner.
+ *
+ * Layering rules - keep aligned with dynamicComponentModal +
+ * integrationProgressModal so a modal opened DURING a Next-click flow sits
+ * on TOP of this backdrop (the backdrop only covers the page chrome, never
+ * a modal):
+ *   - page content / sticky footer:       z-index 2 - 1000
+ *   - global loader backdrop (this):      z-index 8500
+ *   - global loader spinner card:         z-index 8501
+ *   - SLDS modal backdrops (default):     z-index 9000 - 9001
+ *   - app modals (.modal-zindex):         z-index 9002
+ *   - toasts:                             z-index 9999 - 10000
+ */
+
+.global-loader-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 8500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(1px);
+    animation: glb-fade-in 120ms ease-out;
+}
+
+.global-loader-card {
+    position: relative;
+    z-index: 8501;
+    background: #fff;
+    border-radius: 0.75rem;
+    padding: 2.25rem 2.5rem 1.75rem;
+    min-width: 12rem;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.global-loader-message {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #16325c;
+    text-align: center;
+    max-width: 18rem;
+    line-height: 1.35;
+}
+
+@keyframes glb-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Mobile / Tablet - slightly smaller card so it doesn't dominate */
+@media (max-width: 768px) {
+    .global-loader-card {
+        padding: 1.75rem 2rem 1.5rem;
+        min-width: 10rem;
+    }
+    .global-loader-message {
+        font-size: 0.875rem;
+        max-width: 14rem;
+    }
+}

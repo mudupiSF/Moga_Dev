@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Journey_Exposed__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>TRUE when the applicant&apos;s journey is exposed to the UI (tile shown; can be viewed/edited/removed). FALSE while it is a backend-only record not yet surfaced.</description>
+    <label>Is Journey Exposed</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

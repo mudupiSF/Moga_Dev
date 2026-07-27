@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Keys</label>
+    <protected>false</protected>
+    <values>
+        <field>Client_ID__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Client_Secret__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IV_Key__c</field>
+        <value xsi:type="xsd:string">54952B7859A4AA9B</value>
+    </values>
+    <values>
+        <field>Private_Key__c</field>
+        <value xsi:type="xsd:string">3BQSpO4X3POEinRPvJofZI2FwIaY3HzF</value>
+    </values>
+</CustomMetadata>

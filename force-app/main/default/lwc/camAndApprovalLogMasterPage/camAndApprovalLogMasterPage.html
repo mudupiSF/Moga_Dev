@@ -1,0 +1,93 @@
+<template>
+    <div class="p4-page-layout camal-page-layout">
+        <div class="camal-shell">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="camal-header-icon-wrap" aria-hidden="true">
+                        <lightning-icon icon-name="utility:approval" size="small" variant="inverse"
+                            class="camal-header-icon">
+                        </lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">CAM and Approval Log</h1>
+                        <p class="form-header-subtitle">Review CAM details, deviations, and approval history</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="camal-body">
+                <section class="form-card camal-proposal-card" aria-label="Proposal status">
+                    <div class="form-body">
+                        <div class="camal-proposal-header">
+                            <span class="camal-proposal-header-left">
+                                <h2 class="p4-section-title">Proposal Status</h2>
+                            </span>
+                            <span class="slds-badge slds-theme_warning p4-badge-text camal-status-badge"
+                                title={proposalSection.statusLabel}>
+                                <span class="camal-status-dot" aria-hidden="true"></span>
+                                {proposalSection.statusLabel}
+                            </span>
+                        </div>
+
+                        <div class="camal-highlight-wrap">
+                            <c-offer-c-a-m-highlight-panel
+                                highlight-panel-data={highlightPanelData}
+                                onrefreshclick={handleRefreshClick}
+                                onspinner={handleSpinner}
+                                record-id={recordId}
+                                offer-accepted={offerAccepted}>
+                            </c-offer-c-a-m-highlight-panel>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="camal-tab-bar" role="tablist" aria-label="CAM workspace tabs">
+                    <template for:each={workspaceTabs} for:item="tab">
+                        <button key={tab.value} type="button" role="tab" class={tab.tabClass}
+                            aria-selected={tab.isActive} aria-controls={tab.panelId} id={tab.tabId}
+                            data-value={tab.value} onclick={handleTabSelect}>
+                            <span class="camal-tab-label">{tab.label}</span>
+                        </button>
+                    </template>
+                </div>
+                <template if:true={tabs.cam}>
+                    <div id="camal-panel-cam" class={camPanelClass} role="tabpanel"
+                        aria-labelledby="camal-tab-cam" aria-hidden={isCamPanelHidden} tabindex={camPanelTabindex}>
+                        <c-cam-page
+                            record-id={recordId}
+                            is-stage-past={isStagePast}
+                            oncamdataloaded={handleCamDataLoaded}>
+                        </c-cam-page>
+                    </div>
+                </template>
+                <template if:true={tabs.deviations}>
+                    <div id="camal-panel-deviations" class={deviationsPanelClass} role="tabpanel"
+                        aria-labelledby="camal-tab-deviations" aria-hidden={isDeviationsPanelHidden}
+                        tabindex={deviationsPanelTabindex}>
+                        <c-deviation-page
+                            record-id={recordId}
+                            is-stage-past={isStagePast}>
+                        </c-deviation-page>
+                    </div>
+                </template>
+                <template if:true={tabs.approvalLogPage}>
+                    <div id="camal-panel-approval-log" class={approvalLogPanelClass} role="tabpanel"
+                        aria-labelledby="camal-tab-approval-log" aria-hidden={isApprovalLogPanelHidden}
+                        tabindex={approvalLogPanelTabindex}>
+                        <c-approval-log-page
+                            record-id={recordId}
+                            is-stage-past={isStagePast}
+                            current-view-id={currentViewId}
+                            stage-phrase={stagePhrase}
+                            tab={tab}
+                            applicant-id={applicantId}
+                            cam-data={_camData}>
+                        </c-approval-log-page>
+                    </div>
+                </template>
+
+            </div>
+        </div>
+    </div>
+</template>

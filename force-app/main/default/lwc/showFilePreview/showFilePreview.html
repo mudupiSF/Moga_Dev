@@ -1,0 +1,20 @@
+<template>
+    <!-- <template if:false={showPdfImages}> -->
+        <div>
+            <img class="activeImg slds-hide" src={imageValue} alt="Preview cannot be shown" onerror={handleImageError} onload={handleImageSuccess}>
+        </div>
+    <!-- </template> -->
+    <!-- <template if:true={showPdfImages}> -->
+        <div>
+            <ul class="img-list slds-hide">
+                <template for:each={imageList} for:item="img">
+                    <li key={img}><img onerror={imageError} src={img} oncontextmenu={contextError}
+                            class="renditionImg" /></li>
+                </template>
+            </ul>
+        </div>
+        <!-- <lightning-button label="Close" onclick={handleClose} variant="brand"></lightning-button> -->
+    <!-- </template> -->
+
+
+</template>

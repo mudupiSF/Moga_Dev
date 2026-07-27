@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Purchase_Document_Category__c</fullName>
+    <label>Purchase Document Category</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Invoice</fullName>
+                <default>false</default>
+                <label>Invoice</label>
+            </value>
+            <value>
+                <fullName>Sale_Agreement</fullName>
+                <default>false</default>
+                <label>Sale Agreement</label>
+            </value>
+            <value>
+                <fullName>Not_Available</fullName>
+                <default>false</default>
+                <label>Not Available</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

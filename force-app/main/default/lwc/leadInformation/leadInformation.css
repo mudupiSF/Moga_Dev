@@ -1,0 +1,244 @@
+/* 
+   leadInformation — shared typography via commonStyles; navy header matches applicationDockPanel.
+ */
+
+@import 'c/commonStyles';
+
+:host {
+    font-family: var(--p4-font-family);
+    display: block;
+    width: 100%;
+
+    --li-navy:           #1b2559;
+    --li-navy-border:    rgba(160, 175, 220, 0.45);
+
+    --li-slate-50:       #f8fafc;
+    --li-slate-100:      #f1f5f9;
+    --li-slate-200:      #e2e8f0;
+    --li-slate-400:      #94a3b8;
+    --li-slate-800:      #1e293b;
+    --li-slate-900:      #0f172a;
+    --li-indigo-500:     #6366f1;
+}
+
+/* ── Loading state ──────────────────────────────────────────────────────── */
+.li-loading {
+    position: relative;
+    padding: 1rem;
+    min-height: 3rem;
+}
+
+/* ── Card shell ─────────────────────────────────────────────────────────── */
+.li-card-wrapper {
+    width: 100%;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+    .li-card-wrapper {
+        padding: 0 0.375rem;             /* matches mobile inset of .bmp-page-layout */
+    }
+}
+
+.li-card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--li-slate-100);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* ── Navy header (matches applicationDockPanel navy) ────────────────────── */
+.li-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--li-navy);
+    padding: 0.625rem 1rem;
+    min-height: 3rem;
+    flex-shrink: 0;
+    border-radius: 0.75rem 0.75rem 0 0;
+    gap: 0.75rem;
+}
+
+.li-card--collapsed .li-header {
+    border-radius: 0.75rem;
+}
+
+.li-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.li-header-icon-wrap {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--li-navy-border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.li-header-icon {
+    --slds-c-icon-color-foreground-default: #ffffff;
+}
+
+.li-header-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.li-header-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.li-collapse-icon {
+    --slds-c-icon-color-foreground-default: rgba(255, 255, 255, 0.85);
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-left: 0.25rem;
+    transition: transform 0.18s ease;
+}
+.li-collapse-icon:hover {
+    --slds-c-icon-color-foreground-default: #ffffff;
+    transform: scale(1.1);
+}
+
+/* ── Action buttons (Revoke / Withdraw / Transfer) ──────────────────────── */
+.li-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.li-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.3125rem 0.75rem;
+    background: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 0.3125rem;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.25;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.05s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+.li-action-btn:active { transform: translateY(1px); }
+
+.li-action-btn--danger {
+    border-color: #f3b4b4;
+    color: #b32121;
+}
+.li-action-btn--danger:hover  { background: #fff5f5; border-color: #e89090; }
+
+.li-action-btn--primary {
+    border-color: #97c5ff;
+    color: #1b6fd6;
+}
+.li-action-btn--primary:hover { background: #f0f7ff; border-color: #6daaf2; }
+
+.li-action-icon {
+    --slds-c-icon-color-foreground-default: currentColor;
+}
+.li-action-label { white-space: nowrap; }
+
+/* ── Card body ──────────────────────────────────────────────────────────── */
+.li-body {
+    padding: 1rem;
+    background: #ffffff;
+}
+
+@media (min-width: 768px) {
+    .li-body { padding: 1.125rem 1.25rem; }
+}
+
+.li-error {
+    margin: 0;
+    color: #b32121;
+    font-size: 0.875rem;
+}
+
+/* ── Field grid (1 col on mobile, 2 cols ≥768px) ────────────────────────── */
+.li-fields-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem 0.75rem;
+    align-items: start;
+}
+@media (min-width: 768px) {
+    .li-fields-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.li-field-cell {
+    padding: 0.5rem 0.75rem;
+    background: #ffffff;
+    border: 1px solid var(--li-slate-100);
+    border-radius: 0.5rem;
+    transition: border-color 0.18s, background 0.18s;
+    min-width: 0;
+}
+.li-field-cell:hover {
+    border-color: var(--li-slate-200);
+    background: rgba(248, 250, 252, 0.65);
+}
+
+.li-field-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.125rem;
+}
+
+.li-field-icon {
+    flex-shrink: 0;
+    --slds-c-icon-color-foreground-default: var(--li-slate-400);
+}
+.li-field-cell:hover .li-field-icon {
+    --slds-c-icon-color-foreground-default: var(--li-indigo-500);
+}
+
+.li-field-label {
+    font-size: var(--p4-font-size-xs);
+    font-weight: 700;
+    color: var(--li-slate-400);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.li-field-value-wrap {
+    padding-left: 1.625rem;   /* aligns with the label text past the icon */
+}
+
+.li-field-value {
+    margin: 0;
+    font-size: var(--p4-font-size-sm);
+    font-weight: 700;
+    color: var(--li-slate-800);
+    line-height: 1.35;
+    word-break: break-word;
+}

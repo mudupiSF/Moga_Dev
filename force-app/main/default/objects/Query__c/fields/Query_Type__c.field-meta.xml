@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Query_Type__c</fullName>
+    <label>Query Type</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Sales</fullName>
+                <default>false</default>
+                <label>Sales</label>
+            </value>
+            <value>
+                <fullName>CCPA</fullName>
+                <default>false</default>
+                <label>CCPA</label>
+            </value>
+            <value>
+                <fullName>Application form</fullName>
+                <default>false</default>
+                <label>Application form</label>
+            </value>
+            <value>
+                <fullName>Loan Agreement</fullName>
+                <default>false</default>
+                <label>Loan Agreement</label>
+            </value>
+            <value>
+                <fullName>Insurance related</fullName>
+                <default>false</default>
+                <label>Insurance related</label>
+            </value>
+            <value>
+                <fullName>KYC</fullName>
+                <default>false</default>
+                <label>KYC</label>
+            </value>
+            <value>
+                <fullName>Internal queries</fullName>
+                <default>false</default>
+                <label>Internal queries</label>
+            </value>
+            <value>
+                <fullName>Property Document</fullName>
+                <default>false</default>
+                <label>Property Document</label>
+            </value>
+            <value>
+                <fullName>Own Contribution Related</fullName>
+                <default>false</default>
+                <label>Own Contribution Related</label>
+            </value>
+            <value>
+                <fullName>BT document</fullName>
+                <default>false</default>
+                <label>BT document</label>
+            </value>
+            <value>
+                <fullName>Builder/Developer Document</fullName>
+                <default>false</default>
+                <label>Builder/Developer Document</label>
+            </value>
+            <value>
+                <fullName>DRF</fullName>
+                <default>false</default>
+                <label>DRF</label>
+            </value>
+            <value>
+                <fullName>Stamp duty/Franking</fullName>
+                <default>false</default>
+                <label>Stamp duty/Franking</label>
+            </value>
+            <value>
+                <fullName>GURANTOR / GPA / POA / NRI</fullName>
+                <default>false</default>
+                <label>GURANTOR / GPA / POA / NRI</label>
+            </value>
+            <value>
+                <fullName>Declaration/Indemnity/Undertaking/Consent Letter</fullName>
+                <default>false</default>
+                <label>Declaration/Indemnity/Undertaking/Consent Letter</label>
+            </value>
+            <value>
+                <fullName>Repayment Related</fullName>
+                <default>false</default>
+                <label>Repayment Related</label>
+            </value>
+            <value>
+                <fullName>Sanction letter</fullName>
+                <default>false</default>
+                <label>Sanction letter</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>ROI/PF/Charges related</fullName>
+                <default>false</default>
+                <label>ROI/PF/Charges related</label>
+            </value>
+            <value>
+                <fullName>EM documents</fullName>
+                <default>false</default>
+                <label>EM documents</label>
+            </value>
+            <value>
+                <fullName>Seller KYC</fullName>
+                <default>false</default>
+                <label>Seller KYC</label>
+            </value>
+            <value>
+                <fullName>Affidavit</fullName>
+                <default>false</default>
+                <label>Affidavit</label>
+            </value>
+            <value>
+                <fullName>Agreement Related</fullName>
+                <default>false</default>
+                <label>Agreement Related</label>
+            </value>
+            <value>
+                <fullName>Application Related</fullName>
+                <default>false</default>
+                <label>Application Related</label>
+            </value>
+            <value>
+                <fullName>Banking Related</fullName>
+                <default>false</default>
+                <label>Banking Related</label>
+            </value>
+            <value>
+                <fullName>Cash Flow Related</fullName>
+                <default>false</default>
+                <label>Cash Flow Related</label>
+            </value>
+            <value>
+                <fullName>CIBIL Related</fullName>
+                <default>false</default>
+                <label>CIBIL Related</label>
+            </value>
+            <value>
+                <fullName>Document / Images Missing</fullName>
+                <default>false</default>
+                <label>Document / Images Missing</label>
+            </value>
+            <value>
+                <fullName>Financials Related</fullName>
+                <default>false</default>
+                <label>Financials Related</label>
+            </value>
+            <value>
+                <fullName>Fleet Related</fullName>
+                <default>false</default>
+                <label>Fleet Related</label>
+            </value>
+            <value>
+                <fullName>Image Clarity Issue</fullName>
+                <default>false</default>
+                <label>Image Clarity Issue</label>
+            </value>
+            <value>
+                <fullName>Information Mismatch</fullName>
+                <default>false</default>
+                <label>Information Mismatch</label>
+            </value>
+            <value>
+                <fullName>Information Required / Incomplete Details</fullName>
+                <default>false</default>
+                <label>Information Required / Incomplete Details</label>
+            </value>
+            <value>
+                <fullName>KYC BCIF Related</fullName>
+                <default>false</default>
+                <label>KYC BCIF Related</label>
+            </value>
+            <value>
+                <fullName>LTV Related</fullName>
+                <default>false</default>
+                <label>LTV Related</label>
+            </value>
+            <value>
+                <fullName>OSV / Self Attestation Required</fullName>
+                <default>false</default>
+                <label>OSV / Self Attestation Required</label>
+            </value>
+            <value>
+                <fullName>Rate Fee Deferral Approval Related</fullName>
+                <default>false</default>
+                <label>Rate Fee Deferral Approval Related</label>
+            </value>
+            <value>
+                <fullName>RCU Report Related</fullName>
+                <default>false</default>
+                <label>RCU Report Related</label>
+            </value>
+            <value>
+                <fullName>Reference Details</fullName>
+                <default>false</default>
+                <label>Reference Details</label>
+            </value>
+            <value>
+                <fullName>Track Record</fullName>
+                <default>false</default>
+                <label>Track Record</label>
+            </value>
+            <value>
+                <fullName>Viability / Contract Related</fullName>
+                <default>false</default>
+                <label>Viability / Contract Related</label>
+            </value>
+            <value>
+                <fullName>Wrong Tagging of Doc / Images</fullName>
+                <default>false</default>
+                <label>Wrong Tagging of Doc / Images</label>
+            </value>
+            <value>
+                <fullName>FCU</fullName>
+                <default>false</default>
+                <label>FCU</label>
+            </value>
+            <value>
+                <fullName>Addition of collateral</fullName>
+                <default>false</default>
+                <label>Addition of collateral</label>
+            </value>
+            <value>
+                <fullName>Addition of guarantor</fullName>
+                <default>false</default>
+                <label>Addition of guarantor</label>
+            </value>
+            <value>
+                <fullName>Additional Details required</fullName>
+                <default>false</default>
+                <label>Additional Details required</label>
+            </value>
+            <value>
+                <fullName>Justification on verifications</fullName>
+                <default>false</default>
+                <label>Justification on verifications</label>
+            </value>
+            <value>
+                <fullName>Login Documents</fullName>
+                <default>false</default>
+                <label>Login Documents</label>
+            </value>
+            <value>
+                <fullName>Modification in Loan Amount</fullName>
+                <default>false</default>
+                <label>Modification in Loan Amount</label>
+            </value>
+            <value>
+                <fullName>Modification in product</fullName>
+                <default>false</default>
+                <label>Modification in product</label>
+            </value>
+            <value>
+                <fullName>Others + Free Text</fullName>
+                <default>false</default>
+                <label>Others + Free Text</label>
+            </value>
+            <value>
+                <fullName>Sales Query</fullName>
+                <default>false</default>
+                <label>Sales Query</label>
+            </value>
+            <value>
+                <fullName>Dedupe</fullName>
+                <default>false</default>
+                <label>Dedupe</label>
+            </value>
+            <value>
+                <fullName>CPU</fullName>
+                <default>false</default>
+                <label>CPU</label>
+            </value>
+            <value>
+                <fullName>FI</fullName>
+                <default>false</default>
+                <label>FI</label>
+            </value>
+            <value>
+                <fullName>Central Ops query for CPU Ops</fullName>
+                <default>false</default>
+                <label>Central Ops query for CPU Ops</label>
+            </value>
+            <value>
+                <fullName>Central Ops query for CPC Ops</fullName>
+                <default>false</default>
+                <label>Central Ops query for CPC Ops</label>
+            </value>
+            <value>
+                <fullName>Legal</fullName>
+                <default>false</default>
+                <label>Legal</label>
+            </value>
+            <value>
+                <fullName>Technical</fullName>
+                <default>false</default>
+                <label>Technical</label>
+            </value>
+            <value>
+                <fullName>CPC Ops Disbursement Checklist</fullName>
+                <default>false</default>
+                <label>CPC Ops Disbursement Checklist</label>
+            </value>
+            <value>
+                <fullName>ROI,PF,Charges related</fullName>
+                <default>false</default>
+                <label>ROI,PF,Charges related</label>
+            </value>
+            <value>
+                <fullName>Income Proof</fullName>
+                <default>false</default>
+                <label>Income Proof</label>
+            </value>
+            <value>
+                <fullName>Login Fee</fullName>
+                <default>false</default>
+                <label>Login Fee</label>
+            </value>
+            <value>
+                <fullName>Education Proof Document</fullName>
+                <default>false</default>
+                <label>Education Proof Document</label>
+            </value>
+            <value>
+                <fullName>Admission Documents</fullName>
+                <default>false</default>
+                <label>Admission Documents</label>
+            </value>
+            <value>
+                <fullName>Interest Subsidy</fullName>
+                <default>false</default>
+                <label>Interest Subsidy</label>
+            </value>
+            <value>
+                <fullName>Builder,Developer Document</fullName>
+                <default>false</default>
+                <label>Builder,Developer Document</label>
+            </value>
+            <value>
+                <fullName>Stamp duty,Franking</fullName>
+                <default>false</default>
+                <label>Stamp duty,Franking</label>
+            </value>
+            <value>
+                <fullName>GURANTOR , GPA , POA , NRI</fullName>
+                <default>false</default>
+                <label>GURANTOR , GPA , POA , NRI</label>
+            </value>
+            <value>
+                <fullName>Declaration,Indemnity,Undertaking,Consent Letter</fullName>
+                <default>false</default>
+                <label>Declaration,Indemnity,Undertaking,Consent Letter</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

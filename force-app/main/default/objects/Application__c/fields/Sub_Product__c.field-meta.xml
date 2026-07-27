@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sub_Product__c</fullName>
+    <label>Sub Product</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Product__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Light Commercial Vehicles (LCV)</fullName>
+                <default>false</default>
+                <label>Light Commercial Vehicles (LCV)</label>
+            </value>
+            <value>
+                <fullName>Small Commercial Vehicles (SCV)</fullName>
+                <default>false</default>
+                <label>Small Commercial Vehicles (SCV)</label>
+            </value>
+            <value>
+                <fullName>Medium &amp; Heavy Commercial Vehicles (MHCV)</fullName>
+                <default>false</default>
+                <label>Medium &amp; Heavy Commercial Vehicles (MHCV)</label>
+            </value>
+            <value>
+                <fullName>Construction Equipments (CE)</fullName>
+                <default>false</default>
+                <label>Construction Equipments (CE)</label>
+            </value>
+            <value>
+                <fullName>Balance Transfer</fullName>
+                <default>false</default>
+                <label>Balance Transfer</label>
+            </value>
+            <value>
+                <fullName>Top Up</fullName>
+                <default>false</default>
+                <label>Top Up</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>PL</controllingFieldValue>
+            <valueName>Balance Transfer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>PL</controllingFieldValue>
+            <valueName>Top Up</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CV</controllingFieldValue>
+            <valueName>Light Commercial Vehicles (LCV)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CV</controllingFieldValue>
+            <valueName>Small Commercial Vehicles (SCV)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CV</controllingFieldValue>
+            <valueName>Medium &amp; Heavy Commercial Vehicles (MHCV)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CV</controllingFieldValue>
+            <valueName>Construction Equipments (CE)</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

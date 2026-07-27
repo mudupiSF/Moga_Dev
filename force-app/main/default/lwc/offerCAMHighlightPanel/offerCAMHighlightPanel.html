@@ -1,0 +1,155 @@
+<template>
+    <div class="panel-root">
+
+        <!-- Applicant Tab Selector — Borrower tab + Guarantor combobox + Beneficiary combobox -->
+        <div class="applicant-tabs">
+
+            <!-- Borrower tab -->
+            <template lwc:if={borrowerApplicant}>
+                <div class={borrowerTabClass} data-section="borrower" onclick={handleSectionSwitch}>
+                    <div class="tab-avatar">{borrowerApplicant.initials}</div>
+                    <div class="tab-info">
+                        <div class={borrowerApplicant.typeBadgeClass}>
+                            <span class="badge-dot"></span>{borrowerApplicant.displayLabel}
+                        </div>
+                        <div class="tab-name">{borrowerApplicant.name}</div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Guarantor combobox tab -->
+            <template lwc:if={hasGuarantors}>
+                <div class={guarantorTabClass} data-section="guarantor" onclick={handleSectionSwitch}>
+                    <div class="tab-avatar tab-avatar-coborrower">{activeGuarantorApplicant.initials}</div>
+                    <div class="tab-info">
+                        <div class="type-badge type-badge-coborrower">
+                            <span class="badge-dot"></span>Guarantor
+                        </div>
+                        <lightning-combobox
+                            class="tab-combobox"
+                            value={guarantorValue}
+                            options={guarantorOptions}
+                            variant="label-hidden"
+                            dropdown-alignment="left"
+                            onchange={handleGuarantorChange}>
+                        </lightning-combobox>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Beneficiary combobox tab -->
+            <template lwc:if={hasBeneficiaries}>
+                <div class={beneficiaryTabClass} data-section="beneficiary" onclick={handleSectionSwitch}>
+                    <div class="tab-avatar tab-avatar-coborrower">{activeBeneficiaryApplicant.initials}</div>
+                    <div class="tab-info">
+                        <div class="type-badge type-badge-coborrower">
+                            <span class="badge-dot"></span>Beneficiary
+                        </div>
+                        <lightning-combobox
+                            class="tab-combobox"
+                            value={beneficiaryValue}
+                            options={beneficiaryOptions}
+                            variant="label-hidden"
+                            dropdown-alignment="left"
+                            onchange={handleBeneficiaryChange}>
+                        </lightning-combobox>
+                    </div>
+                </div>
+            </template>
+
+        </div>
+
+        <!-- Status Chips for active applicant -->
+        <template lwc:if={activeApplicant}>
+            <div class="applicant-chips">
+
+                <!-- Ins Consent — Borrower only -->
+                <template lwc:if={activeApplicant.isBorrower}>
+                    <div class={activeApplicant.insConsentClass}
+                         onclick={handleInsConsentClick}>
+                        <lightning-icon class={activeApplicant.panelData.insConsent.iconCss}
+                            icon-name={activeApplicant.panelData.insConsent.iconName}
+                            alternative-text="Insurance Consent" size="xx-small">
+                        </lightning-icon>
+                        <span class="chip-label">Ins. Consent</span>
+                        <span class="chip-status">{activeApplicant.panelData.insConsent.status}</span>
+                    </div>
+                </template>
+
+                <!-- App Consent — Borrower only -->
+                <template lwc:if={activeApplicant.isBorrower}>
+                    <div class={activeApplicant.appFormClass}
+                         onclick={handleAppConsentClick}>
+                        <lightning-icon class={activeApplicant.panelData.appsFormConsent.iconCss}
+                            icon-name={activeApplicant.panelData.appsFormConsent.iconName}
+                            alternative-text="Application Form Consent" size="xx-small">
+                        </lightning-icon>
+                        <span class="chip-label">App Consent</span>
+                        <span class="chip-status">{activeApplicant.panelData.appsFormConsent.status}</span>
+                    </div>
+                </template>
+
+                <!-- Personal Email — All applicants; status from Email_Verified__c -->
+                <div class={activeApplicant.personalEmailClass}
+                     onclick={handlePersonalEmailClick}>
+                    <lightning-icon class={activeApplicant.panelData.personalEmail.iconCss}
+                        icon-name={activeApplicant.panelData.personalEmail.iconName}
+                        alternative-text="Personal Email" size="xx-small">
+                    </lightning-icon>
+                    <span class="chip-label">Personal Email</span>
+                    <span class="chip-status">{activeApplicant.panelData.personalEmail.status}</span>
+                </div>
+
+                <!-- KFS — Borrower only -->
+                <template lwc:if={activeApplicant.isBorrower}>
+                    <div class={activeApplicant.panelData.kfs.cssClass}>
+                        <lightning-icon class={activeApplicant.panelData.kfs.iconCss}
+                            icon-name={activeApplicant.panelData.kfs.iconName}
+                            alternative-text="KFS" size="xx-small">
+                        </lightning-icon>
+                        <span class="chip-label">KFS</span>
+                        <span class="chip-status">{activeApplicant.panelData.kfs.status}</span>
+                    </div>
+                </template>
+
+                <!-- eKYC — Borrower only -->
+                <template lwc:if={activeApplicant.isBorrower}>
+                    <div class={activeApplicant.panelData.ekyc.cssClass}>
+                        <lightning-icon class={activeApplicant.panelData.ekyc.iconCss}
+                            icon-name={activeApplicant.panelData.ekyc.iconName}
+                            alternative-text="eKYC Status" size="xx-small">
+                        </lightning-icon>
+                        <span class="chip-label">eKYC</span>
+                        <span class="chip-status">{activeApplicant.panelData.ekyc.status}</span>
+                    </div>
+                </template>
+
+            </div>
+        </template>
+
+    </div>
+
+    <template lwc:if={showIntegrationModal}>
+        <c-integration-progress-modal
+            status={integrationStatus}
+            stages={integrationStages}
+            current-stage-index={integrationCurrentStageIndex}
+            success-message={integrationSuccessMessage}
+            error-message={integrationErrorMessage}
+            onclose={handleIntegrationModalClose}
+            ondone={handleIntegrationModalClose}
+            onretry={handleIntegrationRetry}>
+        </c-integration-progress-modal>
+    </template>
+
+    <template lwc:if={showPdfRenderModal}>
+        <c-dynamic-component-modal
+            component-name="pDFforceRenderer"
+            modal-header={pdfRenderModalHeader}
+            record-id={pdfRenderDocumentChecklistId}
+            component-props={pdfRenderModalProps}
+            onclose={handlePdfRenderModalClose}>
+        </c-dynamic-component-modal>
+    </template>
+
+</template>

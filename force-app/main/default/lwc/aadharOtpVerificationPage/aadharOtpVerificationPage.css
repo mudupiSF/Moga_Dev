@@ -1,0 +1,351 @@
+/* ════════════════════════════════════════════════════════════════════════
+   aadharOtpVerificationPage 
+
+   Shared typography + indigo/slate/emerald palette tokens come from the
+   project's c/commonStyles LWC 
+   ════════════════════════════════════════════════════════════════════════ */
+
+@import 'c/commonStyles';
+
+:host {
+    /* ── Aliases onto the shared commonStyles tokens (so the rules below
+        stay readable while still drawing colour from a single source of
+        truth in c/commonStyles). ── */
+    --indigo-50:  var(--form-indigo-50);
+    --indigo-100: var(--form-indigo-100);
+    --indigo-500: var(--form-indigo-500);
+    --indigo-600: var(--form-indigo-600);
+    --indigo-700: var(--form-indigo-700);
+
+    --slate-50:  var(--form-slate-50);
+    --slate-100: var(--form-slate-100);
+    --slate-400: var(--form-slate-400);
+    --slate-500: var(--form-slate-500);
+    --slate-700: var(--form-slate-700);
+    --slate-800: var(--form-slate-800);
+
+    /* ── Gaps not published by commonStyles ──
+        (kept here so this LWC remains visually identical to MOGA DEMO
+        without polluting the shared bundle with one-off shades). */
+    --indigo-200: #c7d2fe;
+    --indigo-300: #a5b4fc;
+
+    --green-50:  var(--form-emerald-50);
+    --green-500: var(--form-emerald-500);
+    --green-600: #16a34a;
+    --green-700: #15803d;
+
+    --red-50:  #fef2f2;
+    --red-500: #ef4444;
+    --red-600: #dc2626;
+    --red-700: #b91c1c;
+}
+
+/* ── Container ── */
+.kyc-container {
+    background: #fff;
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, .06), 0 1px 3px rgba(0, 0, 0, .04);
+    padding: 2rem;
+    max-width: 24rem;
+    margin: 0 auto;
+}
+
+/* ── Step Header (shared) ── */
+.step-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.step-badge {
+    padding: .75rem;
+    background: var(--indigo-50);
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.badge-icon {
+    --slds-c-icon-color-foreground-default: var(--indigo-600);
+}
+
+.step-header-text { flex: 1; }
+
+.step-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--slate-800);
+    margin: 0 0 .375rem;
+}
+
+.step-desc {
+    font-size: .875rem;
+    color: var(--slate-500);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ── Error Banner ── */
+.error-banner {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .75rem 1rem;
+    margin-bottom: 1.25rem;
+    background: var(--red-50);
+    border: 1px solid #fecaca;
+    border-radius: .75rem;
+    font-size: .8125rem;
+    color: #991b1b;
+    line-height: 1.4;
+}
+
+.error-icon-sm {
+    --slds-c-icon-color-foreground-default: var(--red-600);
+    flex-shrink: 0;
+}
+
+/* ── Text Input (Aadhaar) ── */
+.input-group { margin-bottom: 1.5rem; }
+
+.input-label {
+    display: block;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--slate-500);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: .5rem;
+}
+
+.text-input {
+    width: 100%;
+    padding: .875rem 1rem;
+    background: var(--slate-50);
+    border: 2px solid var(--slate-100);
+    border-radius: .75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--slate-700);
+    letter-spacing: .15em;
+    outline: none;
+    transition: border-color .2s, background .2s;
+    box-sizing: border-box;
+}
+
+.text-input::placeholder {
+    color: var(--slate-400);
+    font-weight: 400;
+    letter-spacing: .15em;
+}
+
+.text-input:focus {
+    border-color: var(--indigo-300);
+    background: #fff;
+}
+
+/* ── Primary Button (shared) ── */
+.primary-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--indigo-600);
+    color: #fff;
+    border: none;
+    border-radius: 1rem;
+    font-weight: 700;
+    font-size: .875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, .2);
+    transition: all .2s;
+}
+
+.primary-btn:hover:not(:disabled)  { background: var(--indigo-700); }
+.primary-btn:active:not(:disabled) { transform: scale(.97); }
+
+.primary-btn:disabled {
+    opacity: 0.5;
+    background: #c7d2fe;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.primary-btn-verified:disabled {
+    opacity: 1;
+    background: var(--green-600);
+    cursor: default;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, .2);
+}
+
+.icon-white { --slds-c-icon-color-foreground-default: #fff; }
+
+/* ── Secondary Button ── */
+.secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: .75rem 2rem;
+    margin-top: 1rem;
+    background: var(--slate-50);
+    color: var(--slate-700);
+    border: 2px solid var(--slate-100);
+    border-radius: .75rem;
+    font-weight: 600;
+    font-size: .875rem;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.secondary-btn:hover {
+    background: var(--slate-100);
+    border-color: var(--slate-400);
+}
+
+/* ── OTP Digit Inputs ── */
+.otp-inputs {
+    display: flex;
+    justify-content: space-between;
+    gap: .5rem;
+    margin-bottom: 2rem;
+}
+
+.otp-digit {
+    width: 2.5rem;
+    height: 3rem;
+    background: var(--slate-50);
+    border: 2px solid var(--slate-100);
+    border-radius: .75rem;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--slate-700);
+    outline: none;
+    transition: border-color .2s;
+    caret-color: var(--indigo-600);
+}
+
+.otp-digit:focus {
+    border-color: var(--indigo-300);
+    background: #fff;
+}
+
+/* ── Terms & Conditions ── */
+.terms-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: .5rem;
+    margin-bottom: 1.25rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.terms-cb {
+    width: .875rem;
+    height: .875rem;
+    margin-top: .125rem;
+    accent-color: var(--indigo-600);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.terms-text {
+    font-size: .75rem;
+    color: var(--slate-500);
+    line-height: 1.5;
+}
+
+.terms-link {
+    color: var(--indigo-600);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.terms-link:hover { text-decoration: underline; }
+
+/* ── Spinner ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.spinner-sm {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2.5px solid var(--indigo-200);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+}
+
+/* ── Resend Link ── */
+.resend-link {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: .6875rem;
+    font-weight: 700;
+    color: var(--slate-400);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    cursor: default;
+    transition: color .2s;
+}
+
+.resend-link-active {
+    cursor: pointer;
+    color: var(--indigo-600);
+}
+
+.resend-link-active:hover { color: var(--indigo-700); }
+
+/* ── Result Screens (Success / Error) ── */
+.result-content {
+    text-align: center;
+    padding: 1.5rem 0;
+}
+
+.result-badge {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+}
+
+.result-badge-success {
+    background: var(--green-50);
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, .08);
+}
+
+.result-badge-error {
+    background: var(--red-50);
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, .08);
+}
+
+.result-svg {
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+.result-badge-success .result-svg { fill: var(--green-600); }
+.result-badge-error   .result-svg { fill: var(--red-600); }
+
+.result-title {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--slate-800);
+    margin: 0 0 .5rem;
+}
+
+.result-desc {
+    font-size: .875rem;
+    color: var(--slate-500);
+    margin: 0;
+    line-height: 1.6;
+}

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Major_Industry__c</fullName>
+    <label>Major Industry</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>CONSTRUCTION COMPANY</fullName>
+                <default>false</default>
+                <label>CONSTRUCTION COMPANY</label>
+            </value>
+            <value>
+                <fullName>POULTRY FARMING</fullName>
+                <default>false</default>
+                <label>POULTRY FARMING</label>
+            </value>
+            <value>
+                <fullName>TRANSPORTER</fullName>
+                <default>false</default>
+                <label>TRANSPORTER</label>
+            </value>
+            <value>
+                <fullName>HEALTH AND SOCIAL WORK</fullName>
+                <default>false</default>
+                <label>HEALTH AND SOCIAL WORK</label>
+            </value>
+            <value>
+                <fullName>EDUCATION</fullName>
+                <default>false</default>
+                <label>EDUCATION</label>
+            </value>
+            <value>
+                <fullName>AGRICULTURE</fullName>
+                <default>false</default>
+                <label>AGRICULTURE</label>
+            </value>
+            <value>
+                <fullName>WATR SUPPLIER</fullName>
+                <default>false</default>
+                <label>WATR SUPPLIER</label>
+            </value>
+            <value>
+                <fullName>CONTRACTOR</fullName>
+                <default>false</default>
+                <label>CONTRACTOR</label>
+            </value>
+            <value>
+                <fullName>AQUACULTURE</fullName>
+                <default>false</default>
+                <label>AQUACULTURE</label>
+            </value>
+            <value>
+                <fullName>BRICKS</fullName>
+                <default>false</default>
+                <label>BRICKS</label>
+            </value>
+            <value>
+                <fullName>RICE - MERCHANT/MILL</fullName>
+                <default>false</default>
+                <label>RICE - MERCHANT/MILL</label>
+            </value>
+            <value>
+                <fullName>BUSINESS- STONE - SUPPLIER</fullName>
+                <default>false</default>
+                <label>BUSINESS- STONE - SUPPLIER</label>
+            </value>
+            <value>
+                <fullName>MUNICIPAL - CORPORATION</fullName>
+                <default>false</default>
+                <label>MUNICIPAL - CORPORATION</label>
+            </value>
+            <value>
+                <fullName>TIMBER</fullName>
+                <default>false</default>
+                <label>TIMBER</label>
+            </value>
+            <value>
+                <fullName>HARDWARE SHOP - RETAIL</fullName>
+                <default>false</default>
+                <label>HARDWARE SHOP - RETAIL</label>
+            </value>
+            <value>
+                <fullName>OPEN MARKET</fullName>
+                <default>false</default>
+                <label>OPEN MARKET</label>
+            </value>
+            <value>
+                <fullName>DAIRY FARMING</fullName>
+                <default>false</default>
+                <label>DAIRY FARMING</label>
+            </value>
+            <value>
+                <fullName>HOTEL AND RESTUARENT</fullName>
+                <default>false</default>
+                <label>HOTEL AND RESTUARENT</label>
+            </value>
+            <value>
+                <fullName>OFFICE CUM RESIDENCE</fullName>
+                <default>false</default>
+                <label>OFFICE CUM RESIDENCE</label>
+            </value>
+            <value>
+                <fullName>SAND QUARRYING</fullName>
+                <default>false</default>
+                <label>SAND QUARRYING</label>
+            </value>
+            <value>
+                <fullName>SUGAR</fullName>
+                <default>false</default>
+                <label>SUGAR</label>
+            </value>
+            <value>
+                <fullName>FISHING AND POULTRY</fullName>
+                <default>false</default>
+                <label>FISHING AND POULTRY</label>
+            </value>
+            <value>
+                <fullName>TRANSPORT</fullName>
+                <default>false</default>
+                <label>TRANSPORT</label>
+            </value>
+            <value>
+                <fullName>CONSTRUCTION</fullName>
+                <default>false</default>
+                <label>CONSTRUCTION</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

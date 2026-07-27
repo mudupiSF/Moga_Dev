@@ -1,0 +1,40 @@
+<template>
+    <template if:true={hasDocuments}>
+        <template if:true={hasMultipleDocuments}>
+            <div class="router-toolbar slds-grid slds-grid_vertical-align-center slds-grid_align-end slds-m-bottom_x-small">
+                <lightning-button-group>
+                    <lightning-button-icon icon-name="utility:chevronleft" onclick={handlePrevDoc} disabled={disablePrevDoc} alternative-text="Previous"></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:chevronright" onclick={handleNextDoc} disabled={disableNextDoc} alternative-text="Next"></lightning-button-icon>
+                </lightning-button-group>
+                <span class="slds-m-left_small">{documentCounterLabel}</span>
+            </div>
+        </template>
+        <template if:true={isImage}>
+            <c-png-display-preview-pane
+                documents={currentDocumentOnly}
+                preview-height={childPreviewHeight}>
+            </c-png-display-preview-pane>
+        </template>
+        <template if:true={isPdf}>
+            <c-pdf-display-preview-pane
+                documents={currentDocumentOnly}
+                preview-height={childPreviewHeight}>
+            </c-pdf-display-preview-pane>
+        </template>
+        <template if:true={isExcel}>
+            <c-excel-display-preview-pane
+                documents={currentDocumentOnly}
+                preview-height={childPreviewHeight}>
+            </c-excel-display-preview-pane>
+        </template>
+        <template if:true={isDoc}>
+            <c-doc-display-preview-pane
+                documents={currentDocumentOnly}
+                preview-height={childPreviewHeight}>
+            </c-doc-display-preview-pane>
+        </template>
+        <template if:true={unsupportedType}>
+            <div class="unsupported">Preview unavailable for this file type.</div>
+        </template>
+    </template>
+</template>

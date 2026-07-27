@@ -1,0 +1,2233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Query_Sub_Type__c</fullName>
+    <label>Query Sub-Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Query_Type__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Doc FTNR</fullName>
+                <default>false</default>
+                <label>Doc FTNR</label>
+            </value>
+            <value>
+                <fullName>Others</fullName>
+                <default>false</default>
+                <label>Others</label>
+            </value>
+            <value>
+                <fullName>Document Related</fullName>
+                <default>false</default>
+                <label>Document Related</label>
+            </value>
+            <value>
+                <fullName>Verification Related</fullName>
+                <default>false</default>
+                <label>Verification Related</label>
+            </value>
+            <value>
+                <fullName>Eligibility Related</fullName>
+                <default>false</default>
+                <label>Eligibility Related</label>
+            </value>
+            <value>
+                <fullName>Information mismatch</fullName>
+                <default>false</default>
+                <label>Information Mismatch</label>
+            </value>
+            <value>
+                <fullName>Additional Information</fullName>
+                <default>false</default>
+                <label>Additional Information</label>
+            </value>
+            <value>
+                <fullName>Property Transaction Related</fullName>
+                <default>false</default>
+                <label>Property Transaction Related</label>
+            </value>
+            <value>
+                <fullName>Signature missing</fullName>
+                <default>false</default>
+                <label>Signature missing</label>
+            </value>
+            <value>
+                <fullName>Overwritten Information in Application form</fullName>
+                <default>false</default>
+                <label>Overwritten Information in Application form</label>
+            </value>
+            <value>
+                <fullName>Sourcing details</fullName>
+                <default>false</default>
+                <label>Sourcing details</label>
+            </value>
+            <value>
+                <fullName>Incomplete Application form</fullName>
+                <default>false</default>
+                <label>Incomplete Application form</label>
+            </value>
+            <value>
+                <fullName>Mismatch of information</fullName>
+                <default>false</default>
+                <label>Mismatch of information</label>
+            </value>
+            <value>
+                <fullName>Documents pending</fullName>
+                <default>false</default>
+                <label>Documents pending</label>
+            </value>
+            <value>
+                <fullName>Signature mismatch</fullName>
+                <default>false</default>
+                <label>Signature mismatch</label>
+            </value>
+            <value>
+                <fullName>Aadhar masking not done</fullName>
+                <default>false</default>
+                <label>Aadhar masking not done</label>
+            </value>
+            <value>
+                <fullName>Incomplete Loan agreement</fullName>
+                <default>false</default>
+                <label>Incomplete Loan agreement</label>
+            </value>
+            <value>
+                <fullName>Invalid Loan agreement</fullName>
+                <default>false</default>
+                <label>Invalid Loan agreement</label>
+            </value>
+            <value>
+                <fullName>Overwritten Information in Loan agreement</fullName>
+                <default>false</default>
+                <label>Overwritten Information in Loan agreement</label>
+            </value>
+            <value>
+                <fullName>Incomplete form</fullName>
+                <default>false</default>
+                <label>Incomplete form</label>
+            </value>
+            <value>
+                <fullName>Waiver pending</fullName>
+                <default>false</default>
+                <label>Waiver pending</label>
+            </value>
+            <value>
+                <fullName>Calculation sheet</fullName>
+                <default>false</default>
+                <label>Calculation sheet</label>
+            </value>
+            <value>
+                <fullName>Authorisation letter</fullName>
+                <default>false</default>
+                <label>Authorisation letter</label>
+            </value>
+            <value>
+                <fullName>OSV Stamp missing</fullName>
+                <default>false</default>
+                <label>OSV Stamp missing</label>
+            </value>
+            <value>
+                <fullName>Unclear KYC</fullName>
+                <default>false</default>
+                <label>Unclear KYC</label>
+            </value>
+            <value>
+                <fullName>Invalid KYC</fullName>
+                <default>false</default>
+                <label>Invalid KYC</label>
+            </value>
+            <value>
+                <fullName>KYC missing</fullName>
+                <default>false</default>
+                <label>KYC missing</label>
+            </value>
+            <value>
+                <fullName>FCU Report pending</fullName>
+                <default>false</default>
+                <label>FCU Report pending</label>
+            </value>
+            <value>
+                <fullName>FCU stamp missing</fullName>
+                <default>false</default>
+                <label>FCU stamp missing</label>
+            </value>
+            <value>
+                <fullName>Legal report</fullName>
+                <default>false</default>
+                <label>Legal report</label>
+            </value>
+            <value>
+                <fullName>Pragati Unit allocation report</fullName>
+                <default>false</default>
+                <label>Pragati Unit allocation report</label>
+            </value>
+            <value>
+                <fullName>Technical Report pending</fullName>
+                <default>false</default>
+                <label>Technical Report pending</label>
+            </value>
+            <value>
+                <fullName>Mismatch of details</fullName>
+                <default>false</default>
+                <label>Mismatch of details</label>
+            </value>
+            <value>
+                <fullName>Document pending</fullName>
+                <default>false</default>
+                <label>Document pending</label>
+            </value>
+            <value>
+                <fullName>Incomplete details</fullName>
+                <default>false</default>
+                <label>Incomplete details</label>
+            </value>
+            <value>
+                <fullName>Franking/Stamping missing</fullName>
+                <default>false</default>
+                <label>Franking/Stamping missing</label>
+            </value>
+            <value>
+                <fullName>Vetting pending</fullName>
+                <default>false</default>
+                <label>Vetting pending</label>
+            </value>
+            <value>
+                <fullName>Amount mismatch</fullName>
+                <default>false</default>
+                <label>Amount mismatch</label>
+            </value>
+            <value>
+                <fullName>Builder Stamp/Sign missing</fullName>
+                <default>false</default>
+                <label>Builder Stamp/Sign missing</label>
+            </value>
+            <value>
+                <fullName>OCR Receipt clearance missing</fullName>
+                <default>false</default>
+                <label>OCR Receipt clearance missing</label>
+            </value>
+            <value>
+                <fullName>Invalid FC</fullName>
+                <default>false</default>
+                <label>Invalid FC</label>
+            </value>
+            <value>
+                <fullName>Signature missing in document</fullName>
+                <default>false</default>
+                <label>Signature missing in document</label>
+            </value>
+            <value>
+                <fullName>Signature mismatch in document</fullName>
+                <default>false</default>
+                <label>Signature mismatch in document</label>
+            </value>
+            <value>
+                <fullName>Incomplete details in FC</fullName>
+                <default>false</default>
+                <label>Incomplete details in FC</label>
+            </value>
+            <value>
+                <fullName>Amount mismatch in FC</fullName>
+                <default>false</default>
+                <label>Amount mismatch in FC</label>
+            </value>
+            <value>
+                <fullName>Mismatch of information in LOD</fullName>
+                <default>false</default>
+                <label>Mismatch of information in LOD</label>
+            </value>
+            <value>
+                <fullName>Incomplete details in LOD</fullName>
+                <default>false</default>
+                <label>Incomplete details in LOD</label>
+            </value>
+            <value>
+                <fullName>Form 15 CA/CB missing/mismatch</fullName>
+                <default>false</default>
+                <label>Form 15 CA/CB missing/mismatch</label>
+            </value>
+            <value>
+                <fullName>Incomplete details in Demand Letter</fullName>
+                <default>false</default>
+                <label>Incomplete details in Demand Letter</label>
+            </value>
+            <value>
+                <fullName>Stamp missing in Demand letter</fullName>
+                <default>false</default>
+                <label>Stamp missing in Demand letter</label>
+            </value>
+            <value>
+                <fullName>Signature missing in Demand letter</fullName>
+                <default>false</default>
+                <label>Signature missing in Demand letter</label>
+            </value>
+            <value>
+                <fullName>Signature mismatch in Demand letter</fullName>
+                <default>false</default>
+                <label>Signature mismatch in Demand letter</label>
+            </value>
+            <value>
+                <fullName>Mismatch of details in NOC</fullName>
+                <default>false</default>
+                <label>Mismatch of details in NOC</label>
+            </value>
+            <value>
+                <fullName>Incomplete details in NOC</fullName>
+                <default>false</default>
+                <label>Incomplete details in NOC</label>
+            </value>
+            <value>
+                <fullName>Stamp missing in NOC</fullName>
+                <default>false</default>
+                <label>Stamp missing in NOC</label>
+            </value>
+            <value>
+                <fullName>Signature missing in NOC</fullName>
+                <default>false</default>
+                <label>Signature missing in NOC</label>
+            </value>
+            <value>
+                <fullName>Signature mismatch in NOC</fullName>
+                <default>false</default>
+                <label>Signature mismatch in NOC</label>
+            </value>
+            <value>
+                <fullName>Incomplete DRF</fullName>
+                <default>false</default>
+                <label>Incomplete DRF</label>
+            </value>
+            <value>
+                <fullName>Stamp duty/franking pending</fullName>
+                <default>false</default>
+                <label>Stamp duty/franking pending</label>
+            </value>
+            <value>
+                <fullName>Short Stamp duty</fullName>
+                <default>false</default>
+                <label>Short Stamp duty</label>
+            </value>
+            <value>
+                <fullName>Approval related</fullName>
+                <default>false</default>
+                <label>Approval related</label>
+            </value>
+            <value>
+                <fullName>Account details mismatch</fullName>
+                <default>false</default>
+                <label>Account details mismatch</label>
+            </value>
+            <value>
+                <fullName>Invalid instrument</fullName>
+                <default>false</default>
+                <label>Invalid instrument</label>
+            </value>
+            <value>
+                <fullName>Stamp missing in DCCD</fullName>
+                <default>false</default>
+                <label>Stamp missing in DCCD</label>
+            </value>
+            <value>
+                <fullName>Signature missing in DCCD</fullName>
+                <default>false</default>
+                <label>Signature missing in DCCD</label>
+            </value>
+            <value>
+                <fullName>Signature mismatch in DCCD</fullName>
+                <default>false</default>
+                <label>Signature mismatch in DCCD</label>
+            </value>
+            <value>
+                <fullName>Overwritten information in DCCD</fullName>
+                <default>false</default>
+                <label>Overwritten information in DCCD</label>
+            </value>
+            <value>
+                <fullName>Incomplete details in DCCD</fullName>
+                <default>false</default>
+                <label>Incomplete details in DCCD</label>
+            </value>
+            <value>
+                <fullName>Mismatch of information in DCCD</fullName>
+                <default>false</default>
+                <label>Mismatch of information in DCCD</label>
+            </value>
+            <value>
+                <fullName>Invalid document</fullName>
+                <default>false</default>
+                <label>Invalid document</label>
+            </value>
+            <value>
+                <fullName>Signature Card in OD A/C&apos;s</fullName>
+                <default>false</default>
+                <label>Signature Card in OD A/C&apos;s</label>
+            </value>
+            <value>
+                <fullName>KYC missing - In Company case</fullName>
+                <default>false</default>
+                <label>KYC missing - In Company case</label>
+            </value>
+            <value>
+                <fullName>ROI/PF Approval</fullName>
+                <default>false</default>
+                <label>ROI/PF Approval</label>
+            </value>
+            <value>
+                <fullName>Instrument pending</fullName>
+                <default>false</default>
+                <label>Instrument pending</label>
+            </value>
+            <value>
+                <fullName>DCCD pending</fullName>
+                <default>false</default>
+                <label>DCCD pending</label>
+            </value>
+            <value>
+                <fullName>Overwritten Information</fullName>
+                <default>false</default>
+                <label>Overwritten Information</label>
+            </value>
+            <value>
+                <fullName>Legal Report pending</fullName>
+                <default>false</default>
+                <label>Legal Report pending</label>
+            </value>
+            <value>
+                <fullName>Mismatch of details in Demand Letter</fullName>
+                <default>false</default>
+                <label>Mismatch of details in Demand Letter</label>
+            </value>
+            <value>
+                <fullName>Invalid Sanction letter</fullName>
+                <default>false</default>
+                <label>Invalid Sanction letter</label>
+            </value>
+            <value>
+                <fullName>Stamp missing</fullName>
+                <default>false</default>
+                <label>Stamp missing</label>
+            </value>
+            <value>
+                <fullName>Document not legible</fullName>
+                <default>false</default>
+                <label>Document not legible</label>
+            </value>
+            <value>
+                <fullName>Invalid documents</fullName>
+                <default>false</default>
+                <label>Invalid documents</label>
+            </value>
+            <value>
+                <fullName>OSV or self attestation missing</fullName>
+                <default>false</default>
+                <label>OSV or self attestation missing</label>
+            </value>
+            <value>
+                <fullName>Application form incomplete</fullName>
+                <default>false</default>
+                <label>Application form Incomplete</label>
+            </value>
+            <value>
+                <fullName>Document missing</fullName>
+                <default>false</default>
+                <label>Document Missing</label>
+            </value>
+            <value>
+                <fullName>KYC-illegible Copy</fullName>
+                <default>false</default>
+                <label>KYC-illegible Copy</label>
+            </value>
+            <value>
+                <fullName>ITR-UDIN Unavailable</fullName>
+                <default>false</default>
+                <label>ITR-UDIN Unavailable</label>
+            </value>
+            <value>
+                <fullName>ITR-Auditor Seal &amp; Sign</fullName>
+                <default>false</default>
+                <label>ITR-Auditor Seal &amp; Sign</label>
+            </value>
+            <value>
+                <fullName>Financials-Incomplete Document(inc 3CB 3CD)</fullName>
+                <default>false</default>
+                <label>Financials-Incomplete Document(inc 3CB 3CD)</label>
+            </value>
+            <value>
+                <fullName>Expired Rental Agreement</fullName>
+                <default>false</default>
+                <label>Expired Rental Agreement</label>
+            </value>
+            <value>
+                <fullName>Partnership Deed-Form C or Notary Seal</fullName>
+                <default>false</default>
+                <label>Partnership Deed-Form C or Notary Seal</label>
+            </value>
+            <value>
+                <fullName>KYC-DOB Mismatch</fullName>
+                <default>false</default>
+                <label>KYC-DOB Mismatch</label>
+            </value>
+            <value>
+                <fullName>Business Address Mismatch-MSME &amp; GST Certificate</fullName>
+                <default>false</default>
+                <label>Business Address Mismatch-MSME &amp; GST Certificate</label>
+            </value>
+            <value>
+                <fullName>KYC-Self Attestation for bulk document</fullName>
+                <default>false</default>
+                <label>KYC-Self Attestation for bulk document</label>
+            </value>
+            <value>
+                <fullName>KYC-Deemed OVD older than 2 months</fullName>
+                <default>false</default>
+                <label>KYC-Deemed OVD older than 2 months</label>
+            </value>
+            <value>
+                <fullName>KYC-Aadhar Masking missing</fullName>
+                <default>false</default>
+                <label>KYC-Aadhar Masking missing</label>
+            </value>
+            <value>
+                <fullName>KYC-OSV Missing</fullName>
+                <default>false</default>
+                <label>KYC-OSV Missing</label>
+            </value>
+            <value>
+                <fullName>Self Attestation missing</fullName>
+                <default>false</default>
+                <label>Self Attestation missing</label>
+            </value>
+            <value>
+                <fullName>Applicant Signature Mismatch</fullName>
+                <default>false</default>
+                <label>Applicant Signature Mismatch</label>
+            </value>
+            <value>
+                <fullName>KYC-DOI Mismatch in Udhyam Certificate</fullName>
+                <default>false</default>
+                <label>KYC-DOI Mismatch in Udhyam Certificate</label>
+            </value>
+            <value>
+                <fullName>Additional Document</fullName>
+                <default>false</default>
+                <label>Additional Document</label>
+            </value>
+            <value>
+                <fullName>Credit Query</fullName>
+                <default>false</default>
+                <label>Credit Query</label>
+            </value>
+            <value>
+                <fullName>Additional Bank statements required</fullName>
+                <default>false</default>
+                <label>Additional Bank statements required</label>
+            </value>
+            <value>
+                <fullName>Additional document required</fullName>
+                <default>false</default>
+                <label>Additional document required</label>
+            </value>
+            <value>
+                <fullName>Additional GST required</fullName>
+                <default>false</default>
+                <label>Additional GST required</label>
+            </value>
+            <value>
+                <fullName>Additional guarantor required</fullName>
+                <default>false</default>
+                <label>Additional guarantor required</label>
+            </value>
+            <value>
+                <fullName>Additional SOA pending</fullName>
+                <default>false</default>
+                <label>Additional SOA pending</label>
+            </value>
+            <value>
+                <fullName>Addition of collateral</fullName>
+                <default>false</default>
+                <label>Addition of collateral</label>
+            </value>
+            <value>
+                <fullName>Addition of guarantor</fullName>
+                <default>false</default>
+                <label>Addition of guarantor</label>
+            </value>
+            <value>
+                <fullName>Clarity on legal and technical pending</fullName>
+                <default>false</default>
+                <label>Clarity on legal and technical pending</label>
+            </value>
+            <value>
+                <fullName>Confirmation on Loan amount pending</fullName>
+                <default>false</default>
+                <label>Confirmation on Loan amount pending</label>
+            </value>
+            <value>
+                <fullName>Confirmation pending on terms and conditions</fullName>
+                <default>false</default>
+                <label>Confirmation pending on terms and conditions</label>
+            </value>
+            <value>
+                <fullName>Documentary evidence for CIBIL overdue pending</fullName>
+                <default>false</default>
+                <label>Documentary evidence for CIBIL overdue pending</label>
+            </value>
+            <value>
+                <fullName>Documentary evidence for projected turnover awaited</fullName>
+                <default>false</default>
+                <label>Documentary evidence for projected turnover awaited</label>
+            </value>
+            <value>
+                <fullName>Financial Schedules Required</fullName>
+                <default>false</default>
+                <label>Financial Schedules Required</label>
+            </value>
+            <value>
+                <fullName>Justification from bank</fullName>
+                <default>false</default>
+                <label>Justification from bank</label>
+            </value>
+            <value>
+                <fullName>Justification from customer</fullName>
+                <default>false</default>
+                <label>Justification from customer</label>
+            </value>
+            <value>
+                <fullName>Login approval required</fullName>
+                <default>false</default>
+                <label>Login approval required</label>
+            </value>
+            <value>
+                <fullName>NOC and Account Closure from Bank</fullName>
+                <default>false</default>
+                <label>NOC and Account Closure from Bank</label>
+            </value>
+            <value>
+                <fullName>Requirement of net worth certificate</fullName>
+                <default>false</default>
+                <label>Requirement of net worth certificate</label>
+            </value>
+            <value>
+                <fullName>Sanction letter pending</fullName>
+                <default>false</default>
+                <label>Sanction letter pending</label>
+            </value>
+            <value>
+                <fullName>SOA from Bank</fullName>
+                <default>false</default>
+                <label>SOA from Bank</label>
+            </value>
+            <value>
+                <fullName>UDIN number missing on Financials</fullName>
+                <default>false</default>
+                <label>UDIN number missing on Financials</label>
+            </value>
+            <value>
+                <fullName>Updation on KYC - Dual Name, Change in Address, DOB</fullName>
+                <default>false</default>
+                <label>Updation on KYC - Dual Name, Change in Address, DOB</label>
+            </value>
+            <value>
+                <fullName>For change in Loan Amount</fullName>
+                <default>false</default>
+                <label>For change in Loan Amount</label>
+            </value>
+            <value>
+                <fullName>Collateral related-to add/change the collateral</fullName>
+                <default>false</default>
+                <label>Collateral related-to add/change the collateral</label>
+            </value>
+            <value>
+                <fullName>Addition/Modification in products (loan structuring)</fullName>
+                <default>false</default>
+                <label>Addition/Modification in products (loan structuring)</label>
+            </value>
+            <value>
+                <fullName>Addition/Modification in guarantor need</fullName>
+                <default>false</default>
+                <label>Addition/Modification in guarantor need</label>
+            </value>
+            <value>
+                <fullName>Dedupe</fullName>
+                <default>false</default>
+                <label>Dedupe</label>
+            </value>
+            <value>
+                <fullName>Facility Details</fullName>
+                <default>false</default>
+                <label>Facility Details</label>
+            </value>
+            <value>
+                <fullName>General Details and Sanction Details</fullName>
+                <default>false</default>
+                <label>General Details and Sanction Details</label>
+            </value>
+            <value>
+                <fullName>Rate of Interest</fullName>
+                <default>false</default>
+                <label>Rate of Interest</label>
+            </value>
+            <value>
+                <fullName>MIS Code</fullName>
+                <default>false</default>
+                <label>MIS Code</label>
+            </value>
+            <value>
+                <fullName>Security Details</fullName>
+                <default>false</default>
+                <label>Security Details</label>
+            </value>
+            <value>
+                <fullName>Repayment Schedule</fullName>
+                <default>false</default>
+                <label>Repayment Schedule</label>
+            </value>
+            <value>
+                <fullName>GST</fullName>
+                <default>false</default>
+                <label>GST</label>
+            </value>
+            <value>
+                <fullName>Customer Demographic Details</fullName>
+                <default>false</default>
+                <label>Customer Demographic Details</label>
+            </value>
+            <value>
+                <fullName>Insufficient Fund in Customer Account</fullName>
+                <default>false</default>
+                <label>Insufficient Fund in Customer Account</label>
+            </value>
+            <value>
+                <fullName>GST Related</fullName>
+                <default>false</default>
+                <label>GST Related</label>
+            </value>
+            <value>
+                <fullName>DQ Points</fullName>
+                <default>false</default>
+                <label>DQ Points</label>
+            </value>
+            <value>
+                <fullName>Stock Statement Related</fullName>
+                <default>false</default>
+                <label>Stock Statement Related</label>
+            </value>
+            <value>
+                <fullName>Sanction Condition Related</fullName>
+                <default>false</default>
+                <label>Sanction Condition Related</label>
+            </value>
+            <value>
+                <fullName>RTGS-Disbursement Approval</fullName>
+                <default>false</default>
+                <label>RTGS-Disbursement Approval</label>
+            </value>
+            <value>
+                <fullName>NEFT-Disbursement Approval</fullName>
+                <default>false</default>
+                <label>NEFT-Disbursement Approval</label>
+            </value>
+            <value>
+                <fullName>Login Fee Recovery Approval</fullName>
+                <default>false</default>
+                <label>Login Fee Recovery Approval</label>
+            </value>
+            <value>
+                <fullName>Others-CPC Ops</fullName>
+                <default>false</default>
+                <label>Others-CPC Ops</label>
+            </value>
+            <value>
+                <fullName>Collateral Id Related</fullName>
+                <default>false</default>
+                <label>Collateral Id Related</label>
+            </value>
+            <value>
+                <fullName>Limit Node Related</fullName>
+                <default>false</default>
+                <label>Limit Node Related</label>
+            </value>
+            <value>
+                <fullName>Others-CPU Ops</fullName>
+                <default>false</default>
+                <label>Others-CPU Ops</label>
+            </value>
+            <value>
+                <fullName>Denied visit due to technical or shortage of manpower</fullName>
+                <default>false</default>
+                <label>Denied visit due to technical or shortage of manpower</label>
+            </value>
+            <value>
+                <fullName>Address changed, confirmed via third party check</fullName>
+                <default>false</default>
+                <label>Address changed, confirmed via third party check</label>
+            </value>
+            <value>
+                <fullName>some free text</fullName>
+                <default>false</default>
+                <label>some free text</label>
+            </value>
+            <value>
+                <fullName>Location is untraceable</fullName>
+                <default>false</default>
+                <label>Location is untraceable</label>
+            </value>
+            <value>
+                <fullName>Customer denied FI</fullName>
+                <default>false</default>
+                <label>Customer denied FI</label>
+            </value>
+            <value>
+                <fullName>Out of town (Residence FI)</fullName>
+                <default>false</default>
+                <label>Out of town (Residence FI)</label>
+            </value>
+            <value>
+                <fullName>Non working Hour / Day (Business FI)</fullName>
+                <default>false</default>
+                <label>Non working Hour / Day (Business FI)</label>
+            </value>
+            <value>
+                <fullName>Office Locked (Business FI)</fullName>
+                <default>false</default>
+                <label>Office Locked (Business FI)</label>
+            </value>
+            <value>
+                <fullName>Residence Locked (Residence FI)</fullName>
+                <default>false</default>
+                <label>Residence Locked (Residence FI)</label>
+            </value>
+            <value>
+                <fullName>Incomplete Address- (Residence + Business FI)</fullName>
+                <default>false</default>
+                <label>Incomplete Address- (Residence + Business FI)</label>
+            </value>
+            <value>
+                <fullName>Incorrect Phone number (Residence Tele / Business Tele)</fullName>
+                <default>false</default>
+                <label>Incorrect Phone number (Residence Tele / Business Tele)</label>
+            </value>
+            <value>
+                <fullName>Phone not contactable (Residence Tele / Business Tele)</fullName>
+                <default>false</default>
+                <label>Phone not contactable (Residence Tele / Business Tele)</label>
+            </value>
+            <value>
+                <fullName>Out of Geo Limit</fullName>
+                <default>false</default>
+                <label>Out of Geo Limit</label>
+            </value>
+            <value>
+                <fullName>Security denied Entry</fullName>
+                <default>false</default>
+                <label>Security denied Entry</label>
+            </value>
+            <value>
+                <fullName>Document Requirement</fullName>
+                <default>false</default>
+                <label>Document Requirement</label>
+            </value>
+            <value>
+                <fullName>Customer non contactable</fullName>
+                <default>false</default>
+                <label>Customer non contactable</label>
+            </value>
+            <value>
+                <fullName>KYC</fullName>
+                <default>false</default>
+                <label>KYC</label>
+            </value>
+            <value>
+                <fullName>Approved Pricing</fullName>
+                <default>false</default>
+                <label>Approved Pricing</label>
+            </value>
+            <value>
+                <fullName>Udhyam Registration</fullName>
+                <default>false</default>
+                <label>Udhyam Registration</label>
+            </value>
+            <value>
+                <fullName>NACH Related</fullName>
+                <default>false</default>
+                <label>NACH Related</label>
+            </value>
+            <value>
+                <fullName>Credit Checks</fullName>
+                <default>false</default>
+                <label>Credit Checks</label>
+            </value>
+            <value>
+                <fullName>Doc Card</fullName>
+                <default>false</default>
+                <label>Doc Card</label>
+            </value>
+            <value>
+                <fullName>Legal Documents</fullName>
+                <default>false</default>
+                <label>Legal Documents</label>
+            </value>
+            <value>
+                <fullName>Constitution Documents</fullName>
+                <default>false</default>
+                <label>Constitution Documents</label>
+            </value>
+            <value>
+                <fullName>Customer denied visit/entry</fullName>
+                <default>false</default>
+                <label>Customer denied visit/entry</label>
+            </value>
+            <value>
+                <fullName>Office/Residence Locked</fullName>
+                <default>false</default>
+                <label>Office/Residence Locked</label>
+            </value>
+            <value>
+                <fullName>Security Documents</fullName>
+                <default>false</default>
+                <label>Security Documents</label>
+            </value>
+            <value>
+                <fullName>Disbursement Documents</fullName>
+                <default>false</default>
+                <label>Disbursement Documents</label>
+            </value>
+            <value>
+                <fullName>Takeover</fullName>
+                <default>false</default>
+                <label>Takeover</label>
+            </value>
+            <value>
+                <fullName>Cross-Collateralisation</fullName>
+                <default>false</default>
+                <label>Cross-Collateralisation</label>
+            </value>
+            <value>
+                <fullName>Recheck Address Visited</fullName>
+                <default>false</default>
+                <label>Recheck Address Visited</label>
+            </value>
+            <value>
+                <fullName>Rectify Details Provided</fullName>
+                <default>false</default>
+                <label>Rectify Details Provided</label>
+            </value>
+            <value>
+                <fullName>Legal agency</fullName>
+                <default>false</default>
+                <label>Legal agency</label>
+            </value>
+            <value>
+                <fullName>Technical agency</fullName>
+                <default>false</default>
+                <label>Technical agency</label>
+            </value>
+            <value>
+                <fullName>Sales</fullName>
+                <default>false</default>
+                <label>Sales</label>
+            </value>
+            <value>
+                <fullName>Current chain title documents</fullName>
+                <default>false</default>
+                <label>Current chain title documents</label>
+            </value>
+            <value>
+                <fullName>Previous chain title documents</fullName>
+                <default>false</default>
+                <label>Previous chain title documents</label>
+            </value>
+            <value>
+                <fullName>Documents not legible</fullName>
+                <default>false</default>
+                <label>Documents not legible</label>
+            </value>
+            <value>
+                <fullName>Non agriculture permission / Conversion order</fullName>
+                <default>false</default>
+                <label>Non agriculture permission / Conversion order</label>
+            </value>
+            <value>
+                <fullName>Latest encumbrance certificate / Search report</fullName>
+                <default>false</default>
+                <label>Latest encumbrance certificate / Search report</label>
+            </value>
+            <value>
+                <fullName>Pending litigation / Appeal / Lis-pendency</fullName>
+                <default>false</default>
+                <label>Pending litigation / Appeal / Lis-pendency</label>
+            </value>
+            <value>
+                <fullName>Revenue document / mutation entries</fullName>
+                <default>false</default>
+                <label>Revenue document / mutation entries</label>
+            </value>
+            <value>
+                <fullName>Others 1</fullName>
+                <default>false</default>
+                <label>Others 1</label>
+            </value>
+            <value>
+                <fullName>Others 2</fullName>
+                <default>false</default>
+                <label>Others 2</label>
+            </value>
+            <value>
+                <fullName>CPA/CRO</fullName>
+                <default>false</default>
+                <label>CPA/CRO</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>Transaction Type Confirmation</fullName>
+                <default>false</default>
+                <label>Transaction Type Confirmation</label>
+            </value>
+            <value>
+                <fullName>Commercial Clarification</fullName>
+                <default>false</default>
+                <label>Commercial Clarification</label>
+            </value>
+            <value>
+                <fullName>Sanction plan approved by authority required</fullName>
+                <default>false</default>
+                <label>Sanction plan approved by authority required</label>
+            </value>
+            <value>
+                <fullName>Layout plan approved by authority required</fullName>
+                <default>false</default>
+                <label>Layout plan approved by authority required</label>
+            </value>
+            <value>
+                <fullName>Title document in the name of applicant required</fullName>
+                <default>false</default>
+                <label>Title document in the name of applicant required</label>
+            </value>
+            <value>
+                <fullName>Non agriculture permission / Conversion order required</fullName>
+                <default>false</default>
+                <label>Non agriculture permission / Conversion order required</label>
+            </value>
+            <value>
+                <fullName>Pawari Mauka report required</fullName>
+                <default>false</default>
+                <label>Pawari Mauka report required</label>
+            </value>
+            <value>
+                <fullName>Builder permission / commencement certificate required</fullName>
+                <default>false</default>
+                <label>Builder permission / commencement certificate required</label>
+            </value>
+            <value>
+                <fullName>Contact number of applicant required for visit</fullName>
+                <default>false</default>
+                <label>Contact number of applicant required for visit</label>
+            </value>
+            <value>
+                <fullName>ROI,PF Approval</fullName>
+                <default>false</default>
+                <label>ROI,PF Approval</label>
+            </value>
+            <value>
+                <fullName>Signature Card in OD A,C</fullName>
+                <default>false</default>
+                <label>Signature Card in OD A,C</label>
+            </value>
+            <value>
+                <fullName>Salary Slip pending</fullName>
+                <default>false</default>
+                <label>Salary Slip pending</label>
+            </value>
+            <value>
+                <fullName>Bank Statement</fullName>
+                <default>false</default>
+                <label>Bank Statement</label>
+            </value>
+            <value>
+                <fullName>Form 16</fullName>
+                <default>false</default>
+                <label>Form 16</label>
+            </value>
+            <value>
+                <fullName>NRI Bank Statement</fullName>
+                <default>false</default>
+                <label>NRI Bank Statement</label>
+            </value>
+            <value>
+                <fullName>NRI Document pending</fullName>
+                <default>false</default>
+                <label>NRI Document pending</label>
+            </value>
+            <value>
+                <fullName>Document pending - SE,SEP,SENP</fullName>
+                <default>false</default>
+                <label>Document pending - SE,SEP,SENP</label>
+            </value>
+            <value>
+                <fullName>Obligation</fullName>
+                <default>false</default>
+                <label>Obligation</label>
+            </value>
+            <value>
+                <fullName>Name Mismatch</fullName>
+                <default>false</default>
+                <label>Name Mismatch</label>
+            </value>
+            <value>
+                <fullName>Incomplete document</fullName>
+                <default>false</default>
+                <label>Incomplete document</label>
+            </value>
+            <value>
+                <fullName>incorrect document</fullName>
+                <default>false</default>
+                <label>incorrect document</label>
+            </value>
+            <value>
+                <fullName>Approval,offer details pending</fullName>
+                <default>false</default>
+                <label>Approval,offer details pending</label>
+            </value>
+            <value>
+                <fullName>Pension proof pending</fullName>
+                <default>false</default>
+                <label>Pension proof pending</label>
+            </value>
+            <value>
+                <fullName>Franking,Stamping missing</fullName>
+                <default>false</default>
+                <label>Franking,Stamping missing</label>
+            </value>
+            <value>
+                <fullName>Builder Stamp,Sign missing</fullName>
+                <default>false</default>
+                <label>Builder Stamp,Sign missing</label>
+            </value>
+            <value>
+                <fullName>Form 15 CA,CB missing,mismatch</fullName>
+                <default>false</default>
+                <label>Form 15 CA,CB missing,mismatch</label>
+            </value>
+            <value>
+                <fullName>Stamp duty,franking pending</fullName>
+                <default>false</default>
+                <label>Stamp duty,franking pending</label>
+            </value>
+            <value>
+                <fullName>OSV or Self attestation</fullName>
+                <default>false</default>
+                <label>OSV or Self attestation</label>
+            </value>
+            <value>
+                <fullName>Documents not Separated</fullName>
+                <default>false</default>
+                <label>Documents not Separated</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Addition of collateral</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Additional guarantor required</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Addition of collateral</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Addition of collateral</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Addition of guarantor</controllingFieldValue>
+            <controllingFieldValue>Login Documents</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Addition of guarantor</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Additional Details required</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Clarity on legal and technical pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Additional Details required</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Confirmation on Loan amount pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Additional Details required</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Confirmation pending on terms and conditions</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Additional Details required</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Documentary evidence for projected turnover awaited</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Justification on verifications</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Documentary evidence for CIBIL overdue pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Justification on verifications</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Justification from bank</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Justification on verifications</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Justification from customer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Justification on verifications</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>NOC and Account Closure from Bank</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Justification on verifications</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>SOA from Bank</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Login Documents</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Additional Bank statements required</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Login Documents</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Additional GST required</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Login Documents</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Additional SOA pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Login Documents</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Financial Schedules Required</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Login Documents</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Login approval required</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Login Documents</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Requirement of net worth certificate</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Login Documents</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Sanction letter pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Login Documents</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>UDIN number missing on Financials</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Login Documents</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Updation on KYC - Dual Name, Change in Address, DOB</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Modification in Loan Amount</controllingFieldValue>
+            <controllingFieldValue>Modification in product</controllingFieldValue>
+            <controllingFieldValue>Others + Free Text</controllingFieldValue>
+            <valueName>Additional document required</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sales Query</controllingFieldValue>
+            <valueName>For change in Loan Amount</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sales Query</controllingFieldValue>
+            <valueName>Collateral related-to add/change the collateral</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sales Query</controllingFieldValue>
+            <valueName>Addition/Modification in products (loan structuring)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sales Query</controllingFieldValue>
+            <valueName>Addition/Modification in guarantor need</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Dedupe</controllingFieldValue>
+            <valueName>Dedupe</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <controllingFieldValue>DRF</controllingFieldValue>
+            <controllingFieldValue>GURANTOR / GPA / POA / NRI</controllingFieldValue>
+            <controllingFieldValue>Declaration/Indemnity/Undertaking/Consent Letter</controllingFieldValue>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <controllingFieldValue>Sanction letter</controllingFieldValue>
+            <controllingFieldValue>ROI/PF/Charges related</controllingFieldValue>
+            <controllingFieldValue>Application form</controllingFieldValue>
+            <controllingFieldValue>Loan Agreement</controllingFieldValue>
+            <controllingFieldValue>Insurance related</controllingFieldValue>
+            <controllingFieldValue>KYC</controllingFieldValue>
+            <controllingFieldValue>Property Document</controllingFieldValue>
+            <controllingFieldValue>ROI,PF,Charges related</controllingFieldValue>
+            <controllingFieldValue>Income Proof</controllingFieldValue>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <controllingFieldValue>Education Proof Document</controllingFieldValue>
+            <controllingFieldValue>Seller KYC</controllingFieldValue>
+            <controllingFieldValue>Admission Documents</controllingFieldValue>
+            <controllingFieldValue>Affidavit</controllingFieldValue>
+            <controllingFieldValue>GURANTOR , GPA , POA , NRI</controllingFieldValue>
+            <controllingFieldValue>Declaration,Indemnity,Undertaking,Consent Letter</controllingFieldValue>
+            <valueName>Signature missing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>DRF</controllingFieldValue>
+            <controllingFieldValue>GURANTOR / GPA / POA / NRI</controllingFieldValue>
+            <controllingFieldValue>Declaration/Indemnity/Undertaking/Consent Letter</controllingFieldValue>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <controllingFieldValue>Sanction letter</controllingFieldValue>
+            <controllingFieldValue>ROI/PF/Charges related</controllingFieldValue>
+            <controllingFieldValue>Application form</controllingFieldValue>
+            <controllingFieldValue>Loan Agreement</controllingFieldValue>
+            <controllingFieldValue>Property Document</controllingFieldValue>
+            <controllingFieldValue>Own Contribution Related</controllingFieldValue>
+            <controllingFieldValue>ROI,PF,Charges related</controllingFieldValue>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <controllingFieldValue>Affidavit</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <controllingFieldValue>GURANTOR , GPA , POA , NRI</controllingFieldValue>
+            <controllingFieldValue>Declaration,Indemnity,Undertaking,Consent Letter</controllingFieldValue>
+            <valueName>Mismatch of information</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <controllingFieldValue>DRF</controllingFieldValue>
+            <controllingFieldValue>GURANTOR / GPA / POA / NRI</controllingFieldValue>
+            <controllingFieldValue>Declaration/Indemnity/Undertaking/Consent Letter</controllingFieldValue>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <controllingFieldValue>Sanction letter</controllingFieldValue>
+            <controllingFieldValue>ROI/PF/Charges related</controllingFieldValue>
+            <controllingFieldValue>Application form</controllingFieldValue>
+            <controllingFieldValue>Loan Agreement</controllingFieldValue>
+            <controllingFieldValue>Insurance related</controllingFieldValue>
+            <controllingFieldValue>KYC</controllingFieldValue>
+            <controllingFieldValue>Property Document</controllingFieldValue>
+            <controllingFieldValue>ROI,PF,Charges related</controllingFieldValue>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <controllingFieldValue>Seller KYC</controllingFieldValue>
+            <controllingFieldValue>Affidavit</controllingFieldValue>
+            <controllingFieldValue>GURANTOR , GPA , POA , NRI</controllingFieldValue>
+            <controllingFieldValue>Declaration,Indemnity,Undertaking,Consent Letter</controllingFieldValue>
+            <valueName>Signature mismatch</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>GURANTOR / GPA / POA / NRI</controllingFieldValue>
+            <controllingFieldValue>Declaration/Indemnity/Undertaking/Consent Letter</controllingFieldValue>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <controllingFieldValue>Sanction letter</controllingFieldValue>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Loan Agreement</controllingFieldValue>
+            <controllingFieldValue>Insurance related</controllingFieldValue>
+            <controllingFieldValue>Internal queries</controllingFieldValue>
+            <controllingFieldValue>Property Document</controllingFieldValue>
+            <controllingFieldValue>Own Contribution Related</controllingFieldValue>
+            <controllingFieldValue>Income Proof</controllingFieldValue>
+            <controllingFieldValue>Login Fee</controllingFieldValue>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <controllingFieldValue>Education Proof Document</controllingFieldValue>
+            <controllingFieldValue>Seller KYC</controllingFieldValue>
+            <controllingFieldValue>Admission Documents</controllingFieldValue>
+            <controllingFieldValue>Affidavit</controllingFieldValue>
+            <controllingFieldValue>Interest Subsidy</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <controllingFieldValue>GURANTOR , GPA , POA , NRI</controllingFieldValue>
+            <controllingFieldValue>Declaration,Indemnity,Undertaking,Consent Letter</controllingFieldValue>
+            <valueName>Document pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>GURANTOR / GPA / POA / NRI</controllingFieldValue>
+            <controllingFieldValue>Declaration/Indemnity/Undertaking/Consent Letter</controllingFieldValue>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <controllingFieldValue>Sanction letter</controllingFieldValue>
+            <controllingFieldValue>Internal queries</controllingFieldValue>
+            <controllingFieldValue>Property Document</controllingFieldValue>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <controllingFieldValue>Affidavit</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <controllingFieldValue>GURANTOR , GPA , POA , NRI</controllingFieldValue>
+            <controllingFieldValue>Declaration,Indemnity,Undertaking,Consent Letter</controllingFieldValue>
+            <valueName>Incomplete details</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <valueName>Invalid FC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <valueName>Incomplete details in FC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <valueName>Amount mismatch in FC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <valueName>Mismatch of information in LOD</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <valueName>Incomplete details in LOD</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <valueName>Form 15 CA/CB missing/mismatch</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <controllingFieldValue>Income Proof</controllingFieldValue>
+            <valueName>Name Mismatch</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <controllingFieldValue>Login Fee</controllingFieldValue>
+            <valueName>Incomplete document</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>BT document</controllingFieldValue>
+            <valueName>Form 15 CA,CB missing,mismatch</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPU</controllingFieldValue>
+            <valueName>Facility Details</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPU</controllingFieldValue>
+            <valueName>General Details and Sanction Details</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPU</controllingFieldValue>
+            <valueName>Rate of Interest</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPU</controllingFieldValue>
+            <valueName>MIS Code</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPU</controllingFieldValue>
+            <valueName>Security Details</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPU</controllingFieldValue>
+            <valueName>Repayment Schedule</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPU</controllingFieldValue>
+            <valueName>GST</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPU</controllingFieldValue>
+            <valueName>Customer Demographic Details</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPU</controllingFieldValue>
+            <valueName>DQ Points</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Application form</controllingFieldValue>
+            <controllingFieldValue>Insurance related</controllingFieldValue>
+            <controllingFieldValue>Property Document</controllingFieldValue>
+            <controllingFieldValue>Own Contribution Related</controllingFieldValue>
+            <controllingFieldValue>Seller KYC</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Documents pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Signature missing in document</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Signature mismatch in document</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Incomplete details in Demand Letter</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Stamp missing in Demand letter</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Signature missing in Demand letter</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Signature mismatch in Demand letter</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Mismatch of details in NOC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Incomplete details in NOC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Stamp missing in NOC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Signature missing in NOC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Signature mismatch in NOC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Builder/Developer Document</controllingFieldValue>
+            <controllingFieldValue>Builder,Developer Document</controllingFieldValue>
+            <valueName>Mismatch of details in Demand Letter</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <controllingFieldValue>Sales</controllingFieldValue>
+            <controllingFieldValue>CCPA</controllingFieldValue>
+            <controllingFieldValue>Internal queries</controllingFieldValue>
+            <controllingFieldValue>Agreement Related</controllingFieldValue>
+            <controllingFieldValue>Application Related</controllingFieldValue>
+            <controllingFieldValue>Banking Related</controllingFieldValue>
+            <controllingFieldValue>Cash Flow Related</controllingFieldValue>
+            <controllingFieldValue>CIBIL Related</controllingFieldValue>
+            <controllingFieldValue>Document / Images Missing</controllingFieldValue>
+            <controllingFieldValue>Financials Related</controllingFieldValue>
+            <controllingFieldValue>Fleet Related</controllingFieldValue>
+            <controllingFieldValue>Image Clarity Issue</controllingFieldValue>
+            <controllingFieldValue>Information Mismatch</controllingFieldValue>
+            <controllingFieldValue>Information Required / Incomplete Details</controllingFieldValue>
+            <controllingFieldValue>KYC BCIF Related</controllingFieldValue>
+            <controllingFieldValue>LTV Related</controllingFieldValue>
+            <controllingFieldValue>OSV / Self Attestation Required</controllingFieldValue>
+            <controllingFieldValue>Rate Fee Deferral Approval Related</controllingFieldValue>
+            <controllingFieldValue>RCU Report Related</controllingFieldValue>
+            <controllingFieldValue>Reference Details</controllingFieldValue>
+            <controllingFieldValue>Track Record</controllingFieldValue>
+            <controllingFieldValue>Viability / Contract Related</controllingFieldValue>
+            <controllingFieldValue>Wrong Tagging of Doc / Images</controllingFieldValue>
+            <valueName>Others</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Denied visit due to technical or shortage of manpower</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Address changed, confirmed via third party check</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Location is untraceable</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Customer denied FI</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Out of town (Residence FI)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Non working Hour / Day (Business FI)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Office Locked (Business FI)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Residence Locked (Residence FI)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Incomplete Address- (Residence + Business FI)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Incorrect Phone number (Residence Tele / Business Tele)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Phone not contactable (Residence Tele / Business Tele)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Out of Geo Limit</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Security denied Entry</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Recheck Address Visited</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FI</controllingFieldValue>
+            <valueName>Rectify Details Provided</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>DRF</controllingFieldValue>
+            <valueName>Incomplete DRF</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>DRF</controllingFieldValue>
+            <controllingFieldValue>Insurance related</controllingFieldValue>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <valueName>Overwritten Information</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Central Ops query for CPU Ops</controllingFieldValue>
+            <valueName>GST Related</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Central Ops query for CPU Ops</controllingFieldValue>
+            <valueName>Collateral Id Related</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Central Ops query for CPU Ops</controllingFieldValue>
+            <valueName>Limit Node Related</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Central Ops query for CPU Ops</controllingFieldValue>
+            <valueName>Others-CPU Ops</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Stamp duty/Franking</controllingFieldValue>
+            <controllingFieldValue>Stamp duty,Franking</controllingFieldValue>
+            <valueName>Stamp duty/franking pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Stamp duty/Franking</controllingFieldValue>
+            <controllingFieldValue>Stamp duty,Franking</controllingFieldValue>
+            <valueName>Short Stamp duty</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Stamp duty/Franking</controllingFieldValue>
+            <controllingFieldValue>Stamp duty,Franking</controllingFieldValue>
+            <valueName>Stamp duty,franking pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Central Ops query for CPC Ops</controllingFieldValue>
+            <valueName>Insufficient Fund in Customer Account</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Central Ops query for CPC Ops</controllingFieldValue>
+            <valueName>Stock Statement Related</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Central Ops query for CPC Ops</controllingFieldValue>
+            <valueName>Sanction Condition Related</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Central Ops query for CPC Ops</controllingFieldValue>
+            <valueName>RTGS-Disbursement Approval</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Central Ops query for CPC Ops</controllingFieldValue>
+            <valueName>NEFT-Disbursement Approval</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Central Ops query for CPC Ops</controllingFieldValue>
+            <valueName>Login Fee Recovery Approval</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Central Ops query for CPC Ops</controllingFieldValue>
+            <valueName>Others-CPC Ops</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Legal</controllingFieldValue>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Document Requirement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Legal</controllingFieldValue>
+            <valueName>Legal agency</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Legal</controllingFieldValue>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Documents not legible</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Legal</controllingFieldValue>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Non agriculture permission / Conversion order</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Legal</controllingFieldValue>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Latest encumbrance certificate / Search report</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Legal</controllingFieldValue>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Revenue document / mutation entries</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Legal</controllingFieldValue>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Others 1</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Legal</controllingFieldValue>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Others 2</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Legal</controllingFieldValue>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>CPA/CRO</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Legal</controllingFieldValue>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Income Proof</controllingFieldValue>
+            <controllingFieldValue>FCU</controllingFieldValue>
+            <valueName>Other</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Legal</controllingFieldValue>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Transaction Type Confirmation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Legal</controllingFieldValue>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Commercial Clarification</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Customer non contactable</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Customer denied visit/entry</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Office/Residence Locked</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Technical agency</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Current chain title documents</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Previous chain title documents</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technical</controllingFieldValue>
+            <valueName>Pending litigation / Appeal / Lis-pendency</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <controllingFieldValue>Sales</controllingFieldValue>
+            <controllingFieldValue>CCPA</controllingFieldValue>
+            <controllingFieldValue>Agreement Related</controllingFieldValue>
+            <controllingFieldValue>Application Related</controllingFieldValue>
+            <controllingFieldValue>Banking Related</controllingFieldValue>
+            <controllingFieldValue>Cash Flow Related</controllingFieldValue>
+            <controllingFieldValue>CIBIL Related</controllingFieldValue>
+            <controllingFieldValue>Document / Images Missing</controllingFieldValue>
+            <controllingFieldValue>Financials Related</controllingFieldValue>
+            <controllingFieldValue>Fleet Related</controllingFieldValue>
+            <controllingFieldValue>Image Clarity Issue</controllingFieldValue>
+            <controllingFieldValue>Information Mismatch</controllingFieldValue>
+            <controllingFieldValue>Information Required / Incomplete Details</controllingFieldValue>
+            <controllingFieldValue>KYC BCIF Related</controllingFieldValue>
+            <controllingFieldValue>LTV Related</controllingFieldValue>
+            <controllingFieldValue>OSV / Self Attestation Required</controllingFieldValue>
+            <controllingFieldValue>Rate Fee Deferral Approval Related</controllingFieldValue>
+            <controllingFieldValue>RCU Report Related</controllingFieldValue>
+            <controllingFieldValue>Reference Details</controllingFieldValue>
+            <controllingFieldValue>Track Record</controllingFieldValue>
+            <controllingFieldValue>Viability / Contract Related</controllingFieldValue>
+            <controllingFieldValue>Wrong Tagging of Doc / Images</controllingFieldValue>
+            <controllingFieldValue>FCU</controllingFieldValue>
+            <valueName>Information mismatch</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <controllingFieldValue>ROI/PF/Charges related</controllingFieldValue>
+            <controllingFieldValue>Own Contribution Related</controllingFieldValue>
+            <controllingFieldValue>ROI,PF,Charges related</controllingFieldValue>
+            <valueName>Amount mismatch</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <valueName>Approval related</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <valueName>Account details mismatch</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <valueName>Invalid instrument</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <valueName>Stamp missing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <controllingFieldValue>Agreement Related</controllingFieldValue>
+            <controllingFieldValue>Application Related</controllingFieldValue>
+            <controllingFieldValue>Banking Related</controllingFieldValue>
+            <controllingFieldValue>Cash Flow Related</controllingFieldValue>
+            <controllingFieldValue>CIBIL Related</controllingFieldValue>
+            <controllingFieldValue>Document / Images Missing</controllingFieldValue>
+            <controllingFieldValue>Financials Related</controllingFieldValue>
+            <controllingFieldValue>Fleet Related</controllingFieldValue>
+            <controllingFieldValue>Image Clarity Issue</controllingFieldValue>
+            <controllingFieldValue>Information Mismatch</controllingFieldValue>
+            <controllingFieldValue>Information Required / Incomplete Details</controllingFieldValue>
+            <controllingFieldValue>KYC BCIF Related</controllingFieldValue>
+            <controllingFieldValue>LTV Related</controllingFieldValue>
+            <controllingFieldValue>OSV / Self Attestation Required</controllingFieldValue>
+            <controllingFieldValue>Rate Fee Deferral Approval Related</controllingFieldValue>
+            <controllingFieldValue>RCU Report Related</controllingFieldValue>
+            <controllingFieldValue>Reference Details</controllingFieldValue>
+            <controllingFieldValue>Track Record</controllingFieldValue>
+            <controllingFieldValue>Viability / Contract Related</controllingFieldValue>
+            <controllingFieldValue>Wrong Tagging of Doc / Images</controllingFieldValue>
+            <controllingFieldValue>FCU</controllingFieldValue>
+            <valueName>Document not legible</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <controllingFieldValue>Agreement Related</controllingFieldValue>
+            <controllingFieldValue>Application Related</controllingFieldValue>
+            <controllingFieldValue>Banking Related</controllingFieldValue>
+            <controllingFieldValue>Cash Flow Related</controllingFieldValue>
+            <controllingFieldValue>CIBIL Related</controllingFieldValue>
+            <controllingFieldValue>Document / Images Missing</controllingFieldValue>
+            <controllingFieldValue>Financials Related</controllingFieldValue>
+            <controllingFieldValue>Fleet Related</controllingFieldValue>
+            <controllingFieldValue>Image Clarity Issue</controllingFieldValue>
+            <controllingFieldValue>Information Mismatch</controllingFieldValue>
+            <controllingFieldValue>Information Required / Incomplete Details</controllingFieldValue>
+            <controllingFieldValue>KYC BCIF Related</controllingFieldValue>
+            <controllingFieldValue>LTV Related</controllingFieldValue>
+            <controllingFieldValue>RCU Report Related</controllingFieldValue>
+            <controllingFieldValue>Reference Details</controllingFieldValue>
+            <controllingFieldValue>Track Record</controllingFieldValue>
+            <controllingFieldValue>Viability / Contract Related</controllingFieldValue>
+            <controllingFieldValue>Wrong Tagging of Doc / Images</controllingFieldValue>
+            <controllingFieldValue>FCU</controllingFieldValue>
+            <valueName>Invalid documents</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <controllingFieldValue>Agreement Related</controllingFieldValue>
+            <controllingFieldValue>Application Related</controllingFieldValue>
+            <controllingFieldValue>Banking Related</controllingFieldValue>
+            <controllingFieldValue>Cash Flow Related</controllingFieldValue>
+            <controllingFieldValue>CIBIL Related</controllingFieldValue>
+            <controllingFieldValue>Document / Images Missing</controllingFieldValue>
+            <controllingFieldValue>Financials Related</controllingFieldValue>
+            <controllingFieldValue>Fleet Related</controllingFieldValue>
+            <controllingFieldValue>Image Clarity Issue</controllingFieldValue>
+            <controllingFieldValue>Information Mismatch</controllingFieldValue>
+            <controllingFieldValue>Information Required / Incomplete Details</controllingFieldValue>
+            <controllingFieldValue>KYC BCIF Related</controllingFieldValue>
+            <controllingFieldValue>LTV Related</controllingFieldValue>
+            <controllingFieldValue>RCU Report Related</controllingFieldValue>
+            <controllingFieldValue>Reference Details</controllingFieldValue>
+            <controllingFieldValue>Track Record</controllingFieldValue>
+            <controllingFieldValue>Viability / Contract Related</controllingFieldValue>
+            <controllingFieldValue>Wrong Tagging of Doc / Images</controllingFieldValue>
+            <valueName>OSV or self attestation missing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repayment Related</controllingFieldValue>
+            <controllingFieldValue>Agreement Related</controllingFieldValue>
+            <controllingFieldValue>Application Related</controllingFieldValue>
+            <controllingFieldValue>Banking Related</controllingFieldValue>
+            <controllingFieldValue>Cash Flow Related</controllingFieldValue>
+            <controllingFieldValue>CIBIL Related</controllingFieldValue>
+            <controllingFieldValue>Document / Images Missing</controllingFieldValue>
+            <controllingFieldValue>Financials Related</controllingFieldValue>
+            <controllingFieldValue>Fleet Related</controllingFieldValue>
+            <controllingFieldValue>Image Clarity Issue</controllingFieldValue>
+            <controllingFieldValue>Information Mismatch</controllingFieldValue>
+            <controllingFieldValue>Information Required / Incomplete Details</controllingFieldValue>
+            <controllingFieldValue>KYC BCIF Related</controllingFieldValue>
+            <controllingFieldValue>LTV Related</controllingFieldValue>
+            <controllingFieldValue>RCU Report Related</controllingFieldValue>
+            <controllingFieldValue>Reference Details</controllingFieldValue>
+            <controllingFieldValue>Track Record</controllingFieldValue>
+            <controllingFieldValue>Viability / Contract Related</controllingFieldValue>
+            <controllingFieldValue>Wrong Tagging of Doc / Images</controllingFieldValue>
+            <controllingFieldValue>FCU</controllingFieldValue>
+            <valueName>Application form incomplete</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sanction letter</controllingFieldValue>
+            <valueName>Invalid Sanction letter</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>ROI/PF/Charges related</controllingFieldValue>
+            <valueName>ROI/PF Approval</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>ROI/PF/Charges related</controllingFieldValue>
+            <controllingFieldValue>ROI,PF,Charges related</controllingFieldValue>
+            <valueName>Instrument pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sales</controllingFieldValue>
+            <controllingFieldValue>CCPA</controllingFieldValue>
+            <valueName>Doc FTNR</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sales</controllingFieldValue>
+            <controllingFieldValue>CCPA</controllingFieldValue>
+            <valueName>Document Related</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sales</controllingFieldValue>
+            <controllingFieldValue>CCPA</controllingFieldValue>
+            <valueName>Verification Related</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sales</controllingFieldValue>
+            <controllingFieldValue>CCPA</controllingFieldValue>
+            <valueName>Eligibility Related</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sales</controllingFieldValue>
+            <controllingFieldValue>CCPA</controllingFieldValue>
+            <valueName>Additional Information</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sales</controllingFieldValue>
+            <controllingFieldValue>CCPA</controllingFieldValue>
+            <valueName>Property Transaction Related</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Application form</controllingFieldValue>
+            <valueName>Overwritten Information in Application form</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Application form</controllingFieldValue>
+            <valueName>Sourcing details</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Application form</controllingFieldValue>
+            <valueName>Incomplete Application form</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Application form</controllingFieldValue>
+            <controllingFieldValue>KYC</controllingFieldValue>
+            <controllingFieldValue>Seller KYC</controllingFieldValue>
+            <valueName>Aadhar masking not done</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Loan Agreement</controllingFieldValue>
+            <valueName>Incomplete Loan agreement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Loan Agreement</controllingFieldValue>
+            <valueName>Invalid Loan agreement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Loan Agreement</controllingFieldValue>
+            <valueName>Overwritten Information in Loan agreement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Loan Agreement</controllingFieldValue>
+            <valueName>Signature Card in OD A/C&apos;s</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Loan Agreement</controllingFieldValue>
+            <valueName>Signature Card in OD A,C</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Insurance related</controllingFieldValue>
+            <valueName>Incomplete form</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Insurance related</controllingFieldValue>
+            <valueName>Waiver pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Insurance related</controllingFieldValue>
+            <valueName>Calculation sheet</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Insurance related</controllingFieldValue>
+            <valueName>Authorisation letter</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>KYC</controllingFieldValue>
+            <valueName>OSV Stamp missing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>KYC</controllingFieldValue>
+            <valueName>Unclear KYC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>KYC</controllingFieldValue>
+            <controllingFieldValue>Seller KYC</controllingFieldValue>
+            <valueName>Invalid KYC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>KYC</controllingFieldValue>
+            <controllingFieldValue>Seller KYC</controllingFieldValue>
+            <valueName>KYC missing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>KYC</controllingFieldValue>
+            <controllingFieldValue>Seller KYC</controllingFieldValue>
+            <valueName>KYC missing - In Company case</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Internal queries</controllingFieldValue>
+            <valueName>FCU Report pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Internal queries</controllingFieldValue>
+            <valueName>FCU stamp missing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Internal queries</controllingFieldValue>
+            <valueName>Legal report</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Internal queries</controllingFieldValue>
+            <valueName>Pragati Unit allocation report</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Internal queries</controllingFieldValue>
+            <valueName>Technical Report pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Internal queries</controllingFieldValue>
+            <valueName>Mismatch of details</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Internal queries</controllingFieldValue>
+            <valueName>Legal Report pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Property Document</controllingFieldValue>
+            <valueName>Franking/Stamping missing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Property Document</controllingFieldValue>
+            <valueName>Vetting pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Property Document</controllingFieldValue>
+            <valueName>Franking,Stamping missing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Own Contribution Related</controllingFieldValue>
+            <valueName>Builder Stamp/Sign missing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Own Contribution Related</controllingFieldValue>
+            <valueName>OCR Receipt clearance missing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Own Contribution Related</controllingFieldValue>
+            <valueName>Builder Stamp,Sign missing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPC Ops Disbursement Checklist</controllingFieldValue>
+            <valueName>KYC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPC Ops Disbursement Checklist</controllingFieldValue>
+            <valueName>Approved Pricing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPC Ops Disbursement Checklist</controllingFieldValue>
+            <valueName>Udhyam Registration</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPC Ops Disbursement Checklist</controllingFieldValue>
+            <valueName>NACH Related</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPC Ops Disbursement Checklist</controllingFieldValue>
+            <valueName>Credit Checks</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPC Ops Disbursement Checklist</controllingFieldValue>
+            <valueName>Doc Card</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPC Ops Disbursement Checklist</controllingFieldValue>
+            <valueName>Legal Documents</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPC Ops Disbursement Checklist</controllingFieldValue>
+            <valueName>Constitution Documents</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPC Ops Disbursement Checklist</controllingFieldValue>
+            <valueName>Security Documents</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPC Ops Disbursement Checklist</controllingFieldValue>
+            <valueName>Disbursement Documents</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPC Ops Disbursement Checklist</controllingFieldValue>
+            <valueName>Takeover</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>CPC Ops Disbursement Checklist</controllingFieldValue>
+            <valueName>Cross-Collateralisation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>ROI,PF,Charges related</controllingFieldValue>
+            <valueName>ROI,PF Approval</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Income Proof</controllingFieldValue>
+            <valueName>Salary Slip pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Income Proof</controllingFieldValue>
+            <valueName>Bank Statement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Income Proof</controllingFieldValue>
+            <valueName>Form 16</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Income Proof</controllingFieldValue>
+            <valueName>NRI Bank Statement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Income Proof</controllingFieldValue>
+            <valueName>NRI Document pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Income Proof</controllingFieldValue>
+            <valueName>Document pending - SE,SEP,SENP</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Income Proof</controllingFieldValue>
+            <valueName>Obligation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Income Proof</controllingFieldValue>
+            <valueName>Pension proof pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Login Fee</controllingFieldValue>
+            <valueName>incorrect document</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Login Fee</controllingFieldValue>
+            <valueName>Approval,offer details pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <valueName>Signature missing in DCCD</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <valueName>Signature mismatch in DCCD</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <valueName>Overwritten information in DCCD</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <valueName>Incomplete details in DCCD</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <valueName>Mismatch of information in DCCD</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <valueName>Invalid document</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>EM documents</controllingFieldValue>
+            <valueName>DCCD pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Agreement Related</controllingFieldValue>
+            <controllingFieldValue>Application Related</controllingFieldValue>
+            <controllingFieldValue>Banking Related</controllingFieldValue>
+            <controllingFieldValue>Cash Flow Related</controllingFieldValue>
+            <controllingFieldValue>CIBIL Related</controllingFieldValue>
+            <controllingFieldValue>Document / Images Missing</controllingFieldValue>
+            <controllingFieldValue>Financials Related</controllingFieldValue>
+            <controllingFieldValue>Fleet Related</controllingFieldValue>
+            <controllingFieldValue>Image Clarity Issue</controllingFieldValue>
+            <controllingFieldValue>Information Mismatch</controllingFieldValue>
+            <controllingFieldValue>Information Required / Incomplete Details</controllingFieldValue>
+            <controllingFieldValue>KYC BCIF Related</controllingFieldValue>
+            <controllingFieldValue>LTV Related</controllingFieldValue>
+            <controllingFieldValue>RCU Report Related</controllingFieldValue>
+            <controllingFieldValue>Reference Details</controllingFieldValue>
+            <controllingFieldValue>Track Record</controllingFieldValue>
+            <controllingFieldValue>Viability / Contract Related</controllingFieldValue>
+            <controllingFieldValue>Wrong Tagging of Doc / Images</controllingFieldValue>
+            <controllingFieldValue>FCU</controllingFieldValue>
+            <valueName>Document missing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FCU</controllingFieldValue>
+            <valueName>OSV or Self attestation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>FCU</controllingFieldValue>
+            <valueName>Documents not Separated</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

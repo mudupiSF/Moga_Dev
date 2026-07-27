@@ -1,0 +1,140 @@
+.container {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: 0.75rem;
+}
+
+.selector,
+.cta {
+    display: flex;
+    justify-content: center;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.stats span {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.6rem;
+}
+
+.log {
+    background: #020617;
+    border: 1px solid #334155;
+    border-radius: 0.6rem;
+    padding: 0.75rem;
+    min-height: 8rem;
+    max-height: 12rem;
+    overflow-y: auto;
+}
+
+.log-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+    color: #94a3b8;
+}
+
+.log-row {
+    font-family: monospace;
+    font-size: 0.72rem;
+    color: #cbd5e1;
+    margin-bottom: 0.2rem;
+}
+
+.log-empty {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.selected-user {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid #d8dde6;
+    border-radius: 0.6rem;
+    padding: 0.55rem;
+}
+
+.avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: #1d4ed8;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.selected-user-text .name {
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.selected-user-text .meta {
+    font-size: 0.68rem;
+    color: #64748b;
+}
+
+.combobox-wrap,
+.panel {
+    border: 1px solid #d8dde6;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+.result-box {
+    border: 1px solid #d8dde6;
+    border-radius: 0.5rem;
+    overflow: auto;
+    max-height: 12rem;
+    background: #fff;
+}
+
+.result-item {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 0.55rem 0.7rem;
+    cursor: pointer;
+}
+
+.result-item:hover {
+    background: #f3f4f6;
+}
+
+.dept {
+    font-size: 0.65rem;
+    color: #64748b;
+}
+
+.message {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 0.4rem;
+    padding: 0.5rem 0.6rem;
+    color: #1e3a8a;
+    font-size: 0.8rem;
+}
+
+.nested-modal {
+    z-index: 10001;
+}
+
+.nested-container {
+    max-width: 38rem;
+}

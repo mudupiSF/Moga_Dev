@@ -1,0 +1,127 @@
+.preview-excel-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+}
+
+/* Header */
+.preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background-color: #f3f3f3;
+    border-bottom: 1px solid #dddbda;
+}
+
+.file-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #032d60;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.close-button {
+    flex-shrink: 0;
+}
+
+/* Error message */
+.error-message {
+    padding: 0.75rem 1rem;
+    background-color: #fce4e4;
+    color: #c23934;
+    border: 1px solid #f5c6c5;
+    border-radius: 4px;
+    margin: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+/* Spinner */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100px;
+    padding: 1rem;
+}
+
+/* Sheet tabs */
+.sheet-tabs {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding: 0.4rem 0.75rem 0;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #dddbda;
+}
+
+.sheet-tab {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    background: #ffffff;
+    border: 1px solid #dddbda;
+    border-bottom: 3px solid transparent;
+    border-radius: 4px 4px 0 0;
+    color: #3e3e3c;
+    font-weight: 400;
+    transition: border-bottom-color 0.15s, font-weight 0.15s, color 0.15s;
+    outline: none;
+}
+
+.sheet-tab:hover {
+    border-bottom-color: #0070d2;
+    color: #0070d2;
+}
+
+.sheet-tab-active {
+    border-bottom: 3px solid #0070d2;
+    font-weight: 700;
+    color: #0070d2;
+    background-color: #f0f7ff;
+}
+
+/* Table container */
+.table-container {
+    overflow: auto;
+    max-height: 500px;
+    padding: 0.5rem;
+}
+
+/* Table styles injected via innerHTML from SheetJS */
+.table-container :global(table) {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.8rem;
+    color: #3e3e3c;
+}
+
+.table-container :global(td),
+.table-container :global(th) {
+    border: 1px solid #dddbda;
+    padding: 0.3rem 0.5rem;
+    text-align: left;
+    white-space: nowrap;
+    font-size: 0.8rem;
+}
+
+.table-container :global(th) {
+    background-color: #f0f5ff;
+    color: #032d60;
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.table-container :global(tr:nth-child(even)) {
+    background-color: #f9f9f9;
+}
+
+.table-container :global(tr:hover) {
+    background-color: #e8f4fd;
+}

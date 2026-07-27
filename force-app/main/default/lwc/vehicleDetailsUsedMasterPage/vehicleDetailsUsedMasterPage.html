@@ -1,0 +1,1073 @@
+<template>
+    <div
+        class="form-layout"
+        onintegrationprogressupdate={handleIntegrationProgressUpdate}>
+
+        <template if:true={isLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Vehicle Dedupe -->
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content form-header-content--split">
+                    <div class="form-header-leading">
+                        <lightning-icon
+                            icon-name="utility:edit_form"
+                            size="small"
+                            class="slds-icon-text-default"
+                            variant="inverse">
+                        </lightning-icon>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Vehicle Dedupe</h1>
+                            <p class="form-header-subtitle">Enter vehicle registration details to fetch vehicle information</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-body">
+                <div class="form-fields-grid">
+
+                    <!-- Row 1 left: Vehicle Registration Format -->
+                    <div class="form-field-wrap">
+                        <template if:true={isPageReadOnly}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">VEHICLE REGISTRATION FORMAT</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{vdRegistrationFormatDisplay}</p>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={isPageReadOnly}>
+                        <div class="form-field-cell">
+                            <div class="form-field-label">
+                                VEHICLE REGISTRATION FORMAT
+                                <span class="form-required-indicator" title="Required">*</span>
+                            </div>
+                            <div class="form-field-value-col form-field-value-col--radio">
+                                <div class="form-radio-group form-radio-group--vertical">
+                                    <label class="form-radio-label">
+                                        <input
+                                            type="radio"
+                                            class="form-radio-input"
+                                            name="registrationFormat"
+                                            value={registrationFormatNewValue}
+                                            checked={isRegistrationFormatNew}
+                                            data-key="registrationFormat"
+                                            onchange={handleSectionFieldChange} />
+                                        <span class="form-radio-circle"></span>
+                                        <span class="form-radio-text">New Format (HR55AB1234)</span>
+                                    </label>
+                                    <label class="form-radio-label">
+                                        <input
+                                            type="radio"
+                                            class="form-radio-input"
+                                            name="registrationFormat"
+                                            value={registrationFormatOldValue}
+                                            checked={isRegistrationFormatOld}
+                                            data-key="registrationFormat"
+                                            onchange={handleSectionFieldChange} />
+                                        <span class="form-radio-circle"></span>
+                                        <span class="form-radio-text">Old Format (HR-05-AB-1234)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        </template>
+                    </div>
+
+                    <!-- Row 1 right: Vehicle Registration Number -->
+                    <div class="form-field-wrap">
+                        <template if:true={isPageReadOnly}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">VEHICLE REGISTRATION NUMBER</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{vdRegistrationNumber}</p>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={isPageReadOnly}>
+                        <div class="form-field-cell">
+                            <div class="form-field-label">
+                                VEHICLE REGISTRATION NUMBER
+                                <span class="form-required-indicator" title="Required">*</span>
+                            </div>
+                            <div class="form-field-value-col">
+                                <lightning-input
+                                    type="text"
+                                    label="Vehicle Registration Number"
+                                    variant="label-hidden"
+                                    value={vdRegistrationNumber}
+                                    placeholder="Enter registration number"
+                                    data-key="registrationNumber"
+                                    onchange={handleSectionFieldChange}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                        </template>
+                    </div>
+
+                    <!-- Row 2 left: Vehicle Sub-Category -->
+                    <div class="form-field-wrap">
+                        <template if:true={isPageReadOnly}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">VEHICLE SUB-CATEGORY</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{vdVehicleSubCategory}</p>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={isPageReadOnly}>
+                        <div class="form-field-cell">
+                            <div class="form-field-label">
+                                VEHICLE SUB-CATEGORY
+                                <span class="form-required-indicator" title="Required">*</span>
+                            </div>
+                            <div class="form-field-value-col">
+                                <lightning-combobox
+                                    name="vehicleSubCategory"
+                                    label="Vehicle Sub-Category"
+                                    variant="label-hidden"
+                                    value={vdVehicleSubCategory}
+                                    placeholder="Select Vehicle Sub-Category"
+                                    options={vehicleSubCategoryOptions}
+                                    data-key="vehicleSubCategory"
+                                    onchange={handleSectionFieldChange}>
+                                </lightning-combobox>
+                            </div>
+                        </div>
+                        </template>
+                    </div>
+
+                    <!-- Row 2 right: Insurance Expiry Date -->
+                    <div class="form-field-wrap">
+                        <template if:true={isPageReadOnly}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">INSURANCE EXPIRY DATE</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{vdInsuranceExpiryDate}</p>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={isPageReadOnly}>
+                        <div class="form-field-cell">
+                            <div class="form-field-label">INSURANCE EXPIRY DATE</div>
+                            <div class="form-field-value-col">
+                                <lightning-input
+                                    type="date"
+                                    label="Insurance Expiry Date"
+                                    variant="label-hidden"
+                                    value={vdInsuranceExpiryDate}
+                                    data-key="insuranceExpiryDate"
+                                    onchange={handleSectionFieldChange}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                        </template>
+                    </div>
+
+                    <!-- Row 3 left: Parent Deal Number -->
+                    <div class="form-field-wrap">
+                        <template if:true={isPageReadOnly}>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">PARENT DEAL NUMBER</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{vdParentDealNumber}</p>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={isPageReadOnly}>
+                        <div class="form-field-cell">
+                            <div class="form-field-label">PARENT DEAL NUMBER</div>
+                            <div class="form-field-value-col">
+                                <lightning-input
+                                    type="text"
+                                    label="Parent Deal Number"
+                                    variant="label-hidden"
+                                    value={vdParentDealNumber}
+                                    placeholder="Enter parent deal number (optional)"
+                                    data-key="parentDealNumber"
+                                    onchange={handleSectionFieldChange}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                        </template>
+                    </div>
+
+                </div>
+
+                <template if:false={isPageReadOnly}>
+                <div class="p4-btn-wrapper-center p4-btn-group-inline">
+                    <button
+                        type="button"
+                        class={vehicleDedupeButtonClass}
+                        disabled={isVehicleDedupeDisabled}
+                        onclick={handleVehicleDedupe}>
+                        <span class="p4-action-btn-inner">
+                            <template if:true={isVehicleDedupeLoading}>
+                                <lightning-spinner
+                                    alternative-text="Loading"
+                                    size="x-small"
+                                    class="p4-action-btn-spinner">
+                                </lightning-spinner>
+                            </template>
+                            <span>{vehicleDedupeButtonLabel}</span>
+                            <template if:true={isVehicleDedupeSuccess}>
+                                <lightning-icon
+                                    icon-name="utility:success"
+                                    size="x-small"
+                                    class="p4-action-btn-tick"
+                                    alternative-text="Completed">
+                                </lightning-icon>
+                            </template>
+                        </span>
+                    </button>
+                    <button
+                        type="button"
+                        class={getVehicleDetailsButtonClass}
+                        disabled={isGetVehicleDetailsDisabled}
+                        onclick={handleGetVehicleDetails}>
+                        <span class="p4-action-btn-inner">
+                            <template if:true={isGetVehicleDetailsLoading}>
+                                <lightning-spinner
+                                    alternative-text="Loading"
+                                    size="x-small"
+                                    class="p4-action-btn-spinner">
+                                </lightning-spinner>
+                            </template>
+                            <span>{getVehicleDetailsButtonLabel}</span>
+                            <template if:true={isGetVehicleDetailsSuccess}>
+                                <lightning-icon
+                                    icon-name="utility:success"
+                                    size="x-small"
+                                    class="p4-action-btn-tick"
+                                    alternative-text="Completed">
+                                </lightning-icon>
+                            </template>
+                        </span>
+                    </button>
+                </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Vehicle Details (after Get Vehicle Details success) -->
+        <template if:true={showVehicleDetailsSection}>
+            <div class="form-card form-card-spaced">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <lightning-icon
+                            icon-name="utility:edit_form"
+                            size="small"
+                            class="slds-icon-text-default"
+                            variant="inverse">
+                        </lightning-icon>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Vehicle Details</h1>
+                            <p class="form-header-subtitle">Make, model, variant and registration details</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-body">
+                    <div class="form-fields-grid">
+
+                        <!-- Row 1: Make | Model -->
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">MAKE</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{makeName}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                                <!--<div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        MAKE
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <lightning-combobox
+                                            name="make"
+                                            label="Make"
+                                            variant="label-hidden"
+                                            value={vdMake}
+                                            placeholder="Select Make"
+                                            options={makeOptions}
+                                            data-key="make"
+                                            onchange={handleVehicleDetailsFieldChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>-->
+                                <c-mmv-record-picker
+                                    label="Make"
+                                    name="make"
+                                    value={makeName}
+                                    is-required=true
+                                    placeholder="Search makes..."
+                                    search-field-api-name="Make__c"
+                                    data-key="make"
+                                    onselectmake={handleVehicleDetailsFieldChange}
+                                >
+                                </c-mmv-record-picker>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">MODEL</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{modelName}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                                <!--<div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        MODEL
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <lightning-combobox
+                                            name="model"
+                                            label="Model"
+                                            variant="label-hidden"
+                                            value={vdModel}
+                                            placeholder="Select Model"
+                                            options={modelOptions}
+                                            disabled={isModelDisabled}
+                                            data-key="model"
+                                            onchange={handleVehicleDetailsFieldChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>-->
+                                <c-mmv-record-picker
+                                    label="Model"
+                                    name="model"
+                                    value={modelName}
+                                    is-required=true
+                                    placeholder="Search models..."
+                                    search-field-api-name="Model__c"
+                                    data-key="model"
+                                    onselectmodel={handleVehicleDetailsFieldChange}
+                                >
+                                </c-mmv-record-picker>
+                            </template>
+                        </div>
+
+                        <!-- Row 2: Variant | Invoice In The Name Of -->
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">VARIANT</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{variantName}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                                <!--<div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        VARIANT
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <lightning-combobox
+                                            name="variant"
+                                            label="Variant"
+                                            variant="label-hidden"
+                                            value={vdVariant}
+                                            placeholder="Select Variant"
+                                            options={variantOptions}
+                                            disabled={isVariantDisabled}
+                                            data-key="variant"
+                                            onchange={handleVehicleDetailsFieldChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>-->
+                                <c-mmv-record-picker
+                                    label="Variant"
+                                    name="variant"
+                                    value={variantName}
+                                    is-required=true
+                                    placeholder="Search variants..."
+                                    search-field-api-name="Variant__c"
+                                    data-key="variant"
+                                    onselectvariant={handleVehicleDetailsFieldChange}
+                                >
+                                </c-mmv-record-picker>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">INVOICE IN THE NAME OF</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{vdInvoiceInNameOf}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">
+                                    INVOICE IN THE NAME OF
+                                    <span class="form-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="form-field-value-col">
+                                    <lightning-input
+                                        type="text"
+                                        label="Invoice In The Name Of"
+                                        variant="label-hidden"
+                                        value={vdInvoiceInNameOf}
+                                        placeholder="Enter name as on invoice"
+                                        data-key="invoiceInNameOf"
+                                        onchange={handleVehicleDetailsFieldChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                            </template>
+                        </div>
+
+                        <!-- Row 3: Manufacturing Year & Month | Last Owner Name -->
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">MANUFACTURING YEAR &amp; MONTH</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{vdManufacturingYearMonth}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">
+                                    MANUFACTURING YEAR &amp; MONTH
+                                    <span class="form-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="form-field-value-col">
+                                    <lightning-input
+                                        type="text"
+                                        label="Manufacturing Year and Month"
+                                        variant="label-hidden"
+                                        value={vdManufacturingYearMonth}
+                                        placeholder="YYYY-MM"
+                                        data-key="manufacturingYearMonth"
+                                        onchange={handleVehicleDetailsFieldChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">LAST OWNER NAME</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{vdLastOwnerName}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">
+                                    LAST OWNER NAME
+                                    <span class="form-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="form-field-value-col">
+                                    <lightning-input
+                                        type="text"
+                                        label="Last Owner Name"
+                                        variant="label-hidden"
+                                        value={vdLastOwnerName}
+                                        placeholder="Enter last owner name"
+                                        data-key="lastOwnerName"
+                                        onchange={handleVehicleDetailsFieldChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                            </template>
+                        </div>
+
+                        <!-- Row 4: Engine Number | Chassis Number -->
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">ENGINE NUMBER</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{vdEngineNumber}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">
+                                    ENGINE NUMBER
+                                    <span class="form-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="form-field-value-col">
+                                    <lightning-input
+                                        type="text"
+                                        label="Engine Number"
+                                        variant="label-hidden"
+                                        value={vdEngineNumber}
+                                        placeholder="Enter engine number"
+                                        data-key="engineNumber"
+                                        onchange={handleVehicleDetailsFieldChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">CHASSIS NUMBER</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{vdChassisNumber}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">
+                                    CHASSIS NUMBER
+                                    <span class="form-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="form-field-value-col">
+                                    <lightning-input
+                                        type="text"
+                                        label="Chassis Number"
+                                        variant="label-hidden"
+                                        value={vdChassisNumber}
+                                        placeholder="Enter chassis number"
+                                        data-key="chassisNumber"
+                                        onchange={handleVehicleDetailsFieldChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                            </template>
+                        </div>
+
+                        <!-- Row 5: Number of Ownerships | RC Retention Applicable -->
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">NUMBER OF OWNERSHIPS</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{vdNumberOfOwnerships}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">
+                                    NUMBER OF OWNERSHIPS
+                                    <span class="form-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="form-field-value-col">
+                                    <lightning-combobox
+                                        name="numberOfOwnerships"
+                                        label="Number of Ownerships"
+                                        variant="label-hidden"
+                                        value={vdNumberOfOwnerships}
+                                        placeholder="Select"
+                                        options={numberOfOwnershipsOptions}
+                                        data-key="numberOfOwnerships"
+                                        onchange={handleVehicleDetailsFieldChange}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">RC RETENTION APPLICABLE</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{vdRcRetentionApplicable}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                            <div class="form-field-cell">
+                                <div class="form-field-label">
+                                    RC RETENTION APPLICABLE
+                                    <span class="form-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="form-field-value-col">
+                                    <lightning-combobox
+                                        name="rcRetentionApplicable"
+                                        label="RC Retention Applicable"
+                                        variant="label-hidden"
+                                        value={vdRcRetentionApplicable}
+                                        placeholder="Select"
+                                        options={rcRetentionApplicableOptions}
+                                        data-key="rcRetentionApplicable"
+                                        onchange={handleVehicleDetailsFieldChange}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                            </template>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Dealer & registration (after Vehicle Details required fields complete) -->
+        <template if:true={showDealerRegistration}>
+            <div class="form-card form-card-spaced">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <lightning-icon
+                            icon-name="utility:choice"
+                            size="small"
+                            class="slds-icon-text-default"
+                            variant="inverse">
+                        </lightning-icon>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Dealer &amp; registration</h1>
+                            <p class="form-header-subtitle">Dealer, invoice and registration details</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-body">
+                    <div class="form-fields-grid">
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">STATE OF UTILIZATION OF ASSET</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{drStateOfUtilizationOfAsset}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        STATE OF UTILIZATION OF ASSET
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <lightning-combobox
+                                            name="stateOfUtilizationOfAsset"
+                                            label="State Of Utilization Of Asset"
+                                            variant="label-hidden"
+                                            value={drStateOfUtilizationOfAsset}
+                                            placeholder="Select an Option"
+                                            options={stateOfUtilizationOptions}
+                                            data-key="stateOfUtilizationOfAsset"
+                                            onchange={handleDealerRegistrationFieldChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">DISTRICT OF UTILIZATION OF ASSET</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{drDistrictOfUtilizationOfAsset}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        DISTRICT OF UTILIZATION OF ASSET
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <lightning-combobox
+                                            name="districtOfUtilizationOfAsset"
+                                            label="District Of Utilization Of Asset"
+                                            variant="label-hidden"
+                                            value={drDistrictOfUtilizationOfAsset}
+                                            placeholder="Select an Option"
+                                            options={districtOfUtilizationOptions}
+                                            disabled={isDistrictDisabled}
+                                            data-key="districtOfUtilizationOfAsset"
+                                            onchange={handleDealerRegistrationFieldChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">DEALER/SUB-DEALER NAME</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{drDealerSubDealerName}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        DEALER/SUB-DEALER NAME
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <lightning-combobox
+                                            name="dealerSubDealerName"
+                                            label="Dealer/Sub-Dealer Name"
+                                            variant="label-hidden"
+                                            value={drDealerSubDealerName}
+                                            placeholder="Select dealer / sub-dealer"
+                                            options={dealerSubDealerOptions}
+                                            data-key="dealerSubDealerName"
+                                            onchange={handleDealerRegistrationFieldChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">RC LIMIT ENABLED DEALER</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{drRcLimitEnabledDealerDisplay}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">RC LIMIT ENABLED DEALER</div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input
+                                            type="checkbox"
+                                            label="RC Limit Enabled Dealer"
+                                            variant="label-hidden"
+                                            checked={drRcLimitEnabledDealer}
+                                            data-key="rcLimitEnabledDealer"
+                                            onchange={handleDealerRegistrationFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Loan Information (after Dealer & registration complete) -->
+        <template if:true={showLoanInformation}>
+            <div class="form-card form-card-spaced">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <lightning-icon
+                            icon-name="utility:currency"
+                            size="small"
+                            class="slds-icon-text-default"
+                            variant="inverse">
+                        </lightning-icon>
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Loan Information</h1>
+                            <p class="form-header-subtitle">Capture tenure, IRR and funding basis</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-body">
+                    <div class="form-fields-grid">
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">REQUIRED LOAN AMOUNT</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{liRequiredLoanAmount}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        REQUIRED LOAN AMOUNT
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input
+                                            type="number"
+                                            label="Required Loan Amount"
+                                            variant="label-hidden"
+                                            value={liRequiredLoanAmount}
+                                            placeholder="Enter Required Loan Amount"
+                                            data-key="requiredLoanAmount"
+                                            onchange={handleLoanInformationFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">MAXIMUM AVAILABLE TENURE</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{liMaximumAvailableTenureDisplay}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">REQUIRED TENURE (MONTHS)</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{liRequiredTenure}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        REQUIRED TENURE (MONTHS)
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <lightning-combobox
+                                            name="requiredTenure"
+                                            label="Required Tenure"
+                                            variant="label-hidden"
+                                            value={liRequiredTenure}
+                                            placeholder="Select Required Tenure"
+                                            options={requiredTenureOptions}
+                                            data-key="requiredTenure"
+                                            onchange={handleLoanInformationFieldChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">REQUIRED IRR</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{liRequiredIrr}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        REQUIRED IRR
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col">
+                                        <lightning-input
+                                            type="number"
+                                            label="Required IRR"
+                                            variant="label-hidden"
+                                            value={liRequiredIrr}
+                                            placeholder="Enter Required IRR"
+                                            step="0.01"
+                                            data-key="requiredIrr"
+                                            onchange={handleLoanInformationFieldChange}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template if:true={isPageReadOnly}>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">FUNDING BASED ON</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{liFundingBasedOnDisplay}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={isPageReadOnly}>
+                                <div class="form-field-cell">
+                                    <div class="form-field-label">
+                                        FUNDING BASED ON
+                                        <span class="form-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="form-field-value-col form-field-value-col--radio">
+                                        <div class="form-radio-group form-radio-group--vertical">
+                                            <label class="form-radio-label">
+                                                <input
+                                                    type="radio"
+                                                    class="form-radio-input"
+                                                    name="fundingBasedOn"
+                                                    value="On-road Price"
+                                                    checked={isFundingOnRoadPrice}
+                                                    data-key="fundingBasedOn"
+                                                    onchange={handleLoanInformationFieldChange} />
+                                                <span class="form-radio-circle"></span>
+                                                <span class="form-radio-text">On-road Price</span>
+                                            </label>
+                                            <label class="form-radio-label">
+                                                <input
+                                                    type="radio"
+                                                    class="form-radio-input"
+                                                    name="fundingBasedOn"
+                                                    value="Ex-showroom Price"
+                                                    checked={isFundingExShowroomPrice}
+                                                    data-key="fundingBasedOn"
+                                                    onchange={handleLoanInformationFieldChange} />
+                                                <span class="form-radio-circle"></span>
+                                                <span class="form-radio-text">Ex-showroom Price</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <div class="p4-footer-wrapper">
+            <div class="p4-footer">
+                <div class="p4-btn-wrapper p4-btn-group">
+                    <button
+                        type="button"
+                        class={viabilityCheckButtonClass}
+                        disabled={isViabilityCheckDisabled}
+                        onclick={handleViabilityCheckButton}>
+                        <span class="p4-action-btn-inner">
+                            <span>{viabilityCheckButtonLabel}</span>
+                            <template if:true={hasViabilityCheckSaved}>
+                                <lightning-icon
+                                    icon-name="utility:success"
+                                    size="x-small"
+                                    class="p4-action-btn-tick"
+                                    alternative-text="Completed">
+                                </lightning-icon>
+                            </template>
+                        </span>
+                    </button>
+                    <template if:true={showHireVsBuy}>
+                        <button
+                            type="button"
+                            class={hireVsBuyButtonClass}
+                            disabled={isViabilityCheckDisabled}
+                            onclick={handleHireVsBuyButton}>
+                            <span class="p4-action-btn-inner">
+                                <span>{hireVsBuyButtonLabel}</span>
+                                <template if:true={hasHireVsBuySaved}>
+                                    <lightning-icon
+                                        icon-name="utility:success"
+                                        size="x-small"
+                                        class="p4-action-btn-tick"
+                                        alternative-text="Completed">
+                                    </lightning-icon>
+                                </template>
+                            </span>
+                        </button>
+                    </template>
+                    <button
+                        type="button"
+                        class="p4-primary-btn p4-button-text"
+                        disabled={isNextDisabled}
+                        onclick={handleNextButton}>
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <template if:true={showDynamicComponentModal}>
+            <c-dynamic-component-modal
+                component-props={dynamicComponentProps}
+                component-name={dynamicComponentName}
+                record-id={recordId}
+                modal-header={dynamicModalHeader}
+                onclose={handleDynamicComponentModalClose}>
+            </c-dynamic-component-modal>
+        </template>
+
+        <template if:true={showIntegrationProgressModal}>
+            <c-integration-progress-modal
+                status={integrationProgressModalStatus}
+                current-stage-index={integrationProgressModalCurrentStageIdx}
+                stages={integrationProgressModalStages}
+                error-message={integrationProgressModalErrorMessage}
+                onclose={handleIntegrationProgressModalClose}
+                onretry={handleIntegrationProgressModalRetry}
+                ondone={handleIntegrationProgressModalDone}>
+            </c-integration-progress-modal>
+        </template>
+
+    </div>
+</template>

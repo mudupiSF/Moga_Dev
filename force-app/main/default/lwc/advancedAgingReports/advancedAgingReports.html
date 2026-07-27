@@ -1,0 +1,1177 @@
+<template>
+    <!-- Only show full-page spinner on initial load (when getting user IDs) -->
+    <template if:true={isLoading}>
+        <div class="slds-align_absolute-center slds-var-p-around_large">
+            <lightning-spinner alternative-text={loadingMessage} size="medium"></lightning-spinner>
+            <p class="slds-text-heading_small slds-var-m-top_small">{loadingMessage}</p>
+        </div>
+    </template>
+
+    <template if:false={isLoading}>
+        <lightning-card title="Application Aging Report" icon-name="standard:timesheet">
+            <!-- Actions -->
+            <div slot="actions">
+                <template if:true={showApplicationColumnsButton}>
+                    <lightning-button
+                        label="Select Application Columns"
+                        icon-name="utility:settings"
+                        onclick={openApplicationColumnSelector}
+                        variant="neutral">
+                    </lightning-button>
+                </template>
+                <template if:true={showInvestigationColumnsButton}>
+                    <lightning-button
+                        label="Select Investigation Columns"
+                        icon-name="utility:settings"
+                        onclick={openInvestigationColumnSelector}
+                        variant="neutral">
+                    </lightning-button>
+                </template>
+            </div>
+            
+            <!-- Tabs -->
+            <lightning-tabset active-tab-value={activeTab}>
+                <!-- My Applications Tab -->
+                <template if:true={showMyApplicationsTab}>
+                    <lightning-tab label="My Applications" value="employee">
+                    <!-- Employee View Filters -->
+                    <div class="filter-section slds-var-p-horizontal_small slds-var-p-bottom_small slds-border_bottom">
+                        <div class="slds-grid slds-gutters_small slds-wrap slds-grid_vertical-align-end">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                <lightning-combobox
+                                    name="employeeProduct"
+                                    label="Product"
+                                    value={employeeSelectedProduct}
+                                    placeholder="Select Product"
+                                    options={productOptions}
+                                    onchange={handleEmployeeProductChange}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                <lightning-combobox
+                                    name="employeeStage"
+                                    label="Stage"
+                                    value={employeeSelectedStage}
+                                    placeholder="Select Stage"
+                                    options={stageOptions}
+                                    onchange={handleEmployeeStageChange}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                <lightning-combobox
+                                    name="employeeApplicationAge"
+                                    label="Application Age"
+                                    value={employeeSelectedApplicationAge}
+                                    placeholder="Select Age Range"
+                                    options={ageFilterOptions}
+                                    onchange={handleEmployeeApplicationAgeChange}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                <lightning-combobox
+                                    name="employeeApplicationLastStatusAge"
+                                    label="Last Status Age"
+                                    value={employeeSelectedApplicationLastStatusAge}
+                                    placeholder="Select Age Range"
+                                    options={ageFilterOptions}
+                                    onchange={handleEmployeeApplicationLastStatusAgeChange}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                <lightning-combobox
+                                    name="employeeApplicationHasOpenQueries"
+                                    label="Open Queries"
+                                    value={employeeSelectedHasOpenQueries}
+                                    placeholder="Select"
+                                    options={hasOpenQueriesOptions}
+                                    onchange={handleEmployeeHasOpenQueriesChange}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                <lightning-combobox
+                                    name="employeeCreatedDate"
+                                    label="Created Date"
+                                    value={employeeSelectedCreatedDate}
+                                    placeholder="Select Date Range"
+                                    options={createdDateFilterOptions}
+                                    onchange={handleEmployeeCreatedDateChange}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                <!-- Show my applications toggle -->
+                                <lightning-input
+                                    type="toggle"
+                                    label="Show my applications"
+                                    checked={employeeShowApplicationsIOwn}
+                                    onchange={handleShowApplicationsIOwnChange}>
+                                </lightning-input>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                <template if:true={employeeHasFilters}>
+                                    <lightning-button
+                                        label="Clear Filters"
+                                        onclick={clearEmployeeFilters}
+                                        variant="neutral">
+                                    </lightning-button>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Employee View Top Pagination -->
+                    <template if:true={employeeHasRecords}>
+                        <div class="slds-var-p-around_small slds-border_bottom">
+                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                <div class="slds-col">
+                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                        <span class="slds-text-body_small slds-var-m-right_x-small">Show:</span>
+                                        <lightning-combobox
+                                            variant="label-hidden"
+                                            value={selectedPageSize}
+                                            options={pageSizeOptions}
+                                            onchange={handlePageSizeChange}
+                                            class="page-size-selector">
+                                        </lightning-combobox>
+                                        <span class="slds-text-body_small slds-var-m-left_x-small">per page</span>
+                                    </div>
+                                </div>
+                                <div class="slds-col">
+                                    <p class="slds-text-body_small slds-text-color_weak slds-text-align_center">
+                                        {employeePaginationInfo}
+                                    </p>
+                                </div>
+                                <div class="slds-col">
+                                    <template if:true={employeeShowPagination}>
+                                        <lightning-button-group class="slds-float_right">
+                                            <lightning-button label="First" onclick={handleEmployeeFirst} 
+                                                disabled={employeeIsPreviousDisabled} variant="neutral"></lightning-button>
+                                            <lightning-button icon-name="utility:chevronleft" onclick={handleEmployeePrevious} 
+                                                disabled={employeeIsPreviousDisabled} variant="neutral"></lightning-button>
+                                            <lightning-button label={employeePageInfo} variant="neutral" disabled></lightning-button>
+                                            <lightning-button icon-name="utility:chevronright" onclick={handleEmployeeNext} 
+                                                disabled={employeeIsNextDisabled} variant="neutral"></lightning-button>
+                                            <lightning-button label="Last" onclick={handleEmployeeLast} 
+                                                disabled={employeeIsNextDisabled} variant="neutral"></lightning-button>
+                                        </lightning-button-group>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Employee View Data Table -->
+                    <template if:true={employeeHasRecords}>
+                        <div class="slds-var-p-around_small">
+                            <template if:true={isLoadingApplicationData}>
+                                <div class="slds-align_absolute-center slds-var-p-around_large">
+                                    <lightning-spinner alternative-text="Loading application data..." size="medium"></lightning-spinner>
+                                </div>
+                            </template>
+                            <template if:false={isLoadingApplicationData}>
+                                <lightning-datatable
+                                    key-field="applicationId"
+                                    data={employeeDisplayedRecords}
+                                    columns={columns}
+                                    hide-checkbox-column
+                                    show-row-number-column
+                                    row-number-offset={employeeRowNumberOffset}
+                                    onsort={handleEmployeeApplicationSort}
+                                    sorted-by={employeeApplicationSortedBy}
+                                    sorted-direction={employeeApplicationSortDirection}>
+                                </lightning-datatable>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- Employee View No Records / Loading -->
+                    <template if:false={employeeHasRecords}>
+                        <div class="slds-align_absolute-center slds-var-p-around_xx-large">
+                            <template if:true={isLoadingApplicationData}>
+                                <lightning-spinner alternative-text="Loading..." size="medium" class="slds-var-m-bottom_medium"></lightning-spinner>
+                            </template>
+                            <template if:false={isLoadingApplicationData}>
+                                <lightning-icon icon-name="utility:info" size="large" class="slds-var-m-bottom_medium"></lightning-icon>
+                            </template>
+                            <p class="slds-text-heading_medium">{noEmployeeRecordsMessage}</p>
+                        </div>
+                    </template>
+
+                    <!-- Employee View Bottom Pagination -->
+                    <template if:true={employeeHasRecords}>
+                        <div class="slds-var-p-around_small slds-border_top">
+                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                <div class="slds-col">
+                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                        <span class="slds-text-body_small slds-var-m-right_x-small">Show:</span>
+                                        <lightning-combobox
+                                            variant="label-hidden"
+                                            value={selectedPageSize}
+                                            options={pageSizeOptions}
+                                            onchange={handlePageSizeChange}
+                                            class="page-size-selector">
+                                        </lightning-combobox>
+                                        <span class="slds-text-body_small slds-var-m-left_x-small">per page</span>
+                                    </div>
+                                </div>
+                                <div class="slds-col">
+                                    <p class="slds-text-body_small slds-text-color_weak slds-text-align_center">
+                                        {employeePaginationInfo}
+                                    </p>
+                                </div>
+                                <div class="slds-col">
+                                    <template if:true={employeeShowPagination}>
+                                        <lightning-button-group class="slds-float_right">
+                                            <lightning-button label="First" onclick={handleEmployeeFirst} 
+                                                disabled={employeeIsPreviousDisabled} variant="neutral"></lightning-button>
+                                            <lightning-button icon-name="utility:chevronleft" onclick={handleEmployeePrevious} 
+                                                disabled={employeeIsPreviousDisabled} variant="neutral"></lightning-button>
+                                            <lightning-button label={employeePageInfo} variant="neutral" disabled></lightning-button>
+                                            <lightning-button icon-name="utility:chevronright" onclick={handleEmployeeNext} 
+                                                disabled={employeeIsNextDisabled} variant="neutral"></lightning-button>
+                                            <lightning-button label="Last" onclick={handleEmployeeLast} 
+                                                disabled={employeeIsNextDisabled} variant="neutral"></lightning-button>
+                                        </lightning-button-group>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    </lightning-tab>
+                </template>
+
+                <!-- My Team Tab (shown for Admin or Manager) -->
+                <template if:true={showMyTeamTab}>
+                    <lightning-tab label="My Team" value="manager">
+                        <!-- Manager View Filters -->
+                        <div class="filter-section slds-var-p-horizontal_small slds-var-p-bottom_small slds-border_bottom">
+                            <div class="slds-grid slds-gutters_small slds-wrap slds-grid_vertical-align-end">
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerProduct"
+                                        label="Product"
+                                        value={managerSelectedProduct}
+                                        placeholder="Select Product"
+                                        options={productOptions}
+                                        onchange={handleManagerProductChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerStage"
+                                        label="Stage"
+                                        value={managerSelectedStage}
+                                        placeholder="Select Stage"
+                                        options={stageOptions}
+                                        onchange={handleManagerStageChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerManager"
+                                        label="Manager"
+                                        value={managerSelectedManager}
+                                        placeholder="Select Manager"
+                                        options={managerOptions}
+                                        onchange={handleManagerManagerChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerOwner"
+                                        label="Owner"
+                                        value={managerSelectedOwner}
+                                        placeholder="Select Owner"
+                                        options={ownerOptions}
+                                        onchange={handleManagerOwnerChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerApplicationAge"
+                                        label="Application Age"
+                                        value={managerSelectedApplicationAge}
+                                        placeholder="Select Age Range"
+                                        options={ageFilterOptions}
+                                        onchange={handleManagerApplicationAgeChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerLastStatusAge"
+                                        label="Last Status Age"
+                                        value={managerSelectedLastStatusAge}
+                                        placeholder="Select Age Range"
+                                        options={ageFilterOptions}
+                                        onchange={handleManagerLastStatusAgeChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerHasOpenQueries"
+                                        label="Open Queries"
+                                        value={managerSelectedHasOpenQueries}
+                                        placeholder="Select"
+                                        options={hasOpenQueriesOptions}
+                                        onchange={handleManagerHasOpenQueriesChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerCreatedDate"
+                                        label="Created Date"
+                                        value={managerSelectedCreatedDate}
+                                        placeholder="Select Date Range"
+                                        options={createdDateFilterOptions}
+                                        onchange={handleManagerCreatedDateChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <!-- My Team Owns toggle -->
+                                    <lightning-input
+                                        type="toggle"
+                                        label="My Team Owns"
+                                        checked={managerShowApplicationsIOwn}
+                                        onchange={handleShowApplicationsIOwnChange}>
+                                    </lightning-input>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <template if:true={managerHasFilters}>
+                                        <lightning-button
+                                            label="Clear Filters"
+                                            onclick={clearManagerFilters}
+                                            variant="neutral">
+                                        </lightning-button>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manager View Top Pagination -->
+                        <template if:true={managerHasRecords}>
+                            <div class="slds-var-p-around_small slds-border_bottom">
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div class="slds-col">
+                                        <div class="slds-grid slds-grid_vertical-align-center">
+                                            <span class="slds-text-body_small slds-var-m-right_x-small">Show:</span>
+                                            <lightning-combobox
+                                                variant="label-hidden"
+                                                value={selectedPageSize}
+                                                options={pageSizeOptions}
+                                                onchange={handlePageSizeChange}
+                                                class="page-size-selector">
+                                            </lightning-combobox>
+                                            <span class="slds-text-body_small slds-var-m-left_x-small">per page</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">
+                                        <p class="slds-text-body_small slds-text-color_weak slds-text-align_center">
+                                            {managerPaginationInfo}
+                                        </p>
+                                    </div>
+                                    <div class="slds-col">
+                                        <template if:true={managerShowPagination}>
+                                            <lightning-button-group class="slds-float_right">
+                                                <lightning-button label="First" onclick={handleManagerFirst} 
+                                                    disabled={managerIsPreviousDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button icon-name="utility:chevronleft" onclick={handleManagerPrevious} 
+                                                    disabled={managerIsPreviousDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button label={managerPageInfo} variant="neutral" disabled></lightning-button>
+                                                <lightning-button icon-name="utility:chevronright" onclick={handleManagerNext} 
+                                                    disabled={managerIsNextDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button label="Last" onclick={handleManagerLast} 
+                                                    disabled={managerIsNextDisabled} variant="neutral"></lightning-button>
+                                            </lightning-button-group>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Manager View Data Table -->
+                        <template if:true={managerHasRecords}>
+                            <div class="slds-var-p-around_small">
+                                <template if:true={isLoadingApplicationData}>
+                                    <div class="slds-align_absolute-center slds-var-p-around_large">
+                                        <lightning-spinner alternative-text="Loading application data..." size="medium"></lightning-spinner>
+                                    </div>
+                                </template>
+                                <template if:false={isLoadingApplicationData}>
+                                    <lightning-datatable
+                                        key-field="applicationId"
+                                        data={managerDisplayedRecords}
+                                        columns={columns}
+                                        hide-checkbox-column
+                                        show-row-number-column
+                                        row-number-offset={managerRowNumberOffset}
+                                        onsort={handleManagerApplicationSort}
+                                        sorted-by={managerApplicationSortedBy}
+                                        sorted-direction={managerApplicationSortDirection}>
+                                    </lightning-datatable>
+                                </template>
+                            </div>
+                        </template>
+
+                        <!-- Manager View No Records / Loading -->
+                        <template if:false={managerHasRecords}>
+                            <div class="slds-align_absolute-center slds-var-p-around_xx-large">
+                                <template if:true={isLoadingApplicationData}>
+                                    <lightning-spinner alternative-text="Loading..." size="medium" class="slds-var-m-bottom_medium"></lightning-spinner>
+                                </template>
+                                <template if:false={isLoadingApplicationData}>
+                                    <lightning-icon icon-name="utility:info" size="large" class="slds-var-m-bottom_medium"></lightning-icon>
+                                </template>
+                                <p class="slds-text-heading_medium">{noManagerRecordsMessage}</p>
+                            </div>
+                        </template>
+
+                        <!-- Manager View Bottom Pagination -->
+                        <template if:true={managerHasRecords}>
+                            <div class="slds-var-p-around_small slds-border_top">
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div class="slds-col">
+                                        <div class="slds-grid slds-grid_vertical-align-center">
+                                            <span class="slds-text-body_small slds-var-m-right_x-small">Show:</span>
+                                            <lightning-combobox
+                                                variant="label-hidden"
+                                                value={selectedPageSize}
+                                                options={pageSizeOptions}
+                                                onchange={handlePageSizeChange}
+                                                class="page-size-selector">
+                                            </lightning-combobox>
+                                            <span class="slds-text-body_small slds-var-m-left_x-small">per page</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">
+                                        <p class="slds-text-body_small slds-text-color_weak slds-text-align_center">
+                                            {managerPaginationInfo}
+                                        </p>
+                                    </div>
+                                    <div class="slds-col">
+                                        <template if:true={managerShowPagination}>
+                                            <lightning-button-group class="slds-float_right">
+                                                <lightning-button label="First" onclick={handleManagerFirst} 
+                                                    disabled={managerIsPreviousDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button icon-name="utility:chevronleft" onclick={handleManagerPrevious} 
+                                                    disabled={managerIsPreviousDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button label={managerPageInfo} variant="neutral" disabled></lightning-button>
+                                                <lightning-button icon-name="utility:chevronright" onclick={handleManagerNext} 
+                                                    disabled={managerIsNextDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button label="Last" onclick={handleManagerLast} 
+                                                    disabled={managerIsNextDisabled} variant="neutral"></lightning-button>
+                                            </lightning-button-group>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </lightning-tab>
+                </template>
+                
+                <!-- Employee Investigation Tab (only if investigations enabled) -->
+                <template if:true={showEmployeeInvestigationTab}>
+                    <lightning-tab label="My Investigations" value="employeeInvestigation">
+                        <!-- Employee Investigation Filters -->
+                        <div class="filter-section slds-var-p-horizontal_small slds-var-p-bottom_small slds-border_bottom">
+                            <div class="slds-grid slds-gutters_small slds-wrap slds-grid_vertical-align-end">
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                    <lightning-combobox
+                                        name="employeeInvestigationProduct"
+                                        label="Product"
+                                        value={employeeInvestigationSelectedProduct}
+                                        placeholder="Select Product"
+                                        options={productOptions}
+                                        onchange={handleEmployeeInvestigationProductChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                    <lightning-combobox
+                                        name="employeeInvestigationStatus"
+                                        label="Status"
+                                        value={employeeInvestigationSelectedStatus}
+                                        placeholder="Select Status"
+                                        options={statusOptions}
+                                        onchange={handleEmployeeInvestigationStatusChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                    <lightning-combobox
+                                        name="employeeInvestigationInvestigationAge"
+                                        label="Investigation Age"
+                                        value={employeeInvestigationSelectedInvestigationAge}
+                                        placeholder="Select Age Range"
+                                        options={ageFilterOptions}
+                                        onchange={handleEmployeeInvestigationInvestigationAgeChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                    <lightning-combobox
+                                        name="employeeInvestigationLastStatusAge"
+                                        label="Last Status Age"
+                                        value={employeeInvestigationSelectedLastStatusAge}
+                                        placeholder="Select Age Range"
+                                        options={ageFilterOptions}
+                                        onchange={handleEmployeeInvestigationLastStatusAgeChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6">
+                                    <template if:true={employeeInvestigationHasFilters}>
+                                        <lightning-button
+                                            label="Clear Filters"
+                                            onclick={clearEmployeeInvestigationFilters}
+                                            variant="neutral">
+                                        </lightning-button>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Employee Investigation Top Pagination -->
+                        <template if:true={employeeInvestigationHasRecords}>
+                            <div class="slds-var-p-around_small slds-border_bottom">
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div class="slds-col">
+                                        <div class="slds-grid slds-grid_vertical-align-center">
+                                            <span class="slds-text-body_small slds-var-m-right_x-small">Show:</span>
+                                            <lightning-combobox
+                                                variant="label-hidden"
+                                                value={selectedPageSize}
+                                                options={pageSizeOptions}
+                                                onchange={handlePageSizeChange}
+                                                class="page-size-selector">
+                                            </lightning-combobox>
+                                            <span class="slds-text-body_small slds-var-m-left_x-small">per page</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">
+                                        <p class="slds-text-body_small slds-text-color_weak slds-text-align_center">
+                                            {employeeInvestigationPaginationInfo}
+                                        </p>
+                                    </div>
+                                    <div class="slds-col">
+                                        <template if:true={employeeInvestigationShowPagination}>
+                                            <lightning-button-group class="slds-float_right">
+                                                <lightning-button label="First" onclick={handleEmployeeInvestigationFirst} 
+                                                    disabled={employeeInvestigationIsPreviousDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button icon-name="utility:chevronleft" onclick={handleEmployeeInvestigationPrevious} 
+                                                    disabled={employeeInvestigationIsPreviousDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button label={employeeInvestigationPageInfo} variant="neutral" disabled></lightning-button>
+                                                <lightning-button icon-name="utility:chevronright" onclick={handleEmployeeInvestigationNext} 
+                                                    disabled={employeeInvestigationIsNextDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button label="Last" onclick={handleEmployeeInvestigationLast} 
+                                                    disabled={employeeInvestigationIsNextDisabled} variant="neutral"></lightning-button>
+                                            </lightning-button-group>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Employee Investigation Data Table -->
+                        <template if:true={employeeInvestigationHasRecords}>
+                            <div class="slds-var-p-around_small">
+                                <lightning-datatable
+                                    key-field="investigationId"
+                                    data={employeeInvestigationDisplayedRecords}
+                                    columns={investigationColumns}
+                                    hide-checkbox-column
+                                    show-row-number-column
+                                    row-number-offset={employeeInvestigationRowNumberOffset}
+                                    onsort={handleEmployeeInvestigationSort}
+                                    sorted-by={employeeInvestigationSortedBy}
+                                    sorted-direction={employeeInvestigationSortDirection}>
+                                </lightning-datatable>
+                            </div>
+                        </template>
+
+                        <!-- Employee Investigation No Records / Loading -->
+                        <template if:false={employeeInvestigationHasRecords}>
+                            <div class="slds-align_absolute-center slds-var-p-around_xx-large">
+                                <template if:true={isLoading}>
+                                    <lightning-spinner alternative-text="Loading..." size="medium" class="slds-var-m-bottom_medium"></lightning-spinner>
+                                </template>
+                                <template if:false={isLoading}>
+                                    <lightning-icon icon-name="utility:info" size="large" class="slds-var-m-bottom_medium"></lightning-icon>
+                                </template>
+                                <p class="slds-text-heading_medium">{noEmployeeInvestigationRecordsMessage}</p>
+                            </div>
+                        </template>
+
+                        <!-- Employee Investigation Bottom Pagination -->
+                        <template if:true={employeeInvestigationHasRecords}>
+                            <div class="slds-var-p-around_small slds-border_top">
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div class="slds-col">
+                                        <div class="slds-grid slds-grid_vertical-align-center">
+                                            <span class="slds-text-body_small slds-var-m-right_x-small">Show:</span>
+                                            <lightning-combobox
+                                                variant="label-hidden"
+                                                value={selectedPageSize}
+                                                options={pageSizeOptions}
+                                                onchange={handlePageSizeChange}
+                                                class="page-size-selector">
+                                            </lightning-combobox>
+                                            <span class="slds-text-body_small slds-var-m-left_x-small">per page</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">
+                                        <p class="slds-text-body_small slds-text-color_weak slds-text-align_center">
+                                            {employeeInvestigationPaginationInfo}
+                                        </p>
+                                    </div>
+                                    <div class="slds-col">
+                                        <template if:true={employeeInvestigationShowPagination}>
+                                            <lightning-button-group class="slds-float_right">
+                                                <lightning-button label="First" onclick={handleEmployeeInvestigationFirst} 
+                                                    disabled={employeeInvestigationIsPreviousDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button icon-name="utility:chevronleft" onclick={handleEmployeeInvestigationPrevious} 
+                                                    disabled={employeeInvestigationIsPreviousDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button label={employeeInvestigationPageInfo} variant="neutral" disabled></lightning-button>
+                                                <lightning-button icon-name="utility:chevronright" onclick={handleEmployeeInvestigationNext} 
+                                                    disabled={employeeInvestigationIsNextDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button label="Last" onclick={handleEmployeeInvestigationLast} 
+                                                    disabled={employeeInvestigationIsNextDisabled} variant="neutral"></lightning-button>
+                                            </lightning-button-group>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </lightning-tab>
+                </template>
+                
+                <!-- My Team Investigations Tab (shown for Admin or Manager with investigations access) -->
+                <template if:true={showMyTeamInvestigationTab}>
+                    <lightning-tab label="My Team Investigations" value="managerInvestigation">
+                        <!-- Manager Investigation Filters -->
+                        <div class="filter-section slds-var-p-horizontal_small slds-var-p-bottom_small slds-border_bottom">
+                            <div class="slds-grid slds-gutters_small slds-wrap slds-grid_vertical-align-end">
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerInvestigationProduct"
+                                        label="Product"
+                                        value={managerInvestigationSelectedProduct}
+                                        placeholder="Select Product"
+                                        options={productOptions}
+                                        onchange={handleManagerInvestigationProductChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerInvestigationStatus"
+                                        label="Status"
+                                        value={managerInvestigationSelectedStatus}
+                                        placeholder="Select Status"
+                                        options={statusOptions}
+                                        onchange={handleManagerInvestigationStatusChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerInvestigationManager"
+                                        label="Manager"
+                                        value={managerInvestigationSelectedManager}
+                                        placeholder="Select Manager"
+                                        options={managerOptions}
+                                        onchange={handleManagerInvestigationManagerChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerInvestigationOwner"
+                                        label="Owner"
+                                        value={managerInvestigationSelectedOwner}
+                                        placeholder="Select Owner"
+                                        options={ownerOptions}
+                                        onchange={handleManagerInvestigationOwnerChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerInvestigationInvestigationAge"
+                                        label="Investigation Age"
+                                        value={managerInvestigationSelectedInvestigationAge}
+                                        placeholder="Select Age Range"
+                                        options={ageFilterOptions}
+                                        onchange={handleManagerInvestigationInvestigationAgeChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="managerInvestigationLastStatusAge"
+                                        label="Last Status Age"
+                                        value={managerInvestigationSelectedLastStatusAge}
+                                        placeholder="Select Age Range"
+                                        options={ageFilterOptions}
+                                        onchange={handleManagerInvestigationLastStatusAgeChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <template if:true={managerInvestigationHasFilters}>
+                                        <lightning-button
+                                            label="Clear Filters"
+                                            onclick={clearManagerInvestigationFilters}
+                                            variant="neutral">
+                                        </lightning-button>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manager Investigation Top Pagination -->
+                        <template if:true={managerInvestigationHasRecords}>
+                            <div class="slds-var-p-around_small slds-border_bottom">
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div class="slds-col">
+                                        <div class="slds-grid slds-grid_vertical-align-center">
+                                            <span class="slds-text-body_small slds-var-m-right_x-small">Show:</span>
+                                            <lightning-combobox
+                                                variant="label-hidden"
+                                                value={selectedPageSize}
+                                                options={pageSizeOptions}
+                                                onchange={handlePageSizeChange}
+                                                class="page-size-selector">
+                                            </lightning-combobox>
+                                            <span class="slds-text-body_small slds-var-m-left_x-small">per page</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">
+                                        <p class="slds-text-body_small slds-text-color_weak slds-text-align_center">
+                                            {managerInvestigationPaginationInfo}
+                                        </p>
+                                    </div>
+                                    <div class="slds-col">
+                                        <template if:true={managerInvestigationShowPagination}>
+                                            <lightning-button-group class="slds-float_right">
+                                                <lightning-button label="First" onclick={handleManagerInvestigationFirst} 
+                                                    disabled={managerInvestigationIsPreviousDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button icon-name="utility:chevronleft" onclick={handleManagerInvestigationPrevious} 
+                                                    disabled={managerInvestigationIsPreviousDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button label={managerInvestigationPageInfo} variant="neutral" disabled></lightning-button>
+                                                <lightning-button icon-name="utility:chevronright" onclick={handleManagerInvestigationNext} 
+                                                    disabled={managerInvestigationIsNextDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button label="Last" onclick={handleManagerInvestigationLast} 
+                                                    disabled={managerInvestigationIsNextDisabled} variant="neutral"></lightning-button>
+                                            </lightning-button-group>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Manager Investigation Data Table -->
+                        <template if:true={managerInvestigationHasRecords}>
+                            <div class="slds-var-p-around_small">
+                                <lightning-datatable
+                                    key-field="investigationId"
+                                    data={managerInvestigationDisplayedRecords}
+                                    columns={investigationColumns}
+                                    hide-checkbox-column
+                                    show-row-number-column
+                                    row-number-offset={managerInvestigationRowNumberOffset}
+                                    onsort={handleManagerInvestigationSort}
+                                    sorted-by={managerInvestigationSortedBy}
+                                    sorted-direction={managerInvestigationSortDirection}>
+                                </lightning-datatable>
+                            </div>
+                        </template>
+
+                        <!-- Manager Investigation No Records / Loading -->
+                        <template if:false={managerInvestigationHasRecords}>
+                            <div class="slds-align_absolute-center slds-var-p-around_xx-large">
+                                <template if:true={isLoading}>
+                                    <lightning-spinner alternative-text="Loading..." size="medium" class="slds-var-m-bottom_medium"></lightning-spinner>
+                                </template>
+                                <template if:false={isLoading}>
+                                    <lightning-icon icon-name="utility:info" size="large" class="slds-var-m-bottom_medium"></lightning-icon>
+                                </template>
+                                <p class="slds-text-heading_medium">{noManagerInvestigationRecordsMessage}</p>
+                            </div>
+                        </template>
+
+                        <!-- Manager Investigation Bottom Pagination -->
+                        <template if:true={managerInvestigationHasRecords}>
+                            <div class="slds-var-p-around_small slds-border_top">
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div class="slds-col">
+                                        <div class="slds-grid slds-grid_vertical-align-center">
+                                            <span class="slds-text-body_small slds-var-m-right_x-small">Show:</span>
+                                            <lightning-combobox
+                                                variant="label-hidden"
+                                                value={selectedPageSize}
+                                                options={pageSizeOptions}
+                                                onchange={handlePageSizeChange}
+                                                class="page-size-selector">
+                                            </lightning-combobox>
+                                            <span class="slds-text-body_small slds-var-m-left_x-small">per page</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">
+                                        <p class="slds-text-body_small slds-text-color_weak slds-text-align_center">
+                                            {managerInvestigationPaginationInfo}
+                                        </p>
+                                    </div>
+                                    <div class="slds-col">
+                                        <template if:true={managerInvestigationShowPagination}>
+                                            <lightning-button-group class="slds-float_right">
+                                                <lightning-button label="First" onclick={handleManagerInvestigationFirst} 
+                                                    disabled={managerInvestigationIsPreviousDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button icon-name="utility:chevronleft" onclick={handleManagerInvestigationPrevious} 
+                                                    disabled={managerInvestigationIsPreviousDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button label={managerInvestigationPageInfo} variant="neutral" disabled></lightning-button>
+                                                <lightning-button icon-name="utility:chevronright" onclick={handleManagerInvestigationNext} 
+                                                    disabled={managerInvestigationIsNextDisabled} variant="neutral"></lightning-button>
+                                                <lightning-button label="Last" onclick={handleManagerInvestigationLast} 
+                                                    disabled={managerInvestigationIsNextDisabled} variant="neutral"></lightning-button>
+                                            </lightning-button-group>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </lightning-tab>
+                </template>
+
+                <!-- My Queries Tab (Employee) -->
+                <lightning-tab label="My Queries" value="employeeQuery">
+                    <!-- Query Filters -->
+                    <div class="filter-section slds-var-p-horizontal_small slds-var-p-bottom_small slds-border_bottom">
+                        <div class="slds-grid slds-gutters_small slds-wrap slds-grid_vertical-align-end">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                <lightning-combobox
+                                    name="status"
+                                    label="Status"
+                                    value={employeeQuerySelectedStatus}
+                                    placeholder="Select Status"
+                                    options={queryStatusOptions}
+                                    onchange={handleEmployeeQueryStatusChange}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                <lightning-combobox
+                                    name="priority"
+                                    label="Priority"
+                                    value={employeeQuerySelectedPriority}
+                                    placeholder="Select Priority"
+                                    options={queryPriorityOptions}
+                                    onchange={handleEmployeeQueryPriorityChange}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                <lightning-combobox
+                                    name="type"
+                                    label="Type"
+                                    value={employeeQuerySelectedType}
+                                    placeholder="Select Type"
+                                    options={queryTypeOptions}
+                                    onchange={handleEmployeeQueryTypeChange}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                <lightning-combobox
+                                    name="age"
+                                    label="Age Range"
+                                    value={employeeQuerySelectedAge}
+                                    placeholder="Select Age Range"
+                                    options={ageFilterOptions}
+                                    onchange={handleEmployeeQueryAgeChange}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                <template if:true={employeeQueryHasFilters}>
+                                    <lightning-button
+                                        label="Clear Filters"
+                                        onclick={clearEmployeeQueryFilters}
+                                        variant="neutral">
+                                    </lightning-button>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Table -->
+                    <template if:true={employeeQueryHasRecords}>
+                        <div class="slds-var-p-around_small">
+                            <lightning-datatable
+                                key-field="queryId"
+                                data={employeeQueryDisplayedRecords}
+                                columns={queryColumns}
+                                hide-checkbox-column
+                                show-row-number-column
+                                row-number-offset={employeeQueryRowNumberOffset}
+                                onsort={handleEmployeeQuerySort}
+                                sorted-by={employeeQuerySortedBy}
+                                sorted-direction={employeeQuerySortDirection}>
+                            </lightning-datatable>
+                        </div>
+                    </template>
+
+                    <!-- No Records Message -->
+                    <template if:false={employeeQueryHasRecords}>
+                        <div class="slds-align_absolute-center slds-var-p-around_xx-large">
+                            <template if:true={isLoading}>
+                                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                            </template>
+                            <template if:false={isLoading}>
+                                <lightning-icon icon-name="utility:info" size="large" class="slds-var-m-bottom_medium"></lightning-icon>
+                            </template>
+                            <p class="slds-text-heading_medium">{noEmployeeQueryRecordsMessage}</p>
+                        </div>
+                    </template>
+
+                    <!-- Pagination -->
+                    <template if:true={employeeQueryHasRecords}>
+                        <div class="slds-var-p-around_small slds-border_top">
+                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                <div class="slds-col">
+                                    <span class="slds-text-body_small">
+                                        Showing {employeeQueryDisplayedRecords.length} of {employeeQueryTotalRecords} records | Page {employeeQueryPageInfo}
+                                    </span>
+                                </div>
+                                <div class="slds-col">
+                                    <template if:true={employeeQueryHasRecords}>
+                                        <lightning-button-group class="slds-float_right">
+                                            <lightning-button label="First" onclick={handleEmployeeQueryFirst} 
+                                                disabled={employeeQueryIsPreviousDisabled}></lightning-button>
+                                            <lightning-button icon-name="utility:chevronleft" onclick={handleEmployeeQueryPrevious} 
+                                                disabled={employeeQueryIsPreviousDisabled}></lightning-button>
+                                            <lightning-button icon-name="utility:chevronright" onclick={handleEmployeeQueryNext}
+                                                disabled={employeeQueryIsNextDisabled}></lightning-button>
+                                            <lightning-button label="Last" onclick={handleEmployeeQueryLast}
+                                                disabled={employeeQueryIsNextDisabled}></lightning-button>
+                                        </lightning-button-group>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </lightning-tab>
+
+                <!-- My Team Queries Tab (Manager) -->
+                <template if:true={showMyTeamQueryTab}>
+                    <lightning-tab label="My Team Queries" value="managerQuery">
+                        <!-- Manager Query Filters -->
+                        <div class="filter-section slds-var-p-horizontal_small slds-var-p-bottom_small slds-border_bottom">
+                            <div class="slds-grid slds-gutters_small slds-wrap slds-grid_vertical-align-end">
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="status"
+                                        label="Status"
+                                        value={managerQuerySelectedStatus}
+                                        placeholder="Select Status"
+                                        options={queryStatusOptions}
+                                        onchange={handleManagerQueryStatusChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="manager"
+                                        label="Manager"
+                                        value={managerQuerySelectedManager}
+                                        placeholder="Select Manager"
+                                        options={managerOptions}
+                                        onchange={handleManagerQueryManagerChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="owner"
+                                        label="Owner"
+                                        value={managerQuerySelectedOwner}
+                                        placeholder="Select Owner"
+                                        options={ownerOptions}
+                                        onchange={handleManagerQueryOwnerChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="priority"
+                                        label="Priority"
+                                        value={managerQuerySelectedPriority}
+                                        placeholder="Select Priority"
+                                        options={queryPriorityOptions}
+                                        onchange={handleManagerQueryPriorityChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="type"
+                                        label="Type"
+                                        value={managerQuerySelectedType}
+                                        placeholder="Select Type"
+                                        options={queryTypeOptions}
+                                        onchange={handleManagerQueryTypeChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <lightning-combobox
+                                        name="age"
+                                        label="Age Range"
+                                        value={managerQuerySelectedAge}
+                                        placeholder="Select Age Range"
+                                        options={ageFilterOptions}
+                                        onchange={handleManagerQueryAgeChange}>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-6">
+                                    <template if:true={managerQueryHasFilters}>
+                                        <lightning-button
+                                            label="Clear Filters"
+                                            onclick={clearManagerQueryFilters}
+                                            variant="neutral">
+                                        </lightning-button>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data Table -->
+                        <template if:true={managerQueryHasRecords}>
+                            <div class="slds-var-p-around_small">
+                                <lightning-datatable
+                                    key-field="queryId"
+                                    data={managerQueryDisplayedRecords}
+                                    columns={queryColumns}
+                                    hide-checkbox-column
+                                    show-row-number-column
+                                    row-number-offset={managerQueryRowNumberOffset}
+                                    onsort={handleManagerQuerySort}
+                                    sorted-by={managerQuerySortedBy}
+                                    sorted-direction={managerQuerySortDirection}>
+                                </lightning-datatable>
+                            </div>
+                        </template>
+
+                        <!-- No Records Message -->
+                        <template if:false={managerQueryHasRecords}>
+                            <div class="slds-align_absolute-center slds-var-p-around_xx-large">
+                                <template if:true={isLoading}>
+                                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                                </template>
+                                <template if:false={isLoading}>
+                                    <lightning-icon icon-name="utility:info" size="large" class="slds-var-m-bottom_medium"></lightning-icon>
+                                </template>
+                                <p class="slds-text-heading_medium">{noManagerQueryRecordsMessage}</p>
+                            </div>
+                        </template>
+
+                        <!-- Pagination -->
+                        <template if:true={managerQueryHasRecords}>
+                            <div class="slds-var-p-around_small slds-border_top">
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div class="slds-col">
+                                        <span class="slds-text-body_small">
+                                            Showing {managerQueryDisplayedRecords.length} of {managerQueryTotalRecords} records | Page {managerQueryPageInfo}
+                                        </span>
+                                    </div>
+                                    <div class="slds-col">
+                                        <template if:true={managerQueryHasRecords}>
+                                            <lightning-button-group class="slds-float_right">
+                                                <lightning-button label="First" onclick={handleManagerQueryFirst}
+                                                    disabled={managerQueryIsPreviousDisabled}></lightning-button>
+                                                <lightning-button icon-name="utility:chevronleft" onclick={handleManagerQueryPrevious}
+                                                    disabled={managerQueryIsPreviousDisabled}></lightning-button>
+                                                <lightning-button icon-name="utility:chevronright" onclick={handleManagerQueryNext}
+                                                    disabled={managerQueryIsNextDisabled}></lightning-button>
+                                                <lightning-button label="Last" onclick={handleManagerQueryLast}
+                                                    disabled={managerQueryIsNextDisabled}></lightning-button>
+                                            </lightning-button-group>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </lightning-tab>
+                </template>
+            </lightning-tabset>
+        </lightning-card>
+    </template>
+
+    <!-- Error State -->
+    <template if:true={error}>
+        <div class="slds-align_absolute-center slds-var-p-around_large">
+            <div class="slds-text-color_error slds-text-align_center">
+                <lightning-icon icon-name="utility:error" size="large" variant="error" class="slds-var-m-bottom_small"></lightning-icon>
+                <p class="slds-text-heading_medium">Unable to load application aging data</p>
+                <p class="slds-text-body_regular slds-var-m-top_small">
+                    Please refresh the page or contact your administrator.
+                </p>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Application Column Selection Modal -->
+    <template if:true={showApplicationColumnModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                            title="Close" onclick={closeApplicationColumnSelector}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium">Select Application Columns to Display</h2>
+                </header>
+                <div class="slds-modal__content slds-var-p-around_medium">
+                    <lightning-checkbox-group
+                        name="applicationColumnSelection"
+                        label="Choose application columns to display in the table:"
+                        options={applicationColumnOptions}
+                        value={selectedColumns}
+                        onchange={handleApplicationColumnSelectionChange}>
+                    </lightning-checkbox-group>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="Cancel"
+                        onclick={closeApplicationColumnSelector}
+                        variant="neutral">
+                    </lightning-button>
+                    <lightning-button
+                        label="Apply"
+                        onclick={applyApplicationColumnSelection}
+                        variant="brand">
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    
+    <!-- Investigation Column Selection Modal -->
+    <template if:true={showInvestigationColumnModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                            title="Close" onclick={closeInvestigationColumnSelector}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium">Select Investigation Columns to Display</h2>
+                </header>
+                <div class="slds-modal__content slds-var-p-around_medium">
+                    <lightning-checkbox-group
+                        name="investigationColumnSelection"
+                        label="Choose investigation columns to display in the table:"
+                        options={investigationColumnOptions}
+                        value={selectedInvestigationColumns}
+                        onchange={handleInvestigationColumnSelectionChange}>
+                    </lightning-checkbox-group>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="Cancel"
+                        onclick={closeInvestigationColumnSelector}
+                        variant="neutral">
+                    </lightning-button>
+                    <lightning-button
+                        label="Apply"
+                        onclick={applyInvestigationColumnSelection}
+                        variant="brand">
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

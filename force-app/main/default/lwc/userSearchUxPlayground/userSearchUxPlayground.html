@@ -1,0 +1,165 @@
+<template>
+    <lightning-card title="User Search UX Playground" icon-name="utility:education">
+        <div class="container slds-p-around_medium">
+            <div class="selector">
+                <lightning-button-group>
+                    <lightning-button label="Nested" name="nested" data-pattern="nested" onclick={setPattern}></lightning-button>
+                    <lightning-button label="Combobox" name="combobox" data-pattern="combobox" onclick={setPattern}></lightning-button>
+                    <lightning-button label="Sliding" name="sliding" data-pattern="sliding" onclick={setPattern}></lightning-button>
+                    <lightning-button label="Accordion" name="accordion" data-pattern="accordion" onclick={setPattern}></lightning-button>
+                </lightning-button-group>
+            </div>
+
+            <div class="stats slds-m-top_medium">
+                <span>Mode: {activeModeLabel}</span>
+                <span>Clicks: {clickCount}</span>
+                <span>Min Steps: {minimumSteps}</span>
+                <span>{cognitiveLoadLabel}</span>
+            </div>
+
+            <div class="cta slds-m-top_medium">
+                <lightning-button variant="brand" label="Create New Deal" onclick={handleOpenMainModal}></lightning-button>
+            </div>
+
+            <div class="log slds-m-top_medium">
+                <div class="log-title">Action Log</div>
+                <template if:true={hasLogEntries}>
+                    <template for:each={actionLog} for:item="entry">
+                        <div key={entry.time} class="log-row">
+                            [{entry.time}] {entry.action}
+                        </div>
+                    </template>
+                </template>
+                <template if:false={hasLogEntries}>
+                    <div class="log-empty">No actions yet.</div>
+                </template>
+            </div>
+        </div>
+    </lightning-card>
+
+    <template if:true={isFormModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-modal__title slds-hyphenate">New Business Deal</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-input label="Deal Title" value={dealTitle} onchange={handleDealTitleChange}></lightning-input>
+                    <lightning-input class="slds-m-top_small" label="Est. Deal Value" value={dealValue} onchange={handleDealValueChange}></lightning-input>
+
+                    <div class="slds-m-top_medium">
+                        <div class="slds-text-title_caps slds-m-bottom_x-small">Primary Contact</div>
+                        <template if:true={selectedUser}>
+                            <div class="selected-user">
+                                <div class="avatar">{selectedUserInitials}</div>
+                                <div class="selected-user-text">
+                                    <div class="name">{selectedUser.name}</div>
+                                    <div class="meta">{selectedUser.email} | {selectedUser.phone}</div>
+                                </div>
+                                <lightning-button-icon icon-name="utility:close" alternative-text="Remove" onclick={handleDeselectUser}></lightning-button-icon>
+                            </div>
+                        </template>
+                        <template if:false={selectedUser}>
+                            <template if:true={isNestedPattern}>
+                                <lightning-button label="Search and Select Contact" onclick={openNestedModal}></lightning-button>
+                            </template>
+
+                            <template if:true={isComboboxPattern}>
+                                <div class="combobox-wrap">
+                                    <lightning-input type="search" label="Search Contact" value={searchQuery} onchange={handleSearchChange}></lightning-input>
+                                    <template if:true={isComboboxDropdownOpen}>
+                                        <div class="result-box">
+                                            <template for:each={filteredUsers} for:item="user">
+                                                <button key={user.id} class="result-item" data-id={user.id} onclick={handleSelectUser}>
+                                                    <span>{user.name}</span>
+                                                    <span class="dept">{user.dept}</span>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </template>
+                                    <div class="slds-m-top_x-small">
+                                        <lightning-button label="Toggle Results" onclick={toggleCombobox}></lightning-button>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template if:true={isSlidingPattern}>
+                                <template if:false={showSlidingSearchStep}>
+                                    <lightning-button label="Open Search Panel" onclick={openSlidingSearch}></lightning-button>
+                                </template>
+                                <template if:true={showSlidingSearchStep}>
+                                    <div class="panel">
+                                        <lightning-input type="search" label="Search Contact" value={searchQuery} onchange={handleSearchChange}></lightning-input>
+                                        <div class="result-box slds-m-top_x-small">
+                                            <template for:each={filteredUsers} for:item="user">
+                                                <button key={user.id} class="result-item" data-id={user.id} onclick={handleSelectUser}>
+                                                    <span>{user.name}</span>
+                                                    <span class="dept">{user.dept}</span>
+                                                </button>
+                                            </template>
+                                        </div>
+                                        <div class="slds-m-top_small">
+                                            <lightning-button label="Back to Form" onclick={backToFormFromSliding}></lightning-button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+
+                            <template if:true={isAccordionPattern}>
+                                <lightning-button label="Toggle Contact Search" onclick={toggleAccordion}></lightning-button>
+                                <template if:true={isAccordionOpen}>
+                                    <div class="panel slds-m-top_x-small">
+                                        <lightning-input type="search" label="Search Contact" value={searchQuery} onchange={handleSearchChange}></lightning-input>
+                                        <div class="result-box slds-m-top_x-small">
+                                            <template for:each={filteredUsers} for:item="user">
+                                                <button key={user.id} class="result-item" data-id={user.id} onclick={handleSelectUser}>
+                                                    <span>{user.name}</span>
+                                                    <span class="dept">{user.dept}</span>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                        </template>
+                    </div>
+
+                    <lightning-textarea class="slds-m-top_medium" label="Internal Remarks"></lightning-textarea>
+                    <template if:true={formMessage}>
+                        <div class="slds-m-top_small message">{formMessage}</div>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button variant="neutral" label="Cancel" onclick={handleCloseMainModal}></lightning-button>
+                    <lightning-button variant="brand" class="slds-m-left_x-small" label="Create Deal Record" onclick={handleSubmit}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={isNestedModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open nested-modal">
+            <div class="slds-modal__container nested-container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-modal__title slds-hyphenate">Select Contact (Nested Modal)</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-input type="search" label="Search Contact" value={searchQuery} onchange={handleSearchChange}></lightning-input>
+                    <div class="result-box slds-m-top_small">
+                        <template for:each={filteredUsers} for:item="user">
+                            <button key={user.id} class="result-item" data-id={user.id} onclick={handleSelectUser}>
+                                <span>{user.name}</span>
+                                <span class="dept">{user.dept}</span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button variant="neutral" label="Close" onclick={closeNestedModal}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

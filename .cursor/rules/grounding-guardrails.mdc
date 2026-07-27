@@ -1,0 +1,33 @@
+---
+description: MANDATORY project grounding — the source-of-truth artifacts SpecKit must read before every command. Apply on every SpecKit command and before writing any spec, plan, task, test, or code.
+globs:
+alwaysApply: true
+---
+
+# Project Grounding & Guardrails — READ FIRST (mandatory, every command)
+
+Before running ANY SpecKit command (`/speckit-specify`, `/speckit-clarify`, `/speckit-plan`,
+`/speckit-tasks`, `/speckit-implement`, `/speckit-analyze`, `/speckit-wireframe`,
+`/speckit-checklist`, `/speckit-testcases`) — and before writing any spec, plan, task, test,
+or line of code — the agent MUST load and honor the grounding artifacts below. They are the
+single source of truth for this engagement and OVERRIDE generic CRM assumptions or
+training-data defaults. This grounding is not optional and does not require the user to ask.
+
+| # | Artifact | Path (relative to project root) | What it governs |
+|---|----------|--------------------------------|-----------------|
+| 1 | **Constitution** | `.specify/memory/constitution.md` | Non-negotiable architecture, security (USER_MODE, sharing), governor limits, Apex/LWC quality, testing (≥75%), permission-set governance, industry-first & data-model principles |
+| 2 | **Project Details** | `.specify/memory/project-details.md` | Org aliases, API version, connected systems, scope, stakeholders, project & repo IDs |
+| 3 | **Domain** | `.specify/memory/domain.md` | Industry business processes, actors, business rules and guiding principles |
+| 4 | **Taxonomy** | `.specify/memory/taxonomy.md` | Canonical naming & terminology (objects, fields, roles) — use these terms verbatim |
+| 5 | **Regulatory** | `.specify/memory/regulatory.md` | Compliance, data-classification, retention & data-governance guardrails |
+| 6 | **Data Model (org)** | Salesforce project `force-app/main/default/objects/**` | REAL object/field API names — inspect before listing fields; NEVER invent fields |
+| 7 | **Wireframe Anatomy** | `.cursor/rules/wireframe-salesforce-anatomy.mdc` | Mandatory Salesforce Lightning record-page structure for every wireframe / Figma frame / screen mock |
+| 8 | **Templates** | `.specify/templates/*.md` | Required section structure for spec / plan / tasks / checklist / test-cases |
+
+**Precedence when guidance conflicts**: Constitution → rules files (`.cursor/rules/*.mdc`) →
+memory (domain / taxonomy / regulatory / project-details) → templates. The constitution governs
+architecture and process gates; implementation-detail rules govern implementation specifics.
+
+**Guardrail**: if any listed artifact is missing, or still contains unfilled `[placeholder]`
+values relevant to the task at hand, STOP and flag it to the user rather than silently assuming
+a default. Every spec/plan/task must be traceable back to these artifacts.

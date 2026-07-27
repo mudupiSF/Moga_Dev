@@ -1,0 +1,1366 @@
+<template>
+    <div class="form-layout dev-layout" role="region" aria-label="CAM details dev">
+        <div class="cam-page-dev-banner" role="status">
+            <lightning-icon icon-name="utility:builder" size="x-small" class="cam-page-dev-banner-icon" aria-hidden="true"></lightning-icon>
+            <span>{devBannerLabel}</span>
+        </div>
+        <template lwc:if={errorMessage}>
+            <div class="p4-form-error cam-page-error" role="alert">
+                <lightning-icon icon-name="utility:error" size="small" class="cam-page-error-icon"></lightning-icon>
+                <p>{errorMessage}</p>
+            </div>
+        </template>
+
+        <template lwc:else>
+            <section class="form-card cam-page-section" aria-label="Basic information">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:info" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Basic Information</h2>
+                    </header>
+                    <template lwc:if={basicInfoFields.length}>
+                        <article class="cam-page-detail-panel">
+                            <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                <template for:each={basicInfoFields} for:item="field">
+                                    <div key={field.id} class="cam-page-detail-row">
+                                        <dt class="cam-page-detail-label">{field.label}</dt>
+                                        <dd class="cam-page-detail-value">{field.valueDisplay}</dd>
+                                    </div>
+                                </template>
+                            </dl>
+                        </article>
+                    </template>
+                </div>
+            </section>
+
+            <section class="form-card cam-page-section" aria-label="Personal details">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:people" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Personal Details</h2>
+                    </header>
+                    <template lwc:if={applicantColumns.length}>
+                        <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.personal.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.personal.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="personal" disabled={carouselState.personal.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.personal.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="personal" disabled={carouselState.personal.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.personal.gridClass}>
+                            <template for:each={carouselState.personal.items} for:item="applicant">
+                                <article key={applicant.id} class="cam-page-applicant-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={applicant.badgeClass}>{applicant.title}</span>
+                                    </div>
+                                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                        <template for:each={applicant.fields} for:item="field">
+                                            <div key={field.id} class="cam-page-detail-row">
+                                                <dt class="cam-page-detail-label">{field.label}</dt>
+                                                <dd class="cam-page-detail-value">{field.valueDisplay}</dd>
+                                            </div>
+                                        </template>
+                                    </dl>
+                                    <div class="cam-page-action-row cam-page-card-actions">
+                                        <button type="button"
+                                            class="p4-secondary-btn p4-button-text cam-page-kyc-btn"
+                                            data-applicant-id={applicant.id}
+                                            onclick={handleViewKycClick}>
+                                            <lightning-icon icon-name="utility:preview" size="xx-small"
+                                                class="cam-page-btn-icon" aria-hidden="true">
+                                            </lightning-icon>
+                                            <span>{applicant.kycButtonLabel}</span>
+                                        </button>
+                                    </div>
+                                </article>
+                            </template>
+                        </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text cam-page-empty">No applicant details available.</p>
+                    </template>
+                </div>
+            </section>
+
+            <section class="form-card cam-page-section" aria-label="Bank account details">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:currency" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Bank Account Details</h2>
+                    </header>
+                    <template lwc:if={bankAccountColumns.length}>
+                        <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.bankAccount.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.bankAccount.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="bankAccount" disabled={carouselState.bankAccount.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.bankAccount.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="bankAccount" disabled={carouselState.bankAccount.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.bankAccount.gridClass}>
+                            <template for:each={carouselState.bankAccount.items} for:item="applicant">
+                                <article key={applicant.id} class="cam-page-applicant-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={applicant.badgeClass}>{applicant.title}</span>
+                                    </div>
+                                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                        <template for:each={applicant.fields} for:item="field">
+                                            <div key={field.id} class="cam-page-detail-row">
+                                                <dt class="cam-page-detail-label">{field.label}</dt>
+                                                <dd class="cam-page-detail-value">{field.valueDisplay}</dd>
+                                            </div>
+                                        </template>
+                                    </dl>
+                                </article>
+                            </template>
+                        </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text cam-page-empty">No bank account details available.</p>
+                    </template>
+                </div>
+            </section>
+
+            <template lwc:if={showBusinessDetailsSection}>
+            <section class="form-card cam-page-section" aria-label="Business details">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:company" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Business Details</h2>
+                    </header>
+                    <template lwc:if={businessDetailSections.length}>
+                        <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.business.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.business.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="business" disabled={carouselState.business.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.business.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="business" disabled={carouselState.business.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.business.gridClass}>
+                            <template for:each={carouselState.business.items} for:item="section">
+                                <article key={section.id} class="cam-page-applicant-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={section.badgeClass}>{section.title}</span>
+                                    </div>
+                                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                        <template for:each={section.fields} for:item="field">
+                                            <div key={field.id} class="cam-page-detail-row">
+                                                <dt class="cam-page-detail-label">{field.label}</dt>
+                                                <dd class="cam-page-detail-value">{field.valueDisplay}</dd>
+                                            </div>
+                                        </template>
+                                    </dl>
+                                </article>
+                            </template>
+                        </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text cam-page-empty">No business details available.</p>
+                    </template>
+                </div>
+            </section>
+            </template>
+
+            <section class="form-card cam-page-section" aria-label="Pricing and LTV engine">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:percent" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Pricing and LTV Engine</h2>
+                    </header>
+                    <template lwc:if={pricingLtvFields.length}>
+                        <article class="cam-page-detail-panel">
+                            <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                <template for:each={pricingLtvFields} for:item="field">
+                                    <div key={field.id} class="cam-page-detail-row">
+                                        <dt class="cam-page-detail-label">{field.label}</dt>
+                                        <dd class="cam-page-detail-value">{field.valueDisplay}</dd>
+                                    </div>
+                                </template>
+                            </dl>
+                        </article>
+                    </template>
+                </div>
+            </section>
+
+            <section class="form-card cam-page-section" aria-label="Offer engine">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:ribbon" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Offer Engine</h2>
+                    </header>
+                    <template lwc:if={offerEngineFields.length}>
+                        <article class="cam-page-detail-panel">
+                            <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                <template for:each={offerEngineFields} for:item="field">
+                                    <div key={field.id} class="cam-page-detail-row">
+                                        <dt class="cam-page-detail-label">{field.label}</dt>
+                                        <dd class="cam-page-detail-value">{field.valueDisplay}</dd>
+                                    </div>
+                                </template>
+                            </dl>
+                        </article>
+                    </template>
+                </div>
+            </section>
+
+            <section class="form-card cam-page-section" aria-label="Loan details">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:money" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Loan Details</h2>
+                        <template lwc:if={loanSectionCountLabel}>
+                            <span class="cam-page-count-badge" title="Asset count">{loanSectionCountLabel}</span>
+                        </template>
+                    </header>
+                    <template lwc:if={loanDetailSections.length}>
+                        <ul class="cam-loan-asset-list">
+                            <template for:each={loanDetailSections} for:item="asset">
+                                <li key={asset.id} class="cam-loan-asset-row">
+                                    <span class="cam-loan-asset-row-title">{asset.listTitle}</span>
+                                    <button type="button" class="cam-loan-asset-btn" title="View asset details"
+                                        data-section-id={asset.id} onclick={handleLoanAssetViewClick}>
+                                        <lightning-icon icon-name="utility:preview" size="xx-small"
+                                            aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text cam-page-empty">No loan details available.</p>
+                    </template>
+                </div>
+            </section>
+
+            <section class="form-card cam-page-section" aria-label="Exposure details">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:collection_variable" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Exposure Details</h2>
+                    </header>
+                    <template lwc:if={exposureSections.length}>
+                        <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.exposure.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.exposure.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="exposure" disabled={carouselState.exposure.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.exposure.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="exposure" disabled={carouselState.exposure.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class="cam-page-exposure-stack">
+                            <template for:each={carouselState.exposure.items} for:item="section">
+                                <article key={section.id} class="cam-page-applicant-card cam-page-exposure-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={section.badgeClass}>{section.title}</span>
+                                    </div>
+                                    <div class="cam-page-exposure-panels">
+                                        <section class="cam-page-exposure-panel cam-page-exposure-panel-bank-exposure"
+                                            aria-label={section.bankExposurePanelAriaLabel}>
+                                            <header class="cam-page-exposure-panel-head">
+                                                <span class="cam-page-exposure-panel-icon cam-page-exposure-panel-icon-bank-exposure"
+                                                    aria-hidden="true">
+                                                    <lightning-icon icon-name="utility:table" size="xx-small">
+                                                    </lightning-icon>
+                                                </span>
+                                                <div class="cam-page-exposure-panel-copy">
+                                                    <h3 class="cam-page-exposure-panel-title">{section.bankExposurePanelTitle}</h3>
+                                                </div>
+                                                <template lwc:if={section.hasRows}>
+                                                    <span class="cam-page-exposure-count cam-page-exposure-count-bank-exposure">
+                                                        {section.bankExposureCountLabel}
+                                                    </span>
+                                                </template>
+                                            </header>
+                                            <div class="master-table-scroll cam-page-exposure-table-wrap">
+                                                <table class="master-table cam-page-exposure-table-bank-exposure">
+                                                    <thead>
+                                                        <tr class="master-table-header-row">
+                                                            <th class="master-th-cell" scope="col">Exposure Type</th>
+                                                            <th class="master-th-cell" scope="col">Deal Stage</th>
+                                                            <th class="master-th-cell" scope="col">Deal No</th>
+                                                            <th class="master-th-cell" scope="col">Deal Date</th>
+                                                            <th class="master-th-cell" scope="col">Product</th>
+                                                            <th class="master-th-cell" scope="col">Status</th>
+                                                            <th class="master-th-cell" scope="col">Finance Amount</th>
+                                                            <th class="master-th-cell" scope="col">SOH</th>
+                                                            <th class="master-th-cell" scope="col">Over Due</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="master-table-body">
+                                                        <template lwc:if={section.hasRows}>
+                                                            <template for:each={section.rows} for:item="row">
+                                                                <tr key={row.id} class="master-table-row">
+                                                                    <td class="master-td-cell" data-label="Exposure Type">{row.exposureType}</td>
+                                                                    <td class="master-td-cell" data-label="Deal Stage">{row.dealStage}</td>
+                                                                    <td class="master-td-cell" data-label="Deal No">{row.dealNo}</td>
+                                                                    <td class="master-td-cell" data-label="Deal Date">{row.dealDate}</td>
+                                                                    <td class="master-td-cell" data-label="Product">{row.product}</td>
+                                                                    <td class="master-td-cell" data-label="Status">{row.statusFlag}</td>
+                                                                    <td class="master-td-cell" data-label="Finance Amount">{row.financeAmountDisplay}</td>
+                                                                    <td class="master-td-cell" data-label="SOH">{row.sohDisplay}</td>
+                                                                    <td class="master-td-cell" data-label="Over Due">{row.overDueDisplay}</td>
+                                                                </tr>
+                                                            </template>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            <tr class="master-table-row">
+                                                                <td colspan="9"
+                                                                    class="master-td-cell master-table-empty-cell">
+                                                                    No exposure records.
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </section>
+                                        <section class="cam-page-exposure-panel cam-page-exposure-panel-external-exposure"
+                                            aria-label={section.externalExposurePanelAriaLabel}>
+                                            <header class="cam-page-exposure-panel-head">
+                                                <span class="cam-page-exposure-panel-icon cam-page-exposure-panel-icon-external-exposure"
+                                                    aria-hidden="true">
+                                                    <lightning-icon icon-name="utility:table" size="xx-small">
+                                                    </lightning-icon>
+                                                </span>
+                                                <div class="cam-page-exposure-panel-copy">
+                                                    <h3 class="cam-page-exposure-panel-title">{section.externalExposurePanelTitle}</h3>
+                                                </div>
+                                                <template lwc:if={section.hasExternalExposureRows}>
+                                                    <span class="cam-page-exposure-count cam-page-exposure-count-external-exposure">
+                                                        {section.externalExposureCountLabel}
+                                                    </span>
+                                                </template>
+                                            </header>
+                                            <div class="master-table-scroll cam-page-exposure-table-wrap">
+                                                <table class="master-table cam-page-exposure-table-external-exposure">
+                                                    <thead>
+                                                        <tr class="master-table-header-row">
+                                                            <th class="master-th-cell" scope="col">A/C Type</th>
+                                                            <th class="master-th-cell" scope="col">Ownership</th>
+                                                            <th class="master-th-cell" scope="col">High Credit</th>
+                                                            <th class="master-th-cell" scope="col">Current Balance</th>
+                                                            <th class="master-th-cell" scope="col">Overdue</th>
+                                                            <th class="master-th-cell" scope="col">Reason for Overdue</th>
+                                                            <th class="master-th-cell" scope="col">Financier</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="master-table-body">
+                                                        <template lwc:if={section.hasExternalExposureRows}>
+                                                            <template for:each={section.externalExposureRows} for:item="row">
+                                                                <tr key={row.id} class="master-table-row">
+                                                                    <td class="master-td-cell" data-label="A/C Type">{row.accountType}</td>
+                                                                    <td class="master-td-cell" data-label="Ownership">{row.ownership}</td>
+                                                                    <td class="master-td-cell" data-label="High Credit">{row.highCreditDisplay}</td>
+                                                                    <td class="master-td-cell" data-label="Current Balance">{row.currentBalanceDisplay}</td>
+                                                                    <td class="master-td-cell" data-label="Overdue">{row.amountOverdueDisplay}</td>
+                                                                    <td class="master-td-cell" data-label="Reason for Overdue">{row.reasonForOverdue}</td>
+                                                                    <td class="master-td-cell" data-label="Financier">{row.financierName}</td>
+                                                                </tr>
+                                                            </template>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            <tr class="master-table-row">
+                                                                <td colspan="7"
+                                                                    class="master-td-cell master-table-empty-cell">
+                                                                    No external exposure records.
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </section>
+                                    </div>
+                                </article>
+                            </template>
+                        </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text cam-page-empty">No exposure details available.</p>
+                    </template>
+                </div>
+            </section>
+
+                <section class="form-card cam-page-section" aria-label={creditBureauSectionAriaLabel}>
+                    <div class="form-body">
+                        <header class="cam-page-section-head">
+                            <span class="cam-page-section-icon" aria-hidden="true">
+                                <lightning-icon icon-name="utility:metrics" size="xx-small"></lightning-icon>
+                            </span>
+                            <h2 class="p4-section-title cam-page-section-title">{creditBureauSectionTitle}</h2>
+                        </header>
+                        <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.creditBureau.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.creditBureau.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="creditBureau" disabled={carouselState.creditBureau.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.creditBureau.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="creditBureau" disabled={carouselState.creditBureau.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.creditBureau.gridClass}>
+                            <template for:each={carouselState.creditBureau.items} for:item="applicant">
+                                <article key={applicant.id} class="cam-page-applicant-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={applicant.badgeClass}>{applicant.title}</span>
+                                    </div>
+                                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                        <template for:each={applicant.fields} for:item="field">
+                                            <div key={field.id} class="cam-page-detail-row">
+                                                <dt class="cam-page-detail-label">{field.label}</dt>
+                                                <dd class="cam-page-detail-value">{field.valueDisplay}</dd>
+                                            </div>
+                                        </template>
+                                    </dl>
+                                    <template lwc:if={applicant.hasReportButtons}>
+                                        <div class="cam-page-action-row cam-page-card-actions">
+                                            <template for:each={applicant.reportButtons} for:item="reportBtn">
+                                                <button key={reportBtn.id} type="button"
+                                                    class="p4-secondary-btn p4-button-text cam-page-credit-report-btn"
+                                                    data-applicant-id={applicant.id}
+                                                    data-report-type={reportBtn.reportType}
+                                                    data-report-label={reportBtn.label}
+                                                    data-content-version-id={reportBtn.contentVersionId}
+                                                    data-content-document-id={reportBtn.contentDocumentId}
+                                                    data-file-type={reportBtn.fileType}
+                                                    onclick={handleCreditReportClick}>
+                                                    <lightning-icon icon-name="utility:preview" size="xx-small"
+                                                        class="cam-page-btn-icon" aria-hidden="true">
+                                                    </lightning-icon>
+                                                    <span>{reportBtn.label}</span>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </article>
+                            </template>
+                        </div>
+                        </div>
+                    </div>
+                </section>
+
+            <section class="form-card cam-page-section" aria-label="Gating, screening and dedupe checks">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:filter" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Gating, Screening and Dedupe Checks</h2>
+                    </header>
+                    <template lwc:if={gatingScreeningSection.fields.length}>
+                        <article class="cam-page-applicant-card">
+                            <template lwc:if={gatingScreeningSection.applicantTitle}>
+                                <div class="cam-page-applicant-head">
+                                    <span class={gatingScreeningSection.badgeClass}>{gatingScreeningSection.applicantTitle}</span>
+                                </div>
+                            </template>
+                            <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                <template for:each={gatingScreeningSection.fields} for:item="field">
+                                    <div key={field.id} class="cam-page-detail-row">
+                                        <dt class="cam-page-detail-label">{field.label}</dt>
+                                        <dd class="cam-page-detail-value">{field.valueDisplay}</dd>
+                                    </div>
+                                </template>
+                            </dl>
+                        </article>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text cam-page-empty">No gating, screening or dedupe details available.</p>
+                    </template>
+                </div>
+            </section>
+
+            <section class="form-card cam-page-section" aria-label="Risk profile">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:warning" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Risk Profile</h2>
+                    </header>
+                    <template lwc:if={riskProfileSections.length}>
+                        <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.riskProfile.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.riskProfile.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="riskProfile" disabled={carouselState.riskProfile.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.riskProfile.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="riskProfile" disabled={carouselState.riskProfile.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.riskProfile.gridClass}>
+                            <template for:each={carouselState.riskProfile.items} for:item="section">
+                                <article key={section.id} class="cam-page-applicant-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={section.badgeClass}>{section.title}</span>
+                                    </div>
+                                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                        <div class="cam-page-detail-row">
+                                            <dt class="cam-page-detail-label">Risk Profile</dt>
+                                            <dd class="cam-page-detail-value">
+                                                <template lwc:if={section.showRiskBadge}>
+                                                    <span class={section.riskLevelBadgeClass}>{section.riskLevelDisplay}</span>
+                                                </template>
+                                                <template lwc:else>
+                                                    {section.riskLevelDisplay}
+                                                </template>
+                                            </dd>
+                                        </div>
+                                    </dl>
+                                </article>
+                            </template>
+                        </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text cam-page-empty">No risk profile details available.</p>
+                    </template>
+                </div>
+            </section>
+
+            <section class="form-card cam-page-section" aria-label="FI waiver">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:shield" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">FI Waiver</h2>
+                    </header>
+                    <div class="master-table-scroll">
+                        <table class="master-table cam-page-fi-waiver-table">
+                            <thead>
+                                <tr class="master-table-header-row">
+                                    <th class="master-th-cell" scope="col">Type of Customer:</th>
+                                    <th class="master-th-cell" scope="col">Current FI</th>
+                                    <th class="master-th-cell" scope="col">Permanent FI</th>
+                                    <th class="master-th-cell" scope="col">Office FI</th>
+                                </tr>
+                            </thead>
+                            <tbody class="master-table-body">
+                                <template lwc:if={fiWaiverRows.length}>
+                                    <template for:each={fiWaiverRows} for:item="row">
+                                        <tr key={row.id} class="master-table-row cam-page-fi-waiver-row">
+                                            <td class="master-td-cell" data-label="Type of Customer">{row.customerTypeDisplay}</td>
+                                            <td class="master-td-cell" data-label="Current FI">{row.currentAddressDisplay}</td>
+                                            <td class="master-td-cell" data-label="Permanent FI">{row.permanentAddressDisplay}</td>
+                                            <td class="master-td-cell" data-label="Office FI">{row.officeAddressDisplay}</td>
+                                        </tr>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <tr class="master-table-row">
+                                        <td colspan="4" class="master-td-cell master-table-empty-cell">
+                                            No FI waiver records.
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <template lwc:if={showFiCurrentSection}>
+            <section class="form-card cam-page-section" aria-label="FI details current">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:location" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">FI Details - Current</h2>
+                    </header>
+                    <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.fiResidence.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.fiResidence.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="fiResidence" disabled={carouselState.fiResidence.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.fiResidence.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="fiResidence" disabled={carouselState.fiResidence.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.fiResidence.gridClass}>
+                            <template for:each={carouselState.fiResidence.items} for:item="section">
+                                <article key={section.id} class="cam-page-applicant-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={section.badgeClass}>{section.title}</span>
+                                    </div>
+                                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                        <template for:each={section.fields} for:item="field">
+                                            <div key={field.id} class="cam-page-detail-row">
+                                                <dt class="cam-page-detail-label">{field.label}</dt>
+                                                <dd class="cam-page-detail-value">{field.valueDisplay}</dd>
+                                            </div>
+                                        </template>
+                                    </dl>
+                                    <template lwc:if={section.showFiReportAction}>
+                                        <div class="cam-page-action-row cam-page-card-actions">
+                                            <button type="button"
+                                                class="p4-secondary-btn p4-button-text cam-page-fi-report-btn"
+                                                data-component-name={section.fiComponentName}
+                                                data-verification-id={section.fiVerificationId}
+                                                data-investigation-id={section.fiInvestigationId}
+                                                data-applicant-id={section.id}
+                                                data-modal-header={section.fiReportLabel}
+                                                data-is-fi-link={section.fiHasLink}
+                                                onclick={handleFiInvestigationTypeClick}>
+                                                <lightning-icon icon-name="utility:preview" size="xx-small"
+                                                    class="cam-page-btn-icon" aria-hidden="true">
+                                                </lightning-icon>
+                                                <span>{section.fiReportLabel}</span>
+                                            </button>
+                                        </div>
+                                    </template>
+                                </article>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </template>
+
+            <template lwc:if={showFiPermanentSection}>
+            <section class="form-card cam-page-section" aria-label="FI details permanent">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:home" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">FI Details - Permanent</h2>
+                    </header>
+                    <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.permanentFi.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.permanentFi.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="permanentFi" disabled={carouselState.permanentFi.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.permanentFi.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="permanentFi" disabled={carouselState.permanentFi.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.permanentFi.gridClass}>
+                            <template for:each={carouselState.permanentFi.items} for:item="section">
+                                <article key={section.id} class="cam-page-applicant-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={section.badgeClass}>{section.title}</span>
+                                    </div>
+                                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                        <template for:each={section.fields} for:item="field">
+                                            <div key={field.id} class="cam-page-detail-row">
+                                                <dt class="cam-page-detail-label">{field.label}</dt>
+                                                <dd class="cam-page-detail-value">{field.valueDisplay}</dd>
+                                            </div>
+                                        </template>
+                                    </dl>
+                                    <template lwc:if={section.showFiReportAction}>
+                                        <div class="cam-page-action-row cam-page-card-actions">
+                                            <button type="button"
+                                                class="p4-secondary-btn p4-button-text cam-page-fi-report-btn"
+                                                data-component-name={section.fiComponentName}
+                                                data-verification-id={section.fiVerificationId}
+                                                data-investigation-id={section.fiInvestigationId}
+                                                data-applicant-id={section.id}
+                                                data-modal-header={section.fiReportLabel}
+                                                data-is-fi-link={section.fiHasLink}
+                                                onclick={handleFiInvestigationTypeClick}>
+                                                <lightning-icon icon-name="utility:preview" size="xx-small"
+                                                    class="cam-page-btn-icon" aria-hidden="true">
+                                                </lightning-icon>
+                                                <span>{section.fiReportLabel}</span>
+                                            </button>
+                                        </div>
+                                    </template>
+                                </article>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </template>
+
+            <template lwc:if={showFiOfficeSection}>
+            <section class="form-card cam-page-section" aria-label="FI details office">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:company" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">FI Details - Office</h2>
+                    </header>
+                    <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.fiOffice.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.fiOffice.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="fiOffice" disabled={carouselState.fiOffice.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.fiOffice.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="fiOffice" disabled={carouselState.fiOffice.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.fiOffice.gridClass}>
+                            <template for:each={carouselState.fiOffice.items} for:item="section">
+                                <article key={section.id} class="cam-page-applicant-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={section.badgeClass}>{section.title}</span>
+                                    </div>
+                                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                        <template for:each={section.fields} for:item="field">
+                                            <div key={field.id} class="cam-page-detail-row">
+                                                <dt class="cam-page-detail-label">{field.label}</dt>
+                                                <dd class="cam-page-detail-value">{field.valueDisplay}</dd>
+                                            </div>
+                                        </template>
+                                    </dl>
+                                    <template lwc:if={section.showFiReportAction}>
+                                        <div class="cam-page-action-row cam-page-card-actions">
+                                            <button type="button"
+                                                class="p4-secondary-btn p4-button-text cam-page-fi-report-btn"
+                                                data-component-name={section.fiComponentName}
+                                                data-verification-id={section.fiVerificationId}
+                                                data-investigation-id={section.fiInvestigationId}
+                                                data-applicant-id={section.id}
+                                                data-modal-header={section.fiReportLabel}
+                                                data-is-fi-link={section.fiHasLink}
+                                                onclick={handleFiInvestigationTypeClick}>
+                                                <lightning-icon icon-name="utility:preview" size="xx-small"
+                                                    class="cam-page-btn-icon" aria-hidden="true">
+                                                </lightning-icon>
+                                                <span>{section.fiReportLabel}</span>
+                                            </button>
+                                        </div>
+                                    </template>
+                                </article>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </template>
+
+            <section class="form-card cam-page-section" aria-label="Brief about applicants credit assessment">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:note" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">{briefSectionTitle}</h2>
+                    </header>
+                    <template lwc:if={briefColumns.length}>
+                        <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.brief.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.brief.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="brief" disabled={carouselState.brief.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.brief.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="brief" disabled={carouselState.brief.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.brief.gridClass}>
+                            <template for:each={carouselState.brief.items} for:item="column">
+                                <article key={column.id} class="cam-page-applicant-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={column.badgeClass}>{column.title}</span>
+                                    </div>
+                                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                        <div class="cam-page-detail-row">
+                                            <dt class="cam-page-detail-label">{column.fieldLabel}</dt>
+                                            <dd class="cam-page-detail-value">{column.valueDisplay}</dd>
+                                        </div>
+                                    </dl>
+                                    <template lwc:if={column.showCreditAssessmentButton}>
+                                        <div class="cam-page-action-row cam-page-card-actions">
+                                            <button type="button"
+                                                class="p4-secondary-btn p4-button-text cam-page-fi-report-btn"
+                                                data-applicant-id={column.id}
+                                                onclick={handleViewCreditAssessmentClick}>
+                                                <lightning-icon icon-name="utility:preview" size="xx-small"
+                                                    class="cam-page-btn-icon" aria-hidden="true">
+                                                </lightning-icon>
+                                                <span>View PSL</span>
+                                            </button>
+                                        </div>
+                                    </template>
+                                </article>
+                            </template>
+                        </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text cam-page-empty">No brief details available.</p>
+                    </template>
+                </div>
+            </section>
+
+            <section class="form-card cam-page-section" aria-label="Income details">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:database" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Income Details</h2>
+                    </header>
+                    <template lwc:if={incomeDetailSections.length}>
+                        <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.income.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.income.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="income" disabled={carouselState.income.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.income.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="income" disabled={carouselState.income.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.income.gridClass}>
+                            <template for:each={carouselState.income.items} for:item="section">
+                                <article key={section.id} class="cam-page-applicant-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={section.badgeClass}>{section.title}</span>
+                                    </div>
+                                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                        <template for:each={section.fields} for:item="field">
+                                            <div key={field.id} class="cam-page-detail-row">
+                                                <dt class="cam-page-detail-label">{field.label}</dt>
+                                                <dd class="cam-page-detail-value">
+                                                    <template lwc:if={field.isButton}>
+                                                        <template lwc:if={field.showAction}>
+                                                            <button type="button"
+                                                                class="p4-secondary-btn p4-button-text cam-page-inline-action-btn"
+                                                                data-applicant-id={section.id}
+                                                                onclick={handleViewAbbClick}>
+                                                                {field.actionLabel}
+                                                            </button>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            {field.valueDisplay}
+                                                        </template>
+                                                    </template>
+                                                    <template lwc:elseif={field.isLink}>
+                                                        <template lwc:if={field.showAction}>
+                                                            <a href="#" role="button" class="cam-page-link"
+                                                                data-content-version-id={field.contentVersionId}
+                                                                data-content-document-id={field.contentDocumentId}
+                                                                data-file-type={field.fileType}
+                                                                data-has-document-link={field.hasDocumentLink}
+                                                                onclick={handleAnnexureDocumentClick}>
+                                                                {field.actionLabel}
+                                                            </a>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            {field.valueDisplay}
+                                                        </template>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        {field.valueDisplay}
+                                                    </template>
+                                                </dd>
+                                            </div>
+                                        </template>
+                                    </dl>
+                                </article>
+                            </template>
+                        </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text cam-page-empty">No income details available.</p>
+                    </template>
+                </div>
+            </section>
+
+            <template lwc:if={showBeneficiaryIncomeSection}>
+            <section class="form-card cam-page-section" aria-label="Beneficiary income details">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:currency" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Beneficiary Income Details</h2>
+                    </header>
+                    <template lwc:if={beneficiaryIncomeSections.length}>
+                        <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.beneficiaryIncome.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.beneficiaryIncome.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="beneficiaryIncome" disabled={carouselState.beneficiaryIncome.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.beneficiaryIncome.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="beneficiaryIncome" disabled={carouselState.beneficiaryIncome.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.beneficiaryIncome.gridClass}>
+                            <template for:each={carouselState.beneficiaryIncome.items} for:item="section">
+                                <article key={section.id} class="cam-page-applicant-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={section.badgeClass}>{section.title}</span>
+                                    </div>
+                                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                        <template for:each={section.fields} for:item="field">
+                                            <div key={field.id} class="cam-page-detail-row">
+                                                <dt class="cam-page-detail-label">{field.label}</dt>
+                                                <dd class="cam-page-detail-value">{field.valueDisplay}</dd>
+                                            </div>
+                                        </template>
+                                    </dl>
+                                </article>
+                            </template>
+                        </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text cam-page-empty">No beneficiary income details available.</p>
+                    </template>
+                </div>
+            </section>
+            </template>
+
+            <section class="form-card cam-page-section" aria-label="Financial performances and net worth ratios">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:chart" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Financial Performances and Net Worth Ratios</h2>
+                    </header>
+                    <template lwc:if={financialPerformanceSections.length}>
+                        <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.financial.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.financial.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="financial" disabled={carouselState.financial.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.financial.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="financial" disabled={carouselState.financial.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.financial.gridClass}>
+                            <template for:each={carouselState.financial.items} for:item="section">
+                                <article key={section.id} class="cam-page-applicant-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={section.badgeClass}>{section.title}</span>
+                                    </div>
+                                    <dl class="cam-page-detail-list cam-page-detail-list-paired">
+                                        <template for:each={section.fields} for:item="field">
+                                            <div key={field.id} class="cam-page-detail-row">
+                                                <dt class="cam-page-detail-label">{field.label}</dt>
+                                                <dd class="cam-page-detail-value">
+                                                    <template lwc:if={field.isButton}>
+                                                        <template lwc:if={field.showAction}>
+                                                            <button type="button"
+                                                                class="p4-secondary-btn p4-button-text cam-page-inline-action-btn"
+                                                                data-applicant-id={section.id}
+                                                                onclick={handleViewAbbClick}>
+                                                                {field.actionLabel}
+                                                            </button>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            {field.valueDisplay}
+                                                        </template>
+                                                    </template>
+                                                    <template lwc:elseif={field.isLink}>
+                                                        <template lwc:if={field.showAction}>
+                                                            <a href="#" role="button" class="cam-page-link"
+                                                                data-content-version-id={field.contentVersionId}
+                                                                data-content-document-id={field.contentDocumentId}
+                                                                data-file-type={field.fileType}
+                                                                data-has-document-link={field.hasDocumentLink}
+                                                                onclick={handleAnnexureDocumentClick}>
+                                                                {field.actionLabel}
+                                                            </a>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            {field.valueDisplay}
+                                                        </template>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        {field.valueDisplay}
+                                                    </template>
+                                                </dd>
+                                            </div>
+                                        </template>
+                                    </dl>
+                                </article>
+                            </template>
+                        </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text cam-page-empty">No financial performance details available.</p>
+                    </template>
+                </div>
+            </section>
+
+            <section class="form-card cam-page-section" aria-label="Declaration">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:check" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Declaration</h2>
+                    </header>
+                    <template lwc:if={declarationSections.length}>
+                        <div class="cam-page-cards-panel">
+                            <template lwc:if={carouselState.declaration.nav.showPagination}>
+                                <nav class="cam-page-cards-pagination"
+                                    aria-label={carouselState.declaration.nav.paginationAriaLabel}>
+                                    <button type="button" class="cam-page-pagination-btn" title="Previous page"
+                                        data-section="declaration" disabled={carouselState.declaration.nav.isPrevDisabled}
+                                        onclick={handlePaginationPrev} aria-label="Previous page">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                    <span class="cam-page-pagination-label">{carouselState.declaration.nav.paginationLabel}</span>
+                                    <button type="button" class="cam-page-pagination-btn" title="Next page"
+                                        data-section="declaration" disabled={carouselState.declaration.nav.isNextDisabled}
+                                        onclick={handlePaginationNext} aria-label="Next page">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                            class="cam-page-pagination-btn-icon" aria-hidden="true">
+                                        </lightning-icon>
+                                    </button>
+                                </nav>
+                            </template>
+                            <div class={carouselState.declaration.gridClass}>
+                            <template for:each={carouselState.declaration.items} for:item="section">
+                                <article key={section.id} class="cam-page-applicant-card cam-page-declaration-card">
+                                    <div class="cam-page-applicant-head">
+                                        <span class={section.badgeClass}>{section.title}</span>
+                                    </div>
+                                    <div class="cam-page-declaration-list">
+                                        <template for:each={section.items} for:item="item">
+                                            <article key={item.id} class="cam-page-declaration-item">
+                                                <p class="cam-page-declaration-text">{item.text}</p>
+                                                <template lwc:if={item.showAnswer}>
+                                                    <p class="cam-page-declaration-answer">{item.answerDisplay}</p>
+                                                </template>
+                                            </article>
+                                        </template>
+                                    </div>
+                                </article>
+                            </template>
+                        </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="p4-help-text cam-page-empty">No declaration details available.</p>
+                    </template>
+                </div>
+            </section>
+
+            <section class="form-card cam-page-section" aria-label="Annexures">
+                <div class="form-body">
+                    <header class="cam-page-section-head">
+                        <span class="cam-page-section-icon" aria-hidden="true">
+                            <lightning-icon icon-name="utility:attach" size="xx-small"></lightning-icon>
+                        </span>
+                        <h2 class="p4-section-title cam-page-section-title">Annexures</h2>
+                        <template lwc:if={annexureCountLabel}>
+                            <span class="cam-page-count-badge" title="Document count">{annexureCountLabel}</span>
+                        </template>
+                    </header>
+                    <div class="master-table-scroll">
+                        <table class="master-table">
+                            <thead>
+                                <tr class="master-table-header-row">
+                                    <th class="master-th-cell" scope="col">Document Type</th>
+                                    <th class="master-th-cell" scope="col">Document Name</th>
+                                </tr>
+                            </thead>
+                            <tbody class="master-table-body">
+                                <template lwc:if={annexureRows.length}>
+                                    <template for:each={annexureRows} for:item="row">
+                                        <tr key={row.id} class="master-table-row">
+                                            <td class="master-td-cell" data-label="Document Type">
+                                                <template lwc:if={row.hasDocumentLink}>
+                                                    <a href="#" role="button" class="master-record-link"
+                                                        data-content-version-id={row.contentVersionId}
+                                                        data-content-document-id={row.contentDocumentId}
+                                                        data-file-type={row.fileType}
+                                                        data-has-document-link={row.hasDocumentLink}
+                                                        onclick={handleAnnexureDocumentClick}>
+                                                        {row.documentTypeDisplay}
+                                                    </a>
+                                                </template>
+                                                <template lwc:else>
+                                                    {row.documentTypeDisplay}
+                                                </template>
+                                            </td>
+                                            <td class="master-td-cell" data-label="Document Name">{row.documentNameDisplay}</td>
+                                        </tr>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <tr class="master-table-row">
+                                        <td colspan="2" class="master-td-cell master-table-empty-cell">
+                                            No annexure documents.
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </template>
+
+        <template lwc:if={showLoanAssetModal}>
+            <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="cam-loan-asset-modal-title"
+                class="slds-modal slds-fade-in-open cam-loan-asset-modal">
+                <div class="slds-modal__container modal-container-dynamic">
+                    <header class="slds-modal__header modal-header-compact">
+                        <h2 id="cam-loan-asset-modal-title" class="slds-modal__title">Asset Details</h2>
+                        <button type="button" class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={handleLoanAssetModalClose}>
+                            <lightning-icon icon-name="utility:close" alternative-text="Close" size="small">
+                            </lightning-icon>
+                        </button>
+                    </header>
+                    <div class="slds-modal__content modal-content-dynamic">
+                        <template lwc:if={selectedLoanAsset}>
+                            <div class="form-layout">
+                                <div class="form-card">
+                                    <div class="form-header">
+                                        <div class="form-header-overlay"></div>
+                                        <div class="form-header-content">
+                                            <lightning-icon icon-name="utility:travel_and_places" size="small"
+                                                variant="inverse">
+                                            </lightning-icon>
+                                            <div class="form-header-text">
+                                                <h3 class="form-header-title">{loanAssetModalTitle}</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-body">
+                                        <div class="form-fields-grid">
+                                            <template for:each={selectedLoanAsset.fields} for:item="field">
+                                                <div key={field.id} class="form-field-wrap">
+                                                    <div class="form-info-cell">
+                                                        <div class="form-info-cell-header">
+                                                            <span class="form-info-label">{field.label}</span>
+                                                        </div>
+                                                        <div class="form-info-value-wrap">
+                                                            <p class="form-info-value">{field.valueDisplay}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cam-loan-asset-modal-footer">
+                                    <template lwc:if={showLoanAssetViabilityButton}>
+                                        <button type="button" class="p4-secondary-btn p4-button-text"
+                                            onclick={handleLoanAssetViabilityClick}>
+                                            Viability Details
+                                        </button>
+                                    </template>
+                                    <button type="button" class="p4-primary-btn p4-button-text cam-loan-asset-modal-close"
+                                        onclick={handleLoanAssetModalClose}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <template lwc:if={showDynamicComponentModal}>
+            <c-dynamic-component-modal
+                component-name={dynamicComponentName}
+                record-id={recordId}
+                modal-header={dynamicModalHeader}
+                component-props={dynamicComponentProps}
+                onclose={handleDynamicComponentModalClose}>
+            </c-dynamic-component-modal>
+        </template>
+
+        <template lwc:if={showFilePreviewer}>
+            <c-file-previewer
+                content-document-id={previewContentDocumentId}
+                file-type={previewFileType}
+                record-id={recordId}
+                onclose={handleFilePreviewClose}>
+            </c-file-previewer>
+        </template>
+
+    </div>
+</template>

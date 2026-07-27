@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Vehicle_SubCategory__c</fullName>
+    <description>Vehicle SubCategory is used to store Vehicle Details value from dedupe screen</description>
+    <label>Vehicle SubCategory</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>New</fullName>
+                <default>false</default>
+                <label>New</label>
+            </value>
+            <value>
+                <fullName>New Loan (Change of Owner)</fullName>
+                <default>false</default>
+                <label>New Loan (Change of Owner)</label>
+            </value>
+            <value>
+                <fullName>BT External (Change / No Change of Owner)</fullName>
+                <default>false</default>
+                <label>BT External (Change / No Change of Owner)</label>
+            </value>
+            <value>
+                <fullName>BT External and Top-up (Change / No Change of Owner)</fullName>
+                <default>false</default>
+                <label>BT External and Top-up (Change / No Change of Owner)</label>
+            </value>
+            <value>
+                <fullName>BT Internal (Change of Owner)</fullName>
+                <default>false</default>
+                <label>BT Internal (Change of Owner)</label>
+            </value>
+            <value>
+                <fullName>Top-up (on External Loan)</fullName>
+                <default>false</default>
+                <label>Top-up (on External Loan)</label>
+            </value>
+            <value>
+                <fullName>Top-up (on Internal Loan)</fullName>
+                <default>false</default>
+                <label>Top-up (on Internal Loan)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <!-- Define colors/styles -->
+    <style>
+      .bike-body { fill: #333333; } /* Main color of the bike */
+      .bike-wheels { fill: #1A1A1A; } /* Tire color */
+      .bike-accent { fill: #FFFFFF; } /* Inner wheel/hub accents */
+      .bike-seat { fill: #555555; } /* Seat color */
+    </style>
+  </defs>
+  
+  <!-- Rear Wheel -->
+  <circle class="bike-wheels" cx="25" cy="70" r="18"/>
+  <circle class="bike-accent" cx="25" cy="70" r="8"/>
+  
+  <!-- Front Wheel -->
+  <circle class="bike-wheels" cx="75" cy="70" r="18"/>
+  <circle class="bike-accent" cx="75" cy="70" r="8"/>
+  
+  <!-- Main Body / Frame -->
+  <path class="bike-body" d="M25,70 L40,70 L55,50 L85,60 L75,70 L45,75 Z"/>
+  
+  <!-- Engine / Tank Area -->
+  <path class="bike-body" d="M40,70 L55,50 L75,55 L70,65 L50,65 Z"/>
+  
+  <!-- Fairing / Front -->
+  <path class="bike-body" d="M75,55 L90,60 L85,65 L75,60 Z"/>
+  
+  <!-- Seat Area -->
+  <path class="bike-seat" d="M35,65 L50,65 L55,55 L40,55 Z"/>
+  
+  <!-- Handlebars -->
+  <path class="bike-body" d="M75,55 L78,45 L82,47 L80,57 Z"/>
+  <rect class="bike-body" x="76" y="43" width="8" height="3" rx="1"/>
+  
+  <!-- Exhaust Pipe (Simple) -->
+  <rect class="bike-body" x="20" y="78" width="30" height="4" rx="1" transform="rotate(-5 35 80)"/>
+
+</svg>

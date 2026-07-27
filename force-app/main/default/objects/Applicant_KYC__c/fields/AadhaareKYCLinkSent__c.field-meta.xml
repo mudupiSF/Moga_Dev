@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AadhaareKYCLinkSent__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Flipped TRUE the moment the Aadhaar eKYC OTP link is generated.</description>
+    <label>Aadhaar eKYC Link Sent</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

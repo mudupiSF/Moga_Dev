@@ -1,0 +1,1177 @@
+<template>
+    <div class="form-layout" onintegrationprogressupdate={handleIntegrationProgressUpdate} onotpverified={handleOtpVerified}>
+
+        <template lwc:if={isPageLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:if={showNiStageNotApplicableMessage}>
+            <p class="form-empty-state">
+                This stage is not applicable for NI Applicants, This will be removed in future. Please proceed to NEXT Stage
+            </p>
+        </template>
+        <template lwc:else>
+        <div class={tabBarClass}>
+            <button type="button" class={salariedTabClass} data-value="Salaried" onclick={handleTabChange} disabled={isSalariedTabDisabled}>Salaried</button>
+            <button type="button" class={selfEmpProfTabClass} data-value="Self-Employed Professional" onclick={handleTabChange} disabled={isSelfEmpProfTabDisabled}>Self-Employed Professional</button>
+            <button type="button" class={selfEmpNonProfTabClass} data-value="Self-Employed Non-Professional" onclick={handleTabChange} disabled={isSelfEmpNonProfTabDisabled}>Self-Employed Non-Professional</button>
+        </div>
+
+        <!-- ══ SALARIED ════════════════════════════════════════════════════ -->
+        <template lwc:if={isSalaried}>
+            <div class={salariedEmploymentCardClass}>
+                <div class="form-header form-header--collapsible" data-section="salariedEmployment" onclick={handleAccordionToggle}>
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content form-header-content--split">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:company" size="small" class="form-header-icon"></lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <div class="form-header-title-row">
+                                <h1 class="form-header-title">Primary Employment</h1>
+                            </div>
+                            <p class="form-header-subtitle">Capture the applicant's employment information for verification</p>
+                        </div>
+                        <div class="form-header-toggle" title="Toggle section">
+                            <lightning-icon icon-name={salariedEmploymentChevronIcon} size="x-small" class="form-header-toggle-icon"></lightning-icon>
+                        </div>
+                    </div>
+                </div>
+                <template lwc:if={isSalariedEmploymentOpen}>
+                    <div class="form-body">
+
+                        <div class="form-fields-grid form-fields-grid--two-col slds-var-m-top_medium">
+
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">
+                                            Employer Name
+                                            <span class="form-field-required-indicator" title="Required">*</span>
+                                        </label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <lightning-input type="text" name="employerName" value={employmentData.employerName} placeholder="Enter employer name" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Employer Name</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.employerName}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">Job Title / Designation</label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <lightning-input type="text" name="jobTitle" value={employmentData.jobTitle} placeholder="Enter job title" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Job Title / Designation</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.jobTitle}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">
+                                            Employment Type
+                                            <span class="form-field-required-indicator" title="Required">*</span>
+                                        </label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <lightning-combobox name="employmentType" value={employmentData.employmentType} options={employmentTypeOptions} placeholder="Select type" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Employment Type</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.employmentType}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">Industry / Sector</label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <lightning-combobox name="industrySector" value={employmentData.industrySector} options={industrySectorOptions} placeholder="Select industry" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Industry / Sector</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.industrySector}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">Employment Start Date</label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <lightning-input type="date" name="employmentStartDate" value={employmentData.employmentStartDate} max={maxEmploymentStartDate} onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Employment Start Date</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.employmentStartDate}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">
+                                            Monthly Gross Salary
+                                            <span class="form-field-required-indicator" title="Required">*</span>
+                                        </label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <lightning-input type="number" name="monthlyGrossSalary" value={employmentData.monthlyGrossSalary} placeholder="0.00" step="0.01" min="0" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Monthly Gross Salary</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.monthlyGrossSalary}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">Work Address</label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <lightning-textarea name="workAddress" value={employmentData.workAddress} placeholder="Enter work address" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                            </lightning-textarea>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Work Address</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.workAddress}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">Work Email Address</label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <div class="form-input-with-action-wrap form-icon-input-action-wrap form-icon-input-action-wrap--verify">
+                                                <div class="form-email-icon-wrap">
+                                                    <lightning-icon icon-name="utility:email" size="x-small" class="form-email-icon"></lightning-icon>
+                                                </div>
+                                                <input type="text" class="form-action-input form-email-input" id="workEmail" name="workEmail" data-section-input data-editable="true" value={employmentData.workEmail} placeholder="Enter work email" maxlength="80" oninput={handleWorkEmailInput} />
+                                                <div class="form-input-with-action-btn-wrap">
+                                                    <button type="button" class={workEmailVerifyActionBtnClass} disabled={workEmailVerifyDisabled} onclick={handleWorkEmailVerifyClick}>
+                                                        <span class="form-action-btn-text">{workEmailVerifyLabel}</span>
+                                                        <template lwc:if={workEmailVerifyShowSendIcon}>
+                                                            <lightning-icon icon-name="utility:send" size="x-small" class="form-action-btn-icon"></lightning-icon>
+                                                        </template>
+                                                        <template lwc:elseif={workEmailVerified}>
+                                                            <lightning-icon icon-name="utility:check" size="x-small" class="form-action-btn-icon"></lightning-icon>
+                                                        </template>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <template lwc:if={isWorkEmailFormatInvalid}>
+                                                <p class="form-field-error">{workEmailValidationError}</p>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Work Email Address</span></div>
+                                        <div class="form-info-value-wrap">
+                                            <div class="form-info-value-with-action-row">
+                                                <p class="form-info-value">{employmentData.workEmail}</p>
+                                                <span class={workEmailVerifyInfoActionLabelClass}>{workEmailVerifyLabel}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </template>
+            </div>
+
+            <!-- ══ HR / PAYROLL CONTACT ═════════════════════════════════════════ -->
+            <div class={hrPayrollContactCardClass}>
+                <div class="form-header form-header--collapsible" data-section="hrPayrollContact" onclick={handleAccordionToggle}>
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content form-header-content--split">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:checkin" size="small" class="form-header-icon"></lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <div class="form-header-title-row">
+                                <h1 class="form-header-title">HR / Payroll Contact</h1>
+                            </div>
+                            <p class="form-header-subtitle">Employer HR contact details for verification</p>
+                        </div>
+                        <div class="form-header-toggle" title="Toggle section">
+                            <lightning-icon icon-name={hrPayrollContactChevronIcon} size="x-small" class="form-header-toggle-icon"></lightning-icon>
+                        </div>
+                    </div>
+                </div>
+                <template lwc:if={isHrPayrollContactOpen}>
+                    <div class="form-body">
+                        <div class="form-fields-grid form-fields-grid--two-col slds-var-m-top_medium">
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">Work Email ID</label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <div class="form-input-with-action-wrap form-icon-input-action-wrap">
+                                                <div class="form-email-icon-wrap">
+                                                    <lightning-icon icon-name="utility:email" size="x-small" class="form-email-icon"></lightning-icon>
+                                                </div>
+                                                <input type="email" name="hrPayrollEmail" class="form-action-input form-email-input" value={employmentData.hrPayrollEmail} placeholder="Ex. hr@company.com" maxlength="80" oninput={handleHrPayrollEmailInput} disabled={isReadOnly} />
+                                            </div>
+                                            <template lwc:if={isHrPayrollEmailFormatInvalid}>
+                                                <p class="form-field-error">{hrPayrollEmailValidationError}</p>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Work Email ID</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.hrPayrollEmail}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">Direct Phone Number</label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <div class="form-input-with-action-wrap form-icon-input-action-wrap">
+                                                <div class="form-email-icon-wrap">
+                                                    <lightning-icon icon-name="utility:call" size="x-small" class="form-email-icon"></lightning-icon>
+                                                </div>
+                                                <input type="tel" name="hrPayrollPhoneNumber" class="form-action-input form-email-input" value={employmentData.hrPayrollPhoneNumber} placeholder="Enter 10-digit mobile number" maxlength="10" inputmode="numeric" pattern="[0-9]*" oninput={handleHrPayrollPhoneNumberInput} disabled={isReadOnly} />
+                                            </div>
+                                            <template lwc:if={isHrPayrollPhoneNumberFormatInvalid}>
+                                                <p class="form-field-error">{hrPayrollPhoneNumberValidationError}</p>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header"><span class="form-info-label">Direct Phone Number</span></div>
+                                        <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.hrPayrollPhoneNumber}</p></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- ══ SELF-EMPLOYED PROFESSIONAL ════════════════════════════════════ -->
+        <template lwc:if={isSelfEmployedProfessional}>
+            <div class={selfEmpProfessionalCardClass}>
+                <div class="form-header form-header--collapsible" data-section="selfEmployedProfessional" onclick={handleAccordionToggle}>
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content form-header-content--split">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:user" size="small" class="form-header-icon"></lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <div class="form-header-title-row">
+                                <h1 class="form-header-title">Primary Employment</h1>
+                            </div>
+                            <p class="form-header-subtitle">Capture professional practice details for verification</p>
+                        </div>
+                        <div class="form-header-toggle" title="Toggle section">
+                            <lightning-icon icon-name={selfEmpProfessionalChevronIcon} size="x-small" class="form-header-toggle-icon"></lightning-icon>
+                        </div>
+                    </div>
+                </div>
+                <template lwc:if={isSelfEmpProfessionalOpen}>
+                    <div class="form-body">
+
+                        <!-- ── SELF-EMPLOYED PROFESSIONAL ───────────────────────── -->
+                        <template lwc:if={isSelfEmployedProfessional}>
+
+                            <p class="form-section-label slds-var-m-top_medium">Profession Type</p>
+                            <div class="form-profession-grid">
+                                <template for:each={professionTypes} for:item="prof">
+                                    <button key={prof.value} type="button" class={prof.cssClass} data-value={prof.value} onclick={handleProfessionChange} disabled={isReadOnly}>
+                                        <div class={prof.iconWrapClass}>
+                                            <lightning-icon icon-name={prof.icon} size="small" class="form-profession-icon"></lightning-icon>
+                                        </div>
+                                        <span class="form-profession-label">{prof.label}</span>
+                                    </button>
+                                </template>
+                            </div>
+
+                            <template lwc:if={showProfessionalEmploymentFields}>
+                                <div class="form-fields-grid form-fields-grid--two-col slds-var-m-top_medium">
+
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">
+                                                    Practice / Firm Name
+                                                    <span class="form-field-required-indicator" title="Required">*</span>
+                                                </label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="text" name="practiceFirmName" value={employmentData.practiceFirmName} placeholder="Enter practice or firm name" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Practice / Firm Name</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.practiceFirmName}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">{registrationNumberLabel}</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="text" name={activeRegistrationFieldName} value={activeRegistrationFieldValue} placeholder={registrationNumberPlaceholder} onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">{registrationNumberLabel}</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{activeRegistrationFieldValue}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">{professionalBodyLabel}</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-combobox name={activeBodyFieldName} value={activeBodyFieldValue} options={activeBodyOptions} placeholder="Select" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-combobox>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">{professionalBodyLabel}</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{activeBodyFieldValue}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">Date of Registration</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="date" name="dateOfRegistration" value={employmentData.dateOfRegistration} onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Date of Registration</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.dateOfRegistration}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">Years in Practice</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="number" name="yearsInPractice" value={employmentData.yearsInPractice} placeholder="e.g. 8" min="0" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Years in Practice</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.yearsInPractice}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">No. of Employees / Staff</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="number" name="numberOfEmployees" value={employmentData.numberOfEmployees} placeholder="e.g. 5" min="0" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">No. of Employees / Staff</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.numberOfEmployees}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">
+                                                    Annual Professional Income
+                                                    <span class="form-field-required-indicator" title="Required">*</span>
+                                                </label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="number" name="annualProfessionalIncome" value={employmentData.annualProfessionalIncome} placeholder="0.00" step="0.01" min="0" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Annual Professional Income</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.annualProfessionalIncome}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">PAN Number</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="text" name="panNumber" value={employmentData.panNumber} placeholder="ABCDE1234F" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">PAN Number</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.panNumber}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">GST Registration No. (if applicable)</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="text" name="gstNumber" value={employmentData.gstNumber} placeholder="22ABCDE1234F1Z5" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">GST Registration No.</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.gstNumber}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">Practice / Office Address</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-textarea name="workAddress" value={employmentData.workAddress} placeholder="Enter practice address" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-textarea>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Practice / Office Address</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.workAddress}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                </div>
+                            </template>
+                        </template>
+
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- ══ SELF-EMPLOYED NON-PROFESSIONAL ═══════════════════════════════ -->
+        <template lwc:if={isSelfEmployedNonProfessional}>
+            <div class={selfEmpNonProfCardClass}>
+                <div class="form-header form-header--collapsible" data-section="selfEmployedNonProfessional" onclick={handleAccordionToggle}>
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content form-header-content--split">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:company" size="small" class="form-header-icon"></lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <div class="form-header-title-row">
+                                <h1 class="form-header-title">Primary Employment</h1>
+                            </div>
+                            <p class="form-header-subtitle">Capture business details for verification</p>
+                        </div>
+                        <div class="form-header-toggle" title="Toggle section">
+                            <lightning-icon icon-name={selfEmpNonProfChevronIcon} size="x-small" class="form-header-toggle-icon"></lightning-icon>
+                        </div>
+                    </div>
+                </div>
+                <template lwc:if={isSelfEmpNonProfOpen}>
+                    <div class="form-body">
+
+                        <!-- ── SELF-EMPLOYED NON-PROFESSIONAL ───────────────────── -->
+                        <template lwc:if={isSelfEmployedNonProfessional}>
+                            <div class="form-fields-grid form-fields-grid--two-col slds-var-m-top_medium">
+
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">
+                                                Business / Firm Name
+                                                <span class="form-field-required-indicator" title="Required">*</span>
+                                            </label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <lightning-input type="text" name="businessFirmName" value={employmentData.businessFirmName} placeholder="Enter business or firm name" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Business / Firm Name</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.businessFirmName}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">Nature of Business</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <lightning-combobox name="natureOfBusiness" value={employmentData.natureOfBusiness} options={natureOfBusinessOptions} placeholder="Select nature" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                </lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Nature of Business</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.natureOfBusiness}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">Business Constitution</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <lightning-combobox name="businessConstitution" value={employmentData.businessConstitution} options={businessConstitutionOptions} placeholder="Select constitution" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                </lightning-combobox>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Business Constitution</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.businessConstitution}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">Date of Commencement</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <lightning-input type="date" name="dateOfCommencement" value={employmentData.dateOfCommencement} max={maxEmploymentStartDate} onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Date of Commencement</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.dateOfCommencement}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">Business Vintage (Years)</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <lightning-input type="number" name="businessVintage" value={employmentData.businessVintage} placeholder="e.g. 6" min="0" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Business Vintage (Years)</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.businessVintage}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">No. of Employees / Staff</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <lightning-input type="number" name="numberOfEmployees" value={employmentData.numberOfEmployees} placeholder="e.g. 12" min="0" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">No. of Employees / Staff</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.numberOfEmployees}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">
+                                                Annual Turnover
+                                                <span class="form-field-required-indicator" title="Required">*</span>
+                                            </label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <lightning-input type="number" name="annualTurnover" value={employmentData.annualTurnover} placeholder="0.00" step="0.01" min="0" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Annual Turnover</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.annualTurnover}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">Annual Net Income / Profit</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <lightning-input type="number" name="annualNetIncome" value={employmentData.annualNetIncome} placeholder="0.00" step="0.01" min="0" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Annual Net Income / Profit</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.annualNetIncome}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">Business / Proprietor PAN</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <lightning-input type="text" name="panNumber" value={employmentData.panNumber} placeholder="ABCDE1234F" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Business / Proprietor PAN</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.panNumber}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">GST Registration No. (if applicable)</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <lightning-input type="text" name="gstNumber" value={employmentData.gstNumber} placeholder="22ABCDE1234F1Z5" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">GST Registration No.</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.gstNumber}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">Udyam / MSME Reg. No. (if applicable)</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <lightning-input type="text" name="udyamNumber" value={employmentData.udyamNumber} placeholder="UDYAM-XX-00-0000000" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Udyam / MSME Reg. No.</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.udyamNumber}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="form-field-wrap">
+                                    <template lwc:if={isFieldEditable}>
+                                        <div class="form-field-editable-section">
+                                            <label class="form-field-editable-label">Business / Shop Address</label>
+                                            <div class="form-field-editable-input-wrap">
+                                                <lightning-textarea name="businessShopAddress" value={employmentData.businessShopAddress} placeholder="Enter business address" onchange={handleFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                </lightning-textarea>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="form-info-cell">
+                                            <div class="form-info-cell-header"><span class="form-info-label">Business / Shop Address</span></div>
+                                            <div class="form-info-value-wrap"><p class="form-info-value">{employmentData.businessShopAddress}</p></div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                            </div>
+                        </template>
+
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- ══ SUPPORTING DOCUMENTS ════════════════════════════════════════ -->
+        <template lwc:if={showSupportingDocumentsSection}>
+            <div class={supportingDocumentsCardClass}>
+                <div class="form-header form-header--collapsible" data-section="supportingDocuments" onclick={handleAccordionToggle}>
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content form-header-content--split">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:file" size="small" class="form-header-icon"></lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <div class="form-header-title-row">
+                                <h1 class="form-header-title">Supporting Documents</h1>
+                            </div>
+                            <p class="form-header-subtitle">{supportingDocumentsSubtitle}</p>
+                        </div>
+                        <div class="form-header-toggle" title="Toggle section">
+                            <lightning-icon icon-name={supportingDocumentsChevronIcon} size="x-small" class="form-header-toggle-icon"></lightning-icon>
+                        </div>
+                    </div>
+                </div>
+
+                <template lwc:if={isSupportingDocumentsOpen}>
+                    <div class="form-body">
+                        <template lwc:if={showSupportingDocumentsIntro}>
+                            <p class="form-accordion-intro">Select a profession type above to view required supporting documents.</p>
+                        </template>
+
+                        <template lwc:if={hasActiveDocumentCards}>
+                            <div class="form-fields-grid ach-upload-grid">
+                                <template for:each={activeDocumentCards} for:item="doc">
+                                    <div key={doc.key} class="form-field-wrap">
+                                        <div class="dv-file-card">
+                                            <span class="dv-file-legend">{doc.label}</span>
+                                            <p class="dv-file-title">{doc.uploadTitle}</p>
+
+                                            <template lwc:if={doc.showUploadBtn}>
+                                                <button type="button" class="dv-upload-btn" data-key={doc.key} data-list={doc.listName} onclick={handleChunkyUpload} title={doc.uploadTitle}>
+                                                    <img src={chunkyUploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                                                    <span class="dv-upload-btn-text">Select Files</span>
+                                                </button>
+                                            </template>
+                                            <template lwc:if={doc.showEmptyPlaceholder}>
+                                                <p class="dv-file-empty">No file uploaded</p>
+                                            </template>
+
+                                            <template lwc:if={doc.filesSingle}>
+                                                <div class="dv-file-row dv-file-row--single">
+                                                    <div class="dv-file-row-left">
+                                                        <span class="dv-file-check">
+                                                            <lightning-icon icon-name="utility:success" size="x-small" variant="inverse" alternative-text="Uploaded"></lightning-icon>
+                                                        </span>
+                                                        <div class="dv-file-meta">
+                                                            <span class="dv-file-name">{doc.singleFile.name}</span>
+                                                            <span class="dv-file-status">Uploaded</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dv-file-row-actions">
+                                                        <button type="button" class="dv-file-action dv-file-action--preview" data-content-version-id={doc.singleFile.contentVersionId} data-file-name={doc.singleFile.name} data-file-extension={doc.singleFile.extension} onclick={handleDvFilePreviewClick} title="Preview">
+                                                            <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                        </button>
+                                                        <template lwc:if={doc.canDelete}>
+                                                            <button type="button" class="dv-file-action dv-file-action--danger" data-key={doc.key} data-list={doc.listName} data-id={doc.singleFile.id} onclick={handleDocumentFileDelete} title="Delete">
+                                                                <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                            </button>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </template>
+
+                                            <template lwc:if={doc.filesMulti}>
+                                                <div class="dv-file-multi">
+                                                    <button type="button" class="dv-file-multi-head" data-key={doc.key} data-list={doc.listName} onclick={toggleDocumentFilesExpand}>
+                                                        <div class="dv-file-row-left">
+                                                            <span class="dv-file-check">
+                                                                <lightning-icon icon-name="utility:success" size="x-small" variant="inverse" alternative-text="Uploaded"></lightning-icon>
+                                                            </span>
+                                                            <div class="dv-file-meta">
+                                                                <span class="dv-file-name">Multiple Files Uploaded</span>
+                                                                <span class="dv-file-status">{doc.filesCountLabel}</span>
+                                                            </div>
+                                                        </div>
+                                                        <lightning-icon icon-name={doc.filesChevron} size="x-small" alternative-text="toggle"></lightning-icon>
+                                                    </button>
+                                                    <template lwc:if={doc.expanded}>
+                                                        <div class="dv-file-multi-list">
+                                                            <template for:each={doc.filesView} for:item="file">
+                                                                <div key={file.id} class="dv-file-row">
+                                                                    <div class="dv-file-row-left">
+                                                                        <lightning-icon icon-name="utility:file" size="x-small" alternative-text="File"></lightning-icon>
+                                                                        <span class="dv-file-name">{file.name}</span>
+                                                                    </div>
+                                                                    <div class="dv-file-row-actions">
+                                                                        <button type="button" class="dv-file-action dv-file-action--preview" data-content-version-id={file.contentVersionId} data-file-name={file.name} data-file-extension={file.extension} onclick={handleDvFilePreviewClick} title="Preview">
+                                                                            <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                                        </button>
+                                                                        <template lwc:if={doc.canDelete}>
+                                                                            <button type="button" class="dv-file-action dv-file-action--danger" data-key={doc.key} data-list={doc.listName} data-id={file.id} onclick={handleDocumentFileDelete} title="Delete">
+                                                                                <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                                            </button>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- ══ PREVIOUS EMPLOYMENT ═════════════════════════════════════════ -->
+        <template lwc:if={showPreviousEmploymentSection}>
+            <!-- Previous Employment -->
+            <div class={previousEmploymentCardClass}>
+                <div class="form-header form-header--collapsible" data-section="previousEmployment" onclick={handleAccordionToggle}>
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content form-header-content--split">
+                        <div class="form-header-icon-wrap">
+                            <lightning-icon icon-name="utility:company" size="small" class="form-header-icon"></lightning-icon>
+                        </div>
+                        <div class="form-header-text">
+                            <div class="form-header-title-row">
+                                <h1 class="form-header-title">Previous Employment</h1>
+                            </div>
+                            <p class="form-header-subtitle">Employment history for the last 3 years</p>
+                        </div>
+                        <div class="form-header-toggle" title="Toggle section">
+                            <lightning-icon icon-name={previousEmploymentChevronIcon} size="x-small" class="form-header-toggle-icon"></lightning-icon>
+                        </div>
+                    </div>
+                </div>
+
+                <template lwc:if={isPreviousEmploymentOpen}>
+                    <div class="form-body">
+                        <template lwc:if={showPreviousEmploymentIntro}>
+                            <p class="form-accordion-intro">Add previous employment records for credit assessment.</p>
+                        </template>
+
+                        <template lwc:if={hasPreviousEmployers}>
+                            <div class="form-previous-records-list">
+                                <template for:each={previousEmployers} for:item="record">
+                                    <div key={record.id} class={previousEmployerRecordCardClass} data-id={record.id} onclick={handleEditPreviousEmployer} role="button" tabindex="0">
+                                        <div class="form-record-icon-wrap">
+                                            <lightning-icon icon-name="utility:case" size="small" class="form-record-icon"></lightning-icon>
+                                        </div>
+                                        <div class="form-record-text">
+                                            <p class="form-record-title">{record.employerName}</p>
+                                            <p class="form-record-subtitle">{record.summary}</p>
+                                        </div>
+                                        <button type="button" class="form-record-delete" data-id={record.id} onclick={handleDeletePreviousEmployer} disabled={isReadOnly} title="Delete">
+                                            <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <button type="button" class={previousEmployerAddLinkClass} data-section="previousEmployment" onclick={handleAddAccordionItem} disabled={isReadOnly}>
+                            + Add Previous Employer
+                        </button>
+
+                        <template lwc:if={showPreviousEmployerForm}>
+                            <div class="form-subsection-card slds-var-m-top_medium">
+                                <p class="form-panel-title">{previousEmployerPanelTitle}</p>
+                                <div class="form-fields-grid form-fields-grid--two-col">
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">Employer Name</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="text" name="employerName" value={newPreviousEmployer.employerName} placeholder="Ex. TechGlobal Inc" onchange={handlePreviousEmployerFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Employer Name</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{newPreviousEmployer.employerName}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">Job Title / Designation</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="text" name="jobTitle" value={newPreviousEmployer.jobTitle} placeholder="Ex. Sr. Software Engineer" onchange={handlePreviousEmployerFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Job Title / Designation</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{newPreviousEmployer.jobTitle}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">Employment Type</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-combobox name="employmentType" value={newPreviousEmployer.employmentType} options={employmentTypeOptions} onchange={handlePreviousEmployerFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-combobox>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Employment Type</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{newPreviousEmployer.employmentType}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">Industry / Sector</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-combobox name="industrySector" value={newPreviousEmployer.industrySector} options={industrySectorOptions} placeholder="Select industry" onchange={handlePreviousEmployerFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-combobox>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Industry / Sector</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{newPreviousEmployer.industrySector}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">Employment Start Date</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="date" name="employmentStartDate" value={newPreviousEmployer.employmentStartDate} max={maxEmploymentStartDate} onchange={handlePreviousEmployerFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Employment Start Date</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{newPreviousEmployer.employmentStartDate}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">Employment End Date</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="date" name="employmentEndDate" value={newPreviousEmployer.employmentEndDate} max={maxEmploymentStartDate} onchange={handlePreviousEmployerFieldChange} variant="label-hidden" disabled={isReadOnly} required>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Employment End Date</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{newPreviousEmployer.employmentEndDate}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">Work Email Address</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <lightning-input type="email" name="workEmail" value={newPreviousEmployer.workEmail} placeholder="employee@company.com" onchange={handlePreviousEmployerFieldChange} variant="label-hidden" disabled={isReadOnly}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Work Email Address</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{newPreviousEmployer.workEmail}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div class="form-field-wrap">
+                                        <template lwc:if={isFieldEditable}>
+                                            <div class="form-field-editable-section">
+                                                <label class="form-field-editable-label">Phone Number</label>
+                                                <div class="form-field-editable-input-wrap">
+                                                    <input type="tel" name="hrPayrollPhoneNumber" class="form-field-editable-input" value={newPreviousEmployer.hrPayrollPhoneNumber} placeholder="Enter 10-digit mobile number" maxlength="10" inputmode="numeric" pattern="[0-9]*" oninput={handlePreviousEmployerPhoneNumberInput} disabled={isReadOnly} />
+                                                    <template lwc:if={isPreviousEmployerPhoneNumberFormatInvalid}>
+                                                        <p class="form-field-error">{previousEmployerPhoneNumberValidationError}</p>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="form-info-cell">
+                                                <div class="form-info-cell-header"><span class="form-info-label">Phone Number</span></div>
+                                                <div class="form-info-value-wrap"><p class="form-info-value">{newPreviousEmployer.hrPayrollPhoneNumber}</p></div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div class="form-inline-actions">
+                                    <button type="button" class="form-secondary-link" onclick={handleCancelPreviousEmployer}>Cancel</button>
+                                    <button type="button" class="form-primary-btn" onclick={handleSavePreviousEmployer} disabled={isReadOnly}>
+                                        {previousEmployerSaveLabel}
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- ══ FOOTER — NEXT ═══════════════════════════════════════════════ -->
+        <div class="form-footer-wrapper">
+            <div class="form-footer">
+                <div class="form-btn-wrapper">
+                    <template lwc:if={isFieldEditable}>
+                        <button type="button" class="form-primary-btn" onclick={handleSaveDetails} disabled={isSaveDisabled}>
+                            Save Details
+                            <lightning-icon icon-name="utility:save" size="x-small" class="form-btn-icon"></lightning-icon>
+                        </button>
+                    </template>
+                    <template lwc:if={showNextButton}>
+                        <button type="button" class="form-primary-btn" onclick={handleNextButton} disabled={isNextDisabled}>
+                            Next
+                            <lightning-icon icon-name="utility:forward" size="x-small" class="form-btn-icon"></lightning-icon>
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <template lwc:if={showMagicUpload}>
+            <div class="dv-modal-overlay" onmousedown={handleOverlayMouseDown} onclick={handleOverlayClick}>
+                <div class="dv-modal" onclick={stopPropagationDv}>
+                    <div class="dv-modal-head">
+                        <span class="dv-modal-title">Advanced Document Upload</span>
+                        <button type="button" class="dv-modal-close" onclick={handleMagicUploadClose} title="Close">&#10005;</button>
+                    </div>
+                    <div class="dv-modal-body">
+                        <c-embed-custom-file-upload record-id={activeUploadChecklistId} enable-compression allow-merge enable-video onfilesuploaded={handleMagicUploadComplete}>
+                        </c-embed-custom-file-upload>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <c-embed-document-checklist></c-embed-document-checklist>
+
+        <template lwc:if={showFilePreviewer}>
+            <c-embed-file-preview content-version-id={previewContentVersionId} file-name={previewFileName} file-extension={previewFileExtension} session-id={previewSessionId} vf-root={previewVfRoot} can-download onclose={handleDvFilePreviewClose}>
+            </c-embed-file-preview>
+        </template>
+
+        <template lwc:if={showIntegrationProgressModal}>
+            <c-integration-progress-modal status={integrationProgressModalStatus} header={integrationProgressModalHeader} current-stage-index={integrationProgressModalCurrentStageIdx} stages={integrationProgressModalStages} error-message={integrationProgressModalErrorMessage} onclose={handleIntegrationProgressModalClose} ondone={handleIntegrationProgressModalDone}>
+            </c-integration-progress-modal>
+        </template>
+
+        <template lwc:if={showDynamicComponentModal}>
+            <c-dynamic-component-modal component-name={dynamicComponentName} modal-header={dynamicComponentModalHeader} record-id={recordId} component-props={dynamicComponentProps} onclose={handleDynamicComponentModalClose}>
+            </c-dynamic-component-modal>
+        </template>
+        </template>
+
+    </div>
+</template>

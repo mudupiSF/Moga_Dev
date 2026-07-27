@@ -1,0 +1,473 @@
+<template>
+    <div class="form-layout">
+
+        <template lwc:if={isPageLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ══ PHYSICAL AGREEMENT ═══════════════════════════════════════════ -->
+        <template lwc:if={isPhysicalView}>
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">Physical Agreement Details</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Geographical State</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{agreementData.geographicalState}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Required Loan Agreement Stamping Charges</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{stampingChargesDisplay}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isBookletNumberEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">
+                                        Agreement Booklet No
+                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                    </label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            name="agreementBookletNo"
+                                            value={agreementData.agreementBookletNo}
+                                            placeholder="Enter Agreement Booklet Number..."
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Agreement Booklet No</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{agreementData.agreementBookletNo}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <template lwc:if={showFetchDetailBtn}>
+                        <div class="action-row">
+                            <lightning-button
+                                label="Fetch Agreement Booklet Details"
+                                variant="brand"
+                                onclick={handleFetchAgreementDetails}
+                                disabled={isFetchButtonDisabled}>
+                            </lightning-button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <template lwc:if={showDocumentUploadSection}>
+                <div class="form-card">
+                    <div class="form-header">
+                        <div class="form-header-overlay"></div>
+                        <div class="form-header-content">
+                            <div class="form-header-text">
+                                <h1 class="form-header-title">Document Upload</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-fields-grid">
+                            <template for:each={physicalDocuments} for:item="doc">
+                                <div key={doc.key} class="form-field-wrap">
+                                    <div class="form-file-upload-wrap">
+                                        <label class="form-field-editable-label">
+                                            {doc.label}
+                                            <span class="form-field-required-indicator" title="Required">*</span>
+                                        </label>
+                                        <template lwc:if={doc.uploaded}>
+                                            <div class="form-file-uploaded-bar">
+                                                <lightning-icon
+                                                    icon-name="utility:success"
+                                                    size="x-small"
+                                                    class="form-file-success-icon"
+                                                    alternative-text="Uploaded">
+                                                </lightning-icon>
+                                                <p class="form-file-selected-name">{doc.fileName}</p>
+                                                <button
+                                                    type="button"
+                                                    class="form-file-action-btn"
+                                                    data-key={doc.key}
+                                                    onclick={handlePhysicalPreview}
+                                                    title="Preview">
+                                                    <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                </button>
+                                                <template lwc:if={showDocumentActions}>
+                                                    <button
+                                                        type="button"
+                                                        class="form-file-action-btn"
+                                                        data-key={doc.key}
+                                                        onclick={handlePhysicalDelete}
+                                                        title="Delete">
+                                                        <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <template lwc:if={showDocumentActions}>
+                                                <lightning-file-upload
+                                                    data-key={doc.key}
+                                                    label="Upload Document"
+                                                    accept={acceptedFormats}
+                                                    record-id={doc.documentChecklistId}
+                                                    onuploadfinished={handlePhysicalUploadFinished}
+                                                    multiple="false">
+                                                </lightning-file-upload>
+                                            </template>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </template>
+
+        <!-- ══ E-AGREEMENT ═══════════════════════════════════════════════════ -->
+        <template lwc:if={isEAgreementView}>
+            <div class="status-row">
+                <span class={checkStatus.kfs}>KFS</span>
+                <span class={checkStatus.processInitiated}>Process Initiated</span>
+                <span class={checkStatus.borrowerSigned}>Borrower Signed</span>
+                <template lwc:if={showGuarantor}>
+                    <span class={checkStatus.guarantorSigned}>Guarantor Signed</span>
+                </template>
+                <span class={checkStatus.lenderSigned}>Lender Signed</span>
+                <template lwc:if={showCheckStatusButton}>
+                    <lightning-button-icon
+                        icon-name="utility:refresh"
+                        alternative-text="Check status"
+                        onclick={handleCheckStatus}
+                        disabled={isReadOnlyScreen}>
+                    </lightning-button-icon>
+                </template>
+            </div>
+
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">E-Agreement Details</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Geographical State</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{agreementData.geographicalState}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Required Loan Agreement Stamping Charges</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{stampingChargesDisplay}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isBookletNumberEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">
+                                        Agreement Booklet No
+                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                    </label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            type="text"
+                                            name="agreementBookletNo"
+                                            value={agreementData.agreementBookletNo}
+                                            placeholder="Enter Agreement Booklet Number..."
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            disabled={isReadOnlyScreen}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Agreement Booklet No</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{agreementData.agreementBookletNo}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <template lwc:if={showFetchDetailBtn}>
+                        <div class="action-row">
+                            <lightning-button
+                                label="Fetch Agreement Booklet Details"
+                                variant="brand"
+                                onclick={handleFetchAgreementDetails}
+                                disabled={isFetchButtonDisabled}>
+                            </lightning-button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <template lwc:if={showInitiationMethod}>
+                <div class="form-card">
+                    <div class="form-header">
+                        <div class="form-header-overlay"></div>
+                        <div class="form-header-content">
+                            <div class="form-header-text">
+                                <h1 class="form-header-title">Initiation Method</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-fields-grid">
+                            <div class="form-field-wrap">
+                                <template lwc:if={isFieldEditable}>
+                                    <div class="form-field-editable-section">
+                                        <label class="form-field-editable-label">Initiation Method</label>
+                                        <div class="form-field-editable-input-wrap">
+                                            <lightning-radio-group
+                                                name="initiationMethod"
+                                                options={initiationMethodOptions}
+                                                value={initiationMethod}
+                                                onchange={handleInitiationMethodChange}
+                                                disabled={isInitiationMethodDisabled}
+                                                variant="label-hidden">
+                                            </lightning-radio-group>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="form-info-cell">
+                                        <div class="form-info-cell-header">
+                                            <span class="form-info-label">Initiation Method</span>
+                                        </div>
+                                        <div class="form-info-value-wrap">
+                                            <p class="form-info-value">{initiationMethod}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <template lwc:if={showUploadButtonField}>
+                                <div class="form-field-wrap">
+                                    <div class="form-file-upload-wrap">
+                                        <label class="form-field-editable-label">
+                                            Upload E-sign Agreement
+                                            <span class="form-field-required-indicator" title="Required">*</span>
+                                        </label>
+                                        <template lwc:if={esignAgreement.uploaded}>
+                                            <div class="form-file-uploaded-bar">
+                                                <lightning-icon
+                                                    icon-name="utility:success"
+                                                    size="x-small"
+                                                    class="form-file-success-icon"
+                                                    alternative-text="Uploaded">
+                                                </lightning-icon>
+                                                <p class="form-file-selected-name">{esignAgreement.fileName}</p>
+                                                <button
+                                                    type="button"
+                                                    class="form-file-action-btn"
+                                                    onclick={handleEsignPreview}
+                                                    title="Preview">
+                                                    <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                                </button>
+                                                <template lwc:if={showDocumentActions}>
+                                                    <button
+                                                        type="button"
+                                                        class="form-file-action-btn"
+                                                        onclick={handleEsignDelete}
+                                                        title="Delete">
+                                                        <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <template lwc:if={showDocumentActions}>
+                                                <lightning-file-upload
+                                                    label="Upload E-sign Agreement"
+                                                    accept={acceptedFormats}
+                                                    record-id={esignAgreement.documentChecklistId}
+                                                    onuploadfinished={handleEsignUploadFinished}
+                                                    multiple="false">
+                                                </lightning-file-upload>
+                                            </template>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <template lwc:if={hideInitiateAgreementBtn}>
+                            <div class="action-row">
+                                <lightning-button
+                                    label="Download Agreement"
+                                    variant="brand"
+                                    onclick={handleDownloadAgreement}
+                                    disabled={isDownloadAgreementDisabled}>
+                                </lightning-button>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="action-row">
+                                <lightning-button
+                                    label="Initiate Agreement"
+                                    variant="brand"
+                                    onclick={handleInitiateAgreement}
+                                    disabled={isInitiateAgreementButtonDisabled}>
+                                </lightning-button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </template>
+
+        <!-- ══ SECTION — AGREEMENT REMARKS (OPS view only) ═══════════════════ -->
+        <template lwc:if={isAgreementOpsView}>
+            <div class="form-card">
+                <c-operations-section-header
+                    subtitle="Verify agreement document and acceptance">
+                </c-operations-section-header>
+
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <template lwc:if={isAgreementRemarksEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">
+                                        Agreement Correctly Captured
+                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                    </label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-combobox
+                                            name="agreementCorrectlyCaptured"
+                                            value={agreementData.agreementCorrectlyCaptured}
+                                            options={agreementCorrectlyCapturedOptions}
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder="Please select">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Agreement Correctly Captured</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{agreementData.agreementCorrectlyCaptured}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template lwc:if={isAgreementRemarksEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">
+                                        Remarks
+                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                    </label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-textarea
+                                            name="remarks"
+                                            value={agreementData.remarks}
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder="Enter remarks">
+                                        </lightning-textarea>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Remarks</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{agreementData.remarks}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ FOOTER — NEXT (disabled via isNextDisabled) ═══════════════════ -->
+        <div class="form-footer-wrapper">
+            <div class="form-footer">
+                <div class="form-btn-wrapper">
+                    <button type="button"
+                        class="form-primary-btn p4-button-text"
+                        onclick={handleNext}
+                        disabled={isNextDisabled}>
+                        Next
+                        <lightning-icon
+                            icon-name="utility:forward"
+                            size="x-small"
+                            class="form-btn-icon">
+                        </lightning-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <template lwc:if={openPreviewModal}>
+            <c-file-previewer
+                content-document-id={previewContentDocumentId}
+                file-type={previewFileType}
+                record-id={recordId}
+                onclose={handleFilePreviewClose}>
+            </c-file-previewer>
+        </template>
+
+    </div>
+</template>

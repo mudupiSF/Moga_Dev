@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Phone_Verified__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>This is updated automatically when Verify button is clicked from UI for Phone field.</description>
+    <label>Phone Verified?</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

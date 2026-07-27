@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Query_Sub_Type__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Query Sub-Type</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Overwritten Information in Application form</fullName>
+                <default>true</default>
+                <label>Overwritten Information in Application form</label>
+            </value>
+            <value>
+                <fullName>Sourcing details</fullName>
+                <default>false</default>
+                <label>Sourcing details</label>
+            </value>
+            <value>
+                <fullName>Incomplete Application form</fullName>
+                <default>false</default>
+                <label>Incomplete Application form</label>
+            </value>
+            <value>
+                <fullName>Mismatch of information</fullName>
+                <default>false</default>
+                <label>Mismatch of information</label>
+            </value>
+            <value>
+                <fullName>Documents pending</fullName>
+                <default>false</default>
+                <label>Documents pending</label>
+            </value>
+            <value>
+                <fullName>Signature mismatch</fullName>
+                <default>false</default>
+                <label>Signature mismatch</label>
+            </value>
+            <value>
+                <fullName>Aadhar masking not done</fullName>
+                <default>false</default>
+                <label>Aadhar masking not done</label>
+            </value>
+            <value>
+                <fullName>Incomplete Loan agreement</fullName>
+                <default>false</default>
+                <label>Incomplete Loan agreement</label>
+            </value>
+            <value>
+                <fullName>Invalid Loan agreement</fullName>
+                <default>false</default>
+                <label>Invalid Loan agreement</label>
+            </value>
+            <value>
+                <fullName>Overwritten Information in Loan agreement</fullName>
+                <default>false</default>
+                <label>Overwritten Information in Loan agreement</label>
+            </value>
+            <value>
+                <fullName>Incomplete form</fullName>
+                <default>false</default>
+                <label>Incomplete form</label>
+            </value>
+            <value>
+                <fullName>Waiver pending</fullName>
+                <default>false</default>
+                <label>Waiver pending</label>
+            </value>
+            <value>
+                <fullName>Overwritten Information</fullName>
+                <default>false</default>
+                <label>Overwritten Information</label>
+            </value>
+            <value>
+                <fullName>Calculation sheet</fullName>
+                <default>false</default>
+                <label>Calculation sheet</label>
+            </value>
+            <value>
+                <fullName>Authorisation letter</fullName>
+                <default>false</default>
+                <label>Authorisation letter</label>
+            </value>
+            <value>
+                <fullName>OSV Stamp missing</fullName>
+                <default>false</default>
+                <label>OSV Stamp missing</label>
+            </value>
+            <value>
+                <fullName>Unclear KYC</fullName>
+                <default>false</default>
+                <label>Unclear KYC</label>
+            </value>
+            <value>
+                <fullName>Invalid KYC</fullName>
+                <default>false</default>
+                <label>Invalid KYC</label>
+            </value>
+            <value>
+                <fullName>KYC missing</fullName>
+                <default>false</default>
+                <label>KYC missing</label>
+            </value>
+            <value>
+                <fullName>FCU Report pending</fullName>
+                <default>false</default>
+                <label>FCU Report pending</label>
+            </value>
+            <value>
+                <fullName>FCU stamp missing</fullName>
+                <default>false</default>
+                <label>FCU stamp missing</label>
+            </value>
+            <value>
+                <fullName>Legal report</fullName>
+                <default>false</default>
+                <label>Legal report</label>
+            </value>
+            <value>
+                <fullName>Pragati Unit allocation report</fullName>
+                <default>false</default>
+                <label>Pragati Unit allocation report</label>
+            </value>
+            <value>
+                <fullName>Legal Report pending</fullName>
+                <default>false</default>
+                <label>Legal Report pending</label>
+            </value>
+            <value>
+                <fullName>Technical Report pending</fullName>
+                <default>false</default>
+                <label>Technical Report pending</label>
+            </value>
+            <value>
+                <fullName>Mismatch of details</fullName>
+                <default>false</default>
+                <label>Mismatch of details</label>
+            </value>
+            <value>
+                <fullName>Document pending</fullName>
+                <default>false</default>
+                <label>Document pending</label>
+            </value>
+            <value>
+                <fullName>Incomplete details</fullName>
+                <default>false</default>
+                <label>Incomplete details</label>
+            </value>
+            <value>
+                <fullName>Franking/Stamping missing</fullName>
+                <default>false</default>
+                <label>Franking/Stamping missing</label>
+            </value>
+            <value>
+                <fullName>Vetting pending</fullName>
+                <default>false</default>
+                <label>Vetting pending</label>
+            </value>
+            <value>
+                <fullName>Amount mismatch</fullName>
+                <default>false</default>
+                <label>Amount mismatch</label>
+            </value>
+            <value>
+                <fullName>Builder Stamp/Sign missing</fullName>
+                <default>false</default>
+                <label>Builder Stamp/Sign missing</label>
+            </value>
+            <value>
+                <fullName>OCR Receipt clearance missing</fullName>
+                <default>false</default>
+                <label>OCR Receipt clearance missing</label>
+            </value>
+            <value>
+                <fullName>Incomplete details in FC</fullName>
+                <default>false</default>
+                <label>Incomplete details in FC</label>
+            </value>
+            <value>
+                <fullName>Amount mismatch in FC</fullName>
+                <default>false</default>
+                <label>Amount mismatch in FC</label>
+            </value>
+            <value>
+                <fullName>Invalid FC</fullName>
+                <default>false</default>
+                <label>Invalid FC</label>
+            </value>
+            <value>
+                <fullName>Mismatch of information in LOD</fullName>
+                <default>false</default>
+                <label>Mismatch of information in LOD</label>
+            </value>
+            <value>
+                <fullName>Incomplete details in LOD</fullName>
+                <default>false</default>
+                <label>Incomplete details in LOD</label>
+            </value>
+            <value>
+                <fullName>Form 15 CA/CB missing/mismatch</fullName>
+                <default>false</default>
+                <label>Form 15 CA/CB missing/mismatch</label>
+            </value>
+            <value>
+                <fullName>Mismatch of details in Demand Letter</fullName>
+                <default>false</default>
+                <label>Mismatch of details in Demand Letter</label>
+            </value>
+            <value>
+                <fullName>Incomplete details in Demand Letter</fullName>
+                <default>false</default>
+                <label>Incomplete details in Demand Letter</label>
+            </value>
+            <value>
+                <fullName>Stamp missing in Demand letter</fullName>
+                <default>false</default>
+                <label>Stamp missing in Demand letter</label>
+            </value>
+            <value>
+                <fullName>Signature missing in Demand letter</fullName>
+                <default>false</default>
+                <label>Signature missing in Demand letter</label>
+            </value>
+            <value>
+                <fullName>Signature mismatch in Demand letter</fullName>
+                <default>false</default>
+                <label>Signature mismatch in Demand letter</label>
+            </value>
+            <value>
+                <fullName>Signature missing in document</fullName>
+                <default>false</default>
+                <label>Signature missing in document</label>
+            </value>
+            <value>
+                <fullName>Signature mismatch in document</fullName>
+                <default>false</default>
+                <label>Signature mismatch in document</label>
+            </value>
+            <value>
+                <fullName>Mismatch of details in NOC</fullName>
+                <default>false</default>
+                <label>Mismatch of details in NOC</label>
+            </value>
+            <value>
+                <fullName>Incomplete details in NOC</fullName>
+                <default>false</default>
+                <label>Incomplete details in NOC</label>
+            </value>
+            <value>
+                <fullName>Stamp missing in NOC</fullName>
+                <default>false</default>
+                <label>Stamp missing in NOC</label>
+            </value>
+            <value>
+                <fullName>Signature missing in NOC</fullName>
+                <default>false</default>
+                <label>Signature missing in NOC</label>
+            </value>
+            <value>
+                <fullName>Signature mismatch in NOC</fullName>
+                <default>false</default>
+                <label>Signature mismatch in NOC</label>
+            </value>
+            <value>
+                <fullName>Incomplete DRF</fullName>
+                <default>false</default>
+                <label>Incomplete DRF</label>
+            </value>
+            <value>
+                <fullName>Stamp duty/franking pending</fullName>
+                <default>false</default>
+                <label>Stamp duty/franking pending</label>
+            </value>
+            <value>
+                <fullName>Short Stamp duty</fullName>
+                <default>false</default>
+                <label>Short Stamp duty</label>
+            </value>
+            <value>
+                <fullName>Approval related</fullName>
+                <default>false</default>
+                <label>Approval related</label>
+            </value>
+            <value>
+                <fullName>Signature missing</fullName>
+                <default>false</default>
+                <label>Signature missing</label>
+            </value>
+            <value>
+                <fullName>Account details mismatch</fullName>
+                <default>false</default>
+                <label>Account details mismatch</label>
+            </value>
+            <value>
+                <fullName>Invalid instrument</fullName>
+                <default>false</default>
+                <label>Invalid instrument</label>
+            </value>
+            <value>
+                <fullName>Stamp missing</fullName>
+                <default>false</default>
+                <label>Stamp missing</label>
+            </value>
+            <value>
+                <fullName>Invalid Sanction letter</fullName>
+                <default>false</default>
+                <label>Invalid Sanction letter</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>ROI/PF Approval</fullName>
+                <default>false</default>
+                <label>ROI/PF Approval</label>
+            </value>
+            <value>
+                <fullName>Instrument pending</fullName>
+                <default>false</default>
+                <label>Instrument pending</label>
+            </value>
+            <value>
+                <fullName>DCCD pending</fullName>
+                <default>false</default>
+                <label>DCCD pending</label>
+            </value>
+            <value>
+                <fullName>Signature missing in DCCD</fullName>
+                <default>false</default>
+                <label>Signature missing in DCCD</label>
+            </value>
+            <value>
+                <fullName>Signature mismatch in DCCD</fullName>
+                <default>false</default>
+                <label>Signature mismatch in DCCD</label>
+            </value>
+            <value>
+                <fullName>Overwritten information in DCCD</fullName>
+                <default>false</default>
+                <label>Overwritten information in DCCD</label>
+            </value>
+            <value>
+                <fullName>Incomplete details in DCCD</fullName>
+                <default>false</default>
+                <label>Incomplete details in DCCD</label>
+            </value>
+            <value>
+                <fullName>Mismatch of information in DCCD</fullName>
+                <default>false</default>
+                <label>Mismatch of information in DCCD</label>
+            </value>
+            <value>
+                <fullName>Invalid document</fullName>
+                <default>false</default>
+                <label>Invalid document</label>
+            </value>
+            <value>
+                <fullName>Signature Card in OD A,C</fullName>
+                <default>false</default>
+                <label>Signature Card in OD A,C</label>
+            </value>
+            <value>
+                <fullName>KYC missing - In Company case</fullName>
+                <default>false</default>
+                <label>KYC missing - In Company case</label>
+            </value>
+            <value>
+                <fullName>Salary Slip pending</fullName>
+                <default>false</default>
+                <label>Salary Slip pending</label>
+            </value>
+            <value>
+                <fullName>Bank Statement</fullName>
+                <default>false</default>
+                <label>Bank Statement</label>
+            </value>
+            <value>
+                <fullName>Form 16</fullName>
+                <default>false</default>
+                <label>Form 16</label>
+            </value>
+            <value>
+                <fullName>NRI Bank Statement</fullName>
+                <default>false</default>
+                <label>NRI Bank Statement</label>
+            </value>
+            <value>
+                <fullName>NRI Document pending</fullName>
+                <default>false</default>
+                <label>NRI Document pending</label>
+            </value>
+            <value>
+                <fullName>Document pending - SE/SEP/SENP</fullName>
+                <default>false</default>
+                <label>Document pending - SE/SEP/SENP</label>
+            </value>
+            <value>
+                <fullName>Obligation</fullName>
+                <default>false</default>
+                <label>Obligation</label>
+            </value>
+            <value>
+                <fullName>Name Mismatch</fullName>
+                <default>false</default>
+                <label>Name Mismatch</label>
+            </value>
+            <value>
+                <fullName>Incomplete document</fullName>
+                <default>false</default>
+                <label>Incomplete document</label>
+            </value>
+            <value>
+                <fullName>incorrect document</fullName>
+                <default>false</default>
+                <label>incorrect document</label>
+            </value>
+            <value>
+                <fullName>Approval/offer details pending</fullName>
+                <default>false</default>
+                <label>Approval/offer details pending</label>
+            </value>
+            <value>
+                <fullName>Pension proof pending</fullName>
+                <default>false</default>
+                <label>Pension proof pending</label>
+            </value>
+            <value>
+                <fullName>ROI,PF Approval</fullName>
+                <default>false</default>
+                <label>ROI,PF Approval</label>
+            </value>
+            <value>
+                <fullName>Document pending - SE,SEP,SENP</fullName>
+                <default>false</default>
+                <label>Document pending - SE,SEP,SENP</label>
+            </value>
+            <value>
+                <fullName>Approval,offer details pending</fullName>
+                <default>false</default>
+                <label>Approval,offer details pending</label>
+            </value>
+            <value>
+                <fullName>Franking,Stamping missing</fullName>
+                <default>false</default>
+                <label>Franking,Stamping missing</label>
+            </value>
+            <value>
+                <fullName>Builder Stamp,Sign missing</fullName>
+                <default>false</default>
+                <label>Builder Stamp,Sign missing</label>
+            </value>
+            <value>
+                <fullName>Form 15 CA,CB missing,mismatch</fullName>
+                <default>false</default>
+                <label>Form 15 CA,CB missing,mismatch</label>
+            </value>
+            <value>
+                <fullName>Stamp duty,franking pending</fullName>
+                <default>false</default>
+                <label>Stamp duty,franking pending</label>
+            </value>
+            <value>
+                <fullName>Others</fullName>
+                <default>false</default>
+                <label>Others</label>
+            </value>
+            <value>
+                <fullName>Recheck Address Visited</fullName>
+                <default>false</default>
+                <label>Recheck Address Visited</label>
+            </value>
+            <value>
+                <fullName>Rectify Details Provided</fullName>
+                <default>false</default>
+                <label>Rectify Details Provided</label>
+            </value>
+            <value>
+                <fullName>Documents not legible</fullName>
+                <default>false</default>
+                <label>Documents not legible</label>
+            </value>
+            <value>
+                <fullName>Commercial Clarification</fullName>
+                <default>false</default>
+                <label>Commercial Clarification</label>
+            </value>
+            <value>
+                <fullName>Latest encumbrance certificate / Search report</fullName>
+                <default>false</default>
+                <label>Latest encumbrance certificate / Search report</label>
+            </value>
+            <value>
+                <fullName>Non agriculture permission / Conversion order</fullName>
+                <default>false</default>
+                <label>Non agriculture permission / Conversion order</label>
+            </value>
+            <value>
+                <fullName>Others 1</fullName>
+                <default>false</default>
+                <label>Others 1</label>
+            </value>
+            <value>
+                <fullName>Others 2</fullName>
+                <default>false</default>
+                <label>Others 2</label>
+            </value>
+            <value>
+                <fullName>Revenue document / mutation entries</fullName>
+                <default>false</default>
+                <label>Revenue document / mutation entries</label>
+            </value>
+            <value>
+                <fullName>Transaction Type Confirmation</fullName>
+                <default>false</default>
+                <label>Transaction Type Confirmation</label>
+            </value>
+            <value>
+                <fullName>Current chain title documents</fullName>
+                <default>false</default>
+                <label>Current chain title documents</label>
+            </value>
+            <value>
+                <fullName>Pending litigation / Appeal / Lis-pendency</fullName>
+                <default>false</default>
+                <label>Pending litigation / Appeal / Lis-pendency</label>
+            </value>
+            <value>
+                <fullName>Previous chain title documents</fullName>
+                <default>false</default>
+                <label>Previous chain title documents</label>
+            </value>
+            <value>
+                <fullName>Applicant Signature Mismatch</fullName>
+                <default>false</default>
+                <label>Applicant Signature Mismatch</label>
+            </value>
+            <value>
+                <fullName>Business Address Mismatch-MSME &amp; GST Certificate</fullName>
+                <default>false</default>
+                <label>Business Address Mismatch-MSME &amp; GST Certificate</label>
+            </value>
+            <value>
+                <fullName>Expired Rental Agreement</fullName>
+                <default>false</default>
+                <label>Expired Rental Agreement</label>
+            </value>
+            <value>
+                <fullName>Financials-Incomplete Document(inc 3CB 3CD)</fullName>
+                <default>false</default>
+                <label>Financials-Incomplete Document(inc 3CB 3CD)</label>
+            </value>
+            <value>
+                <fullName>ITR-Auditor Seal &amp; Sign</fullName>
+                <default>false</default>
+                <label>ITR-Auditor Seal &amp; Sign</label>
+            </value>
+            <value>
+                <fullName>ITR-UDIN Unavailable</fullName>
+                <default>false</default>
+                <label>ITR-UDIN Unavailable</label>
+            </value>
+            <value>
+                <fullName>KYC-Aadhar Masking missing</fullName>
+                <default>false</default>
+                <label>KYC-Aadhar Masking missing</label>
+            </value>
+            <value>
+                <fullName>KYC-DOB Mismatch</fullName>
+                <default>false</default>
+                <label>KYC-DOB Mismatch</label>
+            </value>
+            <value>
+                <fullName>KYC-DOI Mismatch in Udhyam Certificate</fullName>
+                <default>false</default>
+                <label>KYC-DOI Mismatch in Udhyam Certificate</label>
+            </value>
+            <value>
+                <fullName>KYC-Deemed OVD older than 2 months</fullName>
+                <default>false</default>
+                <label>KYC-Deemed OVD older than 2 months</label>
+            </value>
+            <value>
+                <fullName>KYC-OSV Missing</fullName>
+                <default>false</default>
+                <label>KYC-OSV Missing</label>
+            </value>
+            <value>
+                <fullName>KYC-Self Attestation for bulk document</fullName>
+                <default>false</default>
+                <label>KYC-Self Attestation for bulk document</label>
+            </value>
+            <value>
+                <fullName>KYC-illegible Copy</fullName>
+                <default>false</default>
+                <label>KYC-illegible Copy</label>
+            </value>
+            <value>
+                <fullName>Partnership Deed-Form C or Notary Seal</fullName>
+                <default>false</default>
+                <label>Partnership Deed-Form C or Notary Seal</label>
+            </value>
+            <value>
+                <fullName>Self Attestation missing</fullName>
+                <default>false</default>
+                <label>Self Attestation missing</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

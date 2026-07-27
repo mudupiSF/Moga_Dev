@@ -1,0 +1,117 @@
+<template>
+    <div class="ca-container">
+        <div class="ca-card">
+            <div class="ca-modal-hdr">
+                <div class="ca-modal-hdr-center">
+                    <h2 class="ca-modal-title">Create Application</h2>
+                </div>
+            </div>
+            <template lwc:if={isLoadingOptions}>
+                <div class="ca-loading">
+                    <lightning-spinner alternative-text="Loading product catalog..." size="medium"></lightning-spinner>
+                    <p class="ca-loading-text">Loading product catalog...</p>
+                </div>
+            </template>
+            <template lwc:if={showForm}>
+                <template lwc:if={errorMessage}>
+                    <div class="ca-error-banner" role="alert">
+                        <span class="ca-error-icon">⚠️</span>
+                        <span>{errorMessage}</span>
+                    </div>
+                </template>
+                <div class="ca-section">
+                    <div class="ca-rx-section-hdr">
+                        <h3 class="ca-rx-step-title">Select Primary Product</h3>
+                    </div>
+                    <div class="ca-rx-product-grid">
+                        <template for:each={mappedProductOptions} for:item="opt">
+                            <button
+                                key={opt.value}
+                                class={opt.tileClass}
+                                data-value={opt.value}
+                                data-label={opt.label}
+                                onclick={handleProductSelect}>
+                                <template lwc:if={opt.isSelected}>
+                                    <div class="ca-rx-tile-check-pill">✓</div>
+                                </template>
+                                <template lwc:if={opt.hasImageIcon}>
+                                    <img class="ca-rx-tile-icon-img" src={opt.imageUrl} alt="Product icon" />
+                                </template>
+                                <div class="ca-rx-tile-code">{opt.label}</div>
+                                <div class="ca-rx-tile-name">{opt.code}</div>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+                <template lwc:if={showCascadingFields}>
+                    <template lwc:if={showVehicleType}>
+                        <div class="ca-section">
+                            <div class="ca-section-hdr">
+                                <span class="ca-section-label">
+                                    Vehicle Type
+                                </span>
+                            </div>
+                            <div class="ca-radio-grid ca-radio-grid-3col ca-radio-grid-mobile">
+                                <template for:each={mappedVehicleTypeOptions} for:item="item">
+                                    <button key={item.value} class={item.itemClass} data-value={item.value} onclick={handleVehicleTypeChange}>
+                                        <span class={item.dotClass}></span>
+                                        <span class="ca-radio-label">{item.label}</span>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template lwc:if={showSegmentSection}>
+                        <div class="ca-section">
+                            <div class="ca-section-hdr">
+                                <span class="ca-section-label">
+                                    Segment
+                                </span>
+                            </div>
+                            <div class="ca-radio-grid ca-radio-grid-3col ca-radio-grid-mobile">
+                                <template for:each={mappedSegmentOptions} for:item="item">
+                                    <button key={item.value} class={item.itemClass} data-value={item.value} onclick={handleSegmentChange}>
+                                        <span class={item.dotClass}></span>
+                                        <span class="ca-radio-label">{item.label}</span>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <template lwc:if={showSubProduct}>
+                        <div class="ca-section">
+                            <div class="ca-section-hdr">
+                                <span class="ca-section-label">
+                                    Sub Product
+                                </span>
+                            </div>
+                            <div class="ca-radio-grid ca-radio-grid-mobile">
+                                <template for:each={mappedSubProductOptions} for:item="item">
+                                    <button
+                                        key={item.value}
+                                        class={item.itemClass}
+                                        data-value={item.value}
+                                        data-label={item.label}
+                                        onclick={handleSubProductSelect}>
+                                        <span class={item.dotClass}></span>
+                                        <span class="ca-radio-label">{item.label}</span>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                <div class="ca-action-row">
+                    <button class={resetButtonClass} onclick={handleReset}>↺ &nbsp; Reset Selection</button>
+                    <div class="ca-action-right">
+                        <button class="ca-cancel-btn" onclick={handleCancel} disabled={isSubmitting}>Cancel</button>
+                        <button class={confirmButtonClass} disabled={isConfirmDisabled} onclick={handleSubmit}>
+                            <template lwc:if={isSubmitting}>Creating...</template>
+                            <template lwc:else>Create</template>
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

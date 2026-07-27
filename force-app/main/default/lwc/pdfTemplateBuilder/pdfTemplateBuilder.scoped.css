@@ -1,0 +1,1310 @@
+:host {
+    display: block;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Prevent Salesforce uiContainerManager from blocking interactions when paged viewer is active */
+:host(.paged-viewer-active) :global(.DESKTOP.uiContainerManager) {
+    /* Hide uiContainerManager overlays that appear after paged.js rendering */
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    z-index: -9999 !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+}
+
+.app-container {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #f8fafc;
+    overflow: hidden;
+    position: relative;
+}
+
+.app-container .slds-builder-header_container {
+    position: relative !important;
+    top: unset !important;
+    left: unset !important;
+    right: unset !important;
+    width: 100% !important;
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.slds-grid.slds-wrap {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    min-height: 0;
+    display: flex;
+}
+
+/* Left JSON pane should stretch full height */
+.left-pane {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.left-pane-tabset {
+    flex: 1;
+    min-height: 0;
+}
+
+.json-card {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.json-panel {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.json-toolbar {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.json-editor-host {
+    flex: 1;
+    min-height: 0;
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+    overflow: hidden;
+    background: white;
+}
+
+.json-editor-host.is-invalid {
+    border-color: #ea001e;
+    box-shadow: 0 0 0 1px #ea001e inset;
+}
+
+.json-editor-host.is-disabled {
+    background: #f3f2f2;
+    opacity: 0.85;
+}
+
+.json-editor-host.is-disabled :global(.CodeMirror) {
+    background: #f3f2f2;
+}
+
+.json-editor-host.is-disabled :global(.CodeMirror-cursor) {
+    display: none !important;
+}
+
+/* Ensure textarea has proper validation styling */
+.json-editor-host textarea[aria-invalid="true"] {
+    border-color: #ea001e;
+}
+
+/* CodeMirror lives inside our shadow DOM; make it fill the editor host */
+.json-editor-host :global(.CodeMirror) {
+    height: 100%;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 12px;
+}
+
+/* CodeMirror line numbers styling - Enhanced visibility */
+.json-editor-host :global(.CodeMirror-linenumber) {
+    color: #706e6b;
+    padding: 0 8px 0 4px;
+    min-width: 3.5em;
+    text-align: right;
+    font-size: 12px;
+    cursor: default;
+    font-weight: 500;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.json-editor-host :global(.CodeMirror-linenumbers) {
+    background-color: #fafaf9;
+    border-right: 1px solid #dddbda;
+    padding-right: 4px;
+    min-width: 3.5em;
+}
+
+/* Ensure line numbers are always visible */
+.json-editor-host :global(.CodeMirror-gutters) {
+    background-color: #fafaf9;
+    border-right: 1px solid #dddbda;
+    white-space: nowrap;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+}
+
+.json-editor-host :global(.CodeMirror-linenumber) {
+    color: #706e6b;
+    padding-right: 8px;
+    padding-left: 4px;
+}
+
+/* Error line highlighting - Enhanced visibility */
+.json-editor-host :global(.CodeMirror-line.background.error-line) {
+    background-color: #fef7f7 !important;
+    border-left: 3px solid #ea001e;
+    padding-left: 4px;
+}
+
+.json-editor-host :global(.CodeMirror-line.background.error-line .CodeMirror-linenumber) {
+    background-color: #ea001e !important;
+    color: white !important;
+    font-weight: bold !important;
+    border-radius: 2px;
+}
+
+/* Highlight error line number in gutter */
+.json-editor-host :global(.CodeMirror-gutters .CodeMirror-linenumber.error-line-number) {
+    background-color: #ea001e !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+/* Error message styling */
+.slds-form-element__help_error {
+    display: flex;
+    align-items: center;
+    color: #ea001e;
+    font-size: 12px;
+    padding: 8px 12px;
+    background-color: #fef7f7;
+    border: 1px solid #ea001e;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.slds-form-element__help_error strong {
+    margin-right: 4px;
+}
+
+.slds-form-element__help_error lightning-icon {
+    flex-shrink: 0;
+}
+
+/* Handlebars compile error markers (split/broken {{ }} tokens) */
+.hb-error-marker {
+    outline: 2px dashed #ea001e;
+    outline-offset: 2px;
+    background: rgba(234, 0, 30, 0.06);
+    border-radius: 2px;
+    padding: 0 2px;
+}
+
+.hb-issue-flash {
+    animation: hbIssueFlash 1.2s ease-in-out;
+}
+
+@keyframes hbIssueFlash {
+    0% { box-shadow: 0 0 0 0 rgba(234, 0, 30, 0.0); }
+    25% { box-shadow: 0 0 0 4px rgba(234, 0, 30, 0.35); }
+    50% { box-shadow: 0 0 0 2px rgba(234, 0, 30, 0.15); }
+    100% { box-shadow: 0 0 0 0 rgba(234, 0, 30, 0.0); }
+}
+
+.slds-split-view_container {
+    flex: 1;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* .slds-split-view__toggle-button {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+} */
+
+.slds-split-view {
+    /* width: 320px;
+    max-width: 400px; */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid #dddbda;
+    background: white;
+}
+
+.slds-split-view__header {
+    flex-shrink: 0;
+}
+
+.slds-split-view .slds-grid_vertical {
+    flex: 1;
+    min-height: 0;
+}
+
+.slds-split-view .slds-scrollable_y {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    height: calc(100vh - 64px); /* Subtract header height */
+    min-height: 0; /* Allow flex children to shrink */
+}
+
+/* Canvas Area */
+.canvas-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #f1f5f9;
+    height: 100%; /* Ensure full height */
+    overflow: hidden; /* Let canvas-workspace handle scrolling */
+}
+
+
+.canvas-workspace {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 40px 200px 40px; /* Added extra bottom padding for scrollable space */
+    overflow-y: auto;
+    background: #f1f5f9;
+    min-height: calc(100vh - 64px); /* Ensure minimum height for scrolling */
+    position: relative;
+    /* Dynamic page height for boundary markers - will be set by JS */
+    --page-height: 1056px; /* Default A4-ish at 96dpi (792pt * 96/72) */
+    --page-line-color: rgba(0, 0, 0, 0.15);
+}
+
+/* When paged viewer is active, adjust canvas-workspace to allow pagedjs-wrapper to scroll */
+.canvas-workspace.paged-viewer-active {
+    padding: 0 !important; /* Remove padding to allow full height */
+    overflow: hidden !important; /* Let pagedjs-wrapper handle scrolling */
+    align-items: stretch; /* Stretch to fill height */
+    height: 100%; /* Ensure full height */
+    min-height: 100%; /* Ensure minimum height */
+}
+
+/* Google Docs-style: Overlay repeating page boundary markers */
+.canvas-workspace::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 10;
+    
+    /* Draw a subtle line every page height */
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent calc(var(--page-height) - 1px),
+        var(--page-line-color) calc(var(--page-height) - 1px),
+        var(--page-line-color) var(--page-height)
+    );
+    
+    /* Make it look dashed across the width */
+    -webkit-mask-image: repeating-linear-gradient(
+        to right,
+        #000 0 8px,
+        transparent 8px 14px
+    );
+    mask-image: repeating-linear-gradient(
+        to right,
+        #000 0 8px,
+        transparent 8px 14px
+    );
+}
+
+.canvas-page {
+    /* Google Docs continuous view: no hard page breaks */
+    width: 100%; 
+    height: auto;
+    min-height: auto;
+    max-height: none; 
+    background: white;
+    box-shadow: none !important; /* Remove card styling for continuous flow */
+    position: relative;
+    overflow: visible; 
+    /* border-radius: 0 !important; */
+    padding: 0; 
+    margin: 0 auto;
+    /* border: 0 !important; */
+    
+    /* Remove all page break styling */
+    page-break-after: auto !important;
+    break-after: auto !important;
+    page-break-before: auto !important;
+    break-before: auto !important;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+    border: 1px solid black !important;
+}
+
+
+.pages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+    padding-bottom: 100px; /* Extra bottom padding to ensure pages are fully visible */
+    min-height: 100%; /* Ensure container takes full height */
+}
+
+/* When paged viewer is active, pages-container should allow scrolling */
+.pages-container.paged-viewer-active {
+    height: 100% !important;
+    overflow: hidden !important; /* Let pagedjs-wrapper handle scrolling */
+    padding: 0 !important; /* Remove padding to allow full height */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important; /* Stretch children to full width */
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    background: white; /* Changed from gray to white */
+    border-radius: 12px 12px 0 0;
+}
+
+.page-header:hover {
+    background: #f8fafc; /* Light hover effect */
+}
+
+.page-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.page-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.page-action-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #dddbda;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.page-action-btn:hover {
+    background-color: #f3f2f2;
+    border-color: #0176d3;
+    transform: scale(1.05);
+}
+
+.page-action-btn:active {
+    transform: scale(0.95);
+}
+
+.btn-icon-content {
+    font-size: 16px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.duplicate-btn .btn-icon-content {
+    color: #3e3e3c;
+}
+
+.delete-btn .btn-icon-content {
+    font-size: 14px;
+}
+
+.duplicate-btn:hover .btn-icon-content {
+    color: #0176d3;
+}
+
+.delete-btn:hover .btn-icon-content {
+    filter: grayscale(0);
+}
+
+.page-toggle {
+    font-size: 12px;
+    color: #64748b;
+}
+
+
+.print-render-target {
+    width: 100%;
+    min-height: 100%;
+    display: none; /* Hidden by default, shown when printed view is active */
+    visibility: hidden;
+    background: #f1f5f9;
+    padding: 20px;
+}
+
+.print-render-target :global(*) {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.print-render-target :global(.pagedjs_pages) {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+}
+
+.print-render-target :global(.pagedjs_page) {
+    background: white !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin: 20px auto !important;
+}
+
+.print-render-target :global(.pagedjs_page_content) {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #000 !important;
+}
+
+.print-render-target :global(.pagedjs_page_content *) {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.page-wrapper {
+   
+    transition: all 0.2s ease;
+    /* width: fit-content; 
+    min-width: 816px; 
+    max-width: 1200px; */
+    width: 100%;
+    min-height: auto; /* Allow wrapper to expand with content */
+    margin-bottom: 70px; /* Add spacing between pages */
+}
+
+.paged-viewer-host {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.paged-viewer-host :global(c-p-d-fforce-renderer) {
+    display: block;
+    width: 100%;
+}
+
+.pagedjs-wrapper {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    background: #f0f0f0;
+    padding: 20px 0;
+    padding-bottom: 40px; /* Extra bottom padding for last page */
+    display: block;
+    visibility: visible;
+    /* Make wrapper scrollable */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    /* Ensure it takes full height of parent */
+    position: relative;
+    /* Prevent Salesforce uiContainerManager from interfering */
+    isolation: isolate;
+    z-index: 1;
+    /* Ensure pointer events work */
+    pointer-events: auto;
+    /* Flex properties to ensure it fills parent */
+    flex: 1 1 auto;
+    /* Ensure it can shrink/grow */
+    min-height: 0;
+}
+
+/* Hide uiContainerManager overlay when paged viewer is active */
+:host(.paged-viewer-active) :global(.DESKTOP.uiContainerManager),
+.paged-viewer-active ~ :global(.DESKTOP.uiContainerManager),
+.pages-container.paged-viewer-active ~ :global(.DESKTOP.uiContainerManager) {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    z-index: -1 !important;
+}
+
+.pagedjs-wrapper :global(.pagedjs_pages) {
+    display: block;
+    width: 100%;
+    background: #f0f0f0;
+    padding: 20px 0;
+    /* Ensure pages container expands to fit all pages */
+    min-height: 100%;
+}
+
+.pagedjs-wrapper :global(.pagedjs_page) {
+    margin: 20px auto;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    /* Ensure pages don't shrink */
+    flex-shrink: 0;
+    /* Add spacing between pages */
+    margin-bottom: 20px;
+    /* Ensure pointer events work */
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.pagedjs-wrapper :global(.pagedjs_page:last-child) {
+    margin-bottom: 40px; /* Extra spacing at the end */
+}
+
+.pagedjs-wrapper :global(.pagedjs_page_content) {
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+    /* Ensure pointer events work */
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* Global rule to hide uiContainerManager when paged viewer is active */
+:global(.DESKTOP.uiContainerManager) {
+    /* This will be overridden by more specific selectors when needed */
+}
+
+/* More aggressive rule - hide uiContainerManager when inside paged-viewer-active container */
+.pages-container.paged-viewer-active ~ :global(.DESKTOP.uiContainerManager),
+.canvas-workspace.paged-viewer-active ~ :global(.DESKTOP.uiContainerManager) {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    z-index: -9999 !important;
+}
+
+/* Google Docs-style continuous flow */
+.docx-wrapper {
+    background: white !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    padding: 40px !important; /* Add document padding like Google Docs */
+    max-width: 816px; /* Constrain width for readability */
+    margin: 0 auto;
+}
+
+.docx-wrapper .docx {
+    /* Remove all page break styling for continuous flow */
+    page-break-after: auto !important;
+    break-after: auto !important;
+    page-break-before: auto !important;
+    break-before: auto !important;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+    
+    /* Remove visual page separators */
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Page sections container */
+.page-sections-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Individual page section with header/content/footer */
+.document-page-section,
+section.docx.canvas-page {
+    width: 100%;
+    background: white;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+    margin-bottom: 0;
+    
+    /* Force page breaks for PDF/print */
+    page-break-after: always;
+    break-after: page;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    border-radius: 0 !important;
+    border: 1px solid black !important;
+}
+
+.document-page-section:last-child,
+section.docx.canvas-page:last-child {
+    border-bottom: none;
+    page-break-after: auto;
+    break-after: auto;
+}
+
+/* Ensure docx sections within page sections maintain structure */
+.document-page-section.docx.canvas-page {
+    /* Override any conflicting styles from original .canvas-page */
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+}
+
+/* Print/PDF styles */
+@media print {
+    .document-page-section,
+    section.docx.canvas-page {
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border-bottom: none !important;
+        border: 1px solid black !important;
+    }
+    
+    .document-page-section:last-child,
+    section.docx.canvas-page:last-child {
+        page-break-after: auto !important;
+    }
+    
+    /* Ensure headers/footers are visible in print */
+    .page-header-wrapper,
+    .page-footer-wrapper {
+        opacity: 1 !important;
+    }
+}
+
+/* Page header wrapper */
+.page-header-wrapper {
+    width: 100%;
+    opacity: 0.8;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+}
+
+.document-page-section:first-child .page-header-wrapper {
+    opacity: 1; /* First page header at full opacity */
+}
+
+/* Page content area */
+.page-content {
+    flex: 1;
+    width: 100%;
+    min-height: 200px;
+}
+
+/* Page footer wrapper */
+.page-footer-wrapper {
+    width: 100%;
+    opacity: 0.8;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 8px;
+    margin-top: 12px;
+}
+
+.document-page-section:hover .page-header-wrapper,
+.document-page-section:hover .page-footer-wrapper {
+    opacity: 1;
+}
+
+/* Repeated headers styling (legacy - kept for compatibility) */
+.repeated-header {
+    opacity: 0.7;
+    background: #f9fafb;
+    padding: 10px 0 !important;
+    margin: 20px 0 !important;
+    border-top: 1px dashed rgba(0, 0, 0, 0.1) !important;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.05) !important;
+}
+
+.repeated-header:hover {
+    opacity: 0.9;
+}
+
+/* Docx section context menu (right-click) */
+.section-context-menu {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 10000;
+    display: none;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    min-width: 180px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    padding: 8px;
+}
+
+.section-context-menu-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    padding: 6px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 6px;
+}
+
+.section-context-menu-item {
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #111827;
+}
+
+.section-context-menu-item:hover {
+    background: #f3f4f6;
+}
+
+.section-context-menu-item.is-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Element context menu (right-click on element) */
+.element-context-menu {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 99999;
+    display: none;
+    pointer-events: auto;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    min-width: 180px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    padding: 8px;
+}
+
+.element-context-menu-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    padding: 6px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 6px;
+}
+
+.element-context-menu-item {
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #111827;
+}
+
+.element-context-menu-item:hover {
+    background: #f3f4f6;
+}
+
+.element-context-menu-item.is-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Page break (red dashed line) context menu */
+.break-context-menu {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 10001;
+    display: none;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    min-width: 220px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    padding: 8px;
+}
+
+.break-context-menu-header {
+    font-size: 12px;
+    font-weight: 700;
+    color: #6b7280;
+    padding: 6px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 6px;
+}
+
+.break-context-menu-item {
+    position: relative;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #111827;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.break-context-menu-item:hover {
+    background: #f3f4f6;
+}
+
+.break-context-menu-item.is-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.break-context-menu-arrow {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.break-submenu {
+    position: absolute;
+    top: 0;
+    left: calc(100% + 8px);
+    display: none;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    min-width: 240px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    padding: 8px;
+}
+
+.break-context-menu-item.has-submenu:hover .break-submenu {
+    display: block;
+}
+
+.break-submenu-item {
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #111827;
+}
+
+.break-submenu-item:hover {
+    background: #f3f4f6;
+}
+
+
+.canvas-pager:hover {
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Component Item Styling */
+.component-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: grab;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+}
+
+.component-item:hover {
+    background: #f3f4f6;
+    border-color: #0176d3;
+    box-shadow: 0 2px 4px rgba(1, 118, 211, 0.1);
+    transform: translateY(-1px);
+}
+
+.component-item:active {
+    cursor: grabbing;
+    transform: scale(0.98);
+}
+
+.component-item span {
+    font-size: 13px;
+    color: #374151;
+    font-weight: 500;
+}
+
+/* Drop Zone Indicator - Horizontal Line */
+.slds-drop-zone_drag__slot {
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 2px;
+    background: #0176d3;
+    pointer-events: none;
+    z-index: 1000;
+    transform: translateY(-50%);
+    transition: all 0.05s ease-out;
+    box-shadow: 0 0 8px rgba(1, 118, 211, 0.6);
+}
+
+.slds-drop-zone_drag__slot::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: #0176d3;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(1, 118, 211, 0.8);
+}
+
+.slds-drop-zone_drag__slot::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: #0176d3;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(1, 118, 211, 0.8);
+}
+
+/* Canvas page positioning context - REMOVED duplicate rule */
+
+/* Container for DOCX content */
+.container {
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    padding: 40px 40px 100px 40px; /* Add padding around pages */
+    overflow: visible;
+    background: transparent;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center pages horizontally */
+}
+
+section.docx-wrapper {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 1200px; /* Keep document container bounded */
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    /* Treat the wrapper as a container of pages (each inner section.docx is a page) */
+    background: transparent;
+    position: relative;
+    overflow: visible !important;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    transition: all 0.2s ease;
+    margin-bottom: 0;
+}
+
+section.docx-wrapper:hover {
+    /* Hover effects belong to pages, not the wrapper */
+    box-shadow: none;
+    transform: none;
+}
+
+/* Make each docx page inside the wrapper behave like a standalone "page" */
+section.docx-wrapper > section.docx {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    /* Preserve intrinsic docx-preview size (width/margins are set inline). */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    /* Visual separation between pages on screen */
+    margin-bottom: 40px;
+}
+
+section.docx-wrapper > section.docx:hover {
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+@media print {
+    /* Ensure each section.docx prints as its own page */
+    section.docx-wrapper > section.docx {
+        box-shadow: none !important;
+        transform: none !important;
+        margin-bottom: 0 !important;
+        break-after: page;
+        page-break-after: always;
+        break-inside: avoid-page;
+        page-break-inside: avoid;
+    }
+
+    section.docx-wrapper > section.docx:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+}
+
+/* Styles for docx-preview rendered content
+ *
+ * IMPORTANT FOR FIDELITY:
+ * - Do NOT force widths/padding here. docx-preview sets page width + margins inline on <section>.
+ * - Forcing width:100% or adding padding reflows text and breaks Word-like layout.
+ */
+
+
+/* Avoid resizing images unless needed; docx-preview already sets sizes */
+.canvas-page img {
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+/* Avoid global resets inside the docx content; they can affect layout metrics */
+
+/* Preserve docx-preview natural dimensions: do not add extra padding */
+
+/* 
+ * IMPORTANT: Do not set line-height on docx content 
+ * to allow inline styles from docx-preview to work
+ */
+
+
+
+
+
+/* Hide overlay on hover - only show outline */
+.selectable-element.hover-element .element-overlay {
+    display: none !important;
+}
+
+.selectable-element {
+    position: relative !important;
+    box-sizing: border-box;
+}
+
+.selectable-element.selected-element {
+    outline: 2px solid #0176d3;
+    outline-offset: 2px;
+    background-color: rgba(1, 118, 211, 0.1);
+    user-select: none;
+    touch-action: none;
+
+}
+
+/* Show overlay only on selected element */
+.selectable-element.selected-element .element-overlay {
+    display: block;
+}
+
+/* Element Overlay Styles */
+.element-overlay {
+    display: none; /* Hidden by default, only shown on selected element */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: rgba(1, 118, 211, 0.95);
+    border-radius: 4px 4px 0 0;
+    padding: 4px 8px;
+    pointer-events: auto;
+}
+
+.element-overlay .slds-drop-zone__label {
+    padding: 0;
+    margin: 0;
+}
+
+.element-overlay .slds-media {
+    padding: 0;
+}
+
+.element-overlay .element-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: white;
+    font-size: 1rem;
+}
+
+.element-overlay .slds-media__body h2 {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.element-overlay .element-label-text {
+    color: white;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+}
+
+.element-overlay .drag-handle-icon {
+    font-weight: bold;
+    letter-spacing: -2px;
+    font-size: 14px;
+}
+
+.element-overlay .slds-assistive-text {
+    position: absolute;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    text-transform: none;
+}
+
+.container .docx-wrapper {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 1200px; /* Keep document container bounded */
+    height: auto; /* Auto height to fit content */
+    min-height: auto; /* Remove fixed min-height */
+    max-height: none; /* Remove any max height constraint */
+    background: white;
+    position: relative;
+    overflow: visible; /* Allow content to be fully visible */
+    border-radius: 12px;
+    padding: 0; /* No padding - let content control spacing */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    margin-bottom: 40px; /* Add spacing between pages */
+}
+
+.container .docx-wrapper:hover {
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Keep converted DOCX table content inside page width */
+section.docx.canvas-page table,
+section.docx.canvas-page article table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed;
+    box-sizing: border-box;
+}
+
+section.docx.canvas-page table td,
+section.docx.canvas-page table th,
+section.docx.canvas-page article table td,
+section.docx.canvas-page article table th {
+    white-space: normal !important;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.component-draggable {
+    cursor: grab;
+}
+
+.component-draggable:active {
+    cursor: grabbing;
+}
+
+.sortable-ghost {
+    opacity: 0.5;
+    background: #f1f5f9;
+}
+
+.sortable-chosen {
+    opacity: 0.5;
+    background: #f1f5f9;
+}
+
+.sortable-drag {
+    opacity: 0.5;
+    background: #f1f5f9;
+}
+
+.iframe {
+    /* position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 0px;
+    height: 0px;
+    border: 2px solid red;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 999999;
+    background: white; */
+
+}
+
+/* Edit Element Modal */
+.edit-element-modal {
+    z-index: 100000;
+}
+
+.edit-element-modal + .slds-backdrop {
+    z-index: 99999;
+}
+
+.edit-element-editor-host {
+    min-height: 320px;
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.edit-element-textarea {
+    width: 100%;
+    min-height: 320px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 13px;
+    padding: 8px;
+    border: none;
+    resize: vertical;
+}
+
+.edit-element-editor-host :global(.CodeMirror) {
+    min-height: 320px;
+    height: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 13px;
+}
+
+.edit-element-editor-host :global(.CodeMirror-gutters) {
+    background-color: #fafaf9;
+    border-right: 1px solid #dddbda;
+}

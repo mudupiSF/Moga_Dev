@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Professional_Body__c</fullName>
+    <label>Professional Body</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>ICAI</fullName>
+                <default>false</default>
+                <label>ICAI</label>
+            </value>
+            <value>
+                <fullName>ICSI</fullName>
+                <default>false</default>
+                <label>ICSI</label>
+            </value>
+            <value>
+                <fullName>Medical Council of India</fullName>
+                <default>false</default>
+                <label>Medical Council of India</label>
+            </value>
+            <value>
+                <fullName>State Medical Council</fullName>
+                <default>false</default>
+                <label>State Medical Council</label>
+            </value>
+            <value>
+                <fullName>Bar Council of India</fullName>
+                <default>false</default>
+                <label>Bar Council of India</label>
+            </value>
+            <value>
+                <fullName>State Bar Council</fullName>
+                <default>false</default>
+                <label>State Bar Council</label>
+            </value>
+            <value>
+                <fullName>Council of Architecture</fullName>
+                <default>false</default>
+                <label>Council of Architecture</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

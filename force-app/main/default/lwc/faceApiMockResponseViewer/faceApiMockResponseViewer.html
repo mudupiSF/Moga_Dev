@@ -1,0 +1,8 @@
+<template>
+    <div class="face-mock-response-wrap">
+        <template if:true={integrationName}>
+            <p class="face-mock-response-title">{integrationName}</p>
+        </template>
+        <pre class="face-mock-response-body">{formattedResponseBody}</pre>
+    </div>
+</template>

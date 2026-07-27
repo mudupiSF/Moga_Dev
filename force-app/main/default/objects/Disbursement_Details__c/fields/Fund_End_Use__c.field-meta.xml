@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fund_End_Use__c</fullName>
+    <label>Fund End Use</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>New_Vehicle_Margin_Money</fullName>
+                <default>false</default>
+                <label>New Vehicle Margin Money</label>
+            </value>
+            <value>
+                <fullName>Home_Buying</fullName>
+                <default>false</default>
+                <label>Home Buying</label>
+            </value>
+            <value>
+                <fullName>Marriage_in_Family</fullName>
+                <default>false</default>
+                <label>Marriage in Family</label>
+            </value>
+            <value>
+                <fullName>Market_Borrowing</fullName>
+                <default>false</default>
+                <label>Market Borrowing</label>
+            </value>
+            <value>
+                <fullName>Vehicle_Repairs_Tax</fullName>
+                <default>false</default>
+                <label>Vehicle Repairs Tax</label>
+            </value>
+            <value>
+                <fullName>Home_Renovation</fullName>
+                <default>false</default>
+                <label>Home Renovation</label>
+            </value>
+            <value>
+                <fullName>Medical_Expenses</fullName>
+                <default>false</default>
+                <label>Medical Expenses</label>
+            </value>
+            <value>
+                <fullName>Investment _in_Business</fullName>
+                <default>false</default>
+                <label>Investment  in Business</label>
+            </value>
+            <value>
+                <fullName>Loan_Consolidation</fullName>
+                <default>false</default>
+                <label>Loan Consolidation</label>
+            </value>
+            <value>
+                <fullName>Education_Expenses</fullName>
+                <default>false</default>
+                <label>Education Expenses</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

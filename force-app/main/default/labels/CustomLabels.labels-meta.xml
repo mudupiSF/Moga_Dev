@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Max_Beneficiaries</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Max Beneficiaries</shortDescription>
+        <value>10</value>
+    </labels>
+    <labels>
+        <fullName>Max_CoBorrowers</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Max CoBorrowers</shortDescription>
+        <value>2</value>
+    </labels>
+    <labels>
+        <fullName>Max_Guarantors</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Max Guarantors</shortDescription>
+        <value>3</value>
+    </labels>
+    <labels>
+        <fullName>QC_Back_Button_Label</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>QC Back Button Label</shortDescription>
+        <value>Send Back for Rework</value>
+    </labels>
+    <labels>
+        <fullName>QC_Forward_Button_Label</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>QC Forward Button Label</shortDescription>
+        <value>Submit</value>
+    </labels>
+</CustomLabels>

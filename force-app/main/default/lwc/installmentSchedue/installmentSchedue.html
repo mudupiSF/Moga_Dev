@@ -1,0 +1,114 @@
+<template>
+    <div class="schedule-root">
+        <!-- Header -->
+        <div class="schedule-header">
+            <div class="header-overlay"></div>
+            <div class="header-content">
+                <div class="header-icon-wrap">
+                    <lightning-icon icon-name="utility:date_input" size="small" class="header-icon"></lightning-icon>
+                </div>
+                <div class="header-text">
+                    <h1 class="header-title">Installment Schedule</h1>
+                    <p class="header-subtitle">Amortization Schedule Details</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="schedule-body">
+            <template lwc:if={isLoading}>
+                <div class="slds-p-around_large slds-align_absolute-center">
+                    <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+                </div>
+            </template>
+            <template lwc:else>
+                <template lwc:if={hasSchedules}>
+                    <div class="loan-summary-card">
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">Loan Amount</span>
+                                <span class="summary-value value-green">{formattedLoanAmount}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Tenure</span>
+                                <span class="summary-value value-blue">{formattedTenure}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Monthly EMI</span>
+                                <span class="summary-value value-orange">{formattedMonthlyEmi}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Interest Rate</span>
+                                <span class="summary-value value-purple">{formattedInterestRate}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Total Interest</span>
+                                <span class="summary-value value-red">{formattedTotalInterest}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Total Amount</span>
+                                <span class="summary-value value-dark">{formattedTotalAmount}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-container slds-scrollable_y" style="min-height: 450px;">
+                        <table class="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Inst. No</th>
+                                    <th>Due Date</th>
+                                    <th>Opening Principal (INR)</th>
+                                    <th>Inst. Amount (INR)</th>
+                                    <th>Principal (INR)</th>
+                                    <th>Interest (INR)</th>
+                                    <th>Closing Principal (INR)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={schedules} for:item="emi">
+                                    <tr key={emi.id}>
+                                        <td>{emi.installmentNo}</td>
+                                        <td>{emi.dueDate}</td>
+                                        <td>{emi.openingPrincipal}</td>
+                                        <td>{emi.installmentAmount}</td>
+                                        <td>{emi.principalComponent}</td>
+                                        <td>{emi.interestComponent}</td>
+                                        <td>{emi.closingPrincipal}</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="no-data-msg">
+                        <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_small"></lightning-icon>
+                        No installment schedule found for this vehicle.
+                    </div>
+                </template>
+            </template>
+        </div>
+
+        <!-- Footer -->
+        <div class="schedule-footer">
+            <template lwc:if={showTriggerDeviationBtn}>
+                <button class="btn-deviation" onclick={handleTriggerDeviation}
+                        aria-label="Trigger Deviation">
+                    Trigger Deviation
+                </button>
+            </template>
+        </div>
+    </div>
+
+    <!-- Integration Progress Modal — for Trigger Deviation only -->
+    <template lwc:if={showIntegrationModal}>
+        <c-integration-progress-modal
+            status={integrationStatus}
+            stages={integrationStages}
+            current-stage-index={integrationCurrentStageIndex}
+            success-message=""
+            onclose={handleIntegrationModalClose}
+            ondone={handleIntegrationModalClose}>
+        </c-integration-progress-modal>
+    </template>
+</template>

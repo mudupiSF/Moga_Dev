@@ -1,0 +1,30 @@
+.previewContainer {
+    position: fixed;
+    z-index: 9999;
+    top: 10%;
+    left: -50%;
+    width: calc(100vw - 50%);
+    height: calc(100vh - 50%);
+
+  }
+
+
+  @media only screen and (max-width: 480px) {
+    .previewContainer {
+      position: fixed;
+      z-index: 9999;
+      top: 10%;
+      left: 0;
+      width: calc(100vw - 50%);
+      height: calc(100vh - 50%);
+  
+    }
+  }
+
+  .slds-modal{
+    z-index: 100000 !important;
+  }
+
+  .slds-modal__container{
+    z-index: 100000 !important;
+  }

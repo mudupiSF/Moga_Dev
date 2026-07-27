@@ -1,0 +1,710 @@
+<template>
+    <div class="qc-root">
+    <lightning-card title={cardTitle} icon-name={cardIconName}>
+        
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <div class="slds-is-relative slds-align_absolute-center" style="height: 200px;">
+                <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Error Message -->
+        <template if:true={error}>
+            <div class="slds-p-around_medium">
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <h2>{error}</h2>
+                </div>
+            </div>
+        </template>
+
+        <!-- Main Content -->
+        <template if:false={isLoading}>
+            <template if:false={error}>
+                
+                <div class="kpi-strip slds-p-horizontal_medium slds-p-top_small">
+                    <span class="kpi-pill">Total: {totalFieldsCount}</span>
+                    <span class="kpi-pill">Verified: {verifiedFieldsCount}</span>
+                    <span class="kpi-pill">Pending: {pendingFieldsCount}</span>
+                </div>
+
+                <!-- Filters Section -->
+                <template if:false={readOnly}>
+                <div class="slds-p-around_medium filter-bar">
+                    <div class="slds-grid slds-gutters slds-grid_vertical-align-end filter-controls-row">
+                            <div class="slds-col filter-control-col">
+                            <lightning-combobox
+                                name="filterOn"
+                                label={filterOnLabel}
+                                value={selectedFilterOn}
+                                options={filterOnOptions}
+                                onchange={handleFilterOnChange}
+                                variant="label-inline">
+                            </lightning-combobox>
+                            </div>
+                            <div class={filterByColumnClass}>
+                            <template if:true={isMismatchFilterOn}>
+                                <div class="mismatch-filter-inline">
+                                    <span class="mismatch-filter-label">{filterByLabel}</span>
+                                    <lightning-radio-group
+                                        name="mismatchFilterBy"
+                                        label=""
+                                        options={filterByOptions}
+                                        value={selectedFilterBy}
+                                        onchange={handleFilterByChange}
+                                        type="button"
+                                        variant="label-hidden">
+                                    </lightning-radio-group>
+                                </div>
+                            </template>
+                            <template if:false={isMismatchFilterOn}>
+                                <lightning-combobox
+                                    name="filterBy"
+                                    label={filterByLabel}
+                                    value={selectedFilterBy}
+                                    options={filterByOptions}
+                                    onchange={handleFilterByChange}
+                                    variant="label-inline">
+                                </lightning-combobox>
+                            </template>
+                            </div>
+                            <template if:true={showBulkCannotVerifyButton}>
+                                <div class="slds-col slds-no-flex filter-action-col">
+                                    <lightning-button
+                                        label={bulkCannotVerifyLabel}
+                                        variant="brand-outline"
+                                        icon-name="utility:warning"
+                                        onclick={handleBulkCannotVerifyUpdate}>
+                                    </lightning-button>
+                                </div>
+                            </template>
+                        </div>
+                        <!-- Data Update Needed Link -->
+                        <div class="slds-m-top_small">
+                            <a href="javascript:void(0);" onclick={handleDataUpdateClick} class="slds-text-link">
+                                <lightning-icon icon-name="utility:info" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                                {showDataUpdateLinkLabel}
+                            </a>
+                        </div>
+                        <!-- Show Mismatches Link -->
+                        <template if:true={hasMismatches}>
+                            <div class="slds-m-top_small">
+                                <a href="javascript:void(0);" onclick={handleShowMismatchesClick} class="slds-text-link">
+                                    <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                                    {showMismatchLinkLabel}
+                                </a>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                    
+                    <!-- Save and Cancel Buttons -->
+                    <template if:true={hasChanges}>
+                        <template if:false={readOnly}>
+                            <div class="slds-m-top_small save-button-container">
+                                <div class="button-group-responsive">
+                            <lightning-button
+                                label={saveButtonLabel}
+                                variant="brand"
+                                icon-name="utility:save"
+                                onclick={handleSaveAllChanges}
+                                class="slds-m-right_x-small">
+                            </lightning-button>
+                                    <lightning-button
+                                        label="Cancel"
+                                        variant="neutral"
+                                        icon-name="utility:close"
+                                        onclick={handleCancelChanges}>
+                                    </lightning-button>
+                                </div>
+                        </div>
+                        </template>
+                    </template>
+                    
+                    <!-- Send Back and Submit Buttons - Always visible, enabled/disabled based on conditions -->
+                    <template if:false={readOnly}>
+                        <div class="slds-m-top_small slds-m-bottom_small">
+                            <div class="button-group-responsive">
+                            <lightning-button
+                                    label={labels.backButton}
+                                variant="destructive"
+                                icon-name="utility:back"
+                                onclick={handleSendBack}
+                                    disabled={disableSendBackButton}
+                                class="slds-m-right_x-small">
+                            </lightning-button>
+                                <lightning-button
+                                        label={labels.forwardButton}
+                                    variant="success"
+                                    icon-name="utility:forward"
+                                    onclick={handleSendForward}
+                                        disabled={disableSubmitButton}>
+                                    </lightning-button>
+                            </div>
+                        </div>
+                    </template>
+                    
+                <!-- Field Value Mismatches Warning -->
+                <template if:true={hasMismatches}>
+                    <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+                        <div class="lds-notify slds-notify_alert slds-theme_alert-texture slds-alert_error" role="alert">
+                            <span class="slds-assistive-text">Warning</span>
+                            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Warning">
+                                <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" variant="inverse"></lightning-icon>
+                            </span>
+                            <h2>
+                                <strong>There are mismatches. Field values in the database have changed since verification. Please review and update verifications before proceeding.</strong>
+                            </h2>
+                        </div>
+                    </div>
+                </template>
+                
+                <!-- Dynamic Warning Messages from Callback -->
+                <template if:true={hasValidationWarningMessages}>
+                    <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+                        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+                            <span class="slds-assistive-text">Warning</span>
+                            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Warning">
+                                <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" variant="inverse"></lightning-icon>
+                            </span>
+                            <div>
+                                <template for:each={groupedValidationWarningMessages} for:item="validationGroup">
+                                    <div key={validationGroup.groupKey} class="slds-m-bottom_small">
+                                        <h2 class="slds-m-bottom_x-small"><strong>{validationGroup.header}</strong></h2>
+                                        <ul class="slds-list_dotted slds-m-left_medium">
+                                            <template for:each={validationGroup.messages} for:item="validationMsg">
+                                                <li key={validationMsg.messageKey} class="slds-m-bottom_x-small">
+                                                    {validationMsg.message}
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Dynamic Error Messages from Callback -->
+                <template if:true={hasValidationErrorMessages}>
+                    <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+                        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-alert_error" role="alert">
+                            <span class="slds-assistive-text">Error</span>
+                            <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small" title="Error">
+                                <lightning-icon icon-name="utility:error" alternative-text="Error" size="small" variant="inverse"></lightning-icon>
+                            </span>
+                            <div>
+                                <template for:each={groupedValidationErrorMessages} for:item="validationGroup">
+                                    <div key={validationGroup.groupKey} class="slds-m-bottom_small">
+                                        <h2 class="slds-m-bottom_x-small"><strong>{validationGroup.header}</strong></h2>
+                                        <ul class="slds-list_dotted slds-m-left_medium">
+                                            <template for:each={validationGroup.messages} for:item="validationMsg">
+                                                <li key={validationMsg.messageKey} class="slds-m-bottom_x-small">
+                                                    {validationMsg.message}
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                
+                <!-- Main Tabs: Loan Application + Applicants -->
+                <div class="slds-p-around_medium main-content-container">
+                    <template if:true={hasData}>
+                        <lightning-tabset>
+                            
+                            <!-- Tab 1: Loan Application -->
+                            <template if:true={loanApplicationData}>
+                                <lightning-tab label={loanApplicationTabLabel} icon-name="standard:account">
+                                    <div class="slds-p-around_medium tab-content-scrollable">
+                                        <!-- Loan Application Fields bucketed by document subcategory -->
+                                        <template for:each={loanApplicationBucketedSections} for:item="fieldGroup">
+                                            <div key={fieldGroup.sectionName} class="slds-m-bottom_large">
+                                                <template if:true={fieldGroup.showSectionHeader}>
+                                                    <h3 class="slds-text-heading_small slds-m-bottom_medium slds-border_bottom">{fieldGroup.sectionName}</h3>
+                                                </template>
+                                                <template for:each={fieldGroup.buckets} for:item="bucket">
+                                                    <div key={bucket.bucketKey} class="slds-box slds-m-bottom_medium field-document-container">
+                                                        <!--<p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">Bucket Key: {bucket.bucketKey}</p>-->
+                                                        <div class={bucketRowClass}>
+                                                            <div class="slds-col field-details-col bucket-fields-pane">
+                                                                <template for:each={bucket.fields} for:item="field">
+                                                                    <div key={field.fieldBucketKey} class="slds-m-bottom_medium slds-p-bottom_medium slds-border_bottom">
+                                                        <div class="slds-m-bottom_x-small slds-grid slds-grid_align-spread slds-gutters_small">
+                                                            <div class="slds-col">
+                                                                <strong>Field Name:</strong> {field.fieldLabel}
+                                                            </div>
+                                                            <template if:true={field.hasMismatch}>
+                                                                <template if:true={field.isManuallyVerified}>
+                                                                    <div class="slds-col slds-no-flex slds-col_bump-left">
+                                                                        <lightning-button 
+                                                                            label={field.reverifyLabel}
+                                                                            variant={field.reverifyVariant}
+                                                                            size="small"
+                                                                            onclick={handleReverify}
+                                                                            data-field-verification-id={field.fieldVerificationId}
+                                                                            data-field-name={field.fieldName}
+                                                                            data-record-id={field.recordId}
+                                                                            data-object-name={field.objectName}
+                                                                            data-current-value={field.currentValueInDB}>
+                                                                        </lightning-button>
+                                                                    </div>
+                                                                </template>
+                                                            </template>
+                                                        </div>
+                                                        <div class="slds-m-bottom_x-small">
+                                                            <strong>Value:</strong> 
+                                                            <template if:true={field.isJson}>
+                                                                <c-cpc-json-display-value  
+                                                                    json-value={field.currentValueInDB}
+                                                                    json-text-nodes-to-display={field.jsonFieldValue}>
+                                                                </c-cpc-json-display-value >
+                                                            </template>
+                                                            <template if:false={field.isJson}>
+                                                                <template if:true={field.currentValueInDB}>{field.currentValueInDB}</template><template if:false={field.currentValueInDB}>-</template>
+                                                            </template>
+                                                        </div>
+                                                        <!-- Display Field_Value__c from Verified_Fields__c if mismatch exists (only for Manually Verified) -->
+                                                        <template if:true={field.fieldVerificationId}>
+                                                            <template if:true={field.fieldValueFromVerifiedFields}>
+                                                                <template if:true={field.hasValueMismatch}>
+                                                                    <template if:true={field.isManuallyVerified}>
+                                                                        <div class="slds-m-bottom_x-small" style="background-color: #fff4e5; padding: 8px; border-left: 3px solid #ff9800;">
+                                                                            <div class="slds-grid slds-grid_align-spread slds-gutters_small">
+                                                                                <div class="slds-col">
+                                                                                    <strong style="color: #ff9800;">Verified Value:</strong> 
+                                                                                    <template if:true={field.isJson}>
+                                                                                        <c-cpc-json-display-value 
+                                                                                            json-value={field.fieldValueFromVerifiedFields}
+                                                                                            json-text-nodes-to-display={field.jsonFieldValue}>
+                                                                                        </c-cpc-json-display-value >
+                                                                                    </template>
+                                                                                    <template if:false={field.isJson}>
+                                                                                        <span style="color: #ff9800;">{field.fieldValueFromVerifiedFields}</span>
+                                                                                    </template>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </template>
+                                                                </template>
+                                                            </template>
+                                                        </template>
+                                                        <div class="slds-m-bottom_x-small">
+                                                            <strong>DB Status:</strong> <template if:true={field.dbStatus}><lightning-badge label={field.dbStatus} variant="inverse"></lightning-badge></template><template if:false={field.dbStatus}><lightning-badge label="Not verified" variant="inverse"></lightning-badge></template>
+                                                        </div>
+                                                        <div class="slds-m-bottom_x-small">
+                                                            <strong>Verified Document Name:</strong> <template if:true={field.verifiedStatusDocumentNames}>{field.verifiedStatusDocumentNames}</template><template if:false={field.verifiedStatusDocumentNames}>-</template>
+                                                        </div>
+                                                        <template if:true={field.hasCannotVerifyDocumentMismatch}>
+                                                            <div class="slds-m-bottom_x-small" style="background-color: #fff4e5; padding: 8px; border-left: 3px solid #ff9800;">
+                                                                <div class="slds-grid slds-grid_align-spread slds-gutters_small">
+                                                                    <div class="slds-col">
+                                                                        <strong style="color: #ff9800;">Cannot Verify Mismatch:</strong>
+                                                                        <span style="color: #ff9800;"> Documents are now available. Please update verification status.</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                        <template if:true={field.hasDocumentMismatch}>
+                                                            <template if:true={field.isManuallyVerified}>
+                                                                <div class="slds-m-bottom_x-small" style="background-color: #fff4e5; padding: 8px; border-left: 3px solid #ff9800;">
+                                                                    <div class="slds-grid slds-grid_align-spread slds-gutters_small">
+                                                                        <div class="slds-col">
+                                                                            <strong style="color: #ff9800;">Verified Documents Mismatch:</strong>
+                                                                            <span style="color: #ff9800;"> Saved verified documents do not match current mapped documents.</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </template>
+                                                        <lightning-radio-group name={field.fieldBucketKey} options={field.verificationRadioOptions} value={field.verificationStatus} data-field={field.fieldName} data-record={field.recordId} onchange={handleVerificationStatusChangeInline} type="button" class="slds-m-bottom_small" disabled={field.isFieldLocked}></lightning-radio-group>
+                                                        <lightning-textarea label="Comments" value={field.verificationComments} data-field={field.fieldName} data-record={field.recordId} onchange={handleVerificationCommentsChange} max-length="500" disabled={field.isFieldLocked}></lightning-textarea>
+                                                    </div>
+                                                                </template>
+                                                            </div>
+                                                            <div class="slds-col document-preview-col bucket-preview-pane">
+                                                                <div class="bucket-height-control slds-m-bottom_x-small">
+                                                                    <lightning-combobox
+                                                                        name="bucketHeight"
+                                                                        label="Preview Height"
+                                                                        value={selectedBucketHeight}
+                                                                        options={bucketHeightOptions}
+                                                                        onchange={handleBucketHeightChange}>
+                                                                    </lightning-combobox>
+                                                                </div>
+                                                                <template if:true={bucket.hasDocuments}>
+                                                                    <c-file-display-preview-pane
+                                                                        documents={bucket.allDocs}
+                                                                        preview-height={previewPaneHeightPx}>
+                                                                    </c-file-display-preview-pane>
+                                                                </template>
+                                                        <template if:false={bucket.hasDocuments}>
+                                                            <div class="slds-text-align_center slds-p-around_large">
+                                                                <lightning-icon icon-name="utility:info" variant="warning"></lightning-icon>
+                                                                <p class="slds-m-top_small">No document available</p>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </lightning-tab>
+                            </template>  
+                            
+                            
+                            <!-- Tabs 2+: Level 2 Objects (one tab per section) -->
+                            <template if:true={hasApplicants}>
+                                <template for:each={displayedApplicants} for:item="objectGroup">
+                                    <lightning-tab key={objectGroup.sectionKey} label={objectGroup.displaySectionName} icon-name="standard:record">
+                                        
+                                        <!-- Nested tabs: One tab per record (e.g., Applicant 1, Applicant 2) -->
+                                        <lightning-tabset variant="scoped">
+                                            <template for:each={objectGroup.records} for:item="record">
+                                                <lightning-tab key={record.tabId} label={record.displayTabLabel} icon-name="standard:contact">
+                                                    <div class="slds-p-around_medium">
+                                            
+                                                        <!-- Nested Tabs for Record's own fields + Address/Employment/Income -->  
+                                                        <lightning-tabset variant="scoped">
+                                                
+                                                <!-- Dynamic tabs for field sections (Personal Info + Child Sections) -->
+                                                <template for:each={record.fieldSectionTabs} for:item="fieldSection">
+                                                <lightning-tab key={fieldSection.tabId} label={fieldSection.displayLabel} icon-name={fieldSection.icon}>
+                                                    <div class="slds-p-around_medium tab-content-scrollable">
+                                                        <template for:each={fieldSection.buckets} for:item="bucket">
+                                                            <div key={bucket.bucketKey} class="slds-box slds-m-bottom_small field-document-container">
+                                                                <!--<p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">Bucket Key: {bucket.bucketKey}</p>-->
+                                                                <div class={bucketRowClass}>
+                                                                    <div class="slds-col field-details-col bucket-fields-pane">
+                                                                        <template for:each={bucket.fields} for:item="field">
+                                                                            <div key={field.fieldBucketKey} class="slds-m-bottom_medium slds-p-bottom_medium slds-border_bottom">
+                                                                                    <div class="slds-m-bottom_x-small slds-grid slds-grid_align-spread slds-gutters_small">
+                                                                                        <div class="slds-col"><strong>Field Name:</strong> {field.fieldLabel}</div>
+                                                                                        <template if:true={field.hasMismatch}>
+                                                                                            <template if:true={field.isManuallyVerified}>
+                                                                                                <div class="slds-col slds-no-flex slds-col_bump-left">
+                                                                                                    <lightning-button 
+                                                                                                        label={field.reverifyLabel}
+                                                                                                        variant={field.reverifyVariant}
+                                                                                                        size="small"
+                                                                                                        onclick={handleReverify}
+                                                                                                        data-field-verification-id={field.fieldVerificationId}
+                                                                                                        data-field-name={field.fieldName}
+                                                                                                        data-record-id={field.recordId}
+                                                                                                        data-object-name={field.objectName}
+                                                                                                        data-current-value={field.currentValueInDB}>
+                                                                                                    </lightning-button>
+                                                                                                </div>
+                                                                                            </template>
+                                                                                        </template>
+                                                                                    </div>
+                                                                        <div class="slds-m-bottom_x-small">
+                                                                            <strong>Value:</strong> 
+                                                                            <template if:true={field.isJson}>
+                                                                                <c-cpc-json-display-value  
+                                                                                    json-value={field.currentValueInDB}
+                                                                                    json-text-nodes-to-display={field.jsonFieldValue}>
+                                                                                </c-cpc-json-display-value >
+                                                                            </template>
+                                                                            <template if:false={field.isJson}>
+                                                                                <template if:true={field.currentValueInDB}>{field.currentValueInDB}</template><template if:false={field.currentValueInDB}>-</template>
+                                                                            </template>
+                                                                        </div>
+                                                                        <!-- Display Field_Value__c from Verified_Fields__c if mismatch exists (only for Manually Verified) -->
+                                                                        <template if:true={field.fieldVerificationId}>
+                                                                            <template if:true={field.fieldValueFromVerifiedFields}>
+                                                                                <template if:true={field.hasValueMismatch}>
+                                                                                    <template if:true={field.isManuallyVerified}>
+                                                                                        <div class="slds-m-bottom_x-small" style="background-color: #fff4e5; padding: 8px; border-left: 3px solid #ff9800;">
+                                                                                            <div class="slds-grid slds-grid_align-spread slds-gutters_small">
+                                                                                                <div class="slds-col">
+                                                                                                    <strong style="color: #ff9800;">Verified Value:</strong> 
+                                                                                                    <template if:true={field.isJson}>
+                                                                                                        <c-cpc-json-display-value 
+                                                                                                            json-value={field.fieldValueFromVerifiedFields}
+                                                                                                            json-text-nodes-to-display={field.jsonFieldValue}>
+                                                                                                        </c-cpc-json-display-value >
+                                                                                                    </template>
+                                                                                                    <template if:false={field.isJson}>
+                                                                                                        <span style="color: #ff9800;">{field.fieldValueFromVerifiedFields}</span>
+                                                                                                    </template>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </template>
+                                                                                </template>
+                                                                            </template>
+                                                                        </template>
+                                                                                    <div class="slds-m-bottom_x-small"><strong>DB Status:</strong> <template if:true={field.dbStatus}><lightning-badge label={field.dbStatus} variant="inverse"></lightning-badge></template><template if:false={field.dbStatus}><lightning-badge label="Not verified" variant="inverse"></lightning-badge></template></div>
+                                                        <div class="slds-m-bottom_x-small"><strong>Verified Document Name:</strong> <template if:true={field.verifiedStatusDocumentNames}>{field.verifiedStatusDocumentNames}</template><template if:false={field.verifiedStatusDocumentNames}>-</template></div>
+                                                        <template if:true={field.hasCannotVerifyDocumentMismatch}>
+                                                            <div class="slds-m-bottom_x-small" style="background-color: #fff4e5; padding: 8px; border-left: 3px solid #ff9800;">
+                                                                <div class="slds-grid slds-grid_align-spread slds-gutters_small">
+                                                                    <div class="slds-col">
+                                                                        <strong style="color: #ff9800;">Cannot Verify Mismatch:</strong>
+                                                                        <span style="color: #ff9800;"> Documents are now available. Please update verification status.</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                        <template if:true={field.hasDocumentMismatch}>
+                                                            <template if:true={field.isManuallyVerified}>
+                                                                <div class="slds-m-bottom_x-small" style="background-color: #fff4e5; padding: 8px; border-left: 3px solid #ff9800;">
+                                                                    <div class="slds-grid slds-grid_align-spread slds-gutters_small">
+                                                                        <div class="slds-col">
+                                                                            <strong style="color: #ff9800;">Verified Documents Mismatch:</strong>
+                                                                            <span style="color: #ff9800;"> Saved verified documents do not match current mapped documents.</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </template>
+                                                                        <lightning-radio-group name={field.fieldBucketKey} options={field.verificationRadioOptions} value={field.verificationStatus} data-field={field.fieldName} data-record={field.recordId} onchange={handleVerificationStatusChangeInline} type="button" class="slds-m-bottom_small" disabled={field.isFieldLocked}></lightning-radio-group>
+                                                                        <lightning-textarea label="Comments" value={field.verificationComments} data-field={field.fieldName} data-record={field.recordId} onchange={handleVerificationCommentsChange} max-length="500" disabled={field.isFieldLocked}></lightning-textarea>
+                                                                    </div>
+                                                                        </template>
+                                                                    </div>
+                                                                    <div class="slds-col document-preview-col bucket-preview-pane">
+                                                                        <div class="bucket-height-control slds-m-bottom_x-small">
+                                                                            <lightning-combobox
+                                                                                name="bucketHeight"
+                                                                                label="Preview Height"
+                                                                                value={selectedBucketHeight}
+                                                                                options={bucketHeightOptions}
+                                                                                onchange={handleBucketHeightChange}>
+                                                                            </lightning-combobox>
+                                                                        </div>
+                                                                        <template if:true={bucket.hasDocuments}>
+                                                                            <c-file-display-preview-pane
+                                                                                documents={bucket.allDocs}
+                                                                                preview-height={previewPaneHeightPx}>
+                                                                            </c-file-display-preview-pane>
+                                                                        </template>
+                                                                        <template if:false={bucket.hasDocuments}><div class="slds-text-align_center slds-p-around_large"><lightning-icon icon-name="utility:info" variant="warning"></lightning-icon><p class="slds-m-top_small">No document</p></div></template>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </lightning-tab>
+                                                </template>
+                                                
+                                                <!-- Dynamic Child Tabs (Address/Employment/Income) -->
+                                                <template for:each={record.childTabs} for:item="childTab">
+                                                    <lightning-tab key={childTab.sectionKey} label={childTab.displayLabel} icon-name={childTab.icon}>
+                                                            <div class="slds-p-around_medium tab-content-scrollable">
+                                                                <template for:each={childTab.records} for:item="childRecord">
+                                                                    <div key={childRecord.recordId} class="slds-box slds-m-bottom_medium child-record">
+                                                                        <h4 class="slds-text-heading_small slds-m-bottom_medium">{childRecord.recordLabel}</h4>
+                                                                        <lightning-tabset variant="scoped">
+                                                                            <lightning-tab label={childRecord.displayChildTabLabel} icon-name={childTab.icon}>
+                                                                                <template for:each={childRecord.buckets} for:item="bucket">
+                                                                                    <div key={bucket.bucketKey} class="slds-box slds-m-bottom_small field-document-container">
+                                                                                        <div class={bucketRowClass}>
+                                                                                            <div class="slds-col field-details-col bucket-fields-pane">
+                                                                                                <template for:each={bucket.fields} for:item="field">
+                                                                                                    <div key={field.fieldBucketKey} class="slds-m-bottom_medium slds-p-bottom_medium slds-border_bottom">
+                                                                                                <div class="slds-m-bottom_x-small slds-grid slds-grid_align-spread slds-gutters_small">
+                                                                                                    <div class="slds-col"><strong>Field Name:</strong> {field.fieldLabel}</div>
+                                                                                                    <template if:true={field.hasMismatch}>
+                                                                                                        <template if:true={field.isManuallyVerified}>
+                                                                                                            <div class="slds-col slds-no-flex slds-col_bump-left">
+                                                                                                                <lightning-button 
+                                                                                                                    label={field.reverifyLabel}
+                                                                                                                    variant={field.reverifyVariant}
+                                                                                                                    size="small"
+                                                                                                                    onclick={handleReverify}
+                                                                                                                    data-field-verification-id={field.fieldVerificationId}
+                                                                                                                    data-field-name={field.fieldName}
+                                                                                                                    data-record-id={field.recordId}
+                                                                                                                    data-object-name={field.objectName}
+                                                                                                                    data-current-value={field.currentValueInDB}>
+                                                                                                                </lightning-button>
+                                                                                                            </div>
+                                                                                                        </template>
+                                                                                                    </template>
+                                                                                                </div>
+                                                                                                <div class="slds-m-bottom_x-small">
+                                                                                                    <strong>Value:</strong> 
+                                                                                                    <template if:true={field.isJson}>
+                                                                                                        <c-cpc-json-display-value  
+                                                                                                            json-value={field.currentValueInDB}
+                                                                                                            json-text-nodes-to-display={field.jsonFieldValue}>
+                                                                                                        </c-cpc-json-display-value >
+                                                                                                    </template>
+                                                                                                    <template if:false={field.isJson}>
+                                                                                                        {field.currentValueInDB}
+                                                                                                    </template>
+                                                                                                </div>
+                                                                                                <template if:true={field.fieldVerificationId}>
+                                                                                                    <template if:true={field.fieldValueFromVerifiedFields}>
+                                                                                                        <template if:true={field.hasValueMismatch}>
+                                                                                                            <template if:true={field.isManuallyVerified}>
+                                                                                                                <div class="slds-m-bottom_x-small" style="background-color: #fff4e5; padding: 8px; border-left: 3px solid #ff9800;">
+                                                                                                                    <div class="slds-grid slds-grid_align-spread slds-gutters_small">
+                                                                                                                        <div class="slds-col">
+                                                                                                                            <strong style="color: #ff9800;">Verified Value:</strong> 
+                                                                                                                            <template if:true={field.isJson}>
+                                                                                                                                <c-cpc-json-display-value 
+                                                                                                                                    json-value={field.fieldValueFromVerifiedFields}
+                                                                                                                                    json-text-nodes-to-display={field.jsonFieldValue}>
+                                                                                                                                </c-cpc-json-display-value >
+                                                                                                                            </template>
+                                                                                                                            <template if:false={field.isJson}>
+                                                                                                                                <span style="color: #ff9800;">{field.fieldValueFromVerifiedFields}</span>
+                                                                                                                            </template>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </template>
+                                                                                                        </template>
+                                                                                                    </template>
+                                                                                                </template>
+                                                                                                <div class="slds-m-bottom_x-small"><strong>DB Status:</strong> <template if:true={field.dbStatus}><lightning-badge label={field.dbStatus} variant="inverse"></lightning-badge></template><template if:false={field.dbStatus}><lightning-badge label="Not verified" variant="inverse"></lightning-badge></template></div>
+                                                                        <div class="slds-m-bottom_x-small"><strong>Verified Document Name:</strong> <template if:true={field.verifiedStatusDocumentNames}>{field.verifiedStatusDocumentNames}</template><template if:false={field.verifiedStatusDocumentNames}>-</template></div>
+                                                                        <template if:true={field.hasCannotVerifyDocumentMismatch}>
+                                                                            <div class="slds-m-bottom_x-small" style="background-color: #fff4e5; padding: 8px; border-left: 3px solid #ff9800;">
+                                                                                <div class="slds-grid slds-grid_align-spread slds-gutters_small">
+                                                                                    <div class="slds-col">
+                                                                                        <strong style="color: #ff9800;">Cannot Verify Mismatch:</strong>
+                                                                                        <span style="color: #ff9800;"> Documents are now available. Please update verification status.</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </template>
+                                                                        <template if:true={field.hasDocumentMismatch}>
+                                                                            <template if:true={field.isManuallyVerified}>
+                                                                                <div class="slds-m-bottom_x-small" style="background-color: #fff4e5; padding: 8px; border-left: 3px solid #ff9800;">
+                                                                                    <div class="slds-grid slds-grid_align-spread slds-gutters_small">
+                                                                                        <div class="slds-col">
+                                                                                            <strong style="color: #ff9800;">Verified Documents Mismatch:</strong>
+                                                                                            <span style="color: #ff9800;"> Saved verified documents do not match current mapped documents.</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </template>
+                                                                        </template>
+                                                                                                <lightning-radio-group name={field.fieldBucketKey} options={field.verificationRadioOptions} value={field.verificationStatus} data-field={field.fieldName} data-record={field.recordId} onchange={handleVerificationStatusChangeInline} type="button" class="slds-m-bottom_small" disabled={field.isFieldLocked}></lightning-radio-group>
+                                                                                                <lightning-textarea label="Comments" value={field.verificationComments} data-field={field.fieldName} data-record={field.recordId} onchange={handleVerificationCommentsChange} disabled={field.isFieldLocked}></lightning-textarea>
+                                                                                                    </div>
+                                                                                                </template>
+                                                                                            </div>
+                                                                                            <div class="slds-col document-preview-col bucket-preview-pane">
+                                                                                                <div class="bucket-height-control slds-m-bottom_x-small">
+                                                                                                    <lightning-combobox
+                                                                                                        name="bucketHeight"
+                                                                                                        label="Preview Height"
+                                                                                                        value={selectedBucketHeight}
+                                                                                                        options={bucketHeightOptions}
+                                                                                                        onchange={handleBucketHeightChange}>
+                                                                                                    </lightning-combobox>
+                                                                                                </div>
+                                                                                                <template if:true={bucket.hasDocuments}>
+                                                                                                    <c-file-display-preview-pane
+                                                                                                        documents={bucket.allDocs}
+                                                                                                        preview-height={bucket.previewPaneHeightPx}>
+                                                                                                    </c-file-display-preview-pane>
+                                                                                                </template>
+                                                                                                <template if:false={bucket.hasDocuments}><div class="slds-text-align_center slds-p-around_medium"><lightning-icon icon-name="utility:info" variant="warning" size="small"></lightning-icon><p>No doc</p></div></template>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </template>
+                                                                            </lightning-tab>
+                                                                            <template if:true={childRecord.hasChildren}>
+                                                                                <template for:each={childRecord.childTabs} for:item="nestedTab">
+                                                                                    <lightning-tab key={nestedTab.sectionKey} label={nestedTab.displayLabel} icon-name={nestedTab.icon}>
+                                                                                        <div class="slds-p-around_small">
+                                                                                            <template for:each={nestedTab.records} for:item="nestedRecord">
+                                                                                                <div key={nestedRecord.recordId} class="slds-box slds-m-bottom_small">
+                                                                                                    <h5 class="slds-text-title_bold slds-m-bottom_small">{nestedRecord.recordLabel}</h5>
+                                                                                                    <template for:each={nestedRecord.buckets} for:item="nestedBucket">
+                                                                                                        <div key={nestedBucket.bucketKey} class="slds-box slds-m-bottom_small field-document-container">
+                                                                                                            <div class={bucketRowClass}>
+                                                                                                                <div class="slds-col field-details-col bucket-fields-pane">
+                                                                                                                    <template for:each={nestedBucket.fields} for:item="field">
+                                                                                                                        <div key={field.fieldBucketKey} class="slds-m-bottom_small slds-p-bottom_small slds-border_bottom">
+                                                                                                                            <div class="slds-m-bottom_x-small"><strong>Field Name:</strong> {field.fieldLabel}</div>
+                                                                                                                            <div class="slds-m-bottom_x-small"><strong>Value:</strong> {field.currentValueInDB}</div>
+                                                                                                                            <div class="slds-m-bottom_x-small"><strong>DB Status:</strong> <template if:true={field.dbStatus}><lightning-badge label={field.dbStatus} variant="inverse"></lightning-badge></template><template if:false={field.dbStatus}><lightning-badge label="Not verified" variant="inverse"></lightning-badge></template></div>
+                                                                                                                            <lightning-radio-group name={field.fieldBucketKey} options={field.verificationRadioOptions} value={field.verificationStatus} data-field={field.fieldName} data-record={field.recordId} onchange={handleVerificationStatusChangeInline} type="button" class="slds-m-bottom_small" disabled={field.isFieldLocked}></lightning-radio-group>
+                                                                                                                            <lightning-textarea label="Comments" value={field.verificationComments} data-field={field.fieldName} data-record={field.recordId} onchange={handleVerificationCommentsChange} disabled={field.isFieldLocked}></lightning-textarea>
+                                                                                                                        </div>
+                                                                                                                    </template>
+                                                                                                                </div>
+                                                                                                                <div class="slds-col document-preview-col bucket-preview-pane">
+                                                                                                                    <div class="bucket-height-control slds-m-bottom_x-small">
+                                                                                                                        <lightning-combobox
+                                                                                                                            name="bucketHeight"
+                                                                                                                            label="Preview Height"
+                                                                                                                            value={selectedBucketHeight}
+                                                                                                                            options={bucketHeightOptions}
+                                                                                                                            onchange={handleBucketHeightChange}>
+                                                                                                                        </lightning-combobox>
+                                                                                                                    </div>
+                                                                                                                    <template if:true={nestedBucket.hasDocuments}>
+                                                                                                                        <c-file-display-preview-pane
+                                                                                                                            documents={nestedBucket.allDocs}
+                                                                                                                            preview-height={previewPaneHeightPx}>
+                                                                                                                        </c-file-display-preview-pane>
+                                                                                                                    </template>
+                                                                                                                    <template if:false={nestedBucket.hasDocuments}>
+                                                                                                                        <div class="slds-text-align_center slds-p-around_medium"><lightning-icon icon-name="utility:info" variant="warning" size="small"></lightning-icon><p>No doc</p></div>
+                                                                                                                    </template>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </template>
+                                                                                                </div>
+                                                                                            </template>
+                                                                                        </div>
+                                                                                    </lightning-tab>
+                                                                                </template>
+                                                                            </template>
+                                                                        </lightning-tabset>
+                                                                    </div>
+                                                                </template>
+                                                            </div>
+                                                        </lightning-tab>
+                                                    </template>
+                                                    
+                                                 
+                                                        
+                                        </lightning-tabset>
+                                                
+                                                </div>
+                                            </lightning-tab>
+                                        </template>
+                                    </lightning-tabset>
+                                    
+                                </lightning-tab>
+                            </template>
+                        </template>
+                        
+                    </lightning-tabset>
+                    </template>
+                </div>
+                
+                <!-- No Data Message -->
+                <div class="slds-p-around_medium">
+                    <template if:false={hasData}>
+                        <div class="slds-text-align_center slds-p-around_large">
+                            <lightning-icon icon-name="utility:info" size="large" variant="warning"></lightning-icon>
+                            <p class="slds-text-heading_medium slds-m-top_medium">No verification data found</p>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-top_small">Check if data exists for this loan application.</p>
+                        </div>
+                    </template>
+                </div>
+                
+            </template>
+        </template>
+    </lightning-card>
+    </div>
+
+</template>

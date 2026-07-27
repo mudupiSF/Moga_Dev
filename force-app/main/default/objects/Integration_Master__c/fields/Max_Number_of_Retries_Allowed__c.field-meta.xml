@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Max_Number_of_Retries_Allowed__c</fullName>
+    <description>Maximum # of retries per entity post which the interface is blocked - this can be used for fin tech APIs to ensure users are not over-consuming the API limits.</description>
+    <externalId>false</externalId>
+    <label>Max Number of Retries Allowed</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

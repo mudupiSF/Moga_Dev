@@ -1,0 +1,540 @@
+<apex:page controller="PDFforceController" showHeader="false" sidebar="false" standardStylesheets="false" cache="false" applyHtmlTag="false"
+    applyBodyTag="false">
+<!--
+    Per-font @font-face and per-class CSS rules are INJECTED AT RUNTIME
+    by ensureFont(cfg) in the script block below, driven by FONT_CONFIG.
+    This keeps adding a new script (Bengali, Tamil, Arabic, CJK, etc.)
+    to a single config entry rather than requiring an edit to this
+    stylesheet too. See FONT_CONFIG and "How to add a new font" below.
+-->
+<style>
+    /* Intentionally empty: see FONT_CONFIG in script block. */
+</style>
+
+
+    <apex:includeScript value="{!$Resource.PAGED}" />
+    <apex:includeScript value="{!$Resource.JSPDF2}" />
+    <apex:includeScript value="{!$Resource.html2canvas}" />
+    <apex:includeScript value="{!$Resource.HANDLEBARSJS}" />
+    <apex:includeScript value="{!$Resource.jsforcescript}" />
+    <apex:includeScript value="{!$Resource.DOMPURIFY}" />
+    <script>
+        window.addEventListener('paged:end', (event) => {
+            console.log('[SessionIdProvider] Paged.js ended');
+        });
+
+        const sessionId = '{!$Api.Session_ID}';
+        const targetOrigin = '*';
+
+        window.setTimeout(() => {
+            window.parent.postMessage({
+                type: 'SESSION_ID_RESPONSE',
+                sessionId: sessionId
+            }, targetOrigin);
+        }, 100);
+
+
+
+
+        const getBase64FromBlob = (blob) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    // result is "data:application/octet-stream;base64,XXXX..."
+                    // We split to get only the "XXXX" part for jsPDF
+                    const base64String = reader.result.split(',')[1];
+                    resolve(base64String);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        };
+
+
+        // =============================================================
+        // FONT_CONFIG - Single source of truth for non-Latin script support
+        // =============================================================
+        //
+        // -----------------------------------------------------------------
+        // How to add a new font (e.g. Bengali, Tamil, Arabic, CJK):
+        // -----------------------------------------------------------------
+        //   1) Upload the .ttf as a Salesforce Static Resource
+        //      (no spaces in the name - e.g. "NotoSansBengali").
+        //
+        //   2) Add an entry below. The five fields are:
+        //        - script:       human-readable name (for logs only)
+        //        - className:    CSS class the LWC will put on wrapped
+        //                        runs. Must start with "pdfforce-".
+        //        - fontFamily:   logical name used inside the .ttf and
+        //                        in CSS font-family. Spaces OK.
+        //        - vfsFilename:  arbitrary filename jsPDF stores the
+        //                        .ttf under in its internal VFS. By
+        //                        convention StaticResourceName + ".ttf".
+        //        - url:          MUST be written as a Visualforce
+        //                        static-resource merge expression
+        //                        (dollar-Resource dot Name in curly
+        //                        braces). Visualforce resolves it at
+        //                        deploy time - Apex/JS cannot build
+        //                        this string dynamically. Look at the
+        //                        existing Devanagari entry below for
+        //                        the exact syntax.
+        //
+        //   3) Add a matching entry to SCRIPT_CONFIG in
+        //      pDFforceRenderer.js -> wrapNonLatinRuns(). The
+        //      className MUST be identical. That entry tells the LWC
+        //      which codepoint ranges belong to this script so it can
+        //      wrap them BEFORE the HTML is shipped to this iframe.
+        //
+        // That's it. No CSS edits, no new functions, no new helpers.
+        // ensureAllFonts() picks up the new entry automatically and
+        // injects both the @font-face and the per-class CSS rule;
+        // registerFontsInJsPdf(pdf) adds it to jsPDF's catalog.
+        //
+        // -----------------------------------------------------------------
+        // Why both FontFace API AND a JS-injected @font-face style tag?
+        // -----------------------------------------------------------------
+        //   - FontFace API: lets the off-screen container we mount
+        //     render correctly in THIS document. html2canvas reads
+        //     computed styles from it.
+        //   - JS-injected style tag with base64 data: URL: html2canvas
+        //     clones the document into its own rendering iframe; only
+        //     style/link sheets survive the clone, not FontFace API
+        //     entries. The data: URL means no network round-trip is
+        //     needed inside the clone.
+        // -----------------------------------------------------------------
+        // Why is registering the font in jsPDF's own catalog ALSO required?
+        // -----------------------------------------------------------------
+        // pdf.html() rasters layout via html2canvas, but jsPDF 2.x ALSO
+        // routes text through its own emitter (pdf.text()) which
+        // encodes characters against the jsPDF font catalog. Default
+        // font is Helvetica with WinAnsiEncoding (no glyphs outside
+        // 0x00..0xFF), so codepoints outside that range get masked
+        // with & 0xff. That is the "/6 6>9" pattern we saw for the
+        // Devanagari run "यश शाह". Putting the .ttf in jsPDF's VFS
+        // and declaring the font lets jsPDF emit the real glyphs.
+        // We intentionally do NOT call pdf.setFont() globally - that
+        // would force ALL text through one font and obliterate the
+        // original CSS font weights / faces. jsPDF picks the right
+        // font per element based on getComputedStyle().fontFamily.
+        // -----------------------------------------------------------------
+        const FONT_CONFIG = [
+            {
+                script: 'Devanagari',
+                className: 'pdfforce-devanagari',
+                fontFamily: 'Noto Sans Devangiri',
+                vfsFilename: 'NotoSansDevangiri.ttf',
+                url: '{!$Resource.NotoSansDevangiri}'
+            }
+            // Example template (kept as documentation only - do NOT put
+            // literal merge-field syntax in comments below, because the
+            // Visualforce compiler resolves merge fields *inside* JS
+            // comments and will fail compilation if the referenced
+            // static resource does not exist). For real entries, copy
+            // the Devanagari entry above and change the five fields.
+            //
+            //   Bengali  -> className "pdfforce-bengali", fontFamily
+            //               "Noto Sans Bengali", vfsFilename
+            //               "NotoSansBengali.ttf", url -> the
+            //               Visualforce merge expression for the
+            //               NotoSansBengali static resource.
+            //   Tamil    -> className "pdfforce-tamil",   etc.
+            //   Arabic   -> className "pdfforce-arabic",  etc.
+            //   CJK      -> className "pdfforce-cjk",     etc.
+        ];
+
+        // Per-entry runtime cache: base64 of the .ttf + the in-flight
+        // load promise. Keyed by fontFamily so the same .ttf is fetched
+        // at most once across multiple GENERATE_PDF messages.
+        const fontState = new Map();
+
+        // Loads ONE font: fetches the .ttf, base64-encodes it, registers
+        // a FontFace in this document, and injects a style tag with
+        //   - @font-face using the base64 data: URL
+        //   - .className { font-family: ..., sans-serif !important; }
+        // The style tag carries data-pdfforce-font="<className>" so
+        // html2canvas's onclone hook can copy it into the cloned doc.
+        const ensureFont = (cfg) => {
+            let state = fontState.get(cfg.fontFamily);
+            if (state && state.loadPromise) return state.loadPromise;
+            if (!state) {
+                state = {};
+                fontState.set(cfg.fontFamily, state);
+            }
+            state.loadPromise = (async () => {
+                try {
+                    const response = await fetch(cfg.url);
+                    if (!response.ok) {
+                        throw new Error(
+                            'Font fetch failed for ' + cfg.fontFamily +
+                            ': HTTP ' + response.status
+                        );
+                    }
+                    const blob = await response.blob();
+                    const base64 = await getBase64FromBlob(blob);
+                    state.base64 = base64;
+                    const dataUrl = 'data:font/ttf;base64,' + base64;
+
+                    // (1) Parent document font registry.
+                    const face = new FontFace(
+                        cfg.fontFamily,
+                        'url(' + dataUrl + ') format("truetype")',
+                        { weight: '400', style: 'normal', display: 'swap' }
+                    );
+                    await face.load();
+                    document.fonts.add(face);
+
+                    // (2) Injected style tag (survives html2canvas clone).
+                    //     Contains BOTH the @font-face and the class rule
+                    //     that hooks the wrapped spans to this font.
+                    const selector = 'style[data-pdfforce-font="' + cfg.className + '"]';
+                    if (!document.querySelector(selector)) {
+                        const styleEl = document.createElement('style');
+                        styleEl.dataset.pdfforceFont = cfg.className;
+                        styleEl.textContent =
+                            "@font-face {" +
+                            "  font-family: '" + cfg.fontFamily + "';" +
+                            "  src: url(" + dataUrl + ") format('truetype');" +
+                            "  font-weight: 400;" +
+                            "  font-style: normal;" +
+                            "  font-display: block;" +
+                            "}" +
+                            "." + cfg.className + " {" +
+                            "  font-family: '" + cfg.fontFamily + "', sans-serif !important;" +
+                            "}";
+                        document.head.appendChild(styleEl);
+                    }
+
+                    // Belt-and-suspenders: pass the family name WITHOUT
+                    // wrapping quotes - some browsers (Chrome quirk)
+                    // store a separate FontFace entry whose family
+                    // contains the literal quote characters.
+                    await document.fonts.load('16px ' + cfg.fontFamily);
+                    await document.fonts.ready;
+
+                    console.log(
+                        '[SessionIdProvider] Font registered: ' + cfg.fontFamily +
+                        ' (' + cfg.script + ')'
+                    );
+                } catch (err) {
+                    console.error(
+                        '[SessionIdProvider] Failed to load font ' + cfg.fontFamily, err
+                    );
+                    // Reset so a later call can retry.
+                    state.loadPromise = null;
+                    throw err;
+                }
+            })();
+            return state.loadPromise;
+        };
+
+        // Loads every font in FONT_CONFIG in parallel. A failure for
+        // one font does NOT prevent the others from loading - we just
+        // log it and continue with whatever succeeded.
+        const ensureAllFonts = async () => {
+            if (FONT_CONFIG.length === 0) return;
+            await Promise.all(
+                FONT_CONFIG.map((cfg) =>
+                    ensureFont(cfg).catch((e) => {
+                        console.warn(
+                            '[SessionIdProvider] Skipping failed font: ' + cfg.fontFamily
+                        );
+                    })
+                )
+            );
+        };
+
+        // Adds every successfully-fetched font to jsPDF's internal VFS
+        // and font catalog. Skips fonts whose base64 isn't cached yet
+        // (e.g. fetch failed in ensureAllFonts). We deliberately do NOT
+        // call pdf.setFont() - see the FONT_CONFIG comment above for
+        // why a global setFont breaks original font weights / faces.
+        const registerFontsInJsPdf = (pdf) => {
+            let registered = 0;
+            FONT_CONFIG.forEach((cfg) => {
+                const state = fontState.get(cfg.fontFamily);
+                if (!state || !state.base64) {
+                    console.warn(
+                        '[SessionIdProvider] jsPDF registration skipped (no base64): ' +
+                        cfg.fontFamily
+                    );
+                    return;
+                }
+                try {
+                    pdf.addFileToVFS(cfg.vfsFilename, state.base64);
+                    pdf.addFont(cfg.vfsFilename, cfg.fontFamily, 'normal');
+                    registered++;
+                } catch (e) {
+                    console.error(
+                        '[SessionIdProvider] jsPDF registration failed: ' + cfg.fontFamily, e
+                    );
+                }
+            });
+            console.log(
+                '[SessionIdProvider] jsPDF fonts registered:', registered,
+                'catalog:', pdf.getFontList()
+            );
+            return registered;
+        };
+
+        // NOTE: non-Latin text is wrapped UPSTREAM by the LWC
+        // (pDFforceRenderer.js -> wrapNonLatinRuns) right after
+        // Handlebars substitution, using the class names defined in
+        // FONT_CONFIG above. By the time HTML lands here it already
+        // has those class names on the wrapper spans, so this iframe
+        // just provides the CSS / @font-face / jsPDF catalog plumbing.
+        // No DOM mutation is performed here.
+
+
+        window.addEventListener("message", async (event) => {
+            console.log('[SessionIdProvider] Message received in sessionIdProvider', event.data.type);
+            if (event.data.type !== "GENERATE_PDF") {
+                console.log('[SessionIdProvider] Ignoring message type');
+                return;
+            }
+
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4', true);
+
+            // Load every font in FONT_CONFIG into document.fonts AND
+            // register them in jsPDF's catalog BEFORE we mount any HTML
+            // or kick off html2canvas. Two reasons:
+            //   - Browser side: html2canvas snapshots the DOM
+            //     synchronously, so if a fetch is still in flight the
+            //     canvas paints with the default sans-serif fallback.
+            //   - jsPDF side: the catalog must contain the font BEFORE
+            //     pdf.html() walks the DOM, otherwise jsPDF falls back
+            //     to WinAnsi and emits codepoint & 0xff low bytes.
+            // Failures are non-fatal: ensureAllFonts() logs per-font
+            // and keeps going so the rest of the document still renders.
+            try {
+                await ensureAllFonts();
+                registerFontsInJsPdf(pdf);
+            } catch (e) {
+                // Defensive only - ensureAllFonts already swallows per-font errors.
+            }
+
+
+            // Build container from HTML
+            const container = document.createElement("div");
+            const html = event.data.htmlContent;
+            const multilingualHtml = event.data.multilingualHtml;
+            // File name + attach flag are forwarded back in the
+            // PDF_GENERATED reply so the parent LWC knows how to name
+            // the ContentVersion it creates (Submit flow) or whether
+            // to just preview (showPreview flow).
+            const requestedFileName = event.data.fileName
+                || ('PDFForceDocument-' + Date.now() + '.pdf');
+            const attachToRecord = !!event.data.attachToRecord;
+            container.insertAdjacentHTML('beforeend', html);
+
+            // ----- Diagnostic --------------------------------------------
+            // Was the Devanagari text intact when it ARRIVED here, or was
+            // it already mangled by something upstream (LWC, Handlebars,
+            // JSON round-trip, etc.)? Log the codepoints of any text that
+            // looks like Devanagari (U+0900..U+097F) or matches the
+            // characteristic "low-byte" mangling pattern (chars 0x20..0x7F
+            // whose presence is suspicious if a Devanagari name was
+            // expected).
+            try {
+                const fullText = container.textContent || '';
+                const devanagariMatches = fullText.match(/[\u0900-\u097F]+/g) || [];
+                console.log(
+                    '[SessionIdProvider] Devanagari runs in payload:',
+                    devanagariMatches.length,
+                    devanagariMatches.slice(0, 5)
+                );
+                if (devanagariMatches.length > 0) {
+                    console.log(
+                        '[SessionIdProvider] First Devanagari run codepoints:',
+                        Array.from(devanagariMatches[0])
+                            .map((c) => 'U+' + c.codePointAt(0).toString(16).padStart(4, '0'))
+                            .join(' ')
+                    );
+                } else {
+                    console.warn(
+                        '[SessionIdProvider] No Devanagari text in payload - corruption is UPSTREAM of this iframe ' +
+                        '(check the LWC preview pane DOM or input JSON). The bytes / 6 6 > 9 you see in the PDF ' +
+                        'are the LOW BYTES of य श space श ा ह (U+092F, U+0936, U+0020, U+0936, U+093E, U+0939), ' +
+                        'meaning a charCodeAt(i) & 0xff conversion happened somewhere before postMessage.'
+                    );
+                }
+            } catch (e) {
+                
+                console.warn('[SessionIdProvider] diagnostic failed', e);
+            }
+            // ----- End diagnostic ----------------------------------------
+
+            // The payload from the LWC starts with <style> tags (docx-export +
+            // paged.js styles). Style elements only take effect when they are
+            // attached to the document, and jsPDF.html() / html2canvas read
+            // computed styles - which require the source nodes to be in the DOM.
+            // Mount the container off-screen so styles apply but the user
+            // doesn't see the intermediate render.
+            container.style.position = 'fixed';
+            container.style.left = '-99999px';
+            container.style.top = '0';
+            container.style.pointerEvents = 'none';
+            container.style.zIndex = '-1';
+            document.body.appendChild(container);
+
+            // Sanity-check that the upstream LWC wrapped non-Latin runs
+            // before sending the HTML. Iterates EVERY className in
+            // FONT_CONFIG so adding a new script automatically gets
+            // counted here too. If a count is zero for a script you
+            // expected to see, the renderer's wrapNonLatinRuns()
+            // didn't fire for that script - check pDFforceRenderer.js
+            // SCRIPT_CONFIG (className must match this FONT_CONFIG).
+            const wrapCounts = FONT_CONFIG.map((cfg) => ({
+                script: cfg.script,
+                className: cfg.className,
+                count: container.querySelectorAll('.' + cfg.className).length
+            }));
+            console.log(
+                '[SessionIdProvider] pre-wrapped non-Latin spans in payload:',
+                wrapCounts
+            );
+
+            const styleTagsInPayload = container.querySelectorAll('style');
+            const pageElementsInPayload = container.querySelectorAll('.pagedjs_page');
+            console.log(
+                '[SessionIdProvider] Container mounted off-screen.',
+                `style tags: ${styleTagsInPayload.length},`,
+                `pagedjs pages: ${pageElementsInPayload.length}`
+            );
+
+            // After mounting + class assignment, give the browser one more
+            // beat to finalize layout with the (already-loaded) font.
+            // Without this, the first page sometimes still renders with
+            // metrics computed under the fallback font.
+            await document.fonts.ready;
+
+            try {
+                
+
+
+                //Loop through the paged.js pages and for each perform jspdf.html() to generate a pdf
+                const pages = container.querySelectorAll('.pagedjs_page');
+
+                // Shared html2canvas options.
+                //   - onclone: explicitly copy EVERY data-pdfforce-font
+                //     style tag (one per FONT_CONFIG entry) into the
+                //     cloned head, and wait for the cloned document's
+                //     font set to be ready. Defensive: html2canvas
+                //     usually clones style tags automatically, but
+                //     @font-face rules that reference URL resources
+                //     are sometimes filtered out. Our rules use base64
+                //     data: URLs - cloning them verbatim always works.
+                //   - useCORS: allow cross-origin images (signature
+                //     icons, logos, etc.) to rasterize.
+                const sharedHtml2CanvasOptions = {
+                    useCORS: true,
+                    allowTaint: false,
+                    letterRendering: true,
+                    onclone: async (clonedDoc) => {
+                        try {
+                            const fontStyles = document.querySelectorAll(
+                                'style[data-pdfforce-font]'
+                            );
+                            fontStyles.forEach((src) => {
+                                const key = src.dataset.pdfforceFont;
+                                const dupSelector = 'style[data-pdfforce-font="' + key + '"]';
+                                if (clonedDoc.querySelector(dupSelector)) return;
+                                const copy = clonedDoc.createElement('style');
+                                copy.dataset.pdfforceFont = key;
+                                copy.textContent = src.textContent;
+                                clonedDoc.head.appendChild(copy);
+                            });
+                            if (clonedDoc.fonts && clonedDoc.fonts.ready) {
+                                await clonedDoc.fonts.ready;
+                            }
+                        } catch (e) {
+                            console.warn('[SessionIdProvider] onclone font setup failed', e);
+                        }
+                    }
+                };
+
+                if (!multilingualHtml) {
+                    for (let i = 0; i < pages.length; i++) {
+                        // Add a new page for everything after the first element
+                        if (i > 0) pdf.addPage();
+
+                        // Wrap the html call in a promise
+                        await new Promise((resolve) => {
+                            // NOTE: Do NOT pass html2canvas.scale here. pdf.html()'s
+                            // internal coordinate math is not scale-aware in jsPDF 2.x;
+                            // any value other than 1 (incl. devicePixelRatio overrides)
+                            // breaks page proportions because the canvas's pixel width
+                            // diverges from `windowWidth`, which is the reference jsPDF
+                            // uses to map the canvas onto the PDF's `width` (210mm).
+                            pdf.html(pages[i], {
+                                x: 0,
+                                y: 0,
+                                autoPaging: false, // Important: Paged.js already did the paging
+                                width: 210, // A4 width in mm
+                                windowWidth: 794, // Standard A4 pixel width at 96dpi
+                                callback: function (pdf) {
+                                    console.log(`Page ${i + 1} rendered`);
+                                    resolve();
+                                },
+                                html2canvas: sharedHtml2CanvasOptions
+                            });
+                        });
+                    }
+                } else {
+                    let pdfData = [];
+                    for (let i = 0; i < pages.length; i++) {
+
+                        const canvas = await html2canvas(pages[i], {
+                            scale: 2,
+                            ...sharedHtml2CanvasOptions
+                        });
+                        const imgData = canvas.toDataURL('image/jpeg');
+                        pdfData.push(imgData);
+                        canvas.width = 0;
+                        canvas.height = 0;
+
+                    }
+
+                    pdfData.forEach((imgData, index) => {
+
+                        if (index > 0) pdf.addPage();
+                        const imgProps = pdf.getImageProperties(imgData);
+                        const pdfWidth = pdf.internal.pageSize.getWidth();
+                        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight,null,'FAST');
+                    });
+                }
+
+                // Hand the rendered PDF back to the parent LWC as a
+                // data URI. The LWC routes it to either:
+                //   - Submit flow: create a ContentVersion on the
+                //     resolved attachment record (submitRecordId,
+                //     falling back to recordId).
+                //   - showPreview flow: feed the data URI back into
+                //     displayPDF for in-place preview.
+                // We deliberately do NOT call pdf.save() here so the
+                // browser doesn't auto-download a copy every time.
+                const dataUri = pdf.output('datauristring', { filename: requestedFileName });
+                window.parent.postMessage({
+                    type: 'PDF_GENERATED',
+                    pdf: dataUri,
+                    fileName: requestedFileName,
+                    attachToRecord: attachToRecord
+                }, targetOrigin);
+            } catch (error) {
+                console.error('[SessionIdProvider] Error:', error);
+                window.parent.postMessage({
+                    type: 'PDF_ERROR',
+                    error: error.message || 'PDF generation failed'
+                }, targetOrigin);
+            } finally {
+                if (container.parentNode === document.body) {
+                    document.body.removeChild(container);
+                }
+            }
+        });
+
+
+    </script>
+</apex:page>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Disbursement_BH_Display__c</fullName>
+    <externalId>false</externalId>
+    <formula>TEXT(FLOOR(Disbursement_BH_Mins__c / 1440)) &amp; &quot;d &quot; &amp;
+TEXT(FLOOR(MOD(Disbursement_BH_Mins__c, 1440) / 60)) &amp; &quot;h &quot; &amp;
+TEXT(MOD(Disbursement_BH_Mins__c, 60)) &amp; &quot;m&quot;</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Disbursement BH TAT Duration</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

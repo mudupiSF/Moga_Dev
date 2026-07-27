@@ -1,0 +1,1519 @@
+/* ───────────────────────────────────────────────────────────────────────────
+ * embedCustomFileUpload — Indigo + Turquoise repaint
+ * Mirrors the React "Advanced Document Upload" panel:
+ *  • Dark navy header (indigo-950) with WHITE cloud icon + larger refresh
+ *  • Slate-50 body with 6 ActionTiles (rounded-3xl, border-2)
+ *  • Gallery cards: 3:4 aspect, selectable, hover-pop, expanding tag drawer
+ *  • All modals restyled with the same palette + rounded-3xl shells
+ * Turquoise tokens (--ecfu-turq-*) mirror MOGA --form-cyan-* (cyan-leaning,
+ * NOT greenish teal) so VERIFIED badges and this component share a hue.
+ * Warning accents (Amber, Rose) reserved for Masked tag + delete actions.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+:host {
+    /* ── Indigo (primary brand) ───────────────────────────────────────── */
+    --ecfu-indigo-50:   #eef2ff;
+    --ecfu-indigo-100:  #e0e7ff;
+    --ecfu-indigo-200:  #c7d2fe;
+    --ecfu-indigo-300:  #a5b4fc;
+    --ecfu-indigo-400:  #818cf8;
+    --ecfu-indigo-500:  #6366f1;
+    --ecfu-indigo-600:  #4f46e5;
+    --ecfu-indigo-700:  #4338ca;
+    --ecfu-indigo-800:  #3730a3;
+    --ecfu-indigo-900:  #312e81;
+    --ecfu-indigo-950:  #1e1b4b;
+
+    /* ── Turquoise (MOGA secondary brand) ─────────────────────────────────
+     * Values mirror commonStyles.css --form-cyan-* so this component reads
+     * as "the same turquoise" the user sees on VERIFIED badges and the
+     * Intermediate Page. DO NOT swap these for Tailwind teal-* (greener).
+     * ─────────────────────────────────────────────────────────────────── */
+    --ecfu-turq-50:     #f0fdff;
+    --ecfu-turq-100:    #cffafe;
+    --ecfu-turq-200:    #a5f3fc;
+    --ecfu-turq-300:    #67e8f9;
+    --ecfu-turq-400:    #22d3ee;
+    --ecfu-turq-500:    #06b6d4;
+    --ecfu-turq-600:    #0891b2;
+    --ecfu-turq-700:    #0e7490;
+    --ecfu-turq-800:    #155e75;
+    --ecfu-turq-halo:   rgba(44, 218, 238, 0.18);
+
+    /* ── Slate neutrals ───────────────────────────────────────────────── */
+    --ecfu-slate-50:    #f8fafc;
+    --ecfu-slate-100:   #f1f5f9;
+    --ecfu-slate-200:   #e2e8f0;
+    --ecfu-slate-300:   #cbd5e1;
+    --ecfu-slate-400:   #94a3b8;
+    --ecfu-slate-500:   #64748b;
+    --ecfu-slate-600:   #475569;
+    --ecfu-slate-700:   #334155;
+    --ecfu-slate-800:   #1e293b;
+    --ecfu-slate-900:   #0f172a;
+    --ecfu-slate-950:   #020617;
+
+    /* ── Semantic warning accents (Amber + Rose) ──────────────────────── */
+    --ecfu-amber-50:    #fffbeb;
+    --ecfu-amber-100:   #fef3c7;
+    --ecfu-amber-600:   #d97706;
+    --ecfu-rose-50:     #fff1f2;
+    --ecfu-rose-100:    #ffe4e6;
+    --ecfu-rose-200:    #fecdd3;
+    --ecfu-rose-500:    #f43f5e;
+    --ecfu-rose-600:    #e11d48;
+
+    /* ── Shadows ──────────────────────────────────────────────────────── */
+    --ecfu-shadow-xs:   0 1px 2px rgba(15, 23, 42, 0.04);
+    --ecfu-shadow-sm:   0 1px 2px rgba(15, 23, 42, 0.05);
+    --ecfu-shadow-md:   0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+    --ecfu-shadow-lg:   0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -4px rgba(15, 23, 42, 0.08);
+    --ecfu-shadow-xl:   0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
+    --ecfu-shadow-2xl:  0 25px 50px -12px rgba(15, 23, 42, 0.25);
+    --ecfu-shadow-indigo: 0 10px 15px -3px rgba(79, 70, 229, 0.18), 0 4px 6px -4px rgba(79, 70, 229, 0.14);
+    --ecfu-shadow-turq:   0 10px 15px -3px rgba(6, 182, 212, 0.18), 0 4px 6px -4px rgba(6, 182, 212, 0.14);
+}
+
+/* ── Outer Shell ──────────────────────────────────────────────────────── */
+.ecfu-shell {
+    background: #ffffff;
+    border: 1px solid var(--ecfu-slate-200);
+    border-radius: 16px;
+    box-shadow: var(--ecfu-shadow-sm);
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--ecfu-slate-800);
+}
+
+/* ── Dark Navy Header ─────────────────────────────────────────────────── */
+.ecfu-header {
+    background: var(--ecfu-indigo-950);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.ecfu-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.ecfu-header-icon-pill {
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Force pure white on the upload icon — `variant="inverse"` is also set on
+ * the <lightning-icon> tag itself, but Shadow-DOM-scoped SLDS variables
+ * are the reliable belt-and-braces. */
+.ecfu-header-icon-pill lightning-icon {
+    --sds-c-icon-color-foreground-default: #ffffff;
+    --slds-c-icon-color-foreground-default: #ffffff;
+    --sds-c-icon-color-foreground:         #ffffff;
+    --slds-c-icon-color-foreground:        #ffffff;
+}
+.ecfu-header-title {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    margin: 0;
+}
+.ecfu-header-refresh {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.4s ease, border-color 0.2s ease;
+    padding: 0;
+}
+.ecfu-header-refresh:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.32);
+    transform: rotate(180deg);
+}
+/* The refresh icon sits inside a dark navy button — force pure white via
+ * the full SLDS variable cascade. variant="inverse" on the tag is the
+ * primary mechanism; these vars are belt-and-braces for orgs on older SLDS. */
+.ecfu-header-refresh lightning-icon {
+    --sds-c-icon-color-foreground-default:  #ffffff;
+    --slds-c-icon-color-foreground-default: #ffffff;
+    --sds-c-icon-color-foreground:          #ffffff;
+    --slds-c-icon-color-foreground:         #ffffff;
+}
+
+/* ── Body ────────────────────────────────────────────────────────────── */
+.ecfu-body {
+    padding: 24px;
+    background: rgba(248, 250, 252, 0.6); /* slate-50/60 */
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* ── Action Tile Grid ─────────────────────────────────────────────────── */
+.ecfu-tile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+@media (min-width: 640px) {
+    .ecfu-tile-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+    .ecfu-tile-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
+/* ── Input / Output split ─────────────────────────────────────────────── */
+.ecfu-io-wrap {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid var(--ecfu-slate-200);
+    border-radius: 24px;
+    overflow: visible;
+}
+@media (min-width: 1024px) {
+    .ecfu-io-wrap { flex-direction: row; align-items: stretch; }
+}
+.ecfu-input-area {
+    padding: 24px;
+    background: rgba(248, 250, 252, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 24px 24px 0 0;
+}
+@media (min-width: 1024px) {
+    .ecfu-input-area { flex: 0 0 75%; max-width: 75%; border-radius: 24px 0 0 24px; }
+}
+.ecfu-input-area .ecfu-tile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 640px) {
+    .ecfu-input-area .ecfu-tile-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+    .ecfu-input-area .ecfu-tile-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+.ecfu-io-divider { height: 1px; width: 100%; background: var(--ecfu-slate-200); flex: none; }
+@media (min-width: 1024px) {
+    .ecfu-io-divider { height: auto; width: 1px; }
+}
+.ecfu-output-area {
+    padding: 24px;
+    background: rgba(238, 242, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 0 0 24px 24px;
+}
+@media (min-width: 1024px) {
+    .ecfu-output-area { flex: 0 0 25%; max-width: 25%; border-radius: 0 24px 24px 0; }
+}
+.ecfu-output-area .ecfu-tile { width: 100%; }
+
+/* ── Upload File tile + hover-revealed Max Files box ──────────────────── */
+/* The chip lives inside the tile (which is overflow:hidden), so the hover
+   reveal is always clipped to the tile's box and never spills past it. */
+.ecfu-upload-tile-wrap { position: relative; }
+.ecfu-upload-tile-wrap .ecfu-tile { width: 100%; }
+
+/* Lift the icon + label on hover to make room for the chip at the bottom. */
+.ecfu-upload-tile-wrap .ecfu-tile-icon-pill,
+.ecfu-upload-tile-wrap .ecfu-tile-label {
+    transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+.ecfu-upload-tile-wrap .ecfu-tile:hover:not(:disabled) .ecfu-tile-icon-pill,
+.ecfu-upload-tile-wrap .ecfu-tile:hover:not(:disabled) .ecfu-tile-label {
+    transform: translateY(-10px);
+}
+
+.ecfu-maxfiles-box {
+    position: absolute;
+    left: 50%;
+    bottom: 8px;
+    transform: translate(-50%, 16px);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: #ffffff;
+    border: 1px solid var(--ecfu-slate-200);
+    border-radius: 10px;
+    box-shadow: var(--ecfu-shadow-md);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+    z-index: 6;
+}
+.ecfu-upload-tile-wrap .ecfu-tile:hover:not(:disabled) .ecfu-maxfiles-box {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    border-color: var(--ecfu-indigo-300);
+}
+.ecfu-maxfiles-label {
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ecfu-slate-500);
+}
+.ecfu-maxfiles-value {
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--ecfu-indigo-600);
+}
+
+.ecfu-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 22px 12px;
+    min-height: 138px;
+    border: 2px solid var(--ecfu-slate-200);
+    background: #ffffff;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    overflow: hidden;
+    font: inherit;
+}
+.ecfu-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(240, 253, 250, 0.5), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.ecfu-tile:hover:not(:disabled) {
+    border-color: var(--ecfu-turq-300);
+    box-shadow: var(--ecfu-shadow-lg);
+    transform: translateY(-2px);
+}
+.ecfu-tile:hover:not(:disabled)::before { opacity: 1; }
+
+.ecfu-tile-icon-pill {
+    width: 56px;
+    height: 56px;
+    background: var(--ecfu-slate-50);
+    color: var(--ecfu-indigo-600);
+    border: 1px solid var(--ecfu-slate-100);
+    border-radius: 9999px;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--ecfu-shadow-xs);
+}
+.ecfu-tile-icon-pill lightning-icon {
+    --sds-c-icon-color-foreground-default: var(--ecfu-indigo-600);
+    --slds-c-icon-color-foreground-default: var(--ecfu-indigo-600);
+}
+.ecfu-tile:hover:not(:disabled) .ecfu-tile-icon-pill {
+    background: var(--ecfu-turq-50);
+    color: var(--ecfu-turq-600);
+    border-color: var(--ecfu-turq-100);
+}
+.ecfu-tile:hover:not(:disabled) .ecfu-tile-icon-pill lightning-icon {
+    --sds-c-icon-color-foreground-default: var(--ecfu-turq-600);
+    --slds-c-icon-color-foreground-default: var(--ecfu-turq-600);
+}
+
+.ecfu-tile-label {
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ecfu-slate-800);
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    line-height: 1.3;
+}
+
+/* Highlighted variant — used by "Upload All" */
+.ecfu-tile-highlighted {
+    border-color: var(--ecfu-indigo-600);
+    background: rgba(238, 242, 255, 0.4);
+}
+.ecfu-tile-highlighted::before {
+    background: linear-gradient(to bottom, rgba(224, 231, 255, 0.5), transparent);
+}
+.ecfu-tile-highlighted:hover:not(:disabled) {
+    border-color: var(--ecfu-indigo-600);
+    box-shadow: var(--ecfu-shadow-indigo);
+}
+.ecfu-tile-highlighted .ecfu-tile-icon-pill {
+    background: var(--ecfu-indigo-600);
+    color: #ffffff;
+    border-color: var(--ecfu-indigo-700);
+}
+/* Force a pure white icon on the filled indigo pill — lightning-icon
+ * uses both old and new SLDS variable names depending on the SLDS
+ * version, so set both. We also use `variant="inverse"` on the icon tag
+ * itself as a third layer of defence. */
+.ecfu-tile-highlighted .ecfu-tile-icon-pill lightning-icon {
+    --sds-c-icon-color-foreground-default: #ffffff;
+    --slds-c-icon-color-foreground-default: #ffffff;
+    --sds-c-icon-color-foreground:         #ffffff;
+    --slds-c-icon-color-foreground:        #ffffff;
+}
+.ecfu-tile-highlighted:hover:not(:disabled) .ecfu-tile-icon-pill {
+    background: var(--ecfu-indigo-700);
+    color: #ffffff;
+    border-color: var(--ecfu-indigo-800);
+}
+.ecfu-tile-highlighted:hover:not(:disabled) .ecfu-tile-icon-pill lightning-icon {
+    --sds-c-icon-color-foreground-default: #ffffff;
+    --slds-c-icon-color-foreground-default: #ffffff;
+}
+.ecfu-tile-highlighted .ecfu-tile-label {
+    color: var(--ecfu-indigo-900);
+}
+
+/* Disabled variant — greys everything out */
+.ecfu-tile:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background: var(--ecfu-slate-50);
+    border-color: var(--ecfu-slate-200);
+    filter: grayscale(1);
+}
+.ecfu-tile:disabled .ecfu-tile-icon-pill {
+    background: var(--ecfu-slate-200);
+    color: var(--ecfu-slate-400);
+    border-color: var(--ecfu-slate-200);
+    box-shadow: none;
+}
+.ecfu-tile:disabled .ecfu-tile-icon-pill lightning-icon {
+    --sds-c-icon-color-foreground-default: var(--ecfu-slate-400);
+}
+.ecfu-tile:disabled .ecfu-tile-label {
+    color: var(--ecfu-slate-400);
+}
+
+/* ── Section Header (above gallery) ───────────────────────────────────── */
+.ecfu-section {
+    display: flex;
+    flex-direction: column;
+}
+.ecfu-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 18px 4px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ecfu-slate-100);
+    position: relative;
+    z-index: 5;
+}
+.ecfu-section-icon-pill {
+    width: 24px;
+    height: 24px;
+    border-radius: 9999px;
+    background: var(--ecfu-turq-100);
+    color: var(--ecfu-turq-600);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.ecfu-section-icon-pill lightning-icon {
+    --sds-c-icon-color-foreground-default:  var(--ecfu-turq-600);
+    --slds-c-icon-color-foreground-default: var(--ecfu-turq-600);
+}
+.ecfu-section-title {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ecfu-slate-400);
+    margin: 0;
+}
+
+/* ── Gallery Filter (lives in the section header, pushed to the right) ──── */
+.ecfu-filter-controls { display: inline-flex; align-items: center; gap: 10px; margin-left: auto; }
+.ecfu-filter-caption {
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ecfu-slate-400);
+}
+.ecfu-filter-dropdown { position: relative; width: 180px; }
+.ecfu-filter-toggle {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #ffffff;
+    border: 1px solid var(--ecfu-slate-200);
+    border-radius: 12px;
+    box-shadow: var(--ecfu-shadow-xs);
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ecfu-slate-700);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+}
+.ecfu-filter-toggle-left { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.ecfu-filter-toggle-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ecfu-filter-toggle-open {
+    border-color: var(--ecfu-indigo-400);
+    color: var(--ecfu-indigo-700);
+    box-shadow: 0 0 0 2px var(--ecfu-indigo-50);
+}
+.ecfu-filter-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid var(--ecfu-slate-200);
+    border-radius: 16px;
+    box-shadow: var(--ecfu-shadow-lg);
+    overflow: hidden auto;
+    max-height: 240px;
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 20;
+}
+.ecfu-filter-menu-open { display: flex; }
+.ecfu-filter-opt {
+    text-align: left;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ecfu-slate-600);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.ecfu-filter-opt:hover { background: var(--ecfu-slate-50); }
+.ecfu-filter-opt-active { background: var(--ecfu-indigo-50); color: var(--ecfu-indigo-700); }
+.ecfu-filter-add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px;
+    background: #ffffff;
+    border: 1px solid var(--ecfu-slate-200);
+    border-radius: 12px;
+    color: var(--ecfu-slate-400);
+    box-shadow: var(--ecfu-shadow-xs);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* ── Gallery Grid ─────────────────────────────────────────────────────── */
+.ecfu-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 4px;
+}
+@media (min-width: 600px) { .ecfu-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .ecfu-gallery-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { .ecfu-gallery-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* ── Gallery Card ─────────────────────────────────────────────────────── */
+.ecfu-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid var(--ecfu-slate-200);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+.ecfu-card:hover:not(.ecfu-card-selected) {
+    border-color: var(--ecfu-indigo-300);
+    box-shadow: var(--ecfu-shadow-xl);
+}
+.ecfu-card-selected {
+    border-color: var(--ecfu-turq-500);
+    box-shadow: var(--ecfu-shadow-md), 0 0 0 2px rgba(20, 184, 166, 0.2);
+    transform: scale(1.015);
+}
+
+/* Selection checkbox (top-left) */
+.ecfu-card-check {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 20;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 2px solid var(--ecfu-slate-300);
+    background: rgba(255, 255, 255, 0.92);
+    color: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease, color 0.2s ease;
+    box-shadow: var(--ecfu-shadow-sm);
+    padding: 0;
+}
+.ecfu-card-check:hover {
+    border-color: var(--ecfu-turq-400);
+}
+.ecfu-card-check-selected {
+    background: var(--ecfu-turq-500);
+    border-color: var(--ecfu-turq-500);
+    color: #ffffff;
+    transform: scale(1.1);
+}
+.ecfu-card-check-icon {
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+/* Hover actions (top-right) */
+.ecfu-card-actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.ecfu-card:hover .ecfu-card-actions {
+    opacity: 1;
+    transform: translateY(0);
+}
+.ecfu-card-action-btn {
+    padding: 7px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--ecfu-slate-100);
+    color: var(--ecfu-slate-600);
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: var(--ecfu-shadow-lg);
+    transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.ecfu-card-action-btn lightning-icon {
+    --sds-c-icon-color-foreground-default: var(--ecfu-slate-600);
+}
+.ecfu-card-action-btn:hover {
+    color: var(--ecfu-indigo-600);
+}
+.ecfu-card-action-btn:hover lightning-icon {
+    --sds-c-icon-color-foreground-default: var(--ecfu-indigo-600);
+}
+.ecfu-card-action-btn--danger:hover {
+    color: var(--ecfu-rose-600);
+    border-color: var(--ecfu-rose-200);
+    background: var(--ecfu-rose-50);
+}
+.ecfu-card-action-btn--danger:hover lightning-icon {
+    --sds-c-icon-color-foreground-default: var(--ecfu-rose-600);
+}
+
+/* Image / file preview area */
+.ecfu-card-media {
+    aspect-ratio: 3 / 4;
+    width: 100%;
+    background: var(--ecfu-slate-100);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ecfu-card-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.06);
+    transition: background 0.3s ease;
+    pointer-events: none;
+}
+.ecfu-card:hover .ecfu-card-media::after { background: rgba(15, 23, 42, 0); }
+.ecfu-card-canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+}
+.ecfu-card:hover .ecfu-card-canvas { transform: scale(1.05); }
+
+.ecfu-card-doc-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--ecfu-slate-500);
+    padding: 18px;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--ecfu-slate-50) 0%, var(--ecfu-slate-100) 100%);
+}
+.ecfu-card-doc-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ecfu-slate-700);
+    word-break: break-all;
+    line-height: 1.3;
+    max-width: 90%;
+}
+
+/* Details panel */
+.ecfu-card-details {
+    padding: 14px;
+    border-top: 1px solid var(--ecfu-slate-100);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #ffffff;
+    position: relative;
+    z-index: 10;
+}
+.ecfu-card-filename {
+    width: 100%;
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--ecfu-slate-800);
+    background: var(--ecfu-slate-50);
+    border: 1px solid var(--ecfu-slate-200);
+    border-radius: 8px;
+    padding: 6px 10px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    box-sizing: border-box;
+}
+.ecfu-card-filename:focus {
+    outline: none;
+    border-color: var(--ecfu-turq-400);
+    background: rgba(240, 253, 250, 0.4);
+}
+
+.ecfu-card-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.ecfu-card-size {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ecfu-slate-400);
+}
+
+/* Tags toggle button — sized for legibility per user feedback. The flag
+ * icon, label and caret are all driven up by 4-5pt vs Iter-2 round 1
+ * (where they were 9-11px and unreadable on screen). */
+.ecfu-tags-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    background: var(--ecfu-slate-50);
+    border: 1px solid var(--ecfu-slate-300);
+    color: var(--ecfu-slate-600);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    font: inherit;
+    box-shadow: var(--ecfu-shadow-xs);
+}
+.ecfu-tags-btn:hover {
+    background: var(--ecfu-slate-100);
+    border-color: var(--ecfu-slate-400);
+    color: var(--ecfu-slate-700);
+}
+.ecfu-tags-btn-expanded {
+    background: var(--ecfu-indigo-50);
+    border-color: var(--ecfu-indigo-300);
+    color: var(--ecfu-indigo-700);
+}
+/* Wrappers around the icons inside the tag pill.
+ * - Tag icon is INLINE SVG with fill="currentColor" → just inherits the
+ *   button's `color` (slate-600 default, indigo-700 expanded). No SLDS
+ *   variable cascade needed and it survives the shadow DOM boundary cleanly.
+ * - Chevron is still a <lightning-icon utility:chevrondown> (worked fine
+ *   per round-3 testing) — colored via SLDS variables.
+ * - Caret wrapper handles the 180° rotation when expanded. */
+.ecfu-tags-btn-icon,
+.ecfu-tags-btn-caret {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+.ecfu-tags-btn-icon {
+    width: 16px;
+    height: 16px;
+}
+.ecfu-tags-btn-icon svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+    /* fill comes from `currentColor`; button sets the color */
+}
+.ecfu-tags-btn-caret lightning-icon {
+    --sds-c-icon-color-foreground-default:  var(--ecfu-slate-600);
+    --slds-c-icon-color-foreground-default: var(--ecfu-slate-600);
+}
+.ecfu-tags-btn-label {
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.ecfu-tags-btn-caret {
+    transition: transform 0.25s ease;
+}
+.ecfu-tags-btn-expanded .ecfu-tags-btn-caret lightning-icon {
+    --sds-c-icon-color-foreground-default:  var(--ecfu-indigo-700);
+    --slds-c-icon-color-foreground-default: var(--ecfu-indigo-700);
+}
+.ecfu-tags-btn-expanded .ecfu-tags-btn-caret {
+    transform: rotate(180deg);
+}
+
+/* Expanded tags drawer */
+.ecfu-tags-drawer {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+    margin-top: 0;
+}
+.ecfu-tags-drawer-open {
+    max-height: 200px;
+    opacity: 1;
+    margin-top: 4px;
+}
+.ecfu-tags-drawer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(241, 245, 249, 0.6);
+}
+
+/* Tag chips — per-tag color tokens. Sized to be readable alongside the
+ * enlarged Tags button (10px chip text vs the previous 8px). */
+.ecfu-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 7px;
+    border: 1px solid;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    box-shadow: var(--ecfu-shadow-xs);
+    white-space: nowrap;
+    line-height: 1.2;
+}
+.ecfu-tag-icon { font-size: 11px; line-height: 1; font-weight: 900; }
+
+.ecfu-tag-uploaded {
+    color: var(--ecfu-turq-600);
+    background: var(--ecfu-turq-50);
+    border-color: var(--ecfu-turq-100);
+}
+.ecfu-tag-compressed {
+    color: var(--ecfu-indigo-700);
+    background: var(--ecfu-indigo-100);
+    border-color: var(--ecfu-indigo-200);
+}
+.ecfu-tag-masked {
+    color: var(--ecfu-amber-600);
+    background: var(--ecfu-amber-100);
+    border-color: #fde68a;
+}
+.ecfu-tag-merged {
+    color: var(--ecfu-indigo-500);
+    background: var(--ecfu-indigo-50);
+    border-color: var(--ecfu-indigo-100);
+}
+.ecfu-tag-watermarked {
+    color: var(--ecfu-turq-700);
+    background: var(--ecfu-turq-50);
+    border-color: var(--ecfu-turq-200);
+}
+.ecfu-tag-live-image-capture {
+    color: var(--ecfu-turq-800);
+    background: var(--ecfu-turq-200);
+    border-color: var(--ecfu-turq-300);
+}
+.ecfu-tag-live-video-capture {
+    color: var(--ecfu-indigo-900);
+    background: var(--ecfu-indigo-200);
+    border-color: var(--ecfu-indigo-300);
+}
+
+/* ── Status Bar ───────────────────────────────────────────────────────── */
+.ecfu-status {
+    margin-top: 16px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.ecfu-status-info {
+    background: var(--ecfu-indigo-50);
+    color: var(--ecfu-indigo-700);
+    border: 1px solid var(--ecfu-indigo-100);
+}
+.ecfu-status-success {
+    background: var(--ecfu-turq-50);
+    color: var(--ecfu-turq-700);
+    border: 1px solid var(--ecfu-turq-100);
+}
+.ecfu-status-error {
+    background: var(--ecfu-rose-50);
+    color: var(--ecfu-rose-600);
+    border: 1px solid var(--ecfu-rose-100);
+}
+
+/* ── Upload Progress ──────────────────────────────────────────────────── */
+.ecfu-progress-wrap {
+    margin-top: 12px;
+    height: 8px;
+    border-radius: 9999px;
+    background: var(--ecfu-slate-100);
+    position: relative;
+    overflow: hidden;
+}
+.ecfu-progress-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: linear-gradient(90deg, var(--ecfu-indigo-600), var(--ecfu-turq-500));
+    border-radius: 9999px;
+    transition: width 0.3s ease;
+}
+.ecfu-progress-label {
+    margin-top: 6px;
+    text-align: right;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--ecfu-indigo-700);
+    letter-spacing: 0.05em;
+}
+
+/* ── Hidden inputs ────────────────────────────────────────────────────── */
+.ecfu-hidden-input {
+    display: none;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+ * MODALS — shared shell + per-modal tweaks
+ * ═════════════════════════════════════════════════════════════════════════*/
+
+.ecfu-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9050;
+    background: rgba(15, 23, 42, 0.78);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+/* Modal shell — a flex column with a SINGLE scrollable region (the body).
+ * Header, captured strip, and footer are pinned via flex-shrink:0 so the
+ * action buttons (Done, Add Photos, Use This Video, etc.) stay visible
+ * no matter how short the viewport gets (e.g. when DevTools is open or
+ * the modal opens on a phone in landscape). */
+.ecfu-modal {
+    background: #ffffff;
+    width: 100%;
+    border-radius: 24px;
+    box-shadow: var(--ecfu-shadow-2xl);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-height: 92vh;
+    min-height: 0;
+}
+.ecfu-modal--md { max-width: 640px; }
+.ecfu-modal--lg { max-width: 880px; }
+.ecfu-modal--xl { max-width: 1040px; }
+
+.ecfu-modal-head {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--ecfu-slate-100);
+    background: var(--ecfu-slate-50);
+}
+.ecfu-modal-head-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ecfu-slate-800);
+}
+.ecfu-modal-head-left lightning-icon {
+    --sds-c-icon-color-foreground-default:  var(--ecfu-indigo-600);
+    --slds-c-icon-color-foreground-default: var(--ecfu-indigo-600);
+}
+.ecfu-modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 9999px;
+    background: transparent;
+    border: none;
+    color: var(--ecfu-slate-400);
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease;
+    padding: 0;
+}
+.ecfu-modal-close:hover {
+    background: var(--ecfu-rose-50);
+    color: var(--ecfu-rose-500);
+}
+
+/* The SOLE scrollable region. flex:1 lets it absorb leftover space, and
+ * min-height:0 is required so a long body in a flex column actually scrolls
+ * instead of pushing the footer off-screen. */
+.ecfu-modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 24px;
+    background: var(--ecfu-slate-100);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.ecfu-modal-foot {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 20px;
+    border-top: 1px solid var(--ecfu-slate-100);
+    background: var(--ecfu-slate-50);
+}
+.ecfu-modal-foot--split {
+    justify-content: space-between;
+}
+
+/* Shared buttons used inside modals */
+.ecfu-btn {
+    padding: 9px 18px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    font-family: inherit;
+}
+.ecfu-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ecfu-btn--primary {
+    background: var(--ecfu-indigo-600);
+    color: #ffffff;
+    box-shadow: var(--ecfu-shadow-md);
+}
+.ecfu-btn--primary:hover:not(:disabled) {
+    background: var(--ecfu-indigo-700);
+    box-shadow: var(--ecfu-shadow-indigo);
+}
+/* Force white on any lightning-icon nested inside a filled primary button.
+ * `variant="inverse"` on each tag is the front-line fix; this rule catches
+ * any future primary button where someone forgets to set it. */
+.ecfu-btn--primary lightning-icon {
+    --sds-c-icon-color-foreground-default:  #ffffff;
+    --slds-c-icon-color-foreground-default: #ffffff;
+    --sds-c-icon-color-foreground:          #ffffff;
+    --slds-c-icon-color-foreground:         #ffffff;
+}
+.ecfu-btn--secondary {
+    background: #ffffff;
+    color: var(--ecfu-slate-600);
+    border-color: var(--ecfu-slate-200);
+}
+.ecfu-btn--secondary:hover:not(:disabled) {
+    background: var(--ecfu-slate-100);
+    border-color: var(--ecfu-slate-300);
+}
+.ecfu-btn--ghost-indigo {
+    background: #ffffff;
+    color: var(--ecfu-indigo-600);
+    border-color: var(--ecfu-indigo-200);
+}
+.ecfu-btn--ghost-indigo:hover:not(:disabled) {
+    background: var(--ecfu-indigo-50);
+}
+/* Turquoise filled variant — used by "Pick from Gallery" in the camera
+ * modal. Mirrors the cyan-500 brand fill (same hue as VERIFIED badges)
+ * with a turquoise halo for emphasis. */
+.ecfu-btn--turq {
+    background: var(--ecfu-turq-500);
+    color: #ffffff;
+    border-color: var(--ecfu-turq-600);
+    box-shadow: 0 0 0 3px var(--ecfu-turq-halo);
+}
+.ecfu-btn--turq:hover:not(:disabled) {
+    background: var(--ecfu-turq-600);
+    border-color: var(--ecfu-turq-700);
+}
+.ecfu-btn--turq lightning-icon {
+    --sds-c-icon-color-foreground-default:  #ffffff;
+    --slds-c-icon-color-foreground-default: #ffffff;
+    --sds-c-icon-color-foreground:          #ffffff;
+    --slds-c-icon-color-foreground:         #ffffff;
+}
+.ecfu-btn--pill-record {
+    background: var(--ecfu-indigo-600);
+    color: #ffffff;
+    border-radius: 9999px;
+    padding: 10px 22px;
+    box-shadow: var(--ecfu-shadow-indigo);
+}
+.ecfu-btn--pill-record:hover:not(:disabled) {
+    background: var(--ecfu-indigo-700);
+}
+/* Pill buttons sit on a filled indigo background — force the icon to
+ * pure white via SLDS variables so the camera/record glyph reads against
+ * the dark surface (was the same indigo as the bg in Iter-2 round 1). */
+.ecfu-btn--pill-record lightning-icon,
+.ecfu-btn--pill-stop   lightning-icon {
+    --sds-c-icon-color-foreground-default:  #ffffff;
+    --slds-c-icon-color-foreground-default: #ffffff;
+    --sds-c-icon-color-foreground:          #ffffff;
+    --slds-c-icon-color-foreground:         #ffffff;
+}
+.ecfu-btn--pill-stop {
+    background: var(--ecfu-rose-500);
+    color: #ffffff;
+    border-radius: 9999px;
+    padding: 10px 22px;
+    box-shadow: 0 6px 14px -4px rgba(244, 63, 94, 0.4);
+}
+.ecfu-btn--tool {
+    padding: 9px 14px;
+    border-radius: 10px;
+    border: 2px solid var(--ecfu-slate-200);
+    color: var(--ecfu-slate-600);
+    background: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+}
+.ecfu-btn--tool:hover:not(:disabled) {
+    border-color: var(--ecfu-turq-300);
+    background: var(--ecfu-turq-50);
+    color: var(--ecfu-turq-700);
+}
+.ecfu-btn--tool-active {
+    border-color: var(--ecfu-indigo-600);
+    background: var(--ecfu-indigo-50);
+    color: var(--ecfu-indigo-700);
+}
+.ecfu-btn--tool-danger {
+    border-color: var(--ecfu-rose-200);
+    color: var(--ecfu-rose-600);
+}
+.ecfu-btn--tool-danger:hover:not(:disabled) {
+    background: var(--ecfu-rose-50);
+    border-color: var(--ecfu-rose-200);
+}
+
+/* ── Camera Modal ─────────────────────────────────────────────────────── */
+/* Cap the live-camera and recorder viewports so they never consume more
+ * than ~45% of the visible viewport. Without this, on short viewports
+ * (DevTools open, mobile landscape) the 16:9 box exceeds the modal's
+ * 92vh and pushes the Capture / Add Photos / Done buttons off-screen. */
+.ecfu-camera-viewport,
+.ecfu-recorder-viewport {
+    width: 100%;
+    max-height: 45vh;
+    aspect-ratio: 16 / 9;
+    background: var(--ecfu-slate-800);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.ecfu-camera-feed,
+.ecfu-recorder-feed {
+    width: 100%;
+    height: 100%;
+    /* `contain` instead of `cover` so the user always sees the full frame
+     * (letterboxed if needed) — was cropping faces/documents in Iter 2 r2. */
+    object-fit: contain;
+}
+
+/* Captured-photo strip sits OUTSIDE the modal body (sibling to it) so it
+ * stays pinned. flex-shrink:0 + bounded height keeps it visible while the
+ * body scrolls above. */
+.ecfu-captured-strip {
+    flex-shrink: 0;
+    width: 100%;
+    background: #ffffff;
+    border-top: 1px solid var(--ecfu-slate-100);
+    padding: 14px 18px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    min-height: 80px;
+    max-height: 110px;
+    box-sizing: border-box;
+}
+.ecfu-captured-empty {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--ecfu-slate-300);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    align-self: center;
+    margin-left: 4px;
+}
+.ecfu-captured-tile {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    border-radius: 12px;
+    border: 2px solid var(--ecfu-indigo-100);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.ecfu-captured-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.ecfu-captured-del {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: var(--ecfu-rose-500);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-shadow: var(--ecfu-shadow-md);
+}
+
+/* ── Recorder Modal ───────────────────────────────────────────────────── */
+.ecfu-rec-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--ecfu-rose-500);
+    color: #ffffff;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    animation: ecfu-pulse 1.4s infinite;
+}
+@keyframes ecfu-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.6; }
+}
+.ecfu-rec-playback-wrap {
+    margin-top: 12px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.ecfu-rec-playback {
+    width: 100%;
+    max-width: 720px;
+    max-height: 35vh;
+    border-radius: 14px;
+    background: #000;
+}
+.ecfu-rec-size {
+    font-size: 11px;
+    color: var(--ecfu-slate-500);
+    font-weight: 700;
+}
+
+/* ── Video Upload Confirm Modal ───────────────────────────────────────── */
+.ecfu-video-info-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #ffffff;
+    border: 1px solid var(--ecfu-slate-200);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 12px;
+    color: var(--ecfu-slate-700);
+}
+.ecfu-video-large-badge {
+    background: var(--ecfu-amber-100);
+    color: var(--ecfu-amber-600);
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+}
+
+/* ── Edit Modal ───────────────────────────────────────────────────────── */
+.ecfu-edit-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    background: var(--ecfu-slate-900);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 280px;
+}
+.ecfu-edit-canvas {
+    max-width: 100%;
+    max-height: 55vh;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: var(--ecfu-shadow-xl);
+    cursor: default;
+}
+.ecfu-edit-toolbar {
+    flex-shrink: 0;
+    padding: 14px 20px;
+    background: #ffffff;
+    border-top: 1px solid var(--ecfu-slate-100);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+}
+.ecfu-mask-hint {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    background: var(--ecfu-amber-50);
+    color: var(--ecfu-amber-600);
+    font-size: 11px;
+    font-weight: 700;
+    border-top: 1px solid #fde68a;
+    border-bottom: 1px solid #fde68a;
+    text-align: center;
+}
+
+/* ── Merge Modal ──────────────────────────────────────────────────────── */
+.ecfu-merge-hint {
+    margin-top: 4px;
+    font-size: 10px;
+    color: var(--ecfu-slate-400);
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.ecfu-merge-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 20px;
+    background: rgba(248, 250, 252, 0.6);
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+@media (min-width: 760px) {
+    .ecfu-merge-body { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.ecfu-merge-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 2px solid var(--ecfu-slate-200);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+.ecfu-merge-card:hover:not(.ecfu-merge-card-selected) {
+    border-color: var(--ecfu-indigo-300);
+}
+.ecfu-merge-card-selected {
+    border-color: var(--ecfu-turq-400);
+    box-shadow: var(--ecfu-shadow-turq);
+    transform: scale(1.02);
+}
+.ecfu-merge-image-wrap {
+    aspect-ratio: 1 / 1;
+    position: relative;
+    overflow: hidden;
+    background: var(--ecfu-slate-100);
+}
+.ecfu-merge-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.ecfu-merge-check {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 26px;
+    height: 26px;
+    border-radius: 9999px;
+    border: 2px solid var(--ecfu-slate-300);
+    background: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.ecfu-merge-card-selected .ecfu-merge-check {
+    border-color: var(--ecfu-turq-500);
+}
+.ecfu-merge-check-dot {
+    width: 12px;
+    height: 12px;
+    background: var(--ecfu-turq-500);
+    border-radius: 9999px;
+    display: none;
+}
+.ecfu-merge-card-selected .ecfu-merge-check-dot { display: block; }
+
+.ecfu-merge-order {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 28px;
+    height: 28px;
+    background: var(--ecfu-indigo-600);
+    color: #ffffff;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 900;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ffffff;
+    box-shadow: var(--ecfu-shadow-md);
+}
+.ecfu-merge-card-selected .ecfu-merge-order { display: inline-flex; }
+
+.ecfu-merge-name {
+    padding: 10px 12px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ecfu-slate-700);
+    border-top: 1px solid var(--ecfu-slate-100);
+    background: #ffffff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ecfu-merge-reorder {
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--ecfu-slate-50);
+    border-top: 1px solid var(--ecfu-slate-100);
+    visibility: hidden;
+}
+.ecfu-merge-card-selected .ecfu-merge-reorder { visibility: visible; }
+
+.ecfu-merge-arrow {
+    padding: 6px 8px;
+    border: 1px solid var(--ecfu-slate-200);
+    background: #ffffff;
+    color: var(--ecfu-slate-500);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+.ecfu-merge-arrow:hover:not(:disabled) {
+    color: var(--ecfu-indigo-600);
+    border-color: var(--ecfu-indigo-200);
+}
+.ecfu-merge-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.ecfu-merge-count {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ecfu-slate-400);
+}
+.ecfu-merge-count--ready { color: var(--ecfu-turq-600); }

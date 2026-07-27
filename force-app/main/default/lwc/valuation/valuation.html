@@ -1,0 +1,455 @@
+<template>
+    <div class="bmp-page-layout">
+        <template if:true={isLoading}>
+            <div class="bmp-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ══ SECTION 1 — VEHICLE EXISTING INSURANCE DETAILS ═══════════════ -->
+        <div class="bmp-card">
+            <div class="bmp-card-header">
+                <div class="bmp-header-overlay"></div>
+                <div class="bmp-header-content">
+                    <div class="bmp-header-icon-wrap">
+                        <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                    </div>
+                    <div class="bmp-header-text">
+                        <h1 class="bmp-header-title">Vehicle Existing Insurance Details</h1>
+                        <p class="bmp-header-subtitle">Current policy on the vehicle</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bmp-card-body">
+                <div class="bmp-fields-grid">
+
+                    <!-- Insurance Type -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">
+                                    Insurance Type
+                                    <span class="bmp-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-combobox
+                                        data-field="insuranceType"
+                                        value={existingInsuranceFieldValues.insuranceType}
+                                        label="Insurance Type"
+                                        variant="label-hidden"
+                                        placeholder="Select Insurance Type"
+                                        options={insuranceTypeOptions}
+                                        onchange={handleExistingInsuranceChange}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Insurance Type</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{existingInsuranceFieldValues.insuranceType}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Insurance Declared Value -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">
+                                    Insurance Declared Value
+                                    <span class="bmp-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-input
+                                        data-field="insuranceDeclaredValue"
+                                        type="number"
+                                        value={existingInsuranceFieldValues.insuranceDeclaredValue}
+                                        label="Insurance Declared Value"
+                                        variant="label-hidden"
+                                        formatter="currency"
+                                        step="0.01"
+                                        onchange={handleExistingInsuranceChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Insurance Declared Value</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{existingInsuranceFieldValues.insuranceDeclaredValue}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Existing Motor Insurance Premium -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">
+                                    Existing Motor Insurance Premium
+                                    <span class="bmp-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-input
+                                        data-field="existingMotorInsurancePremium"
+                                        type="number"
+                                        value={existingInsuranceFieldValues.existingMotorInsurancePremium}
+                                        label="Existing Motor Insurance Premium"
+                                        variant="label-hidden"
+                                        formatter="currency"
+                                        step="0.01"
+                                        onchange={handleExistingInsuranceChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Existing Motor Insurance Premium</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{existingInsuranceFieldValues.existingMotorInsurancePremium}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Insurance Expiry Date -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">
+                                    Insurance Expiry Date
+                                    <span class="bmp-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-input
+                                        data-field="insExpiryDate"
+                                        type="date"
+                                        value={existingInsuranceFieldValues.insExpiryDate}
+                                        label="Insurance Expiry Date"
+                                        variant="label-hidden"
+                                        required
+                                        onchange={handleExistingInsuranceChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Insurance Expiry Date</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{existingInsuranceFieldValues.insExpiryDate}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ SECTION 2 — VEHICLE VALUATION DETAILS (after insurance gate) ═ -->
+        <template lwc:if={valuationSectionVisible}>
+        <div class="bmp-card">
+            <div class="bmp-card-header">
+                <div class="bmp-header-overlay"></div>
+                <div class="bmp-header-content">
+                    <div class="bmp-header-icon-wrap">
+                        <lightning-icon icon-name="utility:edit_form" size="small" class="bmp-header-icon"></lightning-icon>
+                    </div>
+                    <div class="bmp-header-text">
+                        <h1 class="bmp-header-title">Vehicle Valuation Details</h1>
+                        <p class="bmp-header-subtitle">Owner, location, and valuer</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bmp-card-body">
+                <div class="bmp-fields-grid">
+
+                    <!-- Owner's Name -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">Owner's Name</div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-input data-field="ownerName" type="text"
+                                        value={vehicleValuationFieldValues.ownerName}
+                                        label="Owner's Name" variant="label-hidden"
+                                        onchange={handleValuationChange}></lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Owner's Name</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{vehicleValuationFieldValues.ownerName}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Owner's Contact Number -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">Owner's Contact Number</div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-input data-field="ownerContactNumber" type="tel"
+                                        value={vehicleValuationFieldValues.ownerContactNumber}
+                                        label="Owner's Contact Number" variant="label-hidden"
+                                        onchange={handleValuationChange}></lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Owner's Contact Number</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{vehicleValuationFieldValues.ownerContactNumber}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Vehicle's Place of Valuation -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">Vehicle's Place of Valuation</div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-input data-field="vehiclePlaceOfValuation" type="text"
+                                        value={vehicleValuationFieldValues.vehiclePlaceOfValuation}
+                                        label="Vehicle's Place of Valuation" variant="label-hidden"
+                                        onchange={handleValuationChange}></lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Vehicle's Place of Valuation</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{vehicleValuationFieldValues.vehiclePlaceOfValuation}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Valuer Category -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">Valuer Category</div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-combobox
+                                        data-field="valuerCategory"
+                                        value={vehicleValuationFieldValues.valuerCategory}
+                                        label="Valuer Category"
+                                        variant="label-hidden"
+                                        placeholder="Select Valuer Category"
+                                        options={valuerCategoryOptions}
+                                        onchange={handleValuationComboboxChange}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Valuer Category</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{vehicleValuationFieldValues.valuerCategory}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Valuer Name -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">Valuer Name</div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-combobox
+                                        data-field="valuer"
+                                        value={vehicleValuationFieldValues.valuer}
+                                        label="Valuer Name"
+                                        variant="label-hidden"
+                                        placeholder="Select Valuer Name"
+                                        options={valuerComboboxOptions}
+                                        onchange={handleValuationComboboxChange}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Valuer Name</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{vehicleValuationFieldValues.valuer}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Valuer Code -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">Valuer Code</div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-input data-field="valuerCode" type="text"
+                                        value={vehicleValuationFieldValues.valuerCode}
+                                        label="Valuer Code" variant="label-hidden"
+                                        read-only={valuerCodeReadonly}
+                                        onchange={handleValuationChange}></lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">Valuer Code</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{vehicleValuationFieldValues.valuerCode}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- SLA Number -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">SLA Number</div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-input data-field="slaNumber" type="text"
+                                        value={vehicleValuationFieldValues.slaNumber}
+                                        label="SLA Number" variant="label-hidden"
+                                        onchange={handleValuationChange}></lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">SLA Number</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{vehicleValuationFieldValues.slaNumber}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Color of Vehicle (hidden for Tractor) -->
+                    <template lwc:if={showColorField}>
+                        <div class="bmp-field-wrap">
+                            <template lwc:if={isEditable}>
+                                <div class="bmp-field-cell vi-field-editable">
+                                    <div class="bmp-field-label">
+                                        Color of Vehicle
+                                        <span class="bmp-required-indicator" title="Required">*</span>
+                                    </div>
+                                    <div class="bmp-field-value-col">
+                                        <lightning-input data-field="colorOfVehicle" type="text"
+                                            value={vehicleValuationFieldValues.colorOfVehicle}
+                                            label="Color of Vehicle" variant="label-hidden"
+                                            read-only={colorKmsReadonly}
+                                            onchange={handleValuationChange}></lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="bmp-info-cell">
+                                    <div class="bmp-info-cell-header"><span class="bmp-info-label">Color of Vehicle</span></div>
+                                    <div class="bmp-info-value-wrap"><p class="bmp-info-value">{vehicleValuationFieldValues.colorOfVehicle}</p></div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- KMS run / HMR -->
+                    <div class="bmp-field-wrap">
+                        <template lwc:if={isEditable}>
+                            <div class="bmp-field-cell vi-field-editable">
+                                <div class="bmp-field-label">
+                                    {kmsRunLabel}
+                                    <span class="bmp-required-indicator" title="Required">*</span>
+                                </div>
+                                <div class="bmp-field-value-col">
+                                    <lightning-input data-field="kmsRun" type="text"
+                                        value={vehicleValuationFieldValues.kmsRun}
+                                        label={kmsRunLabel} variant="label-hidden"
+                                        read-only={colorKmsReadonly}
+                                        onchange={handleValuationChange}></lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="bmp-info-cell">
+                                <div class="bmp-info-cell-header"><span class="bmp-info-label">{kmsRunLabel}</span></div>
+                                <div class="bmp-info-value-wrap"><p class="bmp-info-value">{vehicleValuationFieldValues.kmsRun}</p></div>
+                            </div>
+                        </template>
+                    </div>
+
+                </div>
+
+                <!-- MFC action buttons -->
+                <template lwc:if={showMfcActionBar}>
+                    <div class="p4-btn-wrapper-center p4-btn-group-inline">
+                        <template lwc:if={isEditable}>
+                            <button type="button" class={getValuationBtnClass}
+                                disabled={getValuationBtnDisabled}
+                                onclick={handleGetValuationClick}>
+                                <span class="p4-action-btn-inner">
+                                    <template lwc:if={mfcValuationUi.isLoading}>
+                                        <lightning-spinner alternative-text="Loading" size="x-small" class="p4-action-btn-spinner"></lightning-spinner>
+                                    </template>
+                                    <span>Get Valuation</span>
+                                    <template lwc:if={isGetValuationSuccess}>
+                                        <lightning-icon icon-name="utility:success" size="x-small"
+                                            class="p4-action-btn-tick" alternative-text="Completed">
+                                        </lightning-icon>
+                                    </template>
+                                </span>
+                            </button>
+                            <button type="button" class={fetchReportBtnClass}
+                                disabled={fetchReportBtnDisabled}
+                                onclick={handleFetchValuationReportClick}>
+                                <span class="p4-action-btn-inner">
+                                    <template lwc:if={mfcFetchReportUi.isLoading}>
+                                        <lightning-spinner alternative-text="Loading" size="x-small" class="p4-action-btn-spinner"></lightning-spinner>
+                                    </template>
+                                    <span>Fetch Valuation Report</span>
+                                    <template lwc:if={isFetchReportSuccess}>
+                                        <lightning-icon icon-name="utility:success" size="x-small"
+                                            class="p4-action-btn-tick" alternative-text="Completed">
+                                        </lightning-icon>
+                                    </template>
+                                </span>
+                            </button>
+                            <template lwc:if={mfcValuationUi.hasErrorMessage}>
+                                <div class="valuation-action-error field-error">{mfcValuationUi.errorMessage}</div>
+                            </template>
+                            <template lwc:if={mfcFetchReportUi.hasErrorMessage}>
+                                <div class="valuation-action-error field-error">{mfcFetchReportUi.errorMessage}</div>
+                            </template>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </div>
+        </template>
+
+        <template if:true={showIntegrationProgressModal}>
+            <c-integration-progress-modal
+                status={integrationProgressModalStatus}
+                current-stage-index={integrationProgressModalCurrentStageIndex}
+                stages={integrationProgressModalStages}
+                success-message={integrationProgressModalSuccessMessage}
+                error-message={integrationProgressModalErrorMessage}
+                onclose={closeIntegrationProgress}
+                ondone={handleIntegrationProgressDone}
+                onretry={handleIntegrationProgressRetry}>
+            </c-integration-progress-modal>
+        </template>
+
+        <div class="p4-footer-wrapper">
+            <div class="p4-footer">
+                <div class="p4-btn-wrapper">
+                    <button
+                        type="button"
+                        class={nextButtonClass}
+                        onclick={handleNextButton}
+                        disabled={isNextDisabled}
+                        aria-disabled={isNextDisabled}>
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

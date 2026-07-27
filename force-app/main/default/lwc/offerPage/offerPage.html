@@ -1,0 +1,540 @@
+<!--
+    @description Offer Page — DDE stage, displayed after Income Verification.
+    Renders loan offer details with adjustable parameters, offer configuration
+    options, insurance selection, and an installment-schedule placeholder.
+    @see https://developer.salesforce.com/docs/component-library/documentation/en/lwc
+-->
+<template>
+    <div class="offer-page-container">
+
+        <!-- ── Loading ───────────────────────────────────────────────── -->
+        <template if:true={isLoading}>
+            <div class="slds-is-relative slds-p-around_large">
+                <lightning-spinner alternative-text="Loading offer details" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+
+            <!-- ── Offer Ready Banner ────────────────────────────────── -->
+            <div class="offer-banner">
+                <lightning-icon icon-name="utility:check" size="x-small" class="banner-icon"></lightning-icon>
+                <span class="banner-text">
+                    Loan Offer Ready &nbsp;&middot;&nbsp; Best rates &nbsp;&middot;&nbsp; Quick approval
+                </span>
+            </div>
+
+            <!-- ── Two-column layout ─────────────────────────────────── -->
+            <div class="offer-layout">
+
+                <!-- ════════════════════════════════════════════════════
+                     LEFT  —  Your Loan Offer
+                     ════════════════════════════════════════════════════ -->
+                <div class="offer-main">
+                    <div class="card">
+
+                        <div class="card-header">
+                            <div class="header-overlay"></div>
+                            <div class="header-content">
+                                <div class="header-icon-wrap">
+                                    <lightning-icon icon-name="utility:money" size="small" class="header-icon"></lightning-icon>
+                                </div>
+                                <div class="header-text">
+                                    <h1 class="header-title">Your Loan Offer</h1>
+                                    <p class="header-subtitle">Review and customise your loan terms</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <template if:true={isStp}>
+                                <c-offer-c-a-m-highlight-panel
+                                    highlight-panel-data={highlightPanelData}
+                                    onrefreshclick={handleRefreshClick}
+                                    onspinner={handleSpinner}
+                                    onopendynamiccomponentmodal={handleOpenDynamicComponentModal}
+                                    record-id={recordId}
+                                    offer-accepted={offerAccepted}>
+                                </c-offer-c-a-m-highlight-panel>
+                            </template>
+                            <div class="section-divider"></div>
+                            <!-- Loan Amount + Tenure sliders ──────────── -->
+                            <div class="sliders-row">
+
+                                <!-- Loan Amount -->
+                                <div class="slider-section">
+                                    <div class="slider-header">
+                                        <span class="slider-label p4-field-label">Loan Amount</span>
+                                        <span class="slider-value amount-value">&#8377;{formattedLoanAmount}</span>
+                                    </div>
+                                    <div class="slider-input-wrap">
+                                        <input
+                                            type="number"
+                                            class="slider-direct-input"
+                                            value={loanAmount}
+                                            min={loanAmountMin}
+                                            max={loanAmountMax}
+                                            step="1000"
+                                            disabled={isStagePast}
+                                            onchange={handleLoanAmountInput}
+                                        />
+                                    </div>
+                                    <div class="slider-track-wrap">
+                                        <input
+                                            type="range"
+                                            class="offer-slider"
+                                            style={loanAmountSliderStyle}
+                                            min={loanAmountMin}
+                                            max={loanAmountMax}
+                                            step="1000"
+                                            value={loanAmount}
+                                            oninput={handleLoanAmountChange}
+                                            disabled={isStagePast}
+                                        />
+                                    </div>
+                                    <div class="slider-range-labels">
+                                        <span class="p4-help-text">&#8377;{formattedLoanAmountMin}</span>
+                                        <span class="p4-help-text">&#8377;{formattedLoanAmountMax}</span>
+                                    </div>
+                                </div>
+
+                                <div class="slider-col-divider"></div>
+
+                                <!-- Tenure -->
+                                <div class="slider-section">
+                                    <div class="slider-header">
+                                        <span class="slider-label p4-field-label">Tenure</span>
+                                        <span class="slider-value tenure-value">{tenure} months</span>
+                                    </div>
+                                    <div class="slider-input-wrap">
+                                        <input
+                                            type="number"
+                                            class="slider-direct-input"
+                                            value={tenure}
+                                            min={tenureMin}
+                                            max={tenureMax}
+                                            step="1"
+                                            disabled={isStagePast}
+                                            onchange={handleTenureInput}
+                                        />
+                                        <span class="slider-input-unit">months</span>
+                                    </div>
+                                    <div class="slider-track-wrap">
+                                        <input
+                                            type="range"
+                                            class="offer-slider"
+                                            style={tenureSliderStyle}
+                                            min={tenureMin}
+                                            max={tenureMax}
+                                            step="1"
+                                            value={tenure}
+                                            oninput={handleTenureChange}
+                                            disabled={isStagePast}
+                                        />
+                                    </div>
+                                    <div class="slider-range-labels">
+                                        <span class="p4-help-text">{tenureMin} months</span>
+                                        <span class="p4-help-text">{tenureMax} months</span>
+                                    </div>
+                                </div>
+
+                            </div><!-- /sliders-row -->
+
+                            <div class="section-divider"></div>
+
+                            <!-- Metrics grid ───────────────────────────── -->
+                            <div class="metrics-grid">
+
+                                <!-- Interest Rate — editable -->
+                                <div class="metric-card">
+                                    <div class="metric-label p4-field-label">Interest Rate</div>
+                                    <div class="metric-value-input-wrap">
+                                        <input
+                                            type="number"
+                                            class="metric-input"
+                                            value={interestRate}
+                                            min="0"
+                                            step="0.01"
+                                            disabled={isStagePast}
+                                            onchange={handleInterestRateChange}
+                                            placeholder="0.00"
+                                        />
+                                        <span class="metric-unit">%</span>
+                                    </div>
+                                </div>
+
+                                <!-- Monthly EMI -->
+                                <div class="metric-card metric-card--emi">
+                                    <div class="metric-label p4-field-label">Monthly EMI</div>
+                                    <div class="metric-value">&#8377;{formattedMonthlyEmi}</div>
+                                </div>
+
+                                <!-- Total Interest -->
+                                <div class="metric-card">
+                                    <div class="metric-label p4-field-label">Total Interest</div>
+                                    <div class="metric-value">&#8377;{formattedTotalInterest}</div>
+                                </div>
+
+                                <!-- Total Amount — highlighted -->
+                                <div class="metric-card metric-card--highlight">
+                                    <div class="metric-label p4-field-label">Total Amount</div>
+                                    <div class="metric-value metric-value--highlight">&#8377;{formattedTotalAmount}</div>
+                                </div>
+
+                            </div><!-- /metrics-grid -->
+
+                            <div class="section-divider"></div>
+
+                            <!-- Action buttons row ──────────────────────── -->
+                            <div class="action-buttons">
+                                <!--Change Payin Payout-->
+                                <button class="outline-btn p4-button-text" onclick={handleChangePayinPayout} disabled={isStagePast}>
+                                    <lightning-icon icon-name="utility:date_time" size="x-small" class="btn-icon" ></lightning-icon>
+                                    {payInPayOutBtnLabel}
+                                </button>
+                                <!-- Re-run Offer Engine -->
+                                <button
+                                    class={reRunBtnClass}
+                                    onclick={handleReRunOfferEngine}
+                                    disabled={isReRunDisabled}
+                                    title="Re-calculate offer based on updated parameters"
+                                >
+                                    <template if:false={isOfferEngineRunning}>
+                                        <lightning-icon icon-name="utility:refresh" size="x-small" class="btn-icon"></lightning-icon>
+                                    </template>
+                                    <template if:true={isOfferEngineRunning}>
+                                        <lightning-spinner alternative-text="Running" size="x-small" class="btn-spinner"></lightning-spinner>
+                                    </template>
+                                    {reRunBtnLabel}
+                                </button>
+
+                                <!-- Installment Schedule -->
+                                <button class="outline-btn p4-button-text" onclick={handleInstallmentSchedule}>
+                                    <lightning-icon icon-name="utility:date_time" size="x-small" class="btn-icon"></lightning-icon>
+                                    Installment Schedule
+                                </button>
+
+                            </div>
+
+                            <div class="section-divider"></div>
+
+                            <!-- Insurance toggle ────────────────────────── -->
+                            <div class="insurance-section">
+                                <span class="insurance-question p4-field-label">
+                                    Do you wish to opt for an Insurance?
+                                </span>
+                                <div class="insurance-controls">
+                                    <div class="radio-group-inline">
+                                        <label class="radio-option">
+                                            <input
+                                                type="radio"
+                                                name="insurance"
+                                                value="yes"
+                                                checked={isInsuranceYes}
+                                                onchange={handleInsuranceChange}
+                                                disabled={isStagePast}
+                                            />
+                                            <span class="radio-label">Yes</span>
+                                        </label>
+                                        <label class="radio-option">
+                                            <input
+                                                type="radio"
+                                                name="insurance"
+                                                value="no"
+                                                checked={isInsuranceNo}
+                                                onchange={handleInsuranceChange}
+                                                disabled={isStagePast}
+                                            />
+                                            <span class="radio-label">No</span>
+                                        </label>
+                                    </div>
+
+                                    <!-- Show Add Insurance button only when user opts in -->
+                                    <template if:true={isInsuranceYes}>
+                                        <button class="outline-btn p4-button-text" onclick={handleAddInsurance}>
+                                            <lightning-icon icon-name="utility:shield" size="x-small" class="btn-icon"></lightning-icon>
+                                            Add Insurance
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <div class="insurance-section">
+                                <span class="insurance-question p4-field-label">
+                                    Do you want a higher loan amount?
+                                </span>
+                                <div class="insurance-controls">
+                                    <div class="radio-group-inline">
+                                        <label class="radio-option">
+                                            <input
+                                                type="radio"
+                                                name="higherIncome"
+                                                value="yes"
+                                                checked={isHigherIncomeYes}
+                                                onchange={handleHigherIncomeChange}
+                                                disabled={isStagePast}
+                                            />
+                                            <span class="radio-label">Yes</span>
+                                        </label>
+                                        <label class="radio-option">
+                                            <input
+                                                type="radio"
+                                                name="higherIncome"
+                                                value="no"
+                                                checked={isHigherIncomeNo}
+                                                onchange={handleHigherIncomeChange}
+                                                disabled={isStagePast}
+                                            />
+                                            <span class="radio-label">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section-divider"></div>
+                            
+                            <div class="p4-btn-wrapper-center p4-btn-group-inline" if:false={isStagePast}>
+                                <button
+                                    type="button"
+                                    class="p4-primary-btn p4-button-text"
+                                    onclick={handleInstantApproval}>
+                                    <span class="p4-action-btn-inner">
+                                        <span>Check for Instant Approval</span>
+                                    </span>
+                                </button>
+                                <template if:true={showOfferAcceptanceButton}>
+                                    <button
+                                        type="button"
+                                        class="offer-secondary-btn p4-button-text"
+                                        onclick={handleOfferAcceptance}>
+                                        <span class="p4-action-btn-inner">
+                                            <lightning-icon
+                                                icon-name="utility:refresh"
+                                                size="x-small"
+                                                class="offer-btn-icon"
+                                                alternative-text="Refresh">
+                                            </lightning-icon>
+                                            <span>Trigger Offer Acceptance</span>
+                                        </span>
+                                    </button>
+                                </template>
+                            </div>
+                            
+                        </div><!-- /card-body -->
+                    </div><!-- /card -->
+                </div><!-- /offer-main -->
+
+                <!-- ════════════════════════════════════════════════════
+                     RIGHT  —  Offer Parameters
+                     ════════════════════════════════════════════════════ -->
+                <div class="offer-params">
+                    <div class="card">
+
+                        <div class="card-header">
+                            <div class="header-overlay"></div>
+                            <div class="header-content">
+                                <div class="header-icon-wrap">
+                                    <lightning-icon icon-name="utility:settings" size="small" class="header-icon"></lightning-icon>
+                                </div>
+                                <div class="header-text">
+                                    <h1 class="header-title">Offer Parameters</h1>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body params-body">
+
+                            <!-- Offer Type — radio group with per-type amounts -->
+                            <div class="param-field">
+                                <label class="param-label p4-field-label">Offer Type</label>
+                                <div class="offer-type-group">
+                                    <template for:each={offerTypeOptions} for:item="opt">
+                                        <label key={opt.value} class="offer-type-option">
+                                            <input
+                                                type="radio"
+                                                name="offerType"
+                                                value={opt.value}
+                                                checked={opt.isSelected}
+                                                onchange={handleOfferTypeChange}
+                                                disabled={isStagePast}
+                                            />
+                                            <span class="offer-type-details">
+                                                <span class="offer-type-label">{opt.label}</span>
+                                                <span class="offer-type-amount">&#8377;{opt.formattedAmount}</span>
+                                            </span>
+                                        </label>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Moratorium Days -->
+                            <div class="param-field">
+                                <label class="param-label p4-field-label">Moratorium Days</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="moratorium" value="0"
+                                            checked={isMoratorium0}
+                                            onchange={handleMoratoriumChange}
+                                            disabled={isStagePast} />
+                                        <span class="radio-label">0 Days</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="moratorium" value="30"
+                                            checked={isMoratorium30}
+                                            onchange={handleMoratoriumChange}
+                                            disabled={isStagePast} />
+                                        <span class="radio-label">30 Days</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="moratorium" value="60"
+                                            checked={isMoratorium60}
+                                            onchange={handleMoratoriumChange}
+                                            disabled={isStagePast} />
+                                        <span class="radio-label">60 Days</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Advance EMI -->
+                            <div class="param-field">
+                                <label class="param-label p4-field-label">Advance EMI</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="advanceEmi" value="yes"
+                                            checked={isAdvanceEmiYes}
+                                            onchange={handleAdvanceEmiChange}
+                                            disabled={isStagePast} />
+                                        <span class="radio-label">Yes</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="advanceEmi" value="no"
+                                            checked={isAdvanceEmiNo}
+                                            onchange={handleAdvanceEmiChange}
+                                            disabled={isStagePast} />
+                                        <span class="radio-label">No</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 1st EMI Due Date — selectable radio -->
+                            <div class="param-field">
+                                <label class="param-label p4-field-label">1st EMI Due Date</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="firstEmiDate" value="5th of Month"
+                                            checked={isFirstEmi5th}
+                                            onchange={handleFirstEmiDateChange}
+                                            disabled={isStagePast} />
+                                        <span class="radio-label">5th of Month</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="firstEmiDate" value="10th of Month"
+                                            checked={isFirstEmi10th}
+                                            onchange={handleFirstEmiDateChange}
+                                            disabled={isStagePast} />
+                                        <span class="radio-label">10th of Month</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 2nd EMI Due Date — read-only computed display -->
+                            <div class="param-field">
+                                <label class="param-label p4-field-label">2nd EMI Due Date</label>
+                                <div class="param-display-value p4-field-value">
+                                    <lightning-icon icon-name="utility:event" size="x-small" class="date-icon"></lightning-icon>
+                                    <span>{secondEmiDueDate}</span>
+                                </div>
+                            </div>
+
+                            <!-- Installment Type -->
+                            <div class="param-field param-field--last">
+                                <label class="param-label p4-field-label">Installment Type</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="installmentType" value="equated"
+                                            checked={isInstallmentEquated}
+                                            onchange={handleInstallmentTypeChange}
+                                            disabled={isStagePast} />
+                                        <span class="radio-label">Equated</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="installmentType" value="structured"
+                                            checked={isInstallmentStructured}
+                                            onchange={handleInstallmentTypeChange}
+                                            disabled={isStagePast} />
+                                        <span class="radio-label">Structured</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- CIBIL Validity -->
+                            <template lwc:if={showCibilSection}>
+                                <div class="cibil-validity-card">
+                                    <div class="cibil-card-title">CIBIL Validity</div>
+                                    <p class="cibil-card-message">
+                                        The bureau report has got expired. Hence solicit a consent
+                                        from the customer to re-generate the bureau report for the latest offer
+                                    </p>
+                                    <div class="radio-group">
+                                        <label class="radio-option">
+                                            <input type="radio" name="cibilValidity" value="yes"
+                                                checked={isCibilYes}
+                                                onchange={handleCibilValidityChange} />
+                                            <span class="radio-label">Yes</span>
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="cibilValidity" value="no"
+                                                checked={isCibilNo}
+                                                onchange={handleCibilValidityChange} />
+                                            <span class="radio-label">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </template>
+
+                        </div><!-- /params-body -->
+                    </div><!-- /card -->
+                </div><!-- /offer-params -->
+
+            </div><!-- /offer-layout -->
+
+            <!-- ── Sticky Footer ─────────────────────────────────────── -->
+            <div class="p4-footer-wrapper" if:false={isStagePast}>
+                <div class="p4-footer">
+                    <div class="p4-btn-wrapper">
+                        <button class="p4-primary-btn p4-button-text" onclick={handleNextButton}>
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+       
+        <template if:true={showDynamicModal}>
+            <c-dynamic-component-modal
+                component-name={dynamicComponentName}
+                modal-header={dynamicModalHeader}
+                record-id={recordId}
+                component-props={dynamicComponentProps}
+                onclose={handleModalClose}
+                oninsurancepremium={handleInsurancePremiumReceived}
+                onotpverified={handleOtpVerified}>
+            </c-dynamic-component-modal>
+        </template>
+
+        <!-- Integration Progress Modal (shared — Re-run Offer Engine / Instant Approval) -->
+        <template if:true={showIntegrationModal}>
+            <c-integration-progress-modal
+                status={integrationStatus}
+                header={integrationHeader}
+                stages={integrationStages}
+                current-stage-index={integrationCurrentStageIndex}
+                success-message={integrationSuccessMessage}
+                error-message={integrationErrorMessage}
+                onclose={handleIntegrationModalClose}
+                ondone={handleIntegrationModalClose}
+                onretry={handleIntegrationRetry}>
+            </c-integration-progress-modal>
+        </template>
+
+    </div><!-- /offer-page-container -->
+</template>

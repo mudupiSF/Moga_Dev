@@ -1,0 +1,81 @@
+.modal-zindex {
+    z-index: 9002;
+}
+
+.modal-container-dynamic {
+    /* Sourav update the max-width to 42rem to 60rem */
+    max-width: 60rem;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-container-dynamic.modal-container-confirmation {
+    max-width: 28rem;
+}
+
+/* Advanced File Management hub (embedCustomFilePreview): 80% of the screen so the
+   inline Magic UI has breathing room instead of looking cramped. */
+.modal-container-dynamic.modal-container-wide {
+    width: 80vw;
+    max-width: 80vw;
+}
+
+.modal-header-compact {
+    padding: 0.5rem 1rem;
+    min-height: auto;
+}
+
+.modal-content-dynamic {
+    padding: 1rem 1.5rem 1.5rem;
+    /*Sourav commented this out to remove the border radius*/
+    /*border-radius: 0.5rem;*/
+}
+
+:host .slds-backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.dynamic-modal-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    gap: 1rem;
+}
+
+.dynamic-modal-loading p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.confirmation-body {
+    padding: 0.5rem 0;
+}
+
+.confirmation-title {
+    margin: 0 0 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #181818;
+}
+
+.confirmation-message {
+    margin: 0 0 1.25rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: #444;
+}
+
+.confirmation-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.confirmation-actions .confirmation-btn {
+    margin-left: 0.25rem;
+}

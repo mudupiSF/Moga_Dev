@@ -1,0 +1,41 @@
+<template>
+    <div class="searchable-dropdown">
+        <div class="slds-form-element">
+            <div class="form-field-label">
+                <template if:true={isRequired}>
+                    <abbr class="slds-required" title="required">* </abbr>
+                </template>
+                {label}
+            </div>
+            <div class="form-field-value-col">
+                <div class="slds-form-element__control">
+                    <input type="text"
+                        class="slds-input"
+                        value={searchTerm}
+                        placeholder={placeholder}
+                        oninput={handleSearchTermInput}
+                        onfocus={handleLookupFocus}
+                        onblur={handleLookupBlur}
+                    >
+                </div>
+            </div>
+        </div>
+        <template if:true={isOpen}>
+            <div class="dropdown-list" role="listbox">
+                <template for:each={searchOptions} for:item="opt">
+                    <div key={opt.value}
+                        class="dropdown-option"
+                        role="option"
+                        data-value={opt.value}
+                        data-label={opt.label}
+                        onmousedown={handleSelectOption}>
+                        {opt.label}
+                    </div>
+                </template>
+                <template if:false={searchOptions.length}>
+                    <div class="dropdown-option slds-text-color_weak">No matching results found</div>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

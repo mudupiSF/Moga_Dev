@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Withdrawal_Reason__c</fullName>
+    <label>Withdrawal Reason</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Financial terms not agreed to</fullName>
+                <default>false</default>
+                <label>Financial terms not agreed to</label>
+            </value>
+            <value>
+                <fullName>Customer deferred purchase plan</fullName>
+                <default>false</default>
+                <label>Customer deferred purchase plan</label>
+            </value>
+            <value>
+                <fullName>Customer shifted to cash purchase</fullName>
+                <default>false</default>
+                <label>Customer shifted to cash purchase</label>
+            </value>
+            <value>
+                <fullName>Customer withdrew the loan application</fullName>
+                <default>false</default>
+                <label>Customer withdrew the loan application</label>
+            </value>
+            <value>
+                <fullName>Elapse of time</fullName>
+                <default>false</default>
+                <label>Elapse of time</label>
+            </value>
+            <value>
+                <fullName>Finance availed from some other bank/FI</fullName>
+                <default>false</default>
+                <label>Finance availed from some other bank/FI</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

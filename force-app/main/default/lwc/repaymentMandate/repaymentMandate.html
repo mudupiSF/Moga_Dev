@@ -1,0 +1,688 @@
+<template>
+    <div class="form-layout">
+
+        <!-- ══ LOADING OVERLAY ══════════════════════════════════════════════ -->
+        <template lwc:if={isPageLoading}>
+            <div class="form-loading-overlay">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ══ SECTION 1 — REPAYMENT MANDATE SETUP ═════════════════════════ -->
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content form-header-content--split">
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">Repayment Setup</h1>
+                    </div>
+                    <button type="button" class="deal-info-toggle" onclick={toggleDealInfoSection} aria-label="Toggle Deal Information">
+                        <lightning-icon icon-name={dealInfoIcon} size="x-small" class="toggle-icon"></lightning-icon>
+                        <span class="toggle-text">Deal Info</span>
+                    </button>
+                </div>
+            </div>
+
+            <template lwc:if={isDealInfoExpanded}>
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Deal Number</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{repaymentData.dealNumber}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field-wrap">
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Customer Code</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{repaymentData.customerCode}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- ══ SECTION 2 — BASIC INFORMATION ═══════════════════════════════ -->
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">Basic Information</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-body">
+                <div class="form-fields-grid">
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">
+                                    Repayment to be done by
+                                    <span class="form-field-required-indicator" title="Required">*</span>
+                                </label>
+                                <div class="form-field-editable-input-wrap">
+                                    <lightning-combobox
+                                        name="repaymentToBeDoneBy"
+                                        value={repaymentData.repaymentToBeDoneBy}
+                                        options={repaymentToBeDoneByOptions}
+                                        onchange={handleFieldChange}
+                                        variant="label-hidden"
+                                        placeholder="Select repayment party">
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Repayment to be done by</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{repaymentToBeDoneByDisplay}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">
+                                    Bank Name
+                                    <span class="form-field-required-indicator" title="Required">*</span>
+                                </label>
+                                <div class="form-field-editable-input-wrap">
+                                    <lightning-combobox
+                                        name="bankName"
+                                        value={repaymentData.bankName}
+                                        options={bankOptions}
+                                        onchange={handleBankChange}
+                                        variant="label-hidden"
+                                        placeholder="Select bank"
+                                        disabled={isBankNameReadonly}>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Bank Name</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{bankNameDisplay}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">
+                                    Repayment Method
+                                    <span class="form-field-required-indicator" title="Required">*</span>
+                                </label>
+                                <div class="form-field-editable-input-wrap">
+                                    <lightning-combobox
+                                        name="repaymentMethod"
+                                        value={repaymentMethodValue}
+                                        options={repaymentMethodOptions}
+                                        onchange={handleFieldChange}
+                                        disabled={isReadOnlyScreen}
+                                        placeholder="Select Repayment Method"
+                                        variant="label-hidden"
+                                        required>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Repayment Method</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{repaymentMethodDisplay}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ SECTION 3 — ACCOUNT DETAILS ═══════════════════════════════════ -->
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">Account Details</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-body">
+                <div class="form-fields-grid">
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">Account Number</label>
+                                <div class="form-field-editable-input-wrap">
+                                    <lightning-input
+                                        name="accountNumber"
+                                        value={repaymentData.accountNumber}
+                                        maxlength="18"
+                                        onchange={handleFieldChange}
+                                        disabled={isAccountNumberDisabled}
+                                        placeholder="Enter Account Number..."
+                                        variant="label-hidden">
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">Account Number</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{repaymentData.accountNumber}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="form-field-wrap">
+                        <template lwc:if={isFieldEditable}>
+                            <div class="form-field-editable-section">
+                                <label class="form-field-editable-label">IFSC Code</label>
+                                <div class="form-field-editable-input-wrap ifsc-field-container">
+                                    <lightning-input
+                                        name="ifscCode"
+                                        value={repaymentData.ifscCode}
+                                        onchange={handleFieldChange}
+                                        placeholder="Enter IFSC Code..."
+                                        variant="label-hidden"
+                                        class="ifsc-input">
+                                    </lightning-input>
+                                    <template lwc:if={isIFSCVerified}>
+                                        <span class="verification-checkmark" title="Verified">✓</span>
+                                    </template>
+                                    <template lwc:else>
+                                        <button type="button" class="verify-button" onclick={verifyIFSC} aria-label="Verify IFSC Code" disabled={isIFSCDisabled}>Verify</button>
+                                    </template>
+                                </div>
+                                <template lwc:if={isIFSCVerified}>
+                                    <p class="field-note branch-details">Branch Name: {repaymentData.branchName}, Bank Branch City: {repaymentData.bankBranchCity}</p>
+                                </template>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-info-cell">
+                                <div class="form-info-cell-header">
+                                    <span class="form-info-label">IFSC Code</span>
+                                </div>
+                                <div class="form-info-value-wrap">
+                                    <p class="form-info-value">{ifscDisplayValue}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="form-field-wrap">
+                        <div class="form-info-cell">
+                            <div class="form-info-cell-header">
+                                <span class="form-info-label">Auto Pay Limit Amount</span>
+                            </div>
+                            <div class="form-info-value-wrap">
+                                <p class="form-info-value">{repaymentData.emiAmount}</p>
+                                <p class="field-note">Computed automatically</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <template lwc:if={showInitiationMethodSection}>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">
+                                        Initiation Method
+                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                    </label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-combobox
+                                            name="initiationMethod"
+                                            value={repaymentData.initiationMethod}
+                                            options={InitiationMethodOptions}
+                                            onchange={handleFieldChange}
+                                            disabled={isInititationMethodReadonly}
+                                            placeholder="Select Initiation Method"
+                                            variant="label-hidden"
+                                            required>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Initiation Method</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{repaymentData.initiationMethod}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template lwc:if={showAadharESignTypeSection}>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Aadhar e-SIGN TYPE</label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-combobox
+                                            name="AadharESignType"
+                                            value={repaymentData.AadharESignType}
+                                            options={AadharESignTypeOptions}
+                                            onchange={handleFieldChange}
+                                            disabled={isReadOnlyScreen}
+                                            placeholder="Select Aadhar e-SIGN TYPE"
+                                            variant="label-hidden">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Aadhar e-SIGN TYPE</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{repaymentData.AadharESignType}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">Type of Account</label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-combobox
+                                            name="accountType"
+                                            value={repaymentData.accountType}
+                                            options={AadharAccountTypeOptions}
+                                            onchange={handleFieldChange}
+                                            disabled={isReadOnlyScreen}
+                                            placeholder="Select Type of Account"
+                                            variant="label-hidden">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Type of Account</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{accountTypeDisplay}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template lwc:if={showUPISection}>
+                        <div class="form-field-wrap">
+                            <template lwc:if={isFieldEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">UPI ID</label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-input
+                                            name="upiId"
+                                            data-id="upiId"
+                                            value={repaymentData.upiId}
+                                            onchange={handleFieldChange}
+                                            disabled={disableUPIID}
+                                            placeholder="Enter UPI ID..."
+                                            variant="label-hidden">
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">UPI ID</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{repaymentData.upiId}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Validate Bank Details / Initiate Mandate (disabled when read-only) -->
+                <template lwc:if={showActionButtons}>
+                    <div class="action-buttons">
+                        <template lwc:if={showIntiateButtonGetter}>
+                            <template lwc:if={showInitiateMandateButton}>
+                                <button
+                                    type="button"
+                                    class="initiate-mandate-button"
+                                    onclick={saveRepaymentMandate}
+                                    disabled={diableInitiateMandate}
+                                    aria-label="Initiate Mandate">
+                                    Initiate Mandate
+                                </button>
+                            </template>
+                        </template>
+                        <template lwc:else>
+                            <button
+                                type="button"
+                                class="initiate-mandate-button"
+                                onclick={handleValidateDetailsButton}
+                                disabled={isValidateBankDetailsDisabled}
+                                aria-label="Validate Details">
+                                {ValidateButtonLabel}
+                            </button>
+                        </template>
+                    </div>
+                </template>
+
+                <template lwc:if={showSuccessMessage}>
+                    <div class="success-message">
+                        <p class="success-text">✓ Mandate setup completed successfully!</p>
+                    </div>
+                </template>
+
+                <template lwc:if={showTimer}>
+                    <div class="timer-container">
+                        <span class="timer-text slds-text-heading_small slds-text-color_default">{timeLeftInMins}:{timeLeftInSecs} minutes remaining...</span>
+                    </div>
+                </template>
+
+                <template lwc:if={showTable}>
+                    <div class="status-table-wrap">
+                        <table class="status-table rclimit-table">
+                            <thead>
+                                <tr>
+                                    <th class="rcth">Sequence of Trigger</th>
+                                    <th class="rcth">Date &amp; Time stamp of Trigger</th>
+                                    <th class="rcth">Session ID</th>
+                                    <th class="rcth">Mode of Registration</th>
+                                    <th class="rcth">Registration status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={enachStatusData} for:item="record">
+                                    <tr key={record.rowIndex}>
+                                        <td class="rctd">{record.rowIndex}</td>
+                                        <td class="rctd">{record.Date_And_Time_Of_Trigger}</td>
+                                        <td class="rctd">{record.Session_Id}</td>
+                                        <td class="rctd">{record.Mode_Of_Registration}</td>
+                                        <td class="rctd">{record.Registration_Status}</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- ══ SECTION 4 — ACH DOCUMENTS ═════════════════════════════════════ -->
+        <template lwc:if={showAchChecklistSection}>
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-overlay"></div>
+                    <div class="form-header-content">
+                        <div class="form-header-text">
+                            <h1 class="form-header-title">ACH Documents</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-body">
+                    <div class="form-fields-grid ach-upload-grid">
+                        <div class="form-field-wrap">
+                            <div class="form-file-upload-wrap">
+                                <label class="form-field-editable-label">
+                                    Download ACH Mandate Form
+                                </label>
+                                <div class="ach-download-area">
+                                    <button type="button" class="download-button" disabled={disableDownloadButton} onclick={downloadACHMandateForm}>
+                                        <lightning-icon icon-name="utility:download" size="x-small" class="upload-icon"></lightning-icon>
+                                        <span>Download ACH Mandate Form</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <div class="form-file-upload-wrap">
+                                <label class="form-field-editable-label">
+                                    Upload ACH Mandate Form
+                                    <span class="form-field-required-indicator" title="Required">*</span>
+                                </label>
+                                <template lwc:if={achMandateUploaded}>
+                                    <div class="form-file-uploaded-bar">
+                                        <lightning-icon
+                                            icon-name="utility:success"
+                                            size="x-small"
+                                            class="form-file-success-icon"
+                                            alternative-text="Uploaded">
+                                        </lightning-icon>
+                                        <p class="form-file-selected-name">{achMandateFileName}</p>
+                                        <button
+                                            type="button"
+                                            class="form-file-action-btn"
+                                            onclick={handleAchMandatePreview}
+                                            title="Preview">
+                                            <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                        </button>
+                                        <template lwc:if={showAchDocumentActions}>
+                                            <button
+                                                type="button"
+                                                class="form-file-action-btn"
+                                                onclick={handleAchMandateDelete}
+                                                title="Delete">
+                                                <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <template lwc:if={showAchDocumentActions}>
+                                        <lightning-file-upload
+                                            data-name="achMandateUpload"
+                                            name="achMandateFormUpload"
+                                            label="Upload ACH Mandate Form"
+                                            accept={acceptedAchFormats}
+                                            record-id={achMandateDocumentId}
+                                            onuploadfinished={handleAchMandateFileUploadFinished}
+                                            multiple="false"
+                                            disabled={isAchFileUploadDisabled}>
+                                        </lightning-file-upload>
+                                    </template>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <div class="form-file-upload-wrap">
+                                <label class="form-field-editable-label">
+                                    Upload Bank Statement
+                                    <span class="form-field-required-indicator" title="Required">*</span>
+                                </label>
+                                <template lwc:if={bankStatementUploaded}>
+                                    <div class="form-file-uploaded-bar">
+                                        <lightning-icon
+                                            icon-name="utility:success"
+                                            size="x-small"
+                                            class="form-file-success-icon"
+                                            alternative-text="Uploaded">
+                                        </lightning-icon>
+                                        <p class="form-file-selected-name">{bankStatementFileName}</p>
+                                        <button
+                                            type="button"
+                                            class="form-file-action-btn"
+                                            onclick={handleBankStatementPreview}
+                                            title="Preview">
+                                            <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                        </button>
+                                        <template lwc:if={showAchDocumentActions}>
+                                            <button
+                                                type="button"
+                                                class="form-file-action-btn"
+                                                onclick={handleBankStatementDelete}
+                                                title="Delete">
+                                                <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <template lwc:if={showAchDocumentActions}>
+                                        <lightning-file-upload
+                                            data-name="bankStatementUpload"
+                                            name="bankStatementUpload"
+                                            label="Upload Bank Statement"
+                                            accept={acceptedAchFormats}
+                                            record-id={bankStatementDocumentId}
+                                            onuploadfinished={handleBankStatementFileUploadFinished}
+                                            multiple="false"
+                                            disabled={isAchFileUploadDisabled}>
+                                        </lightning-file-upload>
+                                    </template>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ SECTION — REPAYMENT REMARKS (OPS view only) ═══════════════════ -->
+        <template lwc:if={isRepaymentOpsView}>
+            <div class="form-card">
+                <c-operations-section-header
+                    subtitle="Verify repayment mandate details and acceptance">
+                </c-operations-section-header>
+
+                <div class="form-body">
+                    <div class="form-fields-grid">
+                        <div class="form-field-wrap">
+                            <template lwc:if={isRepaymentRemarksEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">
+                                        All Mandate Details Correctly Entered
+                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                    </label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-combobox
+                                            name="allMandateDetailsCorrectlyEntered"
+                                            value={repaymentData.allMandateDetailsCorrectlyEntered}
+                                            options={mandateDetailsCorrectOptions}
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder="Please select">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">All Mandate Details Correctly Entered</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{repaymentData.allMandateDetailsCorrectlyEntered}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="form-field-wrap">
+                            <template lwc:if={isRepaymentRemarksEditable}>
+                                <div class="form-field-editable-section">
+                                    <label class="form-field-editable-label">
+                                        Remarks
+                                        <span class="form-field-required-indicator" title="Required">*</span>
+                                    </label>
+                                    <div class="form-field-editable-input-wrap">
+                                        <lightning-textarea
+                                            name="remarks"
+                                            value={repaymentData.remarks}
+                                            onchange={handleFieldChange}
+                                            variant="label-hidden"
+                                            placeholder="Enter remarks">
+                                        </lightning-textarea>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="form-info-cell">
+                                    <div class="form-info-cell-header">
+                                        <span class="form-info-label">Remarks</span>
+                                    </div>
+                                    <div class="form-info-value-wrap">
+                                        <p class="form-info-value">{repaymentData.remarks}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ FOOTER — NEXT (disabled via isNextDisabled) ═══════════════════ -->
+        <div class="form-footer-wrapper">
+            <div class="form-footer">
+                <div class="form-btn-wrapper">
+                    <button type="button"
+                        class="form-primary-btn p4-button-text"
+                        onclick={handleNextButton}
+                        disabled={isNextDisabled}>
+                        Next
+                        <lightning-icon
+                            icon-name="utility:forward"
+                            size="x-small"
+                            class="form-btn-icon">
+                        </lightning-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document preview overlay for ACH Mandate / Bank Statement uploads -->
+        <template lwc:if={openPreviewModal}>
+            <c-file-previewer
+                content-document-id={contentDocumentId}
+                file-type={fileType}
+                record-id={recordId}
+                onclose={handleFilePreviewClose}>
+            </c-file-previewer>
+        </template>
+
+    </div>
+</template>

@@ -1,0 +1,5 @@
+<aura:documentation>
+    <aura:description>
+        Aura wrapper component that renders c:createApplication.
+    </aura:description>
+</aura:documentation>

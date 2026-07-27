@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Free_Fleet__c</fullName>
+    <label>Free Fleet</label>
+    <summaryFilterItems>
+        <field>Fleet_Details__c.Fleet_Type__c</field>
+        <operation>equals</operation>
+        <value>Free Fleet</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Fleet_Details__c.Applicant__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

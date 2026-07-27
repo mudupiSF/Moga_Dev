@@ -1,0 +1,206 @@
+@import "c/commonStyles";
+
+:host {
+    --nav-slate-900: #0f172a;
+    --nav-slate-100: #f1f5f9;
+    --nav-slate-400: #94a3b8;
+    --nav-indigo-500: #6366f1;
+    --nav-indigo-600: #4f46e5;
+    --nav-emerald-500: #10b981;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.main-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    background: white;
+}
+
+.menu-grid {
+    align-items: stretch;
+    width: 100%;
+}
+
+.menu-grid > * {
+    padding: 0 !important;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.content-area {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.menu-items {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0.5rem 0.25rem;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: white;
+}
+
+.slds-grid.slds-wrap {
+    height: 100%;
+}
+
+/* .desktop-view is position:fixed (set inline in stageMenu.html). Width is
+   fluid: it scales between a small-screen and a large-screen ceiling using
+   clamp(), with viewport-based middle so the rail never overruns the right
+   pane on 13"–14" panels while still using the comfortable 260px on 16"+.
+     • clamp(min, preferred, max)
+         - min       : floor for tight viewports (~1024px)
+         - preferred : roughly 17% of viewport width
+         - max       : ceiling for wide monitors */
+.desktop-view {
+    width: clamp(200px, 17vw, 260px);
+}
+
+.menu-column {
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    transition: min-width 0.5s cubic-bezier(.4, 0, .2, 1), max-width 0.5s cubic-bezier(.4, 0, .2, 1) !important;
+    padding: 0;
+    margin: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-header {
+    display: none;
+}
+
+.menu-header-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: white;
+}
+
+.menu-column.collapsed {
+    min-width: 0 !important;
+    max-width: 0 !important;
+    overflow: hidden;
+    border: none;
+    padding: 0;
+}
+
+.menu-column.collapsed .menu-header,
+.menu-column.collapsed .menu-content {
+    display: none;
+}
+
+.menu-content {
+    height: 100%;
+    width: 100%;
+    background: white;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.menu-items::-webkit-scrollbar {
+    width: 4px;
+}
+
+.menu-items::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.menu-items::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.menu-items::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Item state styles */
+.menu-items a {
+    color: rgb(68, 68, 68);
+    font-size: 0.9375rem;
+    transition: all 0.2s ease;
+}
+
+.menu-items li.active > .menu-item {
+    background: linear-gradient(90deg, rgba(79, 70, 229, 0.1) 0%, transparent 100%);
+    border-left: 3px solid var(--nav-indigo-600);
+}
+
+.menu-items li.active a,
+.menu-items li.active .menu-label {
+    color: var(--nav-indigo-600);
+    font-weight: 600;
+}
+
+.menu-items li.transient > .menu-item {
+    background: linear-gradient(90deg, rgba(79, 70, 229, 0.08) 0%, transparent 100%);
+    border-left: 3px solid var(--nav-indigo-500);
+}
+
+.menu-items li.transient a,
+.menu-items li.transient .menu-label {
+    color: var(--nav-indigo-600);
+    font-weight: 600;
+}
+
+.menu-items li.completed .menu-label {
+    color: var(--nav-slate-400);
+}
+
+.menu-items li.visited > .menu-item {
+    background: var(--nav-slate-100);
+}
+
+.menu-items li:not(.active):not(.disabled):not(.completed):not(.visited):hover > .menu-item {
+    background-color: rgba(99, 102, 241, 0.06);
+}
+
+.menu-items li:not(.active):not(.disabled):not(.completed):not(.visited):hover a,
+.menu-items li:not(.active):not(.disabled):not(.completed):not(.visited):hover .menu-label {
+    color: var(--nav-indigo-600);
+}
+
+/* Breakpoint-specific tuning so the rail matches the right-pane width on
+   common laptop sizes without hand-tweaking via inline styles. */
+@media screen and (max-width: 1280px) {
+    .desktop-view { width: clamp(190px, 18vw, 220px); }
+}
+
+@media screen and (min-width: 1281px) and (max-width: 1500px) {
+    .desktop-view { width: 230px; }
+}
+
+@media screen and (min-width: 1501px) {
+    .desktop-view { width: 260px; }
+}

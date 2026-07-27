@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CIN_Validated__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Probe42 (NI): TRUE once Validate CIN succeeds (Company Status efiling_status == Active). only relevant when the Entity Name matches a Corporate_Probe42_Entity__c catalogue record.</description>
+    <label>CIN Validated</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,208 @@
+<template>
+    <template lwc:if={showSection}>
+        <div class="kyc-ext-wrapper">
+            <div class={containerClass}>
+
+                <!-- ── Header ─────────────────────────────────────────────── -->
+                <div class="kyc-ext-header-row">
+                    <div class="kyc-ext-header-title-group">
+                        <h3 class={headerClass}>
+                            <template lwc:if={isExtracting}>Extracting Information...</template>
+                            <template lwc:else>Extracted Document Details</template>
+                        </h3>
+                        <template lwc:if={addressSectionLabel}>
+                            <span class="kyc-ext-sublabel">({addressSectionLabel})</span>
+                        </template>
+                    </div>
+                    <template lwc:if={isExtracting}>
+                        <div class="kyc-ext-spinner-wrap">
+                            <lightning-spinner alternative-text="Extracting" size="small" variant="brand"></lightning-spinner>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- ── Detail grid ────────────────────────────────────────── -->
+                <template lwc:if={showDetails}>
+                    <div class="kyc-ext-grid">
+
+                        <!-- Row 1: First Name, Last Name, Gender -->
+                        <div class="kyc-ext-item">
+                            <span class="kyc-ext-label">First Name</span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={firstNameDisplayClass}>{firstNameValue}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={firstNameInputClass}
+                                    data-field="firstName" value={firstNameValue}
+                                    onchange={handleFieldChange} placeholder="First Name" />
+                            </template>
+                        </div>
+
+                        <div class="kyc-ext-item">
+                            <span class="kyc-ext-label">Last Name</span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={lastNameDisplayClass}>{lastNameValue}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={lastNameInputClass}
+                                    data-field="lastName" value={lastNameValue}
+                                    onchange={handleFieldChange} placeholder="Last Name" />
+                            </template>
+                        </div>
+
+                        <div class="kyc-ext-item">
+                            <span class="kyc-ext-label">Gender</span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={genderDisplayClass}>{genderValue}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={genderInputClass}
+                                    data-field="gender" value={genderValue}
+                                    readonly placeholder="Gender" />
+                            </template>
+                        </div>
+
+                        <!-- Row 2: DOB, DOI, DOE -->
+                        <div class="kyc-ext-item">
+                            <span class="kyc-ext-label">
+                                <lightning-icon icon-name="utility:event" size="xx-small" class="kyc-ext-label-icon"></lightning-icon>
+                                Date of Birth
+                            </span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={dobDisplayClass}>{dobValue}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={dobInputClass}
+                                    data-field="dob" value={dobValue}
+                                    readonly placeholder="Date of Birth" />
+                            </template>
+                        </div>
+
+                        <div class="kyc-ext-item">
+                            <span class="kyc-ext-label">
+                                <lightning-icon icon-name="utility:event" size="xx-small" class="kyc-ext-label-icon"></lightning-icon>
+                                Date of Issue
+                            </span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={doiDisplayClass}>{doiValue}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={doiInputClass}
+                                    data-field="doi" value={doiValue}
+                                    readonly placeholder="Date of Issue" />
+                            </template>
+                        </div>
+
+                        <div class="kyc-ext-item">
+                            <span class="kyc-ext-label">
+                                <lightning-icon icon-name="utility:event" size="xx-small" class="kyc-ext-label-icon"></lightning-icon>
+                                Date of Expiry
+                            </span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={doeDisplayClass}>{doeValue}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={doeInputClass}
+                                    data-field="doe" value={doeValue}
+                                    onchange={handleFieldChange} placeholder="Date of Expiry" />
+                            </template>
+                        </div>
+
+                        <!-- Row 3: Address Line 1 (full width) -->
+                        <div class="kyc-ext-item kyc-ext-item--span-3">
+                            <span class="kyc-ext-label">Address Line 1</span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={address1DisplayClass}>{address1Value}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={address1InputClass}
+                                    data-field="address1" value={address1Value}
+                                    onchange={handleFieldChange} placeholder="Address Line 1" />
+                            </template>
+                        </div>
+
+                        <!-- Row 4: Address Line 2 (full width) -->
+                        <div class="kyc-ext-item kyc-ext-item--span-3">
+                            <span class="kyc-ext-label">Address Line 2</span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={address2DisplayClass}>{address2Value}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={address2InputClass}
+                                    data-field="address2" value={address2Value}
+                                    onchange={handleFieldChange} placeholder="Address Line 2" />
+                            </template>
+                        </div>
+
+                        <!-- Row 5: Pin Code, City, State -->
+                        <div class="kyc-ext-item">
+                            <span class="kyc-ext-label">Pin Code</span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={pinDisplayClass}>{pinValue}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={pinInputClass}
+                                    data-field="pin" value={pinValue}
+                                    maxlength="6"
+                                    onchange={handleFieldChange} placeholder="Pin Code" />
+                            </template>
+                        </div>
+
+                        <div class="kyc-ext-item">
+                            <span class="kyc-ext-label">City</span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={cityDisplayClass}>{cityValue}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={cityInputClass}
+                                    data-field="city" value={cityValue}
+                                    onchange={handleFieldChange} placeholder="City" />
+                            </template>
+                        </div>
+
+                        <div class="kyc-ext-item">
+                            <span class="kyc-ext-label">State</span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={stateDisplayClass}>{stateValue}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={stateInputClass}
+                                    data-field="state" value={stateValue}
+                                    onchange={handleFieldChange} placeholder="State" />
+                            </template>
+                        </div>
+
+                        <!-- Row 6: Document Number + Place of Issue -->
+                        <div class="kyc-ext-item">
+                            <span class="kyc-ext-label">{docNumberLabel}</span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={docNumberDisplayClass}>{docNumberValue}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={docNumberInputClass}
+                                    data-field="docNumber" value={docNumberValue}
+                                    readonly placeholder={docNumberLabel} />
+                            </template>
+                        </div>
+
+                        <div class="kyc-ext-item">
+                            <span class="kyc-ext-label">
+                                <lightning-icon icon-name="utility:checkin" size="xx-small" class="kyc-ext-label-icon"></lightning-icon>
+                                Place of Issue
+                            </span>
+                            <template lwc:if={isReadOnly}>
+                                <span class={poiDisplayClass}>{poiValue}</span>
+                            </template>
+                            <template lwc:else>
+                                <input type="text" class={poiInputClass}
+                                    data-field="poi" value={poiValue}
+                                    readonly placeholder="Place of Issue" />
+                            </template>
+                        </div>
+
+                    </div>
+                </template>
+            </div>
+        </div>
+    </template>
+</template>

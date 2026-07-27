@@ -1,0 +1,100 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false"
+           docType="html" applyBodyTag="false" applyHtmlTag="false">
+<apex:includeLightning />
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Income Verification Consent</title>
+    <apex:slds />
+    <script src="/lightning/lightning.out.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f4f6f9;
+            min-height: 100vh;
+        }
+        .page-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background: #fff;
+            padding: .75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,.08);
+        }
+        .header-logo {
+            height: 36px;
+            width: auto;
+            max-width: 120px;
+            object-fit: contain;
+            display: block;
+        }
+        .header h1 {
+            color: #1e293b;
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+        .lwc-wrap {
+            max-width: 460px;
+            width: 100%;
+        }
+        @media (max-width: 480px) {
+            .header { padding: .5rem .75rem; }
+            .header-logo { height: 28px; max-width: 80px; }
+            .header h1 { font-size: .95rem; }
+            .main-content { padding: 1rem .5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <header class="header">
+            <img src="{!$Resource.mylogo}" alt="Logo" class="header-logo" />
+            <h1>Income Verification Consent</h1>
+        </header>
+
+        <main class="main-content">
+            <div class="lwc-wrap">
+                <div id="lwcContainer"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function initializeLightningOut() {
+            if (typeof $Lightning !== 'undefined') {
+                $Lightning.use("c:IncomeVerificationConsentApp", function() {
+                    $Lightning.createComponent(
+                        "c:incomeVerificationViaMobile",
+                        {},
+                        "lwcContainer",
+                        function(cmp) {
+                            console.log("[IncomeVerificationConsent] LWC loaded successfully.");
+                        }
+                    );
+                });
+            } else {
+                setTimeout(initializeLightningOut, 100);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeLightningOut);
+    </script>
+</body>
+</html>
+</apex:page>

@@ -1,0 +1,395 @@
+<template>
+    <lightning-modal-header label="Create Query"></lightning-modal-header>
+    <lightning-modal-body>
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+        <div class="section-container slds-var-m-bottom_small">
+            <div class="section-header slds-theme_shade slds-text-color_default">
+                Query Details
+            </div>
+            <div class="section-details slds-grid slds-gutters slds-wrap">
+                <div class="slds-col slds-large-size_1-of-2 slds-small-size_1-of-1">
+                    <div class="searchable-dropdown">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label">
+                                <abbr class="slds-required" title="required">* </abbr>Query Type
+                            </label>
+                            <div class="slds-form-element__control">
+                                <input type="text"
+                                    class="slds-input"
+                                    value={queryTypeSearchTerm}
+                                    placeholder="Search Query Type..."
+                                    oninput={handleQueryTypeSearchInput}
+                                    onfocus={handleQueryTypeLookupFocus}
+                                    onblur={handleQueryTypeLookupBlur}
+                                >
+                            </div>
+                        </div>
+                        <template if:true={queryTypeLookupOpen}>
+                            <div class="dropdown-list" role="listbox">
+                                <template for:each={filteredQueryTypeOptions} for:item="opt">
+                                    <div key={opt.value}
+                                        class="dropdown-option"
+                                        role="option"
+                                        data-value={opt.value}
+                                        data-label={opt.label}
+                                        onmousedown={handleSelectQueryTypeOption}>
+                                        {opt.label}
+                                    </div>
+                                </template>
+                                <template if:false={filteredQueryTypeOptions.length}>
+                                    <div class="dropdown-option slds-text-color_weak">No matching query types found</div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                
+                <div class="slds-col slds-large-size_1-of-2 slds-small-size_1-of-1">
+                    <div class="searchable-dropdown">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label">
+                                <abbr class="slds-required" title="required">* </abbr>Query Sub Type
+                            </label>
+                            <div class="slds-form-element__control">
+                                <input type="text"
+                                    class="slds-input"
+                                    value={querySubTypeSearchTerm}
+                                    placeholder="Search Query Sub Type..."
+                                    oninput={handleQuerySubTypeSearchInput}
+                                    onfocus={handleQuerySubTypeLookupFocus}
+                                    onblur={handleQuerySubTypeLookupBlur}
+                                >
+                            </div>
+                        </div>
+                        <template if:true={querySubTypeLookupOpen}>
+                            <div class="dropdown-list" role="listbox">
+                                <template for:each={filteredQuerySubTypeOptions} for:item="opt">
+                                    <div key={opt.value}
+                                        class="dropdown-option"
+                                        role="option"
+                                        data-value={opt.value}
+                                        data-label={opt.label}
+                                        onmousedown={handleSelectQuerySubTypeOption}>
+                                        {opt.label}
+                                    </div>
+                                </template>
+                                <template if:false={filteredQuerySubTypeOptions.length}>
+                                    <div class="dropdown-option slds-text-color_weak">No matching query sub type found</div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                <div class="slds-col slds-large-size_1-of-2 slds-small-size_1-of-1">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">Applicant (Optional)</label>
+                        <div class="slds-form-element__control slds-grid slds-grid_vertical-align-center slds-gutters_xx-small">
+                            <div class="slds-col slds-grow">
+                                <lightning-combobox
+                                    name="applicant"
+                                    value={selectedApplicant}
+                                    placeholder="Select Applicant"
+                                    options={applicantOptions}
+                                    onchange={handleApplicantChange}
+                                    variant="label-hidden">
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-shrink">
+                                <lightning-button
+                                    label="Clear"
+                                    variant="neutral"
+                                    onclick={handleClearApplicant}
+                                    class="slds-var-m-bottom_x-small">
+                                </lightning-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-large-size_1-of-2 slds-small-size_1-of-1">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">Document Checklist (Optional)</label>
+                        <div class="slds-form-element__control slds-grid slds-grid_vertical-align-center slds-gutters_xx-small">
+                            <div class="slds-col slds-grow">
+                                <lightning-combobox
+                                    name="documentChecklist"
+                                    value={selectedDocumentChecklist}
+                                    placeholder="Select Document Checklist"
+                                    options={documentChecklistOptions}
+                                    onchange={handleDocumentChecklistChange}
+                                    variant="label-hidden">
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-shrink">
+                                <lightning-button
+                                    label="Clear"
+                                    variant="neutral"
+                                    onclick={handleClearDocumentChecklist}
+                                    class="slds-var-m-bottom_x-small">
+                                </lightning-button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-form-element__help slds-var-m-top_xx-small slds-text-color_weak" style="font-size: 0.75rem;">
+                        {documentChecklistHelpMessage}
+                    </div>
+                </div>
+                <div class="slds-col slds-large-size_1-of-2 slds-small-size_1-of-1">
+                    <lightning-textarea
+                        name="description"
+                        label="Description"
+                        value={queryDescription}
+                        placeholder="Enter description"
+                        onchange={handleInputChange}>
+                    </lightning-textarea>
+                </div>
+                <div class="slds-col slds-large-size_1-of-2 slds-small-size_1-of-1">
+                    <lightning-combobox
+                        name="priority"
+                        label="Priority"
+                        value={selectedPriority}
+                        placeholder="Select Priority"
+                        options={priorityOptions}
+                        onchange={handleInputChange}
+                        required>
+                    </lightning-combobox>
+                </div>
+            </div>
+        </div>
+        <div class="section-container slds-var-m-bottom_small">
+            <div class="section-header slds-theme_shade slds-text-color_default">
+                User Selection
+            </div>
+            <div class="section-details slds-grid slds-gutters slds-wrap">
+                <div class="slds-col slds-size_1-of-1">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">
+                            <abbr class="slds-required" title="required">* </abbr>Assigned To
+                        </label>
+                        <div class="slds-var-m-bottom_xx-small user-links">
+                            <a onclick={handleShowApplicationUsers} class="user-link" style="cursor: pointer; color: #0070d2;">Show users who worked on the Application</a>
+                            <a onclick={handleShowAllUsers} class="user-link" style="cursor: pointer; color: #0070d2;">Select all users</a>
+                        </div>
+                        <template if:true={hasAssignedUser}>
+                            <div class="slds-form-element__control">
+                                <div class="slds-box slds-box_x-small slds-theme_shade" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span class="slds-text-body_regular">{assignedToUserName}</span>
+                                    <lightning-button-icon 
+                                        icon-name="utility:close" 
+                                        variant="bare" 
+                                        alternative-text="Clear"
+                                        title="Clear selected user"
+                                        onclick={handleClearAssignedUser}>
+                                    </lightning-button-icon>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={hasAssignedUser}>
+                            <div class="slds-form-element__control">
+                                <div class="slds-box slds-box_x-small" style="color: #706e6b; font-style: italic;">
+                                    No user selected. Click a link above to select.
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <template if:true={showUserSelection}>
+                        <template if:true={showAllUsers}>
+                            <div class="slds-box slds-theme_shade slds-var-m-top_small slds-var-p-around_small">
+                                <div class="slds-grid slds-gutters slds-wrap">
+                                    <div class="slds-col slds-large-size_1-of-2 slds-small-size_1-of-1">
+                                        <lightning-combobox
+                                            name="productFilter"
+                                            label="Filter by Product"
+                                            value={productFilter}
+                                            placeholder="All Products"
+                                            options={productOptions}
+                                            onchange={handleProductFilterChange}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="slds-col slds-large-size_1-of-2 slds-small-size_1-of-1">
+                                        <div class="searchable-dropdown">
+                                            <div class="slds-form-element">
+                                                <label class="slds-form-element__label" for="eligible-owner-filter">Filter by Manager (Searchable)</label>
+                                                <div class="slds-form-element__control">
+                                                    <input type="text"
+                                                        id="eligible-manager-filter"
+                                                        class="slds-input"
+                                                        value={managerSearchTerm}
+                                                        placeholder="Type manager name..."
+                                                        oninput={handleManagerSearchInput}
+                                                        onfocus={handleManagerLookupFocus}
+                                                        onblur={handleManagerLookupBlur}
+                                                    >
+                                                </div>
+                                            </div>
+                                            <template if:true={managerLookupOpen}>
+                                                <div class="dropdown-list" role="listbox">
+                                                    <template for:each={filteredManagerOptions} for:item="opt">
+                                                        <div key={opt.value}
+                                                            class="dropdown-option"
+                                                            role="option"
+                                                            data-value={opt.value}
+                                                            data-label={opt.label}
+                                                            onmousedown={handleSelectManager}
+                                                        >
+                                                            {opt.label}
+                                                        </div>
+                                                    </template>
+                                                    <template if:false={filteredManagerOptions.length}>
+                                                        <div class="dropdown-option slds-text-color_weak">No matching managers found</div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                                <template if:true={hasUserSelectionFilters}>
+                                    <div class="slds-var-m-top_small slds-text-align_right">
+                                        <lightning-button 
+                                            variant="neutral" 
+                                            label="Clear Filters"
+                                            icon-name="utility:clear"
+                                            onclick={handleClearFilters}>
+                                        </lightning-button>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        <div class="slds-text-body_small slds-var-m-top_small" style="color: #706e6b;">
+                            <strong>{filteredAvailableUsers.length}</strong> user(s) found. Click "Select" to assign.
+                        </div>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-var-m-top_small user-picker-table">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Action">Action</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Name">Name</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Persona">Persona</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Email">Email</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Manager">Manager</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={filteredAvailableUsers} for:item="user">
+                                    <tr key={user.userId} class="slds-hint-parent">
+                                        <td>
+                                            <template if:true={showApplicationUsers}>
+                                                <lightning-button 
+                                                    variant="brand" 
+                                                    label="Select"
+                                                    data-user-id={user.userId}
+                                                    onclick={handleSelectUser}
+                                                >
+                                                </lightning-button>
+                                            </template>
+                                            <template if:true={showAllUsers}>
+                                                <lightning-button 
+                                                    variant="brand"
+                                                    label="Select"
+                                                    disabled={user.isOutOfOffice}
+                                                    data-user-id={user.userId}
+                                                    onclick={handleSelectUser}
+                                                    class="slds-var-m-left_x-small"
+                                                >
+                                                </lightning-button>
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <div class="slds-cell-wrap" title={user.userName}>{user.userName}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-cell-wrap" title={user.userPersona}>{user.userPersona}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-cell-wrap" title={user.userEmail}>{user.userEmail}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-cell-wrap" title={user.managerName}>{user.managerName}</div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </template>
+                </div>
+            </div>
+        </div>
+        <template if:true={showFileUpload}>
+            <div class="section-container slds-var-m-bottom_small">
+                <div class="section-header slds-theme_shade slds-text-color_default">
+                    File Upload (Optional)
+                </div>
+                <div class="section-details">
+                    <div class="slds-box slds-theme_shade slds-var-p-around_medium">
+                        <template if:true={createdCaseNumber}>
+                            <p class="slds-text-title_bold slds-var-m-bottom_x-small">Case Number: {createdCaseNumber}</p>
+                        </template>
+                        <h3 class="slds-text-heading_small slds-var-m-bottom_small">
+                            Case Created Successfully!
+                            <lightning-icon icon-name="utility:success" size="x-small" class="slds-var-m-left_x-small"></lightning-icon>
+                        </h3>
+                        <p class="slds-text-body_regular slds-var-m-bottom_medium">
+                            You can now upload attachments (optional)
+                        </p>
+                        <lightning-file-upload
+                            label="Attach Files"
+                            name="fileUploader"
+                            accept="image/png,image/jpeg,image/jpg,image/gif,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+                            record-id={createdCaseId}
+                            onuploadfinished={handleUploadFinished}
+                            multiple
+                        >
+                        </lightning-file-upload>
+                        <template if:true={hasUploadedFiles}>
+                            <div class="slds-var-m-top_small">
+                                <p class="slds-text-title slds-var-m-bottom_x-small">Uploaded Files:</p>
+                                <ul class="slds-has-dividers_bottom-space">
+                                    <template for:each={uploadedFiles} for:item="file">
+                                        <li key={file.documentId} class="slds-item slds-grid slds-grid_vertical-align-center" style="padding: 0.25rem 0;">
+                                            <lightning-icon icon-name="doctype:attachment" size="x-small" class="slds-var-m-right_x-small"></lightning-icon>
+                                            <span class="slds-col slds-truncate" title={file.name}>{file.name}</span>
+                                            <template if:true={file.isDeleting}>
+                                                <lightning-spinner alternative-text="Deleting" size="x-small" class="slds-var-m-left_x-small"></lightning-spinner>
+                                            </template>
+                                            <template if:false={file.isDeleting}>
+                                                <lightning-button-icon
+                                                    icon-name="utility:delete"
+                                                    variant="bare"
+                                                    alternative-text="Delete file"
+                                                    title="Delete file"
+                                                    size="small"
+                                                    data-document-id={file.documentId}
+                                                    onclick={handleDeleteUploadedFile}
+                                                    class="slds-var-m-left_x-small">
+                                                </lightning-button-icon>
+                                            </template>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button label="Cancel" variant="neutral" onclick={handleCloseModal}></lightning-button>
+        <template lwc:if={showFileUpload}>
+            <lightning-button label="Done" variant="brand" class="slds-var-m-left_xx-small" onclick={handleCloseModal}></lightning-button>
+        </template>
+        <template lwc:else>
+            <lightning-button label="Create Query" variant="brand" class="slds-var-m-left_xx-small" onclick={handleCreateQuery}></lightning-button>
+        </template>
+    </lightning-modal-footer>
+</template>

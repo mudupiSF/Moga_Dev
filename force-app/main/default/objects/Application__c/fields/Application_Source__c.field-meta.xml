@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Application_Source__c</fullName>
+    <description>Application sources defines here.</description>
+    <label>Application Source</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>D2C</fullName>
+                <default>false</default>
+                <label>D2C</label>
+            </value>
+            <value>
+                <fullName>DSA</fullName>
+                <default>false</default>
+                <label>DSA</label>
+            </value>
+            <value>
+                <fullName>Droom</fullName>
+                <default>false</default>
+                <label>Droom</label>
+            </value>
+            <value>
+                <fullName>OLA</fullName>
+                <default>false</default>
+                <label>OLA</label>
+            </value>
+            <value>
+                <fullName>MSIL</fullName>
+                <default>false</default>
+                <label>MSIL</label>
+            </value>
+            <value>
+                <fullName>Mahindra</fullName>
+                <default>false</default>
+                <label>Mahindra</label>
+            </value>
+            <value>
+                <fullName>Web</fullName>
+                <default>false</default>
+                <label>Web</label>
+            </value>
+            <value>
+                <fullName>Phone Inquiry</fullName>
+                <default>false</default>
+                <label>Phone Inquiry</label>
+            </value>
+            <value>
+                <fullName>Partner Referral</fullName>
+                <default>false</default>
+                <label>Partner Referral</label>
+            </value>
+            <value>
+                <fullName>Purchased List</fullName>
+                <default>false</default>
+                <label>Purchased List</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

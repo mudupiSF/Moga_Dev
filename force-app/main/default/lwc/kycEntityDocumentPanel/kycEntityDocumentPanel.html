@@ -1,0 +1,108 @@
+<template>
+    <div class="dv-panel-root">
+        <div class={splitClass}>
+            <template lwc:if={showLeftColumn}>
+            <div class={leftColumnClass}>
+                <slot name="left"></slot>
+            </div>
+            </template>
+            <template lwc:if={showRightColumn}>
+            <div class="dv-right">
+                <div class="dv-file-card">
+                    <span class="dv-file-legend">
+                        {resolvedLegendLabel}
+                        <template lwc:if={required}>
+                            <span class="dv-file-req" title="Required">*</span>
+                        </template>
+                    </span>
+                    <template lwc:if={showFileTitle}>
+                        <p class="dv-file-title">{fileTitle}</p>
+                    </template>
+
+                    <template lwc:if={showUploadBtn}>
+                        <button type="button" class="dv-upload-btn" onclick={handleUploadClick} title="Select files">
+                            <img src={uploadIconUrl} class="dv-upload-icon" alt="Upload" />
+                            <span class="dv-upload-btn-text">Select Files</span>
+                        </button>
+                    </template>
+
+                    <template lwc:if={showEmptyPlaceholder}>
+                        <p class="dv-file-empty">No file uploaded</p>
+                    </template>
+
+                    <template lwc:if={showFileRow}>
+                        <div class="dv-file-row dv-file-row--single">
+                            <div class="dv-file-row-left">
+                                <span class="dv-file-check">
+                                    <lightning-icon icon-name="utility:success" size="x-small" variant="inverse" alternative-text="Uploaded"></lightning-icon>
+                                </span>
+                                <div class="dv-file-meta">
+                                    <span class="dv-file-name">{singleFile.name}</span>
+                                    <span class="dv-file-status">Uploaded</span>
+                                </div>
+                            </div>
+                            <div class="dv-file-row-actions">
+                                <button type="button" class="dv-file-action dv-file-action--preview"
+                                    data-file-id={singleFile.id}
+                                    data-content-document-id={singleFile.contentDocumentId}
+                                    data-content-version-id={singleFile.contentVersionId}
+                                    data-file-name={singleFile.name}
+                                    data-file-extension={singleFile.extension}
+                                    onclick={handleFilePreviewClick} title="Preview">
+                                    <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                                </button>
+                                <template lwc:if={canDelete}>
+                                    <button type="button" class="dv-file-action dv-file-action--danger"
+                                        data-file-id={singleFile.id}
+                                        onclick={handleFileDeleteClick} title="Delete">
+                                        <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="dv-right-slot">
+                    <slot name="right"></slot>
+                </div>
+            </div>
+            </template>
+        </div>
+
+        <template lwc:if={showUploadedFilesBelow}>
+            <div class="dv-file-list-row dv-file-list-row--stacked">
+                <template for:each={files} for:item="file">
+                    <div key={file.id} class="dv-file-row dv-file-row--single">
+                        <div class="dv-file-row-left">
+                            <span class="dv-file-check">
+                                <lightning-icon icon-name="utility:success" size="x-small" variant="inverse" alternative-text="Uploaded"></lightning-icon>
+                            </span>
+                            <div class="dv-file-meta">
+                                <span class="dv-file-name" title={file.name}>{file.name}</span>
+                                <span class="dv-file-status">Uploaded</span>
+                            </div>
+                        </div>
+                        <div class="dv-file-row-actions">
+                            <button type="button" class="dv-file-action dv-file-action--preview"
+                                data-file-id={file.id}
+                                data-content-document-id={file.contentDocumentId}
+                                data-content-version-id={file.contentVersionId}
+                                data-file-name={file.fileName}
+                                data-file-extension={file.extension}
+                                onclick={handleFilePreviewClick} title="Preview">
+                                <lightning-icon icon-name="utility:preview" size="x-small"></lightning-icon>
+                            </button>
+                            <template lwc:if={canDelete}>
+                                <button type="button" class="dv-file-action dv-file-action--danger"
+                                    data-file-id={file.id}
+                                    onclick={handleFileDeleteClick} title="Delete">
+                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

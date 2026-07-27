@@ -1,0 +1,183 @@
+@import 'c/commonStyles';
+
+.schedule-root {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    min-height: 400px;
+}
+
+.schedule-header {
+    height: 80px;
+    position: relative;
+    background: var(--p4-slate-900, #0f172a);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+}
+
+.header-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(49, 46, 129, 0.8), transparent);
+}
+
+.header-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-icon-wrap {
+    padding: 0.6rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-icon {
+    --slds-c-icon-color-foreground-default: white;
+}
+
+.header-title {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+
+.loan-summary-card {
+    background: #fdf2f4;
+    border-radius: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem 1.5rem;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.summary-label {
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.summary-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.value-green  { color: #16a34a; }
+.value-blue   { color: #2563eb; }
+.value-orange { color: #ea580c; }
+.value-purple { color: #7c3aed; }
+.value-red    { color: #dc2626; }
+.value-dark   { color: #1e293b; }
+
+
+.header-subtitle {
+    color: rgba(199, 210, 254, 0.8);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.schedule-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+}
+
+.table-container {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.schedule-table th {
+    background: #f8fafc;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.schedule-table td {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.schedule-table tr:last-child td {
+    border-bottom: none;
+}
+
+.schedule-table tr:hover td {
+    background: #f8fafc;
+}
+
+.no-data-msg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: #64748b;
+    font-style: italic;
+}
+
+.schedule-footer {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.btn-deviation {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 1.375rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: opacity 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+    letter-spacing: 0.01em;
+}
+
+.btn-deviation:hover {
+    opacity: 0.88;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.45);
+}
+
+.btn-deviation:active {
+    opacity: 0.75;
+}

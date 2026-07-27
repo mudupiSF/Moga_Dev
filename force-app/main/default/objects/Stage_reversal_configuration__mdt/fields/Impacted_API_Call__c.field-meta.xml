@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Impacted_API_Call__c</fullName>
+    <description>Add the Integration master name,for multiple API use semi column separated</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Impacted API Call</label>
+    <required>false</required>
+    <type>TextArea</type>
+</CustomField>

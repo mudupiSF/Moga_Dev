@@ -1,0 +1,1351 @@
+@import "c/commonStyles";
+
+/* ── Host / root ──────────────────────────────────────────────────────────── */
+:host {
+    display: block;
+    width: 100%;
+    font-family: var(--p4-font-family);
+
+    /* Color tokens */
+    --kyc-slate-50:      #f8fafc;
+    --kyc-slate-100:     #f1f5f9;
+    --kyc-slate-200:     #e2e8f0;
+    --kyc-slate-400:     #94a3b8;
+    --kyc-slate-500:     #64748b;
+    --kyc-slate-600:     #475569;
+    --kyc-slate-700:     #334155;
+    --kyc-slate-800:     #1e293b;
+    --kyc-slate-900:     #0f172a;
+    --kyc-indigo-50:     #eef2ff;
+    --kyc-indigo-100:    #e0e7ff;
+    --kyc-indigo-500:    #6366f1;
+    --kyc-indigo-600:    #4f46e5;
+    --kyc-indigo-700:    #4338ca;
+    --kyc-emerald-500:   #10b981;
+    --kyc-indigo-hint:        #6366f1;
+    --kyc-indigo-hint-halo:   rgba(99, 102, 241, 0.22);
+}
+
+:host, :host * { font-family: var(--p4-font-family); }
+
+/* ── Page layout ──────────────────────────────────────────────────────────── */
+.kyc-page-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem;
+    position: relative;
+}
+
+/* ── Loading overlay ──────────────────────────────────────────────────────── */
+.kyc-loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.65);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+.kyc-card {
+    width: 100%;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--kyc-slate-100);
+    overflow: visible;
+    box-sizing: border-box;
+}
+
+/* ── Card header ──────────────────────────────────────────────────────────── */
+.kyc-card-header {
+    height: 72px;
+    min-height: 72px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background: var(--kyc-slate-900);
+    border-radius: 1rem 1rem 0 0;
+}
+
+.kyc-header-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(49, 46, 129, 0.8), transparent);
+}
+
+.kyc-header-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 1rem;
+    height: 100%;
+}
+
+.kyc-header-icon-wrap {
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+}
+
+.kyc-header-icon { --slds-c-icon-color-foreground-default: white; }
+
+.kyc-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.kyc-header-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.025em;
+}
+
+.kyc-header-subtitle {
+    margin: 0;
+    font-size: 0.75rem;
+    color: rgba(199, 210, 254, 0.8);
+}
+
+/* ── Card body ────────────────────────────────────────────────────────────── */
+.kyc-card-body {
+    padding: 1rem;
+    overflow: visible;
+}
+
+@media (min-width: 768px) {
+    .kyc-card-body { padding: 1.25rem; }
+}
+
+/* ── Fields grid (2-col on desktop) ──────────────────────────────────────── */
+.kyc-fields-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem 1rem;
+    align-items: start;
+}
+
+@media (min-width: 768px) {
+    .kyc-fields-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.kyc-docs-two-col {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem 1rem;
+    align-items: start;
+}
+
+@media (min-width: 1024px) {
+    .kyc-docs-two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .kyc-docs-two-col--dynamic:not(.kyc-docs-two-col--split) { grid-template-columns: 1fr; }
+}
+
+.kyc-docs-left,
+.kyc-docs-right {
+    min-width: 0;
+}
+
+.kyc-docs-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.kyc-docs-left .kyc-fields-grid {
+    grid-template-columns: 1fr;
+}
+
+/* In dynamic non-split mode (Aadhaar/Others paths), keep first normal fields
+   in two columns so Address Document Type + CKYC ID sit on one row. */
+@media (min-width: 768px) {
+    .kyc-docs-two-col--dynamic:not(.kyc-docs-two-col--split) .kyc-docs-left .kyc-fields-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.kyc-field-wrap { min-width: 0; }
+
+/* Full-width override (spans both columns) */
+@media (min-width: 768px) {
+    .kyc-field-wrap-full { grid-column: 1 / -1; }
+}
+
+/* ── Field cell ───────────────────────────────────────────────────────────── */
+
+/* Editable field cell — bare flex wrapper, no box / no bullet, mirrors
+   Basic Details `.bmp-field-cell`. Read-only data cards (e.g. extracted
+   OCR details, future `.kyc-info-cell`) keep their boxed look elsewhere. */
+.kyc-field-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.kyc-field-label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--kyc-slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.kyc-field-value-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+    max-width: 40rem;
+}
+
+.kyc-docs-two-col--dynamic:not(.kyc-docs-two-col--split) .kyc-field-value-col {
+    max-width: 100%;
+}
+
+/* ── Indigo "available-to-fill" highlight on Lightning base components ───── */
+
+/* Empty radio pill group — every option glows indigo until one is checked. */
+.kyc-radio-group:not(:has(.kyc-radio-input:checked)) .kyc-radio-label {
+    border-color: var(--kyc-indigo-hint);
+    box-shadow: 0 0 0 2px var(--kyc-indigo-hint-halo);
+}
+
+/* ── Required indicator ───────────────────────────────────────────────────── */
+.kyc-required-indicator {
+    color: #ea001e;
+    margin-left: 0.125rem;
+    font-weight: 700;
+}
+
+/* ── Validation error ─────────────────────────────────────────────────────── */
+.kyc-field-error {
+    font-size: 0.75rem;
+    color: #ea001e;
+    margin-top: 0.125rem;
+    white-space: pre-line;
+}
+
+/* Neutral, informational message under an input (e.g. "Preparing upload…"). */
+.kyc-field-hint {
+    font-size: 0.75rem;
+    color: var(--kyc-slate-500, #64748b);
+    margin-top: 0.125rem;
+}
+
+/* ── Radio pills ──────────────────────────────────────────────────────────── */
+.kyc-radio-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.kyc-radio-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.kyc-radio-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    min-width: 75px;
+    height: 38px;
+    cursor: pointer;
+    background: #ffffff;
+    border: 1px solid var(--kyc-slate-200);
+    border-radius: 0.375rem;
+    transition: border-color 0.2s, background 0.2s;
+    user-select: none;
+}
+
+.kyc-radio-label:hover {
+    border-color: var(--kyc-indigo-500);
+    background: var(--kyc-indigo-50);
+}
+
+.kyc-radio-circle {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--kyc-slate-200);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    flex-shrink: 0;
+    position: relative;
+    transition: border-color 0.2s;
+}
+
+.kyc-radio-circle::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: transparent;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: background 0.2s;
+}
+
+.kyc-radio-label:has(input:checked) {
+    border-color: var(--kyc-indigo-600);
+    background: var(--kyc-indigo-50);
+}
+
+.kyc-radio-label:has(input:checked) .kyc-radio-circle {
+    border-color: var(--kyc-indigo-600);
+}
+
+.kyc-radio-label:has(input:checked) .kyc-radio-circle::after {
+    background: var(--kyc-indigo-600);
+}
+
+.kyc-radio-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--kyc-slate-700);
+}
+
+/* ── File upload ──────────────────────────────────────────────────────────── */
+.kyc-file-upload-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 0;
+}
+
+.kyc-file-uploaded-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.625rem;
+    background: var(--kyc-slate-50);
+    border: 1px solid var(--kyc-slate-200);
+    border-radius: 0.5rem;
+    min-width: 0;
+}
+
+.kyc-file-success-icon {
+    --sds-c-icon-color-foreground-default: var(--kyc-indigo-700);
+    --slds-c-icon-color-foreground-default: var(--kyc-indigo-700);
+    flex-shrink: 0;
+}
+
+.kyc-file-selected-name {
+    flex: 1;
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--kyc-slate-700);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.kyc-file-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    border: none;
+    background: transparent;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    color: var(--kyc-slate-500);
+    transition: color 0.15s, background 0.15s;
+    flex-shrink: 0;
+}
+
+.kyc-file-action-btn:hover {
+    background: var(--kyc-slate-100);
+    color: var(--kyc-slate-800);
+}
+
+.kyc-file-action-btn-danger:hover {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+/* Selected-state styling for the radio label (paired with :has(input:checked)). */
+.kyc-radio-label-checked {
+    border-color: var(--kyc-indigo-600);
+    background: var(--kyc-indigo-50);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Aadhaar Verification — Visual Picker (Current + Permanent Address KYC)
+   ──────────────────────────────────────────────────────────────────────────
+   Four interactive tiles in place of the file-upload component when the
+   user selects "Aadhaar Card": eKYC OTP, Biometric, Offline XML, DigiLocker
+   (DigiLocker added in ITER 0.2). The desktop grid was tightened from 5
+   to 4 columns so the 4 tiles fill the row cleanly with no orphan slot;
+   tablet breakpoint stays at 2x2 (4 tiles look balanced).
+   ══════════════════════════════════════════════════════════════════════════ */
+.kyc-aadhaar-tile-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.875rem;
+    width: 100%;
+}
+
+@media (max-width: 1100px) {
+    .kyc-aadhaar-tile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 720px) {
+    .kyc-aadhaar-tile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 480px) {
+    .kyc-aadhaar-tile-grid { grid-template-columns: 1fr; }
+}
+
+.kyc-aadhaar-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.45rem;
+    padding: 0.95rem 0.9rem 0.85rem;
+    min-height: 8.25rem;
+    background: #ffffff;
+    border: 2px solid var(--kyc-slate-200, #e2e8f0);
+    border-radius: 0.75rem;
+    cursor: pointer;
+    text-align: left;
+
+    overflow: visible;
+    transition: border-color 240ms ease, background-color 240ms ease,
+                box-shadow 240ms ease, transform 240ms ease;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    font-family: inherit;
+}
+
+.kyc-aadhaar-tile:hover:not([disabled]):not(.kyc-aadhaar-tile-locked) {
+    border-color: var(--kyc-indigo-300, #a5b4fc);
+    background: #f0fdff;
+    box-shadow: 0 10px 18px -6px rgba(15, 23, 42, 0.12);
+    transform: translateY(-2px);
+}
+
+.kyc-aadhaar-tile:focus-visible {
+    outline: none;
+    border-color: var(--kyc-indigo-600);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
+}
+
+.kyc-aadhaar-tile-selected,
+.kyc-aadhaar-tile-selected:hover {
+    border-color: var(--kyc-indigo-600, #4f46e5);
+    background: #ffffff;
+    box-shadow:
+        0 0 0 4px rgba(44, 218, 238, 0.18),
+        0 20px 30px -10px rgba(79, 70, 229, 0.18);
+    transform: scale(1.02);
+    z-index: 1;
+}
+
+.kyc-aadhaar-tile-locked {
+    cursor: default;
+    opacity: 0.85;
+}
+
+.kyc-aadhaar-tile-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.125rem;
+    height: 2.125rem;
+    background: var(--kyc-indigo-50);
+    color: var(--kyc-indigo-600);
+    border-radius: 0.5rem;
+    transition: transform 240ms ease;
+    --sds-c-icon-color-foreground-default: var(--kyc-indigo-600);
+}
+
+.kyc-aadhaar-tile-selected .kyc-aadhaar-tile-icon-wrap {
+    transform: scale(1.05);
+}
+
+.kyc-aadhaar-tile-label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--kyc-slate-800);
+    line-height: 1.25;
+    letter-spacing: -0.005em;
+}
+
+.kyc-aadhaar-tile-selected .kyc-aadhaar-tile-label {
+    color: #1e1b4b;
+}
+
+.kyc-aadhaar-tile-description {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--kyc-slate-500, #64748b);
+    line-height: 1.35;
+}
+
+/* Cyan-filled tick pill, top-right of the selected tile. Mirrors the
+   Intermediate Page `.cac-rx-tile-check-pill` so the brand language stays
+   consistent across product selection and KYC method selection. */
+.kyc-aadhaar-tile-check {
+    position: absolute;
+    top: 0.625rem;
+    right: 0.625rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: #cffafe;
+    color: #0891b2;
+    border-radius: 9999px;
+    font-weight: 900;
+    line-height: 1;
+    --sds-c-icon-color-foreground-default: #0891b2;
+}
+
+.kyc-aadhaar-verify-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.875rem;
+}
+
+.kyc-aadhaar-verify-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    border: none;
+    background: var(--kyc-indigo-600);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    box-shadow: 0 6px 14px rgba(79, 70, 229, 0.22);
+    transition: background-color 140ms ease, box-shadow 140ms ease,
+                transform 120ms ease;
+}
+
+.kyc-aadhaar-verify-btn:hover:not(.kyc-aadhaar-verify-btn-disabled) {
+    background: var(--kyc-indigo-700, #4338ca);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+}
+
+.kyc-aadhaar-verify-btn-disabled {
+    cursor: not-allowed;
+    background: var(--kyc-slate-300, #cbd5e1);
+    box-shadow: none;
+    color: #ffffff;
+}
+
+.kyc-aadhaar-expired-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 8px 14px;
+    background: var(--kyc-amber-50, #fffbeb);
+    color: var(--kyc-amber-800, #92400e);
+    border: 1px solid var(--kyc-amber-200, #fde68a);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.kyc-aadhaar-expired-banner lightning-icon {
+    --sds-c-icon-color-foreground-default: var(--kyc-amber-700, #b45309);
+}
+
+/* VERIFIED pill — Indigo border + Turquoise fill (matches the global
+   `--verified` action-tile palette in commonStyles.css for visual
+   consistency wherever a "VERIFIED" state is displayed). */
+.kyc-aadhaar-verified-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    background: var(--form-cyan-100, #cffafe);
+    color: var(--form-indigo-700, #4338ca);
+    border: 1.5px solid var(--form-indigo-700, #4338ca);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    box-shadow: 0 0 0 2px var(--form-cyan-halo, rgba(44, 218, 238, 0.18));
+    --sds-c-icon-color-foreground-default: var(--form-indigo-700, #4338ca);
+    --slds-c-icon-color-foreground-default: var(--form-indigo-700, #4338ca);
+}
+
+/* ── Tile-corner state overlays (info icon + Verified badge) ──────────────
+   The visual picker tile can carry one of three corner overlays at any time:
+     - .kyc-aadhaar-tile-check          tick pill (selected, not yet verified)
+     - .kyc-aadhaar-tile-info           info icon  (eKYC OTP in-flight) → hover/focus reveals a tooltip
+     - .kyc-aadhaar-tile-verified-badge "Verified" chip (replaces both, post-verification)
+*/
+
+
+.kyc-aadhaar-tile-info {
+    position: absolute;
+    top: 0.625rem;
+    /* 0.625 (tick right) + 1.5 (tick width) + 0.375 (gap between info + tick) */
+    right: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.625rem;
+    height: 1.625rem;
+    background: var(--kyc-indigo-100, #e0e7ff);
+    color: var(--kyc-indigo-700, #4338ca);
+    border: 1.5px solid var(--kyc-indigo-400, #818cf8);
+    border-radius: 9999px;
+    cursor: help;
+    outline: none;
+    transition: background-color .15s ease, transform .12s ease,
+                box-shadow .15s ease;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.18);
+    /* Sits above sibling tile-corner badges (tick/verified). */
+    z-index: 5;
+    --sds-c-icon-color-foreground-default: var(--kyc-indigo-700, #4338ca);
+    --slds-c-icon-color-foreground-default: var(--kyc-indigo-700, #4338ca);
+}
+.kyc-aadhaar-tile-info:hover,
+.kyc-aadhaar-tile-info:focus-visible {
+    background: var(--kyc-indigo-200, #c7d2fe);
+    border-color: var(--kyc-indigo-600, #4f46e5);
+    transform: scale(1.08);
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.32);
+}
+
+/* Lift the entire tile to the very top when its info icon is hovered/focused.
+   The tooltip is positioned absolutely INSIDE the tile, so anchoring it to a
+   high z-index alone isn't enough — the surrounding sidebar/footer/sticky
+   action bar each form their own stacking contexts. Promoting the tile (which
+   already has position: relative) ensures the whole stacking context — tile
+   body + corner badges + tooltip — wins against anything else on screen. */
+.kyc-aadhaar-tile:has(.kyc-aadhaar-tile-info:hover),
+.kyc-aadhaar-tile:has(.kyc-aadhaar-tile-info:focus-visible),
+.kyc-aadhaar-tile:has(.kyc-aadhaar-tile-info:focus) {
+    z-index: 9999;
+}
+
+/* Tooltip popover — pure-CSS */
+.kyc-aadhaar-tile-info::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 0.625rem);
+    /* Slight right-shift so the tooltip's right edge clears the tile
+       corner without spilling off-screen on mobile breakpoints. */
+    right: -0.375rem;
+    width: max-content;
+    max-width: 18rem;
+    padding: 0.625rem 0.875rem;
+    background: #1e1b4b;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: 0.005em;
+    text-align: left;
+    white-space: normal;
+    border-radius: 8px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.28);
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease, visibility .15s ease;
+    /* Inside the tile's stacking context, this still needs to top sibling
+       overlays (verified badge, etc.) — 9999 keeps it well clear. */
+    z-index: 9999;
+}
+.kyc-aadhaar-tile-info::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 0.25rem);
+    right: 0.4rem;
+    border: 6px solid transparent;
+    border-top-color: #1e1b4b;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .15s ease, visibility .15s ease;
+    z-index: 10000;
+}
+.kyc-aadhaar-tile-info:hover::after,
+.kyc-aadhaar-tile-info:hover::before,
+.kyc-aadhaar-tile-info:focus::after,
+.kyc-aadhaar-tile-info:focus::before,
+.kyc-aadhaar-tile-info:focus-visible::after,
+.kyc-aadhaar-tile-info:focus-visible::before {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Verified badge — replaces both the tick and the info icon once the selected
+   method has cleared verification. Indigo border + Turquoise fill, matching
+   the global `--verified` palette in commonStyles.css. */
+.kyc-aadhaar-tile-verified-badge {
+    position: absolute;
+    top: 0.625rem;
+    right: 0.625rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.625rem 0.3rem 0.5rem;
+    background: var(--form-cyan-100, #cffafe);
+    color: var(--form-indigo-700, #4338ca);
+    border: 1.5px solid var(--form-indigo-700, #4338ca);
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1;
+    box-shadow: 0 0 0 2px var(--form-cyan-halo, rgba(44, 218, 238, 0.18));
+    --sds-c-icon-color-foreground-default: var(--form-indigo-700, #4338ca);
+    --slds-c-icon-color-foreground-default: var(--form-indigo-700, #4338ca);
+}
+
+/* ── POA / POI toggle questions ──────────────────────────────────────────── */
+.kyc-proof-toggles {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    padding: 0.75rem 1rem;
+    background: var(--kyc-slate-50);
+    border: 1px solid var(--kyc-slate-200);
+    border-radius: 0.625rem;
+}
+
+@media (min-width: 768px) {
+    .kyc-proof-toggles {
+        grid-template-columns: 1fr 1fr;
+        column-gap: 1.5rem;
+    }
+}
+
+.kyc-proof-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.4rem 0.5rem;
+    background: white;
+    border: 1px solid var(--kyc-slate-200);
+    border-radius: 0.5rem;
+    min-width: 0;
+}
+
+.kyc-proof-toggle-label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--kyc-slate-700);
+    letter-spacing: 0.01em;
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── Director Declaration section ────────────────────────────────────────── */
+.kyc-fields-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.kyc-declaration-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.kyc-declaration-text {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--kyc-slate-700);
+    background: var(--kyc-slate-50);
+    border: 1px solid var(--kyc-slate-100);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+}
+
+.kyc-declaration-divider {
+    height: 1px;
+    background: var(--kyc-slate-100);
+    margin: 0;
+}
+
+.kyc-non-individual-placeholder {
+    margin: 0;
+    padding: 1rem 0;
+    color: var(--kyc-slate-600);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+.kyc-footer-wrapper {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    margin-top: auto;
+}
+
+.kyc-footer {
+    padding: 0.5rem 1rem 1rem;
+    background: white;
+    border-top: 1px solid var(--kyc-slate-100);
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.kyc-read-only-hint {
+    font-size: 0.8125rem;
+    color: var(--kyc-slate-500);
+    font-style: italic;
+}
+
+.kyc-btn-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.kyc-primary-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    height: 40px;
+    min-width: 100px;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    background: var(--kyc-indigo-600);
+    color: white;
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+    transition: background 0.2s, transform 0.1s;
+}
+
+.kyc-primary-btn:hover  { background: var(--kyc-indigo-700); }
+.kyc-primary-btn:active { transform: scale(0.98); }
+
+.kyc-primary-btn[disabled],
+.kyc-primary-btn-disabled {
+    background: var(--kyc-slate-400);
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.7;
+}
+.kyc-primary-btn[disabled]:hover { background: var(--kyc-slate-400); }
+
+/* ── Aadhaar eKYC link modal ────────────────────────────────────────────── */
+.kyc-ekyc-modal-overlay {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999; padding: 1rem;
+}
+.kyc-ekyc-modal {
+    background: #fff; border-radius: 14px; box-shadow: 0 20px 50px rgba(15, 23, 42, .28);
+    width: 100%; max-width: 520px; overflow: hidden;
+    animation: kyc-ekyc-modal-in .18s ease-out;
+}
+@keyframes kyc-ekyc-modal-in {
+    from { opacity: 0; transform: translateY(8px) scale(.98); }
+    to   { opacity: 1; transform: none; }
+}
+.kyc-ekyc-modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.125rem 1.5rem; border-bottom: 1px solid #e2e8f0;
+}
+.kyc-ekyc-modal-header h2 { margin: 0; font-size: 1.0625rem; font-weight: 700; color: #1f2937; }
+.kyc-ekyc-modal-close {
+    background: none; border: none; font-size: 1.5rem; line-height: 1; color: #94a3b8;
+    cursor: pointer; padding: 0 .25rem;
+}
+.kyc-ekyc-modal-close:hover { color: #1f2937; }
+.kyc-ekyc-modal-body  { padding: 1.25rem 1.5rem; }
+.kyc-ekyc-modal-intro { margin: 0 0 1rem; font-size: .875rem; color: #475569; line-height: 1.55; }
+.kyc-ekyc-link-row {
+    display: flex; gap: .5rem; align-items: stretch;
+    margin-bottom: 1rem;
+}
+.kyc-ekyc-link-input {
+    flex: 1; padding: .625rem .75rem; border: 1.5px solid #cbd5e1; border-radius: 8px;
+    font-size: .8125rem; color: #1f2937; background: #f8fafc;
+    overflow: hidden; text-overflow: ellipsis;
+}
+.kyc-ekyc-link-input:focus { outline: none; border-color: #5c7099; }
+.kyc-ekyc-link-copy {
+    padding: .5rem 1rem; border: 1.5px solid #5c7099; border-radius: 8px;
+    background: #fff; color: #5c7099; font-weight: 600; font-size: .8125rem;
+    cursor: pointer; white-space: nowrap; transition: background .15s, color .15s;
+}
+.kyc-ekyc-link-copy:hover { background: #5c7099; color: #fff; }
+
+/* Icon-only variant of the copy/open buttons in the link row — square, equal
+   padding, lightning icon takes the full glyph. Keeps the existing hover /
+   border behaviour from .kyc-ekyc-link-copy. */
+.kyc-ekyc-link-copy-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+}
+.kyc-ekyc-link-copy-icon lightning-icon {
+    --sds-c-icon-color-foreground-default: currentColor;
+    --slds-c-icon-color-foreground-default: currentColor;
+}
+/* Open-link icon button uses the same brand indigo as the copy icon so the
+   pair reads as one inline action group sitting next to the URL input. */
+.kyc-ekyc-link-open {
+    text-decoration: none;
+}
+.kyc-ekyc-link-open:hover,
+.kyc-ekyc-link-open:focus {
+    text-decoration: none;
+}
+.kyc-ekyc-modal-status {
+    position: relative;        /* scope any absolutely-positioned children */
+    display: flex; align-items: center; gap: .625rem; min-height: 1.5rem;
+    padding: .5rem 0; color: #475569; font-size: .8125rem;
+}
+.kyc-ekyc-modal-status-text { font-style: italic; }
+
+.kyc-ekyc-modal-spinner-wrap {
+    position: relative;
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+}
+.kyc-ekyc-modal-footer {
+    display: flex; justify-content: flex-end; gap: .5rem;
+    padding: 1rem 1.5rem; border-top: 1px solid #e2e8f0; background: #f8fafc;
+}
+
+.kyc-ekyc-modal-btn-primary, .kyc-ekyc-modal-btn-secondary, .kyc-ekyc-modal-btn-verify {
+    padding: .5rem 1.125rem; border-radius: 8px; font-weight: 600; font-size: .8125rem;
+    cursor: pointer; transition: transform .12s, box-shadow .12s, background-color .15s, border-color .15s;
+}
+.kyc-ekyc-modal-btn-primary {
+    background: linear-gradient(135deg, #3a4a6d, #5c7099); color: #fff; border: none;
+}
+.kyc-ekyc-modal-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(58, 74, 109, .25); }
+.kyc-ekyc-modal-btn-secondary {
+    background: #fff; color: #5c7099; border: 1.5px solid #cbd5e1;
+}
+.kyc-ekyc-modal-btn-secondary:hover { border-color: #5c7099; }
+
+
+.kyc-ekyc-modal-btn-verify {
+    background: var(--kyc-turquoise-50, #ecfeff);
+    color: var(--kyc-indigo-700, #4338ca);
+    border: 1.5px solid var(--kyc-indigo-600, #4f46e5);
+}
+.kyc-ekyc-modal-btn-verify:hover {
+    transform: translateY(-1px);
+    background: #d4f3f9;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.18);
+}
+
+/* ── Cross-Sell warning banner (Section 8) ───────────────────────────────── */
+.kyc-cross-sell-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    background: #fff8e1;
+    border: 1px solid #f5d36a;
+    border-left: 4px solid #d4a017;
+    border-radius: 8px;
+}
+.kyc-cross-sell-warning-icon {
+    --sds-c-icon-color-foreground-default: #b8860b;
+    --slds-c-icon-color-foreground-default: #b8860b;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+.kyc-cross-sell-warning-text {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: #6b4f00;
+}
+
+/* ── Cross-Sell ETB CASA repayment-account picker (Section 8.B) ──────────── */
+.kyc-casa-picker-wrap {
+    margin-top: 0.5rem;
+}
+.kyc-casa-tile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+.kyc-casa-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 0.85rem 0.95rem;
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    cursor: pointer;
+    transition: border-color 160ms ease, box-shadow 160ms ease, transform 120ms ease;
+}
+.kyc-casa-tile:hover {
+    border-color: #6366f1;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.12);
+    transform: translateY(-1px);
+}
+.kyc-casa-tile--selected,
+.kyc-casa-tile--selected:hover {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18), 0 4px 12px rgba(79, 70, 229, 0.18);
+}
+.kyc-casa-tile--disabled,
+.kyc-casa-tile--disabled:hover {
+    cursor: not-allowed;
+    background: #fef2f2;
+    border-color: #fca5a5;
+    box-shadow: none;
+    transform: none;
+}
+.kyc-casa-tile-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+.kyc-casa-tile-acctid {
+    flex: 1 1 auto;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    word-break: break-all;
+}
+.kyc-casa-tile--disabled .kyc-casa-tile-acctid {
+    color: #7f1d1d;
+}
+
+.kyc-casa-tile-info {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    background: #fee2e2;
+    border: 1.5px solid #b91c1c;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.18);
+    cursor: help;
+    --sds-c-icon-color-foreground-default: #b91c1c;
+    --slds-c-icon-color-foreground-default: #b91c1c;
+}
+
+/* Instant tooltip — uses CSS :hover so it appears immediately (no ~500 ms
+   browser delay you get from a native `title` attribute). */
+.kyc-casa-tile-info[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 30;
+    min-width: 180px;
+    max-width: 240px;
+    padding: 0.4rem 0.6rem;
+    background: #1f2937;
+    color: #f9fafb;
+    font-size: 0.7rem;
+    font-weight: 500;
+    line-height: 1.35;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+    white-space: normal;
+    text-align: left;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-2px);
+    transition: opacity 80ms ease-out, transform 80ms ease-out;
+}
+.kyc-casa-tile-info[data-tooltip]:hover::after,
+.kyc-casa-tile-info[data-tooltip]:focus-visible::after {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0ms;
+}
+
+.kyc-casa-tile-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    background: var(--form-cyan-100, #cffafe);
+    border: 1.5px solid var(--form-indigo-700, #4338ca);
+    box-shadow: 0 0 0 2px var(--form-cyan-halo, rgba(44, 218, 238, 0.18));
+    --sds-c-icon-color-foreground-default: var(--form-indigo-700, #4338ca);
+    --slds-c-icon-color-foreground-default: var(--form-indigo-700, #4338ca);
+}
+.kyc-casa-tile-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    line-height: 1.35;
+}
+.kyc-casa-tile-key {
+    flex: 0 0 70px;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 0.7rem;
+}
+.kyc-casa-tile-val {
+    flex: 1 1 auto;
+    color: #1e293b;
+    font-weight: 600;
+}
+.kyc-casa-tile-more {
+    align-self: flex-start;
+    margin-top: 0.25rem;
+    padding: 0;
+    background: none;
+    border: none;
+    color: #4f46e5;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.kyc-casa-tile-more:hover {
+    color: #4338ca;
+}
+.kyc-casa-tile--disabled .kyc-casa-tile-more {
+    color: #b91c1c;
+}
+
+/* ── Show More account-details modal ─────────────────────────────────────── */
+.kyc-casa-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(15, 23, 42, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.kyc-casa-modal {
+    width: 100%;
+    max-width: 460px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: kyc-casa-modal-in 200ms ease-out;
+}
+@keyframes kyc-casa-modal-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.kyc-casa-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: #0f172a;
+    color: #ffffff;
+}
+.kyc-casa-modal-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+.kyc-casa-modal-close {
+    --sds-c-icon-color-foreground-default: #ffffff;
+    --slds-c-icon-color-foreground-default: #ffffff;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 6px;
+    transition: background 120ms ease;
+}
+.kyc-casa-modal-close:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+.kyc-casa-modal-body {
+    padding: 1rem 1.25rem 1.25rem;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+.kyc-casa-modal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #e2e8f0;
+    gap: 1rem;
+}
+.kyc-casa-modal-row:last-child {
+    border-bottom: none;
+}
+.kyc-casa-modal-key {
+    color: #475569;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.kyc-casa-modal-val {
+    color: #0f172a;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: right;
+    word-break: break-all;
+}
+
+/* ── Advanced upload modal (Customer Image) ─────────────────────────────── */
+.dv-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+}
+.dv-modal {
+    width: 100%;
+    max-width: 1280px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+}
+.dv-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background: var(--kyc-slate-900, #0f172a);
+    color: #fff;
+}
+.dv-modal-title {
+    font-size: 1rem;
+    font-weight: 700;
+}
+.dv-modal-close {
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 1.125rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+}
+.dv-modal-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+.dv-modal-body {
+    padding: 1.25rem;
+    overflow: auto;
+}
+
+.kyc-mandatory-docs-list-item--doc {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.kyc-mandatory-doc-name {
+    min-width: 0;
+}
+
+.kyc-mandatory-doc-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 9999px;
+    border: 1px solid #16a34a;
+    background: #ecfdf3;
+    flex-shrink: 0;
+}
+
+.kyc-mandatory-doc-check lightning-icon {
+    --slds-c-icon-color-foreground-default: #16a34a;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .kyc-card-header  { height: 64px; min-height: 64px; }
+    .kyc-header-content { padding: 0 0.75rem; }
+    .kyc-header-title   { font-size: 1.125rem; }
+    .kyc-card-body      { padding: 0.75rem; }
+    .kyc-radio-label    { min-width: 0; }
+    .kyc-field-value-col { max-width: 100%; }
+    .kyc-page-layout    { padding: 0.375rem; gap: 0.75rem; }
+    .kyc-casa-tile-grid { grid-template-columns: 1fr; }
+}

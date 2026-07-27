@@ -1,0 +1,45 @@
+<template>
+    <template lwc:if={isLoading}>
+        <div class="eq-spinner">
+            <lightning-spinner size="medium" alternative-text="Loading"></lightning-spinner>
+        </div>
+    </template>
+    <template lwc:else>
+        <template lwc:if={showQueryDetails}>
+            <c-edit-query-details record-id={selectedQueryId} oncancel={handleCancel}></c-edit-query-details>
+        </template>
+        <template lwc:else>
+            <template lwc:if={hasQueries}>
+                <div class="query-list slds-var-m-bottom_small">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col"><span class="slds-cell-wrap">Query #</span></th>
+                                <th scope="col"><span class="slds-cell-wrap">Subject</span></th>
+                                <th scope="col"><span class="slds-cell-wrap">Priority</span></th>
+                                <th scope="col"><span class="slds-cell-wrap">Status</span></th>
+                                <th scope="col"><span class="slds-cell-wrap">Assigned To</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={queries} for:item="qry">
+                                <tr key={qry.Id} class="slds-hint-parent query-row" data-id={qry.Id} onclick={handleQueryClick}>
+                                    <td><span class="slds-cell-wrap"><a href="javascript:void(0);" target="_blank">{qry.QueryNumber}</a></span></td>
+                                    <td><span class="slds-cell-wrap" title={qry.Subject}>{qry.Subject}</span></td>
+                                    <td><span class="slds-cell-wrap">{qry.Priority}</span></td>
+                                    <td><span class="slds-cell-wrap">{qry.Status}</span></td>
+                                    <td><span class="slds-cell-wrap">{qry.AssignedTo}</span></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+            <template lwc:else>
+                <div class="slds-text-align_center">
+                    <p class="slds-text-body_regular">No queries found</p>
+                </div>
+            </template>
+        </template>
+    </template>
+</template>

@@ -1,0 +1,363 @@
+<template>
+    <div class="form-layout pds-layout">
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:currency" size="small" class="form-header-icon"
+                            alternative-text={labels.pageTitle}>
+                        </lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h1 class="form-header-title">{labels.pageTitle}</h1>
+                        <p class="form-header-subtitle">{labels.pageSubtitle}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-body">
+                <div class="pds-kpi-grid">
+                    <template for:each={summaryCards} for:item="card">
+                        <article class={card.cardClass} key={card.key}>
+                            <div class="pds-kpi-card-inner">
+                                <lightning-icon icon-name={card.iconName} size="small" class="pds-kpi-icon"
+                                    alternative-text={card.label}>
+                                </lightning-icon>
+                                <div class="pds-kpi-content">
+                                    <p class={card.labelClass}>{card.label}</p>
+                                    <p class={card.valueClass}>{card.value}</p>
+                                </div>
+                            </div>
+                        </article>
+                    </template>
+                </div>
+
+                <div class="pds-info-banner" role="status">
+                    <lightning-icon icon-name="utility:info" size="x-small" class="pds-info-icon"
+                        alternative-text="Info">
+                    </lightning-icon>
+                    <span class="p4-body-text">{labels.infoBanner}</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="form-card pds-section-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:shield" size="small" class="form-header-icon"
+                            alternative-text={labels.preControlsTitle}>
+                        </lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h2 class="form-header-title">{labels.preControlsTitle}</h2>
+                        <p class="form-header-subtitle">{labels.preControlsSubtitle}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-body">
+                <div class="pds-controls-grid">
+                    <template for:each={mappedControls} for:item="control">
+                        <article class="pds-control-card" key={control.key}>
+                            <div class="pds-control-title-wrap">
+                                <lightning-icon icon-name={control.iconName} size="x-small" class={control.iconClass}
+                                    alternative-text={control.statusLabel}>
+                                </lightning-icon>
+                                <div class="pds-control-content">
+                                    <div class="pds-control-heading">
+                                        <h3 class="p4-field-label-semibold">{control.title}</h3>
+                                        <span class={control.statusBadgeClass}>{control.statusLabel}</span>
+                                    </div>
+                                    <p class="p4-help-text">{control.subtitle}</p>
+                                </div>
+                            </div>
+                        </article>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-card pds-section-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:task" size="small" class="form-header-icon"
+                            alternative-text={labels.deferralsTitle}>
+                        </lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h2 class="form-header-title">{labels.deferralsTitle}</h2>
+                        <p class="form-header-subtitle">{labels.deferralsSubtitle}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-body">
+                <ul class="pds-deferral-list">
+                    <template for:each={mappedDeferrals} for:item="item">
+                        <li class="pds-deferral-item" key={item.key}>
+                            <lightning-icon icon-name={item.iconName} size="x-small" class={item.iconClass}
+                                alternative-text={item.statusLabel}>
+                            </lightning-icon>
+                            <div class="pds-deferral-label-wrap">
+                                <span class="p4-body-text">{item.label}</span>
+                                <span class={item.statusBadgeClass}>{item.statusLabel}</span>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+                <template if:true={allDeferralsCleared}>
+                    <div class="pds-success-banner" role="status">
+                        <lightning-icon icon-name="utility:success" size="x-small" class="pds-success-icon"
+                            alternative-text="Success">
+                        </lightning-icon>
+                        <span class="p4-body-text">{labels.deferralsSuccess}</span>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <section class="form-card pds-section-card">
+            <div class="form-header">
+                <div class="form-header-overlay"></div>
+                <div class="form-header-content">
+                    <div class="form-header-icon-wrap">
+                        <lightning-icon icon-name="utility:rows" size="small" class="form-header-icon"
+                            alternative-text={labels.workspaceTitle}>
+                        </lightning-icon>
+                    </div>
+                    <div class="form-header-text">
+                        <h2 class="form-header-title">{labels.workspaceTitle}</h2>
+                        <p class="form-header-subtitle">{labels.workspaceSubtitle}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-body">
+                <template if:true={isTaOrigin}>
+                    <div class="pds-tab-bar" role="tablist">
+                        <button type="button" role="tab" class={directTabClass} data-tab="direct"
+                            aria-selected={isDirectTabActive} onclick={handleWorkspaceTabSelect}>
+                            <lightning-icon icon-name="utility:money" size="x-small" class="pds-tab-icon"
+                                alternative-text={labels.directTab}>
+                            </lightning-icon>
+                            {labels.directTab}
+                        </button>
+                        <button type="button" role="tab" class={adjustmentTabClass} data-tab="adjustment"
+                            aria-selected={isAdjustmentTabActive} onclick={handleWorkspaceTabSelect}>
+                            <lightning-icon icon-name="utility:file" size="x-small" class="pds-tab-icon"
+                                alternative-text={labels.adjustmentTab}>
+                            </lightning-icon>
+                            {labels.adjustmentTab}
+                        </button>
+                    </div>
+                </template>
+
+                <template if:true={isDirectTabActive}>
+                    <div class="pds-info-banner pds-info-banner--workspace" role="status">
+                        <lightning-icon icon-name="utility:info" size="x-small" class="pds-info-icon"
+                            alternative-text="Info">
+                        </lightning-icon>
+                        <span class="p4-body-text">{labels.workspaceInfo}</span>
+                    </div>
+
+                    <template if:true={isLoading}>
+                        <div class="pds-empty-tab" role="status">
+                            <lightning-spinner alternative-text="Loading beneficiaries"
+                                size="small"></lightning-spinner>
+                        </div>
+                    </template>
+
+                    <template if:false={isLoading}>
+                        <template if:false={hasBeneficiaryData}>
+                            <p class="p4-body-text pds-empty-tab">{labels.noBeneficiaries}</p>
+                        </template>
+
+                        <template if:true={hasBeneficiaryData}>
+                            <div class="pds-table-scroll">
+                                <table class="master-table">
+                                    <thead>
+                                        <tr class="master-table-header-row">
+                                            <th class="master-th-cell p4-table-header" scope="col"></th>
+                                            <th class="master-th-cell p4-table-header" scope="col">Beneficiary</th>
+                                            <th class="master-th-cell p4-table-header" scope="col">Deal Date</th>
+                                            <th class="master-th-cell p4-table-header" scope="col">1st EMI Date</th>
+                                            <th class="master-th-cell p4-table-header" scope="col">2nd EMI Date</th>
+                                            <th class="master-th-cell p4-table-header" scope="col">Disbursement Amt</th>
+                                            <th class="master-th-cell p4-table-header" scope="col">Paid Earlier</th>
+                                            <th class="master-th-cell p4-table-header" scope="col">To Be Paid Now</th>
+                                            <th class="master-th-cell p4-table-header" scope="col">Account No</th>
+                                            <th class="master-th-cell p4-table-header" scope="col">IFSC</th>
+                                            <th class="master-th-cell p4-table-header" scope="col">Bank Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={displayBeneficiaryRows} for:item="row">
+                                            <tr class={row.rowClass} key={row.rowKey}>
+                                                <td class="master-td-cell">
+                                                    <input type="checkbox" checked={row.selected}
+                                                        disabled={row.checkboxDisabled} data-row-id={row.id}
+                                                        onchange={handleRowSelection} />
+                                                </td>
+                                                <td class="master-td-cell">
+                                                    <p class="pds-beneficiary-type p4-label-text">{row.beneficiaryTypeLabel}
+                                                    </p>
+                                                    <p class="p4-field-label-semibold">{row.beneficiaryName}</p>
+                                                    <template if:true={row.beneficiarySubLabel}>
+                                                        <p class="p4-help-text">{row.beneficiarySubLabel}</p>
+                                                    </template>
+                                                </td>
+                                                <td class="master-td-cell"><span
+                                                        class="p4-field-value-normal">{row.dealDate}</span></td>
+                                                <td class="master-td-cell"><span
+                                                        class="p4-field-value-normal">{row.firstEmiDate}</span></td>
+                                                <td class="master-td-cell"><span
+                                                        class="p4-field-value-normal">{row.secondEmiDate}</span></td>
+                                                <td class="master-td-cell"><span
+                                                        class="p4-field-value-normal">{row.formattedDisbursementAmount}</span>
+                                                </td>
+                                                <td class="master-td-cell"><span
+                                                        class="p4-field-value-normal">{row.formattedPaidEarlier}</span></td>
+                                                <td class="master-td-cell">
+                                                    <input type="number" class="form-field-editable-input"
+                                                        value={row.toBePaidNow} disabled={row.toBePaidInputDisabled}
+                                                        data-row-id={row.id} oninput={handleToBePaidChange} />
+                                                </td>
+                                                <td class="master-td-cell"><span
+                                                        class="p4-field-value-normal">{row.accountNumber}</span></td>
+                                                <td class="master-td-cell"><span
+                                                        class="p4-field-value-normal">{row.ifscCode}</span></td>
+                                                <td class="master-td-cell"><span
+                                                        class="p4-field-value-normal">{row.bankName}</span></td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                    </template>
+
+                </template>
+
+                <template if:true={isAdjustmentTabActive}>
+                    <div class="pds-info-banner pds-info-banner--workspace" role="status">
+                        <lightning-icon icon-name="utility:info" size="x-small" class="pds-info-icon"
+                            alternative-text="Info">
+                        </lightning-icon>
+                        <span class="p4-body-text">{labels.adjustmentInfo}</span>
+                    </div>
+
+                    <div class="pds-table-scroll">
+                        <table class="master-table">
+                            <thead>
+                                <tr class="master-table-header-row">
+                                    <th class="master-th-cell p4-table-header" scope="col"></th>
+                                    <th class="master-th-cell p4-table-header" scope="col">TA Reference Number</th>
+                                    <th class="master-th-cell p4-table-header" scope="col">Total Approved TA Value</th>
+                                    <th class="master-th-cell p4-table-header" scope="col">TA Processed Date</th>
+                                    <th class="master-th-cell p4-table-header" scope="col">Adjusted So Far</th>
+                                    <th class="master-th-cell p4-table-header" scope="col">Pending</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={displayTaReferenceRows} for:item="row">
+                                    <tr class={row.rowClass} key={row.rowKey}>
+                                        <td class="master-td-cell pds-radio-cell">
+                                            <input type="radio" name="taReferenceSelection" checked={row.selected}
+                                                disabled={row.radioDisabled} data-row-key={row.rowKey}
+                                                onchange={handleTaReferenceSelect} />
+                                        </td>
+                                        <td class="master-td-cell">
+                                            <span class="p4-field-label-semibold">{row.referenceNumber}</span>
+                                        </td>
+                                        <td class="master-td-cell">
+                                            <span class="p4-field-value-normal">{row.formattedTotalApproved}</span>
+                                        </td>
+                                        <td class="master-td-cell">
+                                            <span class="p4-field-value-normal">{row.processedDate}</span>
+                                        </td>
+                                        <td class="master-td-cell">
+                                            <span class="p4-field-value-normal">{row.formattedAdjustedSoFar}</span>
+                                        </td>
+                                        <td class="master-td-cell">
+                                            <span class="p4-field-value-normal">{row.formattedPending}</span>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <template if:true={selectedTaReferenceLabel}>
+                        <section class="form-card pds-section-card pds-adjustment-section">
+                            <div class="form-header">
+                                <div class="form-header-overlay"></div>
+                                <div class="form-header-content">
+                                    <div class="form-header-icon-wrap">
+                                        <lightning-icon icon-name="utility:file" size="small" class="form-header-icon"
+                                            alternative-text={labels.adjustmentDetailsTitle}>
+                                        </lightning-icon>
+                                    </div>
+                                    <div class="form-header-text">
+                                        <h2 class="form-header-title">{labels.adjustmentDetailsTitle}</h2>
+                                        <p class="form-header-subtitle">{selectedTaReferenceLabel}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="pds-fields-grid">
+                                    <template for:each={adjustmentDetailFields} for:item="field">
+                                        <div class="form-info-cell" key={field.key}>
+                                            <div class="form-info-cell-header">
+                                                <span class="form-info-label">{field.label}</span>
+                                                <template if:true={field.required}>
+                                                    <span class="form-field-required-indicator"
+                                                        title="Required">*</span>
+                                                </template>
+                                            </div>
+                                            <div class="form-info-value-wrap">
+                                                <template if:true={field.editable}>
+                                                    <input type="number" class="form-field-editable-input"
+                                                        value={field.value} disabled={field.inputDisabled}
+                                                        oninput={handleToBeAdjustedChange} />
+                                                </template>
+                                                <template if:false={field.editable}>
+                                                    <p class="form-info-value">{field.value}</p>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </section>
+                    </template>
+
+                </template>
+
+                <div class={actionBarClass}>
+                    <template if:true={showPendingToAdjustStatus}>
+                        <div class="pds-pending-status" role="status">
+                            <lightning-icon icon-name="utility:clock" size="x-small" class="pds-pending-icon"
+                                alternative-text="Pending">
+                            </lightning-icon>
+                            <span class="pds-pending-label p4-label-text">{labels.pendingToAdjustLabel}</span>
+                            <span class="pds-pending-value p4-field-label-semibold">{formattedPendingToAdjust}</span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <div class="form-footer-wrapper" if:false={isSectionDisabled}>
+            <div class="form-footer">
+                <div class="form-btn-wrapper">
+                    <button type="button" class={primaryBtnClass} disabled={isSubmitDisabled}
+                        onclick={handleSubmit}>
+                        {labels.submit}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

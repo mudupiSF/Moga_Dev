@@ -1,0 +1,45 @@
+<template>
+    <!-- ── Stage-transition loader ─────────────────────────────────────────
+         Covers the full viewport from losmenuselect → child mount so the
+         user never sees Application Information render bare while the active
+         stage LWC is still being dynamically imported. -->
+    <template lwc:if={isLoadingStage}>
+        <div class="amp-loading-overlay">
+            <lightning-spinner alternative-text="Loading stage" size="large"></lightning-spinner>
+            <span class="amp-loading-overlay-text">Loading {activeStageLabel}&hellip;</span>
+        </div>
+    </template>
+
+    <div class="application-master-page-overview">
+        <c-application-overview record-id={recordId}></c-application-overview>
+    </div>
+
+    <!-- ── Active stage component ────────────────────────────────────────── -->
+    <template lwc:if={hasActiveComponent}>
+        <lwc:component
+            lwc:is={activeComponentCtor}
+            lwc:spread={componentProps}>
+        </lwc:component>
+    </template>
+    <!-- ── Override_LWC__c set but load failed ───────────────────────────── -->
+    <template lwc:elseif={isUnknownComponent}>
+        <div class="amp-notice amp-notice-warn">
+            <span class="amp-notice-icon">⚠️</span>
+            <span class="amp-notice-text">
+                Component <strong>{unknownComponentName}</strong> could not be loaded.
+                Ensure an LWC with that API name is deployed in this org
+                and that Lightning Web Security is enabled (Setup → Session Settings).
+            </span>
+        </div>
+    </template>
+
+    <!-- ── Nothing selected yet ──────────────────────────────────────────── -->
+    <template lwc:else>
+        <div class="amp-placeholder">
+            <div class="amp-placeholder-icon">📋</div>
+            <p class="amp-placeholder-title">Select a stage to continue</p>
+            <p class="amp-placeholder-sub">Choose a step from the navigation menu on the left.</p>
+        </div>
+    </template>
+
+</template>
