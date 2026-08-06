@@ -6,15 +6,15 @@
     "jira_url": "",
     "github_repo": "https://github.com/mudupiSF/Moga_Dev",
     "salesforce_org": "Moga dev",
-    "last_updated": "2026-07-27T17:13:26Z"
+    "last_updated": "2026-08-06T11:21:12Z"
   },
   "summary": {
-    "total_epics": 0,
-    "total_stories": 0,
+    "total_epics": 1,
+    "total_stories": 9,
     "stories_built": 0,
     "stories_in_progress": 0,
     "stories_in_review": 0,
-    "stories_pending": 0,
+    "stories_pending": 9,
     "completion_percentage": 0,
     "total_tokens": 0
   },
@@ -44,5 +44,91 @@
       "flexipages": []
     }
   },
-  "epics": []
+  "epics": [
+    {
+      "id": "EPIC-BASIC-QDE",
+      "jira_key": "",
+      "name": "Basic QDE",
+      "description": "Capture and validate Commercial Vehicle Borrower Basic Details, including applicant routing, loan information, identity documents, contact verification, consent, and controlled progression to KYC.",
+      "priority": "High",
+      "status": "pending",
+      "spec": "specs/001-basic-qde/spec.md",
+      "stories_count": 9,
+      "stories_built": 0,
+      "stories": [
+        {
+          "key": "US-QDE-BASIC-CV-002",
+          "summary": "Capture Individual or Non-Individual Application Details",
+          "priority": "P1",
+          "status": "pending",
+          "built": false,
+          "spec": "specs/001-basic-qde/spec.md"
+        },
+        {
+          "key": "US-QDE-BASIC-CV-003",
+          "summary": "Capture CV Loan Basic Information",
+          "priority": "P1",
+          "status": "pending",
+          "built": false,
+          "spec": "specs/001-basic-qde/spec.md"
+        },
+        {
+          "key": "US-QDE-BASIC-CV-004",
+          "summary": "Capture Individual Professional Details",
+          "priority": "P2",
+          "status": "pending",
+          "built": false,
+          "spec": "specs/001-basic-qde/spec.md"
+        },
+        {
+          "key": "US-QDE-BASIC-CV-005",
+          "summary": "Apply PAN Availability and Mandatory-PAN Rules",
+          "priority": "P1",
+          "status": "pending",
+          "built": false,
+          "spec": "specs/001-basic-qde/spec.md"
+        },
+        {
+          "key": "US-QDE-BASIC-CV-006",
+          "summary": "Upload and Verify PAN Identity",
+          "priority": "P1",
+          "status": "pending",
+          "built": false,
+          "spec": "specs/001-basic-qde/spec.md"
+        },
+        {
+          "key": "US-QDE-BASIC-CV-007",
+          "summary": "Capture the Individual Form 60 Identity Path",
+          "priority": "P2",
+          "status": "pending",
+          "built": false,
+          "spec": "specs/001-basic-qde/spec.md"
+        },
+        {
+          "key": "US-QDE-BASIC-CV-008",
+          "summary": "Verify Contact Details and Obtain Application Consent",
+          "priority": "P1",
+          "status": "pending",
+          "built": false,
+          "spec": "specs/001-basic-qde/spec.md"
+        },
+        {
+          "key": "US-QDE-BASIC-CV-009",
+          "summary": "Save Basic Details and Navigate to KYC",
+          "priority": "P1",
+          "status": "pending",
+          "built": false,
+          "spec": "specs/001-basic-qde/spec.md"
+        },
+        {
+          "key": "US-QDE-BASIC-CV-010",
+          "summary": "Display Automatically Calculated Age",
+          "priority": "P3",
+          "status": "pending",
+          "built": false,
+          "spec": "specs/001-basic-qde/spec.md"
+        }
+      ]
+    }
+  ]
 }
