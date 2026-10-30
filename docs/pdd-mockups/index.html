@@ -310,10 +310,7 @@ function screenTranches() {
     <div class="card">
       <div class="card-hd">
         <div class="ttl"><div class="ico">PD</div><div><h2>POST DISBURSEMENT DOCUMENTS (PDD)</h2><p>Complete RC, Invoice and Insurance PDD for each asset of a disbursed tranche</p></div></div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <span class="muted" style="color:#a9b8d6">Owner: Amit Verma (Sales)</span>
-          <button class="btn white">⇄ Reassign</button>
-        </div>
+        <button class="btn white">⇄ Reassign</button>
       </div>
       <div class="tag" style="margin:8px 14px 0">[LWC (new): pddTrancheSummary] · Reassign visible to the owner's manager and the manager's manager only</div>
       <div class="sub-hd">
@@ -329,9 +326,8 @@ function screenTranches() {
               <div class="muted">2 vehicles · Created 05 Oct 2026</div>
               <div class="amt">Disbursement Amount: ₹19,00,000</div>
               <div class="chips">
-                <span class="badge b-amber">RC 0/2</span><span class="badge b-blue">Invoice 1/2</span><span class="badge b-blue">Insurance 0/2</span>
+                <span class="badge b-blue">Invoice 1/2</span><span class="badge b-blue">Insurance 0/2</span>
               </div>
-              <div class="muted" style="margin-top:8px">✉ Welcome letter (KFS + Loan Agreement) emailed 12 Oct 2026</div>
             </div>
             <div><button class="btn primary" data-nav="tranche">Open</button></div>
           </div>
@@ -341,9 +337,7 @@ function screenTranches() {
               <h4>Tranche 02 <span class="badge b-green">Disbursed 20 Oct 2026</span></h4>
               <div class="muted">2 vehicles · Created 15 Oct 2026</div>
               <div class="amt">Disbursement Amount: ₹18,50,000</div>
-              <div class="chips"><span class="badge b-grey">RC 0/2</span><span class="badge b-grey">Invoice 0/2</span><span class="badge b-grey">Insurance 0/2</span></div>
-              <div class="muted" style="margin-top:8px">✉ Welcome letter (KFS + Loan Agreement) emailed 20 Oct 2026</div>
-              <div class="tag" style="margin-top:4px">Open item: welcome letter for every tranche vs first tranche only</div>
+              <div class="chips"><span class="badge b-grey">Invoice 0/2</span><span class="badge b-grey">Insurance 0/2</span></div>
             </div>
             <div><button class="btn">Open</button></div>
           </div>
@@ -497,7 +491,6 @@ function screenPool() {
     <div class="card">
       <div class="card-hd">
         <div class="ttl"><div class="ico">LS</div><div><h2>CENTRAL LOAN SERVICING POOL</h2><p>PDD checklists submitted by Sales, awaiting review by the Loan Servicing Team</p></div></div>
-        <span class="muted" style="color:#a9b8d6">Logged in: Priya Nair (Loan Servicing Team)</span>
       </div>
       <div class="tabs">
         <div class="tab ${mine ? "" : "on"}" data-group="poolTab" data-value="pool">Pool – unassigned (3)</div>
