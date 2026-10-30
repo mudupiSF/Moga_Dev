@@ -227,12 +227,9 @@ function renderReviewBar() {
 }
 
 function renderSidebar() {
-  const done = (label) => `<div class="grp">▸ ${label}<span class="tick">✓</span></div>`;
   const items = [["tranches", "PDD Maker", ["tranches", "tranche", "rc", "invins"]], ["pool", "PDD Checker", ["pool", "review"]]];
   document.getElementById("sidebar").innerHTML = `
     <div class="progress-row">Journey Progress <div class="ring">96%</div></div>
-    ${done("QDE")}${done("DDE")}${done("CREDIT PROCESSING")}${done("SALES NEGOTIATION")}
-    ${done("DISBURSEMENT REQUEST")}${done("MAKER OPS")}${done("CHECKER OPS")}
     <div class="grp open">▾ POST DISBURSEMENT</div>
     ${items.map(([target, label, group]) => `
       <div class="item ${group.includes(state.screen) ? "active" : ""}" data-nav="${target}">
