@@ -365,7 +365,6 @@ function assetBlock(key, idx) {
     <div class="card">
       <div class="asset-hd">
         <div><b>Asset ${idx} · ${a.lan}</b><div class="muted">${a.veh} · ${state.assetType} asset</div></div>
-        <span class="muted">Each checklist can be submitted to the PDD Checker independently</span>
       </div>
       <table>
         <thead><tr><th>Checklist</th><th>Status</th><th>Owner</th><th>Last modified by</th><th></th></tr></thead>
@@ -384,7 +383,6 @@ function screenTranche() {
     <div class="card">
       <div class="card-hd">
         <div class="ttl"><div class="num ico">01</div><div><h2>TRANCHE 01 – PDD CHECKLISTS</h2><p>2 vehicles · Disbursed 12 Oct 2026 · Disbursement Amount ₹19,00,000</p></div></div>
-        <span class="badge b-amber">3 of 6 checklists pending with Sales</span>
       </div>
     </div>
     <div class="tag">[LWC (new): pddAssetChecklists] · status values shown are illustrative – to be confirmed</div>
@@ -416,7 +414,6 @@ function screenRc() {
     <div class="card">
       <div class="card-hd">
         <div class="ttl"><div class="ico">RC</div><div><h2>RC PDD – ASSET 1</h2><p>${CHECKLISTS.a1.lan} · ${CHECKLISTS.a1.veh} · ${state.product} · ${state.assetType}</p></div></div>
-        ${statusBadge(CHECKLISTS.a1.rc)}
       </div>
       <div class="card-bd">
         <div class="tag">[LWC (new): pddRcChecklist]</div>
@@ -449,7 +446,7 @@ function screenInvIns() {
     <div class="crumb"><span class="link" data-nav="tranches">← PDD – Tranches</span> / <span class="link" data-nav="tranche">Tranche 01</span> / Asset 2</div>
     <div class="two-col">
       <div class="card">
-        <div class="card-hd"><div class="ttl"><div class="ico">IN</div><div><h2>INVOICE PDD – ASSET 2</h2><p>${CHECKLISTS.a2.lan}</p></div></div>${statusBadge("Pending")}</div>
+        <div class="card-hd"><div class="ttl"><div class="ico">IN</div><div><h2>INVOICE PDD – ASSET 2</h2><p>${CHECKLISTS.a2.lan}</p></div></div></div>
         <div class="card-bd">
           <div class="tag">[LWC (new): pddInvoiceChecklist]</div>
           <div class="form-grid" style="grid-template-columns:1fr 1fr">
@@ -462,7 +459,7 @@ function screenInvIns() {
         <div class="footer-actions"><button class="btn">Save</button><button class="btn primary">Submit to PDD Checker</button></div>
       </div>
       <div class="card">
-        <div class="card-hd"><div class="ttl"><div class="ico">IS</div><div><h2>INSURANCE PDD – ASSET 2</h2><p>${CHECKLISTS.a2.lan}</p></div></div>${statusBadge("Pending")}</div>
+        <div class="card-hd"><div class="ttl"><div class="ico">IS</div><div><h2>INSURANCE PDD – ASSET 2</h2><p>${CHECKLISTS.a2.lan}</p></div></div></div>
         <div class="card-bd">
           <div class="tag">[LWC (new): pddInsuranceChecklist]</div>
           <div class="form-grid" style="grid-template-columns:1fr 1fr">
@@ -529,7 +526,6 @@ function screenReview() {
     <div class="card">
       <div class="card-hd">
         <div class="ttl"><div class="ico">RC</div><div><h2>RC PDD REVIEW – ASSET 1</h2><p>LAN …6620 · Submitted by Rahul Mehta (Sales) on 20 Oct 2026 · ${state.product} · ${state.assetType}</p></div></div>
-        ${statusBadge(approve && state.fc === "success" ? "Completed" : approve ? "FC API Failed" : "With Checker")}
       </div>
       <div class="card-bd">
         <div class="tag">[LWC (new): pddCheckerReview]</div>
