@@ -354,7 +354,7 @@ function assetBlock(key, idx) {
       <td><b>${name}</b></td>
       <td>${statusBadge(status)}</td>
       <td>${status === "With Checker" ? "Central Loan Servicing Pool" : status === "Completed" ? "—" : "Amit Verma (Sales)"}</td>
-      <td class="muted">${status === "Returned" ? "Returned 22 Oct 2026 – “RC copy unclear, re-upload”" : status === "Pending" ? "Not started" : "Updated 21 Oct 2026"}</td>
+      <td class="muted">${status === "Returned" ? "Priya Nair (PDD Checker) · 22 Oct 2026" : status === "Completed" ? "Priya Nair (PDD Checker) · 21 Oct 2026" : status === "With Checker" ? "Amit Verma (Sales) · 21 Oct 2026" : "—"}</td>
       <td style="text-align:right">
         ${status === "Completed" || status === "With Checker"
           ? `<button class="btn" data-nav="${target}">View</button>`
@@ -368,7 +368,7 @@ function assetBlock(key, idx) {
         <span class="muted">Each checklist can be submitted to the PDD Checker independently</span>
       </div>
       <table>
-        <thead><tr><th>Checklist</th><th>Status</th><th>With</th><th>Last update</th><th></th></tr></thead>
+        <thead><tr><th>Checklist</th><th>Status</th><th>Owner</th><th>Last modified by</th><th></th></tr></thead>
         <tbody>
           ${row("RC PDD", a.rc, "rc")}
           ${row("Invoice PDD", a.inv, "invins")}
