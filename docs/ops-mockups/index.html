@@ -150,6 +150,34 @@
     .stage-box h4 { margin: 0 0 6px; font-size: 12px; display: flex; justify-content: space-between; }
     .stage-box .row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px dashed var(--slate-200); font-size: 12px; }
 
+    /* Dedupe Check Results */
+    .hd-chip { background: var(--white); color: var(--navy-900); border-radius: 12px; padding: 3px 10px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .hd-chip.ok { background: var(--green-100); color: #166534; }
+    .hd-chip.err { background: var(--red-100); color: #991b1b; }
+    .hd-chip.warn { background: var(--amber-100); color: var(--amber-700); }
+    .cif-row { display: flex; gap: 12px; align-items: center; padding: 14px; flex-wrap: wrap; }
+    .cif-row .lbl { font-size: 11px; color: var(--slate-500); font-weight: 600; letter-spacing: .03em; }
+    .cif-card { border: 1px solid var(--slate-200); border-radius: 6px; padding: 10px 14px; min-width: 230px; display: flex; gap: 10px; align-items: flex-start; cursor: pointer; background: var(--white); }
+    .cif-card.on { border: 2px solid var(--navy-900); background: #f5f7fd; padding: 9px 13px; }
+    .cif-card.locked { cursor: default; }
+    .cif-card .radio { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--slate-300); margin-top: 2px; flex: none; }
+    .cif-card.on .radio { border: 4px solid var(--navy-900); }
+    .cif-card b { font-size: 12px; }
+    .score { font-size: 11px; color: var(--slate-500); margin-top: 3px; }
+    .score.partial { color: var(--amber-700); }
+    .cif-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 0 14px 12px; }
+    .btn.navy { background: var(--navy-900); border-color: var(--navy-900); color: var(--white); }
+    .filter-row { display: flex; gap: 6px; align-items: center; padding: 0 14px 10px; }
+    .filter-row .search { margin-left: auto; width: 240px; border: 1px solid var(--slate-300); border-radius: 4px; padding: 5px 8px; font-size: 12px; }
+    .pill { border: 0; background: var(--slate-100); color: var(--slate-700); border-radius: 12px; padding: 3px 10px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .pill.on { background: var(--navy-900); color: var(--white); }
+    .st { display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; font-size: 9px; font-weight: 700; color: var(--white); }
+    .st.ok { background: var(--green-600); }
+    .st.err { background: var(--red-600); }
+    .st.warn { background: none; width: 0; height: 0; border-radius: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 12px solid #d97706; }
+    td.st-col, th.st-col { text-align: right; }
+    .cmp td { padding: 11px 10px; }
+
     /* Pop-ups */
     .overlay { position: absolute; inset: 0; background: rgba(15,23,42,.45); display: flex; justify-content: center; align-items: flex-start; padding-top: 40px; border-radius: 6px; min-height: 560px; }
     .modal { background: var(--white); width: 640px; max-width: 94%; border-radius: 8px; box-shadow: 0 16px 40px rgba(15,23,42,.35); overflow: hidden; }
@@ -208,6 +236,9 @@ const state = {
   vehicle: "New",
   tranche: "01",
   dedupe: "etb",
+  deApp: "0",
+  deCif: "b",
+  deFilter: "all",
   docs: "complete",
   disb: "pending",
   poolTab: "pool",
@@ -332,98 +363,153 @@ function statusBadge(s) {
 }
 
 /* ---------- Dedupe & Eligibility ---------- */
-function dedupeRows() {
-  const sc = state.dedupe;
-  return APPLICANTS.map((a, i) => {
-    let cif = a.cif || "—";
-    let dedupe = statusBadge("Success");
-    let suspect = statusBadge("No Match");
-    let action = '<span class="muted">Read only</span>';
-    let cls = "";
-    if (i === 1 && (sc === "ntb" || sc === "mismatch")) {
-      cif = sc === "mismatch" ? "CIF ••••7395" : '<span class="badge b-amber">2 CIFs returned – select one</span>';
-      action = sc === "mismatch" ? '<span class="badge b-red">Mandatory parameter mismatch</span>' : '<span class="link">Select CIF ↓</span>';
-      cls = sc === "mismatch" ? "bad" : "sel";
-    }
-    if (i === 1 && sc === "etb") cif = '<span class="muted">No CIF returned – remains NTB</span>';
-    if (i === 2 && sc !== "suspect") cif = '<span class="muted">No CIF returned – remains NTB</span>';
-    if (i === 2 && sc === "suspect") { suspect = statusBadge("Matched"); cls = "bad"; }
-    if (sc === "apifail" && i === 1) { dedupe = '<span class="badge b-red">Failed</span>'; cif = "—"; cls = "bad"; }
-    return `<tr class="${cls}"><td><b>${a.name}</b><div class="muted">${a.type}</div></td><td>${a.rel}</td><td>${cif}</td><td>${dedupe}<div class="muted">Run 04 Nov 2026, 11:02</div></td><td>${suspect}</td><td>${action}</td></tr>`;
-  }).join("");
+const DEDUPE_CIFS = [
+  { key: "a", cif: "CIF ••••4821", score: "98% Match Score", primary: true },
+  { key: "b", cif: "CIF ••••9912", score: "75% Partial Match", partial: true }
+];
+
+const DEDUPE_FIELDS = [
+  { f: "Title", s: "Mr.", a: "Mr.", b: "Mr." },
+  { f: "First Name", s: "Rajesh", a: "Rajesh", b: "Rajesh" },
+  { f: "Middle Name", s: "Kumar", a: "Kumar", b: "K." },
+  { f: "Last Name", s: "Kapoor", a: "Kapoor", b: "Kapoor" },
+  { f: "Gender", s: "Male", a: "Male", b: "Male" },
+  { f: "Date of Birth", s: "1984-07-16", sHtml: "DOB – 1984-07-16<br/>Aadhaar – 1984-07-16<br/>PAN – 1984-07-16", a: "1984-07-16", b: "1984-07-16", mandatory: true },
+  { f: "Mother's Maiden Name", s: "—", a: "SUNAINA K.", b: "SUNAINA K." },
+  { f: "Marital Status", s: "Married", a: "Married", b: "Single" },
+  { f: "Father's Name", s: "—", a: "Mahesh Kapoor", b: "Mahesh Kapoor" },
+  { f: "PAN", s: "XXXXX4521X", a: "XXXXX4521X", b: "XXXXX4521X" },
+  { f: "Phone", s: "98XXXXXX10", a: "98XXXXXX10", b: "98XXXXXX10" },
+  { f: "Customer Type", s: "Individual", a: "Individual", b: "Individual" }
+];
+
+function dedupeScenario() {
+  return state.tranche === "01" ? state.dedupe : "etb";
 }
 
-function dedupeDetail(checker) {
-  const sc = state.dedupe;
-  if (sc === "ntb") {
-    return `
-      <div class="card">
-        <div class="group-hd">CIF selection – Sunita Kapoor (Co-Borrower, NTB) <span class="muted">Dedupe returned 2 CIFs. Select the CIF that belongs to the applicant.</span></div>
-        <table>
-          <thead><tr><th></th><th>CIF</th><th>Name</th><th>Date of Birth</th><th>PAN</th><th>Mobile</th></tr></thead>
-          <tbody>
-            <tr class="sel"><td><input type="radio" checked style="width:auto" /></td><td>CIF ••••7395</td><td>Sunita Kapoor</td><td>12-03-1986</td><td>XXXXX1234X</td><td>98XXXXXX21</td></tr>
-            <tr><td><input type="radio" style="width:auto" /></td><td>CIF ••••2208</td><td>Sunita R Kapoor</td><td>02-11-1979</td><td>XXXXX8810X</td><td>97XXXXXX65</td></tr>
-          </tbody>
-        </table>
-        <div class="tag" style="margin:8px 14px">[Existing: customerDedupeMasterPage – CIF selection reused]</div>
-      </div>`;
+function dedupeApplicants() {
+  const sc = dedupeScenario();
+  return APPLICANTS.map((a, i) => ({ ...a, rel: i === 0 ? (["etb", "suspect"].includes(sc) ? "ETB" : "NTB") : a.rel }));
+}
+
+function selectedCifKey() {
+  return ["etb", "suspect"].includes(dedupeScenario()) ? "a" : state.deCif;
+}
+
+function compareRows() {
+  const key = selectedCifKey();
+  const mismatch = dedupeScenario() === "mismatch";
+  return DEDUPE_FIELDS.map((r) => {
+    const fc = mismatch && r.mandatory ? "1984-06-16" : r[key];
+    const status = fc === r.s ? "ok" : mismatch && r.mandatory ? "err" : "warn";
+    return { ...r, fc, status };
+  });
+}
+
+function statusIcon(s) {
+  if (s === "ok") return '<span class="st ok" title="Match">✓</span>';
+  if (s === "err") return '<span class="st err" title="Mandatory parameter mismatch">✕</span>';
+  return '<span class="st warn" title="Mismatch / missing"></span>';
+}
+
+function dedupeResults(readOnly) {
+  const sc = dedupeScenario();
+  const app = dedupeApplicants()[Number(state.deApp)];
+  const focus = state.deApp === "0";
+  const appTabs = `<div class="tabs">${dedupeApplicants().map((a, i) => `<div class="tab ${state.deApp === String(i) ? "on" : ""}" data-group="deApp" data-value="${i}">${a.name} · ${a.type} <span class="muted">${a.rel}</span></div>`).join("")}</div>`;
+
+  let chip = `Number of CIF Match Found : ${focus ? 2 : 0}`;
+  let body;
+  if (focus && sc === "apifail") {
+    chip = "Number of CIF Match Found : —";
+    body = `<div class="card-bd"><div class="alert err" style="margin:0">⚠ <div><b>Dedupe API failed for ${app.name} – attempt 5 of 5.</b><br/>Dedupe is mandatory to proceed. Retry is available after the 15-minute cooling period (14:32 remaining).</div><button class="btn sm" disabled>⟳ Retry</button></div></div>`;
+  } else if (!focus) {
+    body = `<div class="card-bd"><div class="alert info" style="margin:0">ⓘ <div>Dedupe returned no matching CIF in FC for <b>${app.name}</b>. The applicant remains <b>NTB</b>.</div></div></div>`;
+  } else {
+    const locked = readOnly || ["etb", "suspect"].includes(sc);
+    const key = selectedCifKey();
+    const rows = compareRows();
+    const matches = rows.filter((r) => r.status === "ok").length;
+    const shown = rows.filter((r) => state.deFilter === "all" || (state.deFilter === "match" ? r.status === "ok" : r.status !== "ok"));
+    const cards = DEDUPE_CIFS.map((c) => `
+      <div class="cif-card ${c.key === key ? "on" : ""} ${locked ? "locked" : ""}" ${locked ? "" : `data-group="deCif" data-value="${c.key}"`}>
+        <span class="radio"></span>
+        <div><b>CIF Number: ${c.cif.replace("CIF ", "")}</b> ${c.primary ? '<span class="badge b-green">Primary</span>' : ""}${locked && c.key === key ? ' <span class="badge b-blue">Linked</span>' : ""}
+          <div class="score ${c.partial ? "partial" : ""}">${c.score}</div></div>
+      </div>`).join("");
+    const banner = locked
+      ? `<div class="alert info" style="margin:0 14px 12px">ⓘ <div>${readOnly && state.tranche !== "01" ? "Dedupe &amp; Eligibility is navigated only once, for the first tranche. It was completed with <b>Tranche 01</b> on 28 Oct 2026 and is shown here as read only." : `CIF is already selected for the ETB applicant, so the Dedupe screen is <b>read only</b>. Dedupe and Suspect Registry were run afresh ${state.screen.startsWith("c-") ? "when the tranche moved to Ops Checker" : "when the tranche entered Ops Maker"}.`}</div></div>`
+      : sc === "mismatch"
+        ? `<div class="alert err" style="margin:0 14px 12px">⛔ <div><b>Hard stop – mandatory parameter mismatch on the selected CIF</b> (Date of Birth).<br/>Raise a query to Sales to get the data corrected in CBS, then use Re-run Dedupe to recheck.</div></div>`
+        : "";
+    const actions = locked
+      ? ""
+      : sc === "mismatch"
+        ? `<div class="cif-actions"><button class="btn" data-modal="query">Raise Query to Sales</button><button class="btn navy">⟳ Re-run Dedupe</button></div>`
+        : `<div class="cif-actions"><button class="btn navy">Link Selected CIF</button><button class="btn">Ignore &amp; Proceed New</button></div>`;
+    body = `
+      <div class="cif-row"><span class="lbl">SELECT RECORD:</span>${cards}</div>
+      ${actions}
+      ${banner}
+      <div class="filter-row">
+        <button class="pill ${state.deFilter === "all" ? "on" : ""}" data-group="deFilter" data-value="all">All Fields (${rows.length})</button>
+        <button class="pill ${state.deFilter === "match" ? "on" : ""}" data-group="deFilter" data-value="match">Matches (${matches})</button>
+        <button class="pill ${state.deFilter === "mis" ? "on" : ""}" data-group="deFilter" data-value="mis">Mismatches / Missing (${rows.length - matches})</button>
+        <input class="search" placeholder="🔍 Search field name or value..." />
+      </div>
+      <table class="cmp">
+        <thead><tr><th style="width:30%">Field Description</th><th style="width:30%">Data from SFDC</th><th style="width:30%">Data from FC</th><th class="st-col">Status</th></tr></thead>
+        <tbody>${shown.map((r) => `<tr class="${r.status === "err" ? "bad" : ""}"><td>${r.f}</td><td>${r.sHtml || r.s}</td><td>${r.fc}</td><td class="st-col">${statusIcon(r.status)}</td></tr>`).join("") || '<tr><td colspan="4" class="muted">No fields in this view.</td></tr>'}</tbody>
+      </table>
+      <div class="alert info pending-note" style="margin:10px 14px">ⓘ Mandatory parameters to be matched on the selected CIF are the same as in Sales Negotiation – the Date of Birth mismatch shown is illustrative.</div>`;
   }
-  if (sc === "mismatch") {
-    const rows = [["Name", "Sunita Kapoor", "Sunita Kapoor", true], ["Date of Birth", "12-03-1986", "21-03-1986", false], ["PAN", "XXXXX1234X", "XXXXX1234X", true], ["Mobile", "98XXXXXX21", "98XXXXXX21", true]];
-    return `
-      <div class="alert err">⛔ <div><b>Hard stop – mandatory parameter mismatch on the selected CIF</b> (Sunita Kapoor, CIF ••••7395).<br/>Raise a query to Sales to get the data corrected in CBS, then use Re-run Dedupe to recheck.</div></div>
-      <div class="card">
-        <div class="group-hd">Mandatory parameter check – CIF ••••7395</div>
-        <table>
-          <thead><tr><th>Parameter</th><th>Loan application</th><th>Selected CIF (CBS)</th><th>Result</th></tr></thead>
-          <tbody>${rows.map(([p, l, c, ok]) => `<tr class="${ok ? "" : "bad"}"><td><b>${p}</b></td><td>${l}</td><td>${c}</td><td>${ok ? '<span class="badge b-green">Matched</span>' : '<span class="badge b-red">Mismatch</span>'}</td></tr>`).join("")}</tbody>
-        </table>
-        <div class="alert info pending-note" style="margin:10px 14px">ⓘ Mandatory parameters are the same as in Sales Negotiation – the rows shown are illustrative.</div>
-        <div class="footer-actions"><button class="btn" data-modal="query">Raise Query to Sales</button><button class="btn primary">⟳ Re-run Dedupe</button></div>
-      </div>`;
-  }
-  if (sc === "suspect") {
-    return `<div class="alert err">⛔ <div><b>Suspect Registry matched for Vikram Rao (Guarantor).</b><br/>This is a hard stop. The loan application has been <b>rejected automatically</b> by the system on 04 Nov 2026, 11:02.</div></div>`;
-  }
-  if (sc === "apifail") {
-    return `<div class="alert err">⚠ <div><b>Dedupe API failed for Sunita Kapoor – attempt 5 of 5.</b><br/>Dedupe is mandatory to proceed. Retry is available after the 15-minute cooling period (14:32 remaining).</div><button class="btn sm" disabled>⟳ Retry</button></div>`;
-  }
-  return `<div class="alert info">ⓘ <div>CIF is already selected for the ETB applicant, so the Dedupe screen is <b>read only</b>. Dedupe and Suspect Registry were run afresh ${checker ? "when the tranche moved to Ops Checker" : "when the tranche entered Ops Maker"}.</div></div>`;
+
+  return `
+    <div class="card">
+      <div class="card-hd"><div class="ttl"><div class="ico">🔍</div><div><h2>Dedupe Check Results</h2><p>Compare customer identity information between SFDC and FC databases</p></div></div><span class="hd-chip">${chip}</span></div>
+      ${appTabs}
+      <div class="tag" style="margin:8px 14px 0">[Existing: customerDedupeResultTable / customerDedupeMasterPage reused · Dedupe API · Integration_Checklist__c retry tracking]</div>
+      ${body}
+    </div>`;
+}
+
+function validationsCard() {
+  const sc = dedupeScenario();
+  const chip = sc === "suspect" ? '<span class="hd-chip err">Hard stop – Suspect Registry match</span>' : sc === "apifail" ? '<span class="hd-chip warn">Checks pending</span>' : '<span class="hd-chip ok">All checks complete</span>';
+  const rows = dedupeApplicants().map((a, i) => {
+    const pending = sc === "apifail" && i === 0;
+    const suspect = sc === "suspect" && i === 2;
+    const cif = i === 0 && ["etb", "suspect"].includes(sc) ? "CIF linked" : "NTB";
+    return `<tr class="${suspect ? "bad" : ""}"><td><b>${a.name}</b><div class="muted">${cif}</div></td><td>${a.type === "Borrower" ? "Primary Applicant" : a.type}</td>
+      <td>${pending ? statusBadge("Pending") : '<span class="badge b-green">No NPA Match</span>'}</td>
+      <td>${pending ? statusBadge("Pending") : '<span class="badge b-green">Completed</span>'}</td>
+      <td>${pending ? statusBadge("Pending") : suspect ? statusBadge("Matched") : statusBadge("No Match")}</td></tr>`;
+  }).join("");
+  return `
+    <div class="card">
+      <div class="card-hd"><div class="ttl"><div><h2>Validations</h2><p>Applicant-wise compliance validation results</p></div></div>${chip}</div>
+      <div class="tag" style="margin:8px 14px 0">[Existing: npaCheckAPI · Suspect Registry API (rerun on entry) · ReKYC – not in repo]</div>
+      <table>
+        <thead><tr><th>Applicant</th><th>Applicant Type</th><th>NPA Check</th><th>ReKYC</th><th>Suspect Registry</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="alert warn pending-note" style="margin:10px 14px">⚠ NPA Check and ReKYC are shown as per the screen design but are not covered in the Ops Maker and Checker user stories – to be confirmed.</div>
+    </div>`;
 }
 
 function screenDe(checker) {
   const first = state.tranche === "01";
-  const blocked = ["mismatch", "suspect", "apifail"].includes(state.dedupe);
+  const sc = dedupeScenario();
+  const blocked = ["mismatch", "suspect", "apifail"].includes(sc);
   const next = checker ? "c-dv" : "m-dv";
-  if (!first) {
-    return `
-      <div class="card">
-        ${hd("DE", `${checker ? "OPS CHECKER" : "OPS MAKER"} – DEDUPE & ELIGIBILITY`, trancheLine())}
-        <div class="card-bd">
-          <div class="alert info">ⓘ <div>Dedupe &amp; Eligibility is navigated only once, for the first tranche. It was completed with <b>Tranche 01</b> on 28 Oct 2026 and is shown here as read only.</div></div>
-          <table><thead><tr><th>Applicant</th><th>Relationship</th><th>Selected CIF</th><th>Dedupe</th><th>Suspect Registry</th><th></th></tr></thead>
-          <tbody>${APPLICANTS.map((a) => `<tr><td><b>${a.name}</b><div class="muted">${a.type}</div></td><td>${a.rel}</td><td>${a.cif || '<span class="muted">No CIF – NTB</span>'}</td><td>${statusBadge("Success")}</td><td>${statusBadge("No Match")}</td><td class="muted">Read only</td></tr>`).join("")}</tbody></table>
-        </div>
-        <div class="footer-actions"><button class="btn primary" data-nav="${next}">Next</button></div>
-      </div>`;
-  }
-  const detail = dedupeDetail(checker);
-  const detailOnTop = ["etb", "suspect", "apifail"].includes(state.dedupe);
+  const suspectAlert = sc === "suspect" ? `<div class="alert err">⛔ <div><b>Suspect Registry matched for Vikram Rao (Guarantor).</b><br/>This is a hard stop. The loan application has been <b>rejected automatically</b> by the system on 04 Nov 2026, 11:02.</div></div>` : "";
   return `
+    ${suspectAlert}
+    ${dedupeResults(!first)}
+    ${validationsCard()}
     <div class="card">
-      ${hd("DE", `${checker ? "OPS CHECKER" : "OPS MAKER"} – DEDUPE & ELIGIBILITY`, `${trancheLine()} · Dedupe and Suspect Registry rerun on entry`)}
-      <div class="card-bd">
-        <div class="tag">[Existing: Dedupe and Suspect Registry APIs and logic reused · Integration_Checklist__c retry tracking]</div>
-        ${detailOnTop ? detail : ""}
-        <table>
-          <thead><tr><th>Applicant</th><th>Relationship</th><th>Selected CIF</th><th>Dedupe API</th><th>Suspect Registry</th><th></th></tr></thead>
-          <tbody>${dedupeRows()}</tbody>
-        </table>
-      </div>
-      ${detailOnTop ? "" : `<div class="card-bd" style="padding-top:0">${detail}</div>`}
-      <div class="footer-actions">
-        ${!checker && state.dedupe !== "suspect" ? `<div class="left"><button class="btn" data-modal="query">Raise Query</button></div>` : ""}
+      <div class="footer-actions" style="border-top:0">
+        ${!checker && first && sc !== "suspect" ? `<div class="left"><button class="btn" data-modal="query">Raise Query</button></div>` : ""}
         <button class="btn primary" ${blocked ? "disabled" : `data-nav="${next}"`}>Next</button>
       </div>
     </div>`;
@@ -903,6 +989,7 @@ document.addEventListener("click", (e) => {
     state[opt.dataset.group] = raw === "true" ? true : raw === "false" ? false : raw;
     if (opt.dataset.group === "screen") state.modal = "";
     if (opt.dataset.group === "qRole") state.qTab = raw === "maker" ? "m1" : "c1";
+    if (opt.dataset.group === "dedupe") state.deApp = "0";
     if (opt.dataset.group === "screen" && raw === "p-rev") state.revCtx = "maker-dv";
     render();
   }
