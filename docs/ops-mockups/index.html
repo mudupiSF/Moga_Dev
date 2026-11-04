@@ -188,13 +188,6 @@
     .tile.ftnr { background: var(--red-100); color: #991b1b; }
     .tile.final { background: var(--white); border-color: var(--slate-200); color: var(--slate-700); }
     .tile.final b { font-size: 13px; }
-    .vt { display: inline-flex; border: 1px solid var(--slate-300); border-radius: 4px; overflow: hidden; }
-    .vt button { border: 0; border-left: 1px solid var(--slate-300); background: var(--white); padding: 3px 10px; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--slate-700); }
-    .vt button:first-child { border-left: 0; }
-    .vt button.ftnr { color: #991b1b; }
-    .vt button.on.ftr { background: var(--green-600); color: var(--white); }
-    .vt button.on.ftnr { background: var(--red-600); color: var(--white); }
-    .vt button.on.na { background: var(--slate-500); color: var(--white); }
     .subtabs { display: flex; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--slate-200); background: var(--slate-50); }
     .subtabs .seg { padding: 5px 12px; }
     .doc-tbl td input { border: 1px solid var(--slate-300); border-radius: 4px; padding: 4px 6px; width: 100%; }
@@ -579,11 +572,10 @@ function markOf(d, checker) {
 }
 
 function verifyToggle(d, checker) {
-  if (!d.up) return '<span class="badge b-grey">NA</span>';
   const v = markOf(d, checker);
   const k = `${checker ? "c" : "m"}:${d.id}`;
-  const opts = d.mand ? ["FTR", "FTNR"] : ["FTR", "FTNR", "NA"];
-  return `<span class="vt">${opts.map((o) => `<button class="${o.toLowerCase()} ${v === o ? "on" : ""}" data-mark="${k}" data-value="${o}">${o}</button>`).join("")}</span>`;
+  const cls = v === "FTNR" ? "ftnr" : v === "" ? "unmarked" : "";
+  return `<select class="${cls}" data-mark="${k}" ${d.up ? "" : "disabled"}><option value="">— Select —</option>${["FTR", "FTNR", "NA"].map((o) => `<option ${v === o ? "selected" : ""}>${o}</option>`).join("")}</select>`;
 }
 
 function docTable(docs, checker, whoLabel) {
@@ -1056,8 +1048,6 @@ document.addEventListener("click", (e) => {
     render();
     return;
   }
-  const mark = e.target.closest("[data-mark]");
-  if (mark) { state.marks[mark.dataset.mark] = mark.dataset.value; render(); return; }
   const nav = e.target.closest("[data-nav]");
   if (nav && !nav.disabled) { state.screen = nav.dataset.nav; state.modal = ""; render(); return; }
   const opt = e.target.closest("[data-group]");
@@ -1072,6 +1062,11 @@ document.addEventListener("click", (e) => {
     if (opt.dataset.group === "screen" && raw === "p-rev") state.revCtx = "maker-dv";
     render();
   }
+});
+
+document.addEventListener("change", (e) => {
+  const mark = e.target.closest("select[data-mark]");
+  if (mark) { state.marks[mark.dataset.mark] = mark.value; render(); }
 });
 
 const initial = location.hash.slice(1);
