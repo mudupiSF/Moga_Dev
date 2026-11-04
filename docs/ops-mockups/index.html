@@ -178,6 +178,28 @@
     td.st-col, th.st-col { text-align: right; }
     .cmp td { padding: 11px 10px; }
 
+    /* Document Verification */
+    .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 12px 14px; }
+    .tile { border-radius: 6px; padding: 9px 12px; border: 1px solid transparent; }
+    .tile span { font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+    .tile b { display: block; font-size: 17px; margin-top: 4px; }
+    .tile.total { background: #e8eef7; color: var(--navy-900); }
+    .tile.ftr { background: var(--green-100); color: #166534; }
+    .tile.ftnr { background: var(--red-100); color: #991b1b; }
+    .tile.final { background: var(--white); border-color: var(--slate-200); color: var(--slate-700); }
+    .tile.final b { font-size: 13px; }
+    .vt { display: inline-flex; border: 1px solid var(--slate-300); border-radius: 4px; overflow: hidden; }
+    .vt button { border: 0; border-left: 1px solid var(--slate-300); background: var(--white); padding: 3px 10px; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--slate-700); }
+    .vt button:first-child { border-left: 0; }
+    .vt button.ftnr { color: #991b1b; }
+    .vt button.on.ftr { background: var(--green-600); color: var(--white); }
+    .vt button.on.ftnr { background: var(--red-600); color: var(--white); }
+    .vt button.on.na { background: var(--slate-500); color: var(--white); }
+    .subtabs { display: flex; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--slate-200); background: var(--slate-50); }
+    .subtabs .seg { padding: 5px 12px; }
+    .doc-tbl td input { border: 1px solid var(--slate-300); border-radius: 4px; padding: 4px 6px; width: 100%; }
+    .legend { color: var(--slate-500); font-size: 11px; margin-right: auto; }
+
     /* Pop-ups */
     .overlay { position: absolute; inset: 0; background: rgba(15,23,42,.45); display: flex; justify-content: center; align-items: flex-start; padding-top: 40px; border-radius: 6px; min-height: 560px; }
     .modal { background: var(--white); width: 640px; max-width: 94%; border-radius: 8px; box-shadow: 0 16px 40px rgba(15,23,42,.35); overflow: hidden; }
@@ -240,6 +262,10 @@ const state = {
   deCif: "b",
   deFilter: "all",
   docs: "complete",
+  dvTab: "loan",
+  dvApp: "0",
+  dvAsset: "",
+  marks: {},
   disb: "pending",
   poolTab: "pool",
   viewTab: "failed",
@@ -321,7 +347,7 @@ function renderReviewBar() {
     <div class="review-group"><span>Vehicle:</span>${seg("vehicle", "New", "New")}${seg("vehicle", "Used", "Used")}</div>
     <div class="review-group"><span>Tranche:</span>${seg("tranche", "01", "Tranche 01")}${seg("tranche", "02", "Tranche 02")}</div>
     <div class="review-group"><span>Dedupe:</span>${seg("dedupe", "etb", "ETB – CIF selected")}${seg("dedupe", "ntb", "NTB – CIF returned")}${seg("dedupe", "mismatch", "CIF mismatch")}${seg("dedupe", "suspect", "Suspect match")}${seg("dedupe", "apifail", "API failed")}</div>
-    <div class="review-group"><span>Documents:</span>${seg("docs", "complete", "All FTR / NA")}${seg("docs", "incomplete", "FTNR / not marked")}</div>
+    <div class="review-group"><span>Documents:</span>${seg("docs", "none", "Not reviewed")}${seg("docs", "complete", "All FTR / NA")}${seg("docs", "incomplete", "FTNR / not marked")}</div>
     <div class="review-group"><span>Disbursement:</span>${seg("disb", "pending", "Pending")}${seg("disb", "failed", "CBS API failed")}${seg("disb", "disbursed", "Disbursed")}</div>
     <div class="review-group"><span>Annotations:</span>${seg("annot", false, "Off")}${seg("annot", true, "On")}</div>`;
 }
@@ -516,84 +542,147 @@ function screenDe(checker) {
 }
 
 /* ---------- Document Verification ---------- */
-function docGroups() {
-  const used = state.vehicle === "Used";
-  const groups = [
-    { level: "Loan Application", key: "APP", name: "APP-2026-094521", docs: [["Loan Agreement", true, true], ["Sanction Letter", true, true], ["Repayment Mandate (NACH)", true, true], ["DPN", false, false]] },
-    { level: "Applicant", key: "B", name: "Rajesh Kapoor · Borrower", docs: [["PAN Card", true, true], ["Address Proof", true, true], ["Bank Statement", false, true]] },
-    { level: "Applicant", key: "C", name: "Sunita Kapoor · Co-Borrower", docs: [["PAN Card", true, true], ["Address Proof", true, true]] }
+function dvDocs() {
+  let n = 0;
+  const doc = (name, cat, who, date, mand = true, up = true, extra = {}) => ({ id: `DOC-${String(++n).padStart(3, "0")}`, name, cat, who, date, mand, up, ...extra });
+  const loan = [
+    doc("Loan Agreement.pdf", "Agreement", "Application Level", "28 Sep 2026"),
+    doc("Sanction Letter.pdf", "Sanction", "Application Level", "28 Sep 2026"),
+    doc("Repayment Mandate (NACH).pdf", "Repayment", "Application Level", "29 Sep 2026"),
+    doc("DPN.pdf", "Agreement", "Application Level", "—", false, false)
   ];
-  assets().forEach((a) => {
-    const docs = used
-      ? [["RC Copy", true, true], ["Valuation Report", true, true], ["Insurance Policy", true, true], ["Seller NOC", false, false]]
-      : [["Invoice", true, true], ["Insurance Policy", true, true], ["Margin Money Receipt", false, false]];
-    groups.push({ level: `Tranche ${state.tranche} / Asset`, key: a.id, name: `${a.label} · ${a.make} ${a.model} ${a.variant}`, docs });
+  const applicants = [
+    [doc("PAN Card.pdf", "Identity Proof", "Rajesh Kapoor", "28 Sep 2026"), doc("Aadhaar Card.pdf", "Address Proof", "Rajesh Kapoor", "28 Sep 2026"), doc("Bank Statement - 6 Months.pdf", "Banking", "Rajesh Kapoor", "29 Sep 2026", false), doc("Income Tax Return.pdf", "Income Proof", "Rajesh Kapoor", "29 Sep 2026")],
+    [doc("PAN Card.pdf", "Identity Proof", "Sunita Kapoor", "29 Sep 2026"), doc("Aadhaar Card.pdf", "Address Proof", "Sunita Kapoor", "29 Sep 2026", true, true, { ftnrSample: true })],
+    [doc("PAN Card.pdf", "Identity Proof", "Vikram Rao", "29 Sep 2026"), doc("Aadhaar Card.pdf", "Address Proof", "Vikram Rao", "29 Sep 2026")]
+  ];
+  const list = assets();
+  const tranche = list.map((a, i) => {
+    const who = `${a.label.split(" · ")[0]} · ${a.make} ${a.model}`;
+    const last = i === list.length - 1;
+    const docs = state.vehicle === "Used"
+      ? [doc("RC Copy.pdf", "Asset Document", who, "30 Sep 2026"), doc("Valuation Report.pdf", "Valuation", who, "03 Oct 2026"), doc("Insurance Policy.pdf", "Insurance", who, "03 Oct 2026", true, true, { unmarkedSample: last }), doc("Seller NOC.pdf", "Asset Document", who, "—", false, false)]
+      : [doc("Vehicle Quotation.pdf", "Asset Document", who, "30 Sep 2026"), doc("Invoice.pdf", "Asset Document", who, "02 Oct 2026"), doc("Insurance Policy.pdf", "Insurance", who, "03 Oct 2026", true, true, { unmarkedSample: last }), doc("Margin Money Receipt.pdf", "Asset Document", who, "—", false, false)];
+    return { asset: a, docs };
   });
-  return groups;
+  return { loan, applicants, tranche, all: [...loan, ...applicants.flat(), ...tranche.flatMap((t) => t.docs)] };
 }
 
-function makerStatus(groupKey, docName, mandatory, uploaded) {
-  if (state.docs === "incomplete") {
-    if (groupKey === "C" && docName === "Address Proof") return "FTNR";
-    if (groupKey === assets()[assets().length - 1].id && docName === "Insurance Policy") return "";
+function baseMark(d, checker) {
+  if (!d.up) return "NA";
+  if (state.docs === "none") return "";
+  if (!checker && state.docs === "incomplete") {
+    if (d.ftnrSample) return "FTNR";
+    if (d.unmarkedSample) return "";
   }
-  return mandatory || uploaded ? "FTR" : "NA";
+  return "FTR";
 }
 
-function statusSelect(value, mandatory) {
-  const opts = mandatory ? ["FTR", "FTNR"] : ["FTR", "FTNR", "NA"];
-  const cls = value === "FTNR" ? "ftnr" : value === "" ? "unmarked" : "";
-  return `<select class="${cls}"><option value="">— Select —</option>${opts.map((o) => `<option ${o === value ? "selected" : ""}>${o}</option>`).join("")}</select>`;
+function markOf(d, checker) {
+  const k = `${checker ? "c" : "m"}:${d.id}`;
+  return k in state.marks ? state.marks[k] : baseMark(d, checker);
+}
+
+function verifyToggle(d, checker) {
+  if (!d.up) return '<span class="badge b-grey">NA</span>';
+  const v = markOf(d, checker);
+  const k = `${checker ? "c" : "m"}:${d.id}`;
+  const opts = d.mand ? ["FTR", "FTNR"] : ["FTR", "FTNR", "NA"];
+  return `<span class="vt">${opts.map((o) => `<button class="${o.toLowerCase()} ${v === o ? "on" : ""}" data-mark="${k}" data-value="${o}">${o}</button>`).join("")}</span>`;
+}
+
+function docTable(docs, checker, whoLabel) {
+  return `
+    <table class="doc-tbl">
+      <thead><tr><th style="width:9%">Document ID</th><th style="width:22%">Document Name</th><th style="width:13%">Category</th>${whoLabel ? `<th style="width:15%">${whoLabel}</th>` : ""}<th style="width:10%">Uploaded On</th><th style="width:13%">Verification</th><th>Remarks (optional)</th></tr></thead>
+      <tbody>${docs.map((d) => {
+        const v = markOf(d, checker);
+        const remark = !checker && v === "FTNR" && d.ftnrSample ? "Address on proof does not match KYC" : "";
+        return `<tr class="${v === "FTNR" ? "bad" : ""}">
+          <td class="muted">${d.id}</td>
+          <td>${d.up ? `<span class="link">${d.name}</span><div class="muted">Salesforce File</div>` : `<b>${d.name}</b><div class="muted">Not uploaded</div>`}</td>
+          <td>${d.cat}${d.mand ? "" : '<div class="muted">Optional</div>'}</td>
+          ${whoLabel ? `<td>${d.who}</td>` : ""}
+          <td>${d.date}</td>
+          <td>${verifyToggle(d, checker)}${checker ? `<div class="muted" style="margin-top:3px">Ops Maker: ${d.up ? "FTR" : "NA"}</div>` : ""}</td>
+          <td>${d.up ? `<input maxlength="255" placeholder="Max 255 characters" value="${remark}" />` : ""}</td>
+        </tr>`;
+      }).join("")}</tbody>
+    </table>`;
+}
+
+function dvTabBody(data, checker) {
+  if (state.dvTab === "loan") return docTable(data.loan, checker, "Applicant");
+  if (state.dvTab === "applicant") {
+    const i = Number(state.dvApp);
+    return `
+      <div class="subtabs">${APPLICANTS.map((a, j) => `<button class="seg ${i === j ? "on" : ""}" data-group="dvApp" data-value="${j}">${a.name} · ${a.type}</button>`).join("")}</div>
+      ${docTable(data.applicants[i], checker, "Applicant")}`;
+  }
+  const open = data.tranche.find((t) => t.asset.id === state.dvAsset);
+  const rows = data.tranche.map(({ asset: a, docs }) => {
+    const up = docs.filter((d) => d.up);
+    const reviewed = up.filter((d) => markOf(d, checker)).length;
+    return `<tr class="${open && open.asset.id === a.id ? "sel" : ""}"><td><b>${a.label}</b></td><td>${a.vt}</td><td>${a.make}</td><td>${a.model}</td><td>${a.variant}</td><td class="muted">${reviewed} of ${up.length} reviewed</td><td style="text-align:right"><button class="btn sm" data-group="dvAsset" data-value="${a.id}">👁 View</button></td></tr>`;
+  }).join("");
+  return `
+    <table>
+      <thead><tr><th>Asset</th><th>Vehicle Type</th><th>Make</th><th>Model</th><th>Variant</th><th>Documents</th><th></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    ${open
+      ? `<div class="group-hd">${open.asset.label.split(" · ")[0]} · ${open.asset.make} ${open.asset.model} ${open.asset.variant} <span class="muted">Asset documents · Tranche ${state.tranche}</span></div>${docTable(open.docs, checker, "")}`
+      : '<div class="card-bd muted">Click View on an asset to see its documents.</div>'}`;
 }
 
 function screenDv(checker) {
-  const groups = docGroups();
-  const incomplete = state.docs === "incomplete";
-  const problems = [];
-  const body = groups.map((g) => `
-    <div class="group-hd">${g.level} <span class="muted">${g.name}</span></div>
-    <table>
-      <thead><tr><th style="width:24%">Document</th><th style="width:10%">Type</th><th style="width:12%">File</th>${checker ? '<th style="width:11%">Ops Maker status</th>' : ""}<th style="width:14%">Verification Status</th><th>Remarks (optional)</th></tr></thead>
-      <tbody>
-        ${g.docs.map(([d, m, up]) => {
-          const ms = makerStatus(g.key, d, m, up);
-          const val = checker ? (m || up ? "FTR" : "NA") : ms;
-          if (!checker && (ms === "" || ms === "FTNR")) problems.push(`${d} – ${g.name} (${ms === "" ? "not marked" : "FTNR"})`);
-          const remark = !checker && ms === "FTNR" ? "Address on proof does not match KYC" : "";
-          return `<tr class="${!checker && (ms === "FTNR" || ms === "") ? "bad" : ""}">
-            <td><b>${d}</b></td>
-            <td>${m ? '<span class="badge b-blue">Mandatory</span>' : '<span class="badge b-grey">Optional</span>'}</td>
-            <td>${up ? '<button class="btn sm">👁 View</button>' : '<span class="muted">Not uploaded</span>'}</td>
-            ${checker ? `<td>${statusBadge(val)}</td>` : ""}
-            <td>${statusSelect(val, m)}</td>
-            <td><input maxlength="255" placeholder="Max 255 characters" value="${remark}" /></td>
-          </tr>`;
-        }).join("")}
-      </tbody>
-    </table>`).join("");
-
-  const makerFinal = incomplete ? "FTNR" : "FTR";
-  const finalRow = checker
-    ? `<div><span class="muted">Final Verification Status – Ops Maker</span><div>${statusBadge(makerFinal)}${incomplete ? ' <span class="muted">retained – Address Proof was marked FTNR earlier</span>' : ""}</div></div><div><span class="muted">Final Verification Status – Ops Checker</span><div>${statusBadge("FTR")}</div></div>`
-    : `<div><span class="muted">Final Verification Status – Ops Maker</span><div>${statusBadge(makerFinal)}</div></div>`;
+  const data = dvDocs();
+  const uploaded = data.all.filter((d) => d.up);
+  const marks = uploaded.map((d) => markOf(d, checker));
+  const reviewed = marks.filter(Boolean).length;
+  const ftr = marks.filter((m) => m === "FTR").length;
+  const ftnr = marks.filter((m) => m === "FTNR").length;
+  const ftnrDocs = data.all.filter((d) => markOf(d, checker) === "FTNR");
+  const blocked = reviewed < uploaded.length || ftnr > 0;
+  const finalOf = (isChecker) => {
+    const ms = data.all.map((d) => markOf(d, isChecker));
+    if (ms.includes("FTNR") || (!isChecker && state.docs === "incomplete")) return "FTNR";
+    return ms.every(Boolean) ? "FTR" : "Pending";
+  };
+  const finalTile = (label, value, note = "") => `<div class="tile final"><span>${label}</span><b>${statusBadge(value)}${note ? ` <span class="muted">${note}</span>` : ""}</b></div>`;
+  const tabs = [["loan", "Loan Application"], ["applicant", "Applicant"], ["tranche", `Tranche ${state.tranche}`]];
 
   return `
     <div class="card">
-      ${hd("DV", `${checker ? "OPS CHECKER" : "OPS MAKER"} – DOCUMENT VERIFICATION`, `${trancheLine()} · checklist by product and vehicle type`)}
-      <div class="sub-hd">${finalRow}<span class="muted" style="max-width:520px">Auto-derived. Set to FTNR if any document is marked FTNR at any point in this stage, and stays FTNR.</span></div>
-      <div class="tag" style="margin:8px 14px 0">[Document_CheckList__c – Verification Status (FTR/FTNR/NA) and Final Verification Status per stage are new · documents listed are illustrative]</div>
-      ${!checker && incomplete ? `<div style="padding:12px 14px 0"><div class="alert err">⛔ <div><b>Cannot proceed to Payment Disbursement.</b> Mark the following documents as FTR or NA:<ul>${problems.map((p) => `<li>${p}</li>`).join("")}</ul></div></div></div>` : ""}
-      ${body}
+      <div class="card-hd"><div class="ttl"><div class="ico">DV</div><div><h2>Document Verification</h2><p>Review all uploaded application documents and mark each as FTR or FTNR</p></div></div><span class="hd-chip">${reviewed} of ${uploaded.length} Reviewed</span></div>
+      <div class="tiles" style="grid-template-columns:repeat(${checker ? 5 : 4}, 1fr)">
+        <div class="tile total"><span>Total Documents</span><b>${uploaded.length}</b></div>
+        <div class="tile ftr"><span>FTR</span><b>${ftr}</b></div>
+        <div class="tile ftnr"><span>FTNR</span><b>${ftnr}</b></div>
+        ${checker
+          ? finalTile("Final Verification Status – Ops Maker", state.docs === "incomplete" ? "FTNR" : finalOf(false), state.docs === "incomplete" ? "retained" : "") + finalTile("Final Verification Status – Ops Checker", finalOf(true))
+          : finalTile("Final Verification Status – Ops Maker", finalOf(false))}
+      </div>
+      <div class="tag" style="margin:0 14px 8px">[Document_CheckList__c – Verification Status (FTR/FTNR/NA) and Final Verification Status per stage are new · documents listed are illustrative]</div>
+      ${ftnrDocs.length
+        ? `<div style="padding:0 14px"><div class="alert err">⛔ <div><b>Cannot proceed to Payment Disbursement.</b> The following documents are marked FTNR:<ul>${ftnrDocs.map((d) => `<li>${d.name} – ${d.who}</li>`).join("")}</ul></div></div></div>`
+        : reviewed < uploaded.length && state.docs !== "none"
+          ? `<div style="padding:0 14px"><div class="alert warn">⚠ <div>${uploaded.length - reviewed} document(s) not reviewed yet. Mark every document as FTR, FTNR or NA to proceed.</div></div></div>`
+          : ""}
+      <div class="tabs">${tabs.map(([k, l]) => `<div class="tab ${state.dvTab === k ? "on" : ""}" data-group="dvTab" data-value="${k}">${l}</div>`).join("")}</div>
+      ${dvTabBody(data, checker)}
       ${checker ? `<div class="card-bd"><div class="field" style="max-width:760px"><label>Ops Checker Remarks</label><textarea rows="2" placeholder="Remarks before moving to Payment Disbursement"></textarea></div></div>` : ""}
-      <div class="footer-actions">
+      <div class="footer-actions"><span class="legend">FTR First Time Right · FTNR First Time Not Right</span><button class="btn navy">Save Verification</button></div>
+    </div>
+    <div class="card">
+      <div class="footer-actions" style="border-top:0">
         <div class="left">
           ${checker
             ? `<button class="btn danger" data-modal="reversal" data-ctx="checker-dv">↩ Send Back to Ops Maker</button>`
             : `<button class="btn danger" data-modal="reversal" data-ctx="maker-dv">↩ Stage Reversal to Sales Negotiation</button>`}
           <button class="btn" data-modal="query">Raise Query</button>
         </div>
-        <button class="btn">Save</button>
-        <button class="btn primary" ${!checker && incomplete ? "" : `data-nav="${checker ? "c-pd" : "m-pd"}"`}>Next</button>
+        <button class="btn primary" ${blocked ? "disabled" : `data-nav="${checker ? "c-pd" : "m-pd"}"`}>Next</button>
       </div>
     </div>`;
 }
@@ -981,6 +1070,8 @@ document.addEventListener("click", (e) => {
     render();
     return;
   }
+  const mark = e.target.closest("[data-mark]");
+  if (mark) { state.marks[mark.dataset.mark] = mark.dataset.value; render(); return; }
   const nav = e.target.closest("[data-nav]");
   if (nav && !nav.disabled) { state.screen = nav.dataset.nav; state.modal = ""; render(); return; }
   const opt = e.target.closest("[data-group]");
@@ -990,6 +1081,8 @@ document.addEventListener("click", (e) => {
     if (opt.dataset.group === "screen") state.modal = "";
     if (opt.dataset.group === "qRole") state.qTab = raw === "maker" ? "m1" : "c1";
     if (opt.dataset.group === "dedupe") state.deApp = "0";
+    if (["docs", "tranche", "product", "vehicle"].includes(opt.dataset.group)) state.marks = {};
+    if (["tranche", "product"].includes(opt.dataset.group)) state.dvAsset = "";
     if (opt.dataset.group === "screen" && raw === "p-rev") state.revCtx = "maker-dv";
     render();
   }
