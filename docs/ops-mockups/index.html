@@ -507,19 +507,16 @@ function validationsCard() {
     const suspect = sc === "suspect" && i === 2;
     const cif = i === 0 && ["etb", "suspect"].includes(sc) ? "CIF linked" : "NTB";
     return `<tr class="${suspect ? "bad" : ""}"><td><b>${a.name}</b><div class="muted">${cif}</div></td><td>${a.type === "Borrower" ? "Primary Applicant" : a.type}</td>
-      <td>${pending ? statusBadge("Pending") : '<span class="badge b-green">No NPA Match</span>'}</td>
-      <td>${pending ? statusBadge("Pending") : '<span class="badge b-green">Completed</span>'}</td>
       <td>${pending ? statusBadge("Pending") : suspect ? statusBadge("Matched") : statusBadge("No Match")}</td></tr>`;
   }).join("");
   return `
     <div class="card">
       <div class="card-hd"><div class="ttl"><div><h2>Validations</h2><p>Applicant-wise compliance validation results</p></div></div>${chip}</div>
-      <div class="tag" style="margin:8px 14px 0">[Existing: npaCheckAPI · Suspect Registry API (rerun on entry) · ReKYC – not in repo]</div>
+      <div class="tag" style="margin:8px 14px 0">[Existing: Suspect Registry API (rerun on entry)]</div>
       <table>
-        <thead><tr><th>Applicant</th><th>Applicant Type</th><th>NPA Check</th><th>ReKYC</th><th>Suspect Registry</th></tr></thead>
+        <thead><tr><th style="width:35%">Applicant</th><th style="width:35%">Applicant Type</th><th>Suspect Registry</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
-      <div class="alert warn pending-note" style="margin:10px 14px">⚠ NPA Check and ReKYC are shown as per the screen design but are not covered in the Ops Maker and Checker user stories – to be confirmed.</div>
     </div>`;
 }
 
