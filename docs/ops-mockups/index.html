@@ -265,13 +265,13 @@ const state = {
   dvTab: "loan",
   dvApp: "0",
   dvAsset: "",
+  dvTrancheOpen: false,
   marks: {},
   disb: "pending",
   poolTab: "pool",
   viewTab: "failed",
   qRole: "maker",
   qTab: "m1",
-  qLevel: "Asset",
   modal: "",
   revCtx: "maker-dv",
   annot: false
@@ -285,12 +285,11 @@ const SCREENS = [
   ["c-de", "5. Ops Checker – Dedupe & Eligibility"],
   ["c-dv", "6. Ops Checker – Document Verification"],
   ["c-pd", "7. Ops Checker – Payment Disbursement"],
-  ["p-query", "8. Raise Query (pop-up)"],
-  ["p-rev", "9. Stage Reversal (pop-up)"],
-  ["p-chk", "10. Ops Checklist & Declaration (pop-up)"],
-  ["views", "11. Disbursement Views"],
-  ["queries", "12. Query List Views"],
-  ["prev", "13. Previous Stages (read-only)"]
+  ["p-rev", "8. Stage Reversal (pop-up)"],
+  ["p-chk", "9. Ops Checklist & Declaration (pop-up)"],
+  ["views", "10. Disbursement Views"],
+  ["queries", "11. Query List Views"],
+  ["prev", "12. Previous Stages (read-only)"]
 ];
 
 const LIST_SCREENS = ["pool", "views", "queries"];
@@ -355,7 +354,7 @@ function renderReviewBar() {
 function renderSidebar() {
   const first = state.tranche === "01";
   const item = (target, label, note) => {
-    const active = state.screen === target || (state.screen === "p-query" && target === "m-dv") || (state.screen === "p-rev" && target === "m-dv") || (state.screen === "p-chk" && target === "c-pd");
+    const active = state.screen === target || (state.screen === "p-rev" && target === "m-dv") || (state.screen === "p-chk" && target === "c-pd");
     const done = !first && target.endsWith("-de");
     return `<div class="item ${active ? "active" : ""} ${done ? "done" : ""}" data-nav="${target}"><span class="dot"></span>${label}${note ? `<span class="side-note">${note}</span>` : ""}</div>`;
   };
@@ -466,12 +465,12 @@ function dedupeResults(readOnly) {
     const banner = locked
       ? `<div class="alert info" style="margin:0 14px 12px">ⓘ <div>${readOnly && state.tranche !== "01" ? "Dedupe &amp; Eligibility is navigated only once, for the first tranche. It was completed with <b>Tranche 01</b> on 28 Oct 2026 and is shown here as read only." : `CIF is already selected for the ETB applicant, so the Dedupe screen is <b>read only</b>. Dedupe and Suspect Registry were run afresh ${state.screen.startsWith("c-") ? "when the tranche moved to Ops Checker" : "when the tranche entered Ops Maker"}.`}</div></div>`
       : sc === "mismatch"
-        ? `<div class="alert err" style="margin:0 14px 12px">⛔ <div><b>Hard stop – mandatory parameter mismatch on the selected CIF</b> (Date of Birth).<br/>Raise a query to Sales to get the data corrected in CBS, then use Re-run Dedupe to recheck.</div></div>`
+        ? `<div class="alert err" style="margin:0 14px 12px">⛔ <div><b>Hard stop – mandatory parameter mismatch on the selected CIF</b> (Date of Birth).<br/>Sales must get the data corrected in CBS, then use Re-run Dedupe to recheck.</div></div>`
         : "";
     const actions = locked
       ? ""
       : sc === "mismatch"
-        ? `<div class="cif-actions"><button class="btn" data-modal="query">Raise Query to Sales</button><button class="btn navy">⟳ Re-run Dedupe</button></div>`
+        ? `<div class="cif-actions"><button class="btn navy">⟳ Re-run Dedupe</button></div>`
         : `<div class="cif-actions"><button class="btn navy">Link Selected CIF</button><button class="btn">Ignore &amp; Proceed New</button></div>`;
     body = `
       <div class="cif-row"><span class="lbl">SELECT RECORD:</span>${cards}</div>
@@ -532,7 +531,6 @@ function screenDe(checker) {
     ${validationsCard()}
     <div class="card">
       <div class="footer-actions" style="border-top:0">
-        ${!checker && first && sc !== "suspect" ? `<div class="left"><button class="btn" data-modal="query">Raise Query</button></div>` : ""}
         <button class="btn primary" ${blocked ? "disabled" : `data-nav="${next}"`}>Next</button>
       </div>
     </div>`;
@@ -591,16 +589,16 @@ function verifyToggle(d, checker) {
 function docTable(docs, checker, whoLabel) {
   return `
     <table class="doc-tbl">
-      <thead><tr><th style="width:9%">Document ID</th><th style="width:22%">Document Name</th><th style="width:13%">Category</th>${whoLabel ? `<th style="width:15%">${whoLabel}</th>` : ""}<th style="width:10%">Uploaded On</th><th style="width:13%">Verification</th><th>Remarks (optional)</th></tr></thead>
+      <thead><tr><th style="width:23%">Document Name</th><th style="width:13%">Category</th>${whoLabel ? `<th style="width:15%">${whoLabel}</th>` : ""}<th style="width:10%">Uploaded On</th><th style="width:8%">Document</th><th style="width:13%">Verification</th><th>Remarks (optional)</th></tr></thead>
       <tbody>${docs.map((d) => {
         const v = markOf(d, checker);
         const remark = !checker && v === "FTNR" && d.ftnrSample ? "Address on proof does not match KYC" : "";
         return `<tr class="${v === "FTNR" ? "bad" : ""}">
-          <td class="muted">${d.id}</td>
-          <td>${d.up ? `<span class="link">${d.name}</span><div class="muted">Salesforce File</div>` : `<b>${d.name}</b><div class="muted">Not uploaded</div>`}</td>
+          <td><b>${d.name}</b><div class="muted">${d.up ? "Salesforce File" : "Not uploaded"}</div></td>
           <td>${d.cat}${d.mand ? "" : '<div class="muted">Optional</div>'}</td>
           ${whoLabel ? `<td>${d.who}</td>` : ""}
           <td>${d.date}</td>
+          <td>${d.up ? '<button class="btn sm">👁 View</button>' : '<span class="muted">—</span>'}</td>
           <td>${verifyToggle(d, checker)}${checker ? `<div class="muted" style="margin-top:3px">Ops Maker: ${d.up ? "FTR" : "NA"}</div>` : ""}</td>
           <td>${d.up ? `<input maxlength="255" placeholder="Max 255 characters" value="${remark}" />` : ""}</td>
         </tr>`;
@@ -616,6 +614,24 @@ function dvTabBody(data, checker) {
       <div class="subtabs">${APPLICANTS.map((a, j) => `<button class="seg ${i === j ? "on" : ""}" data-group="dvApp" data-value="${j}">${a.name} · ${a.type}</button>`).join("")}</div>
       ${docTable(data.applicants[i], checker, "Applicant")}`;
   }
+  const amt = amounts();
+  const card = (n, amount) => {
+    const current = n === state.tranche;
+    const status = current ? '<span class="badge b-blue">In verification</span>' : n === "01" ? statusBadge("FTR") : statusBadge("Pending");
+    const note = current ? `${data.tranche.length} asset(s) · click to view assets` : n === "01" ? "🔒 Verified with Tranche 01" : "🔒 Verified when Tranche 02 reaches Ops";
+    return `
+      <div class="tranche ${current && state.dvTrancheOpen ? "on" : ""} ${current ? "" : "locked"}" ${current ? 'data-group="dvTrancheOpen" data-value="true"' : ""}>
+        <div class="num">${n}</div>
+        <div style="flex:1">
+          <h4>Tranche ${n} ${status}</h4>
+          <div class="amt">Tranche Amount: ${inr(amount)}</div>
+          <div class="muted" style="margin-top:4px">${note}</div>
+        </div>
+      </div>`;
+  };
+  const cards = `<div class="card-bd"><div class="tranche-grid">${card("01", amt.t1)}${card("02", amt.t2)}</div></div>`;
+  if (!state.dvTrancheOpen) return cards;
+
   const open = data.tranche.find((t) => t.asset.id === state.dvAsset);
   const rows = data.tranche.map(({ asset: a, docs }) => {
     const up = docs.filter((d) => d.up);
@@ -623,13 +639,15 @@ function dvTabBody(data, checker) {
     return `<tr class="${open && open.asset.id === a.id ? "sel" : ""}"><td><b>${a.label}</b></td><td>${a.vt}</td><td>${a.make}</td><td>${a.model}</td><td>${a.variant}</td><td class="muted">${reviewed} of ${up.length} reviewed</td><td style="text-align:right"><button class="btn sm" data-group="dvAsset" data-value="${a.id}">👁 View</button></td></tr>`;
   }).join("");
   return `
+    ${cards}
+    <div class="group-hd">Tranche ${state.tranche} – assets <span class="muted">Click View on an asset to see its documents</span></div>
     <table>
       <thead><tr><th>Asset</th><th>Vehicle Type</th><th>Make</th><th>Model</th><th>Variant</th><th>Documents</th><th></th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
     ${open
       ? `<div class="group-hd">${open.asset.label.split(" · ")[0]} · ${open.asset.make} ${open.asset.model} ${open.asset.variant} <span class="muted">Asset documents · Tranche ${state.tranche}</span></div>${docTable(open.docs, checker, "")}`
-      : '<div class="card-bd muted">Click View on an asset to see its documents.</div>'}`;
+      : ""}`;
 }
 
 function screenDv(checker) {
@@ -647,7 +665,7 @@ function screenDv(checker) {
     return ms.every(Boolean) ? "FTR" : "Pending";
   };
   const finalTile = (label, value, note = "") => `<div class="tile final"><span>${label}</span><b>${statusBadge(value)}${note ? ` <span class="muted">${note}</span>` : ""}</b></div>`;
-  const tabs = [["loan", "Loan Application"], ["applicant", "Applicant"], ["tranche", `Tranche ${state.tranche}`]];
+  const tabs = [["loan", "Loan Application"], ["applicant", "Applicant"], ["tranche", "Tranche"]];
 
   return `
     <div class="card">
@@ -677,7 +695,6 @@ function screenDv(checker) {
           ${checker
             ? `<button class="btn danger" data-modal="reversal" data-ctx="checker-dv">↩ Send Back to Ops Maker</button>`
             : `<button class="btn danger" data-modal="reversal" data-ctx="maker-dv">↩ Stage Reversal to Sales Negotiation</button>`}
-          <button class="btn" data-modal="query">Raise Query</button>
         </div>
         <button class="btn primary" ${blocked ? "disabled" : `data-nav="${checker ? "c-pd" : "m-pd"}"`}>Next</button>
       </div>
@@ -936,33 +953,6 @@ function screenPrev() {
 }
 
 /* ---------- Pop-ups ---------- */
-function modalQuery() {
-  const lvl = state.qLevel;
-  const target = lvl === "Application" ? "<option>APP-2026-094521</option>"
-    : lvl === "Asset" ? assets().map((a) => `<option>${a.label} · ${a.make} ${a.model}</option>`).join("")
-    : APPLICANTS.map((a) => `<option>${a.name} · ${a.type}</option>`).join("");
-  const subs = ["Re-upload required", "Address proof mismatch", "Name mismatch", "DOB mismatch in CBS", "Document illegible", "Signature missing"];
-  return `
-    <div class="modal">
-      <div class="modal-hd"><h3>Raise Query</h3><button class="x" data-modal="">✕</button></div>
-      <div class="modal-bd">
-        <div class="tag">[Existing: Query__c / query module – changes: level selection, multi-select Sub Type, optional Remarks]</div>
-        <div class="field"><label>Raise query at <span class="req">*</span></label><div class="segs">${seg("qLevel", "Application", "Application")}${seg("qLevel", "Asset", "Asset")}${seg("qLevel", "Applicant", "Applicant")}</div></div>
-        <div class="field"><label>${lvl} <span class="req">*</span></label><select>${target}</select></div>
-        <div class="form-grid" style="grid-template-columns:1fr 1fr">
-          <div class="field"><label>Query Type <span class="req">*</span></label><select><option>Document</option><option>Applicant</option><option>Asset</option></select></div>
-          <div class="field"><label>Assign to <span class="req">*</span></label><select><option>${isChecker() ? "Kavita Shah (Ops Maker)" : "Amit Verma (Sales)"}</option><option>Deepak Rao (Credit)</option></select></div>
-        </div>
-        <div class="field"><label>Query Sub Type <span class="req">*</span> <span class="muted">(select one or more)</span></label>
-          <div class="checks">${subs.map((s, i) => `<label><input type="checkbox" ${i < 2 ? "checked" : ""} style="width:auto" /> ${s}</label>`).join("")}</div>
-        </div>
-        <div class="field"><label>Query details (optional)</label><textarea rows="2" placeholder="Free text"></textarea></div>
-        <div class="field"><label>Remarks (optional)</label><textarea rows="2" maxlength="255"></textarea></div>
-      </div>
-      <div class="modal-ft"><button class="btn" data-modal="">Cancel</button><button class="btn primary" data-modal="">Submit Query</button></div>
-    </div>`;
-}
-
 function modalReversal() {
   const ctx = {
     "maker-dv": ["Stage Reversal – Ops Maker", "Sales Negotiation stage · Disbursement Tranche sub stage", "Amit Verma (Sales) – last Sales user who worked on this tranche in Sales Negotiation"],
@@ -999,7 +989,7 @@ function modalOpsChecklist() {
     </div>`;
 }
 
-const MODALS = { query: modalQuery, reversal: modalReversal, opschecklist: modalOpsChecklist };
+const MODALS = { reversal: modalReversal, opschecklist: modalOpsChecklist };
 
 /* ---------- Rendering ---------- */
 const RENDER = {
@@ -1010,14 +1000,13 @@ const RENDER = {
   "c-de": () => screenDe(true),
   "c-dv": () => screenDv(true),
   "c-pd": () => screenPd(true),
-  "p-query": () => screenDv(false),
   "p-rev": () => screenDv(false),
   "p-chk": () => screenPd(true),
   views: screenViews,
   queries: screenQueries,
   prev: screenPrev
 };
-const FIXED_MODAL = { "p-query": "query", "p-rev": "reversal", "p-chk": "opschecklist" };
+const FIXED_MODAL = { "p-rev": "reversal", "p-chk": "opschecklist" };
 
 function page(key, modalKey) {
   const modal = modalKey && MODALS[modalKey] ? `<div class="overlay">${MODALS[modalKey]()}</div>` : "";
@@ -1079,7 +1068,7 @@ document.addEventListener("click", (e) => {
     if (opt.dataset.group === "qRole") state.qTab = raw === "maker" ? "m1" : "c1";
     if (opt.dataset.group === "dedupe") state.deApp = "0";
     if (["docs", "tranche", "product", "vehicle"].includes(opt.dataset.group)) state.marks = {};
-    if (["tranche", "product"].includes(opt.dataset.group)) state.dvAsset = "";
+    if (["tranche", "product"].includes(opt.dataset.group)) { state.dvAsset = ""; state.dvTrancheOpen = false; }
     if (opt.dataset.group === "screen" && raw === "p-rev") state.revCtx = "maker-dv";
     render();
   }
