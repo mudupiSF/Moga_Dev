@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ops Maker &amp; Ops Checker – Screen Mockups</title>
+  <style>
+    :root {
+      --navy-950: #0b1630;
+      --navy-900: #13213d;
+      --navy-850: #18284a;
+      --blue-600: #1d6fd8;
+      --blue-100: #e3eefc;
+      --slate-900: #0f172a;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-300: #cbd5e1;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f6f8fb;
+      --green-600: #16a34a;
+      --green-100: #dcfce7;
+      --amber-700: #b45309;
+      --amber-100: #fef3c7;
+      --red-600: #dc2626;
+      --red-100: #fee2e2;
+      --white: #fff;
+      --font: "Segoe UI", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--font); font-size: 13px; color: var(--slate-900); background: #d9dfe8; }
+    button, input, select, textarea { font: inherit; }
+
+    /* Reviewer toolbar (not part of the product UI) */
+    .review-bar { background: #fff7e6; border-bottom: 1px solid #f3d08a; padding: 8px 14px; display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+    .review-bar strong { color: var(--amber-700); }
+    .review-group { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+    .review-group span { color: var(--slate-600); margin-right: 2px; }
+    .seg { border: 1px solid var(--slate-300); background: var(--white); padding: 3px 9px; border-radius: 4px; cursor: pointer; }
+    .seg.on { background: var(--navy-900); color: var(--white); border-color: var(--navy-900); }
+    .all-title { margin: 28px 0 10px; padding: 6px 12px; background: #fff7e6; border-left: 4px solid #f0a020; font-weight: 700; font-size: 15px; }
+    .all-title:first-child { margin-top: 0; }
+
+    /* App shell (matches MOGA LOS) */
+    .app { max-width: 1320px; margin: 12px auto; background: var(--slate-50); box-shadow: 0 6px 24px rgba(15,23,42,.18); }
+    .topnav { height: 46px; background: var(--white); display: flex; align-items: center; padding: 0 14px; gap: 22px; border-bottom: 1px solid var(--slate-200); }
+    .logo { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+    .logo-mark { width: 26px; height: 26px; border-radius: 5px; background: var(--blue-600); color: var(--white); display: grid; place-items: center; font-size: 12px; }
+    .topnav a { color: var(--slate-700); text-decoration: none; padding: 13px 4px; cursor: pointer; }
+    .topnav a.active { color: var(--blue-600); border-bottom: 2px solid var(--blue-600); }
+    .topnav .spacer { flex: 1; }
+    .util { display: flex; gap: 12px; align-items: center; color: var(--slate-500); }
+    .avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--blue-600); color: var(--white); display: grid; place-items: center; font-weight: 700; }
+
+    .app-header { background: var(--navy-900); color: var(--white); padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; }
+    .app-header h1 { font-size: 14px; margin: 0; display: flex; align-items: center; gap: 8px; }
+    .name-chip { background: #34425f; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; }
+    .app-header .meta { color: #a9b8d6; font-size: 11px; margin-top: 2px; }
+    .hdr-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-dark { background: #2b3a5a; color: var(--white); border: 1px solid #4a5a7c; padding: 5px 12px; border-radius: 4px; font-weight: 600; font-size: 11px; }
+
+    .layout { display: grid; grid-template-columns: 220px 1fr; min-height: 720px; }
+    .layout.no-side { grid-template-columns: 1fr; }
+    .layout.no-side .sidebar { display: none; }
+    .sidebar { background: var(--navy-950); color: #c9d4ea; padding: 10px 0; font-size: 12px; }
+    .tranche-pick { margin: 4px 12px 12px; padding: 8px 10px; border: 1px solid #2d3d60; border-radius: 5px; color: var(--white); font-weight: 600; display: flex; justify-content: space-between; }
+    .grp { padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; color: #8d9bb8; font-weight: 600; letter-spacing: .02em; }
+    .grp.open { color: var(--white); }
+    .grp.link-grp { cursor: pointer; }
+    .item { padding: 7px 14px 7px 22px; display: flex; gap: 8px; align-items: center; cursor: pointer; }
+    .item .dot { width: 6px; height: 6px; border-radius: 50%; background: #5b6b8c; }
+    .item.done .dot { background: var(--green-600); }
+    .item.active { background: var(--navy-850); color: var(--white); }
+    .item.active .dot { background: #4da3ff; }
+    .item .side-note { margin-left: auto; font-size: 10px; color: #7e8db0; }
+
+    .main { padding: 16px 18px 28px; }
+    .screen-wrap { position: relative; }
+    .card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 6px; margin-bottom: 14px; overflow: hidden; }
+    .card-hd { background: var(--navy-900); color: var(--white); padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .card-hd .ttl { display: flex; align-items: center; gap: 10px; }
+    .ico { width: 30px; height: 30px; border-radius: 4px; background: #2d3d60; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+    .card-hd h2 { font-size: 13px; margin: 0; letter-spacing: .02em; }
+    .card-hd p { margin: 2px 0 0; color: #a9b8d6; font-size: 11px; }
+    .card-bd { padding: 14px; }
+    .sub-hd { padding: 10px 14px; border-bottom: 1px solid var(--slate-200); background: var(--slate-50); display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+    .sub-hd h3 { margin: 0; font-size: 13px; }
+    .muted { color: var(--slate-500); font-size: 11px; }
+    .btn { border: 1px solid var(--slate-300); background: var(--white); color: var(--slate-900); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 12px; }
+    .btn.primary { background: var(--blue-600); border-color: var(--blue-600); color: var(--white); }
+    .btn.danger { color: var(--red-600); border-color: #f2b8b8; }
+    .btn.success { background: var(--green-600); border-color: var(--green-600); color: var(--white); }
+    .btn[disabled] { opacity: .45; cursor: not-allowed; }
+    .btn.sm { padding: 3px 9px; font-size: 11px; }
+    .link { color: var(--blue-600); cursor: pointer; font-weight: 600; }
+
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .b-green { background: var(--green-100); color: #166534; }
+    .b-amber { background: var(--amber-100); color: var(--amber-700); }
+    .b-red { background: var(--red-100); color: #991b1b; }
+    .b-blue { background: var(--blue-100); color: #1e4f99; }
+    .b-grey { background: var(--slate-100); color: var(--slate-600); }
+
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 11px; color: var(--slate-500); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; padding: 8px 10px; border-bottom: 1px solid var(--slate-200); background: var(--slate-50); }
+    td { padding: 8px 10px; border-bottom: 1px solid var(--slate-100); vertical-align: middle; }
+    tr.bad td { background: #fff5f5; }
+    tr.sel td { background: #f1f7ff; }
+    td select, td input { border: 1px solid var(--slate-300); border-radius: 4px; padding: 4px 6px; background: var(--white); width: 100%; }
+    td select.ftnr { border-color: var(--red-600); color: #991b1b; }
+    td select.unmarked { border-color: var(--red-600); }
+
+    .group-hd { padding: 9px 14px; background: var(--slate-50); border-bottom: 1px solid var(--slate-200); border-top: 1px solid var(--slate-200); font-weight: 700; display: flex; gap: 10px; align-items: center; }
+    .group-hd .muted { font-weight: 400; }
+
+    .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px 16px; }
+    .field label { display: block; font-size: 11px; color: var(--slate-600); margin-bottom: 4px; font-weight: 600; }
+    .field label .req { color: var(--red-600); }
+    .field input, .field select, .field textarea { width: 100%; border: 1px solid var(--slate-300); border-radius: 4px; padding: 6px 8px; background: var(--white); }
+    .field input[readonly], .field textarea[readonly] { background: var(--slate-100); color: var(--slate-700); }
+    .kv { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .kv div { background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 5px; padding: 8px 10px; }
+    .kv b { display: block; font-size: 14px; margin-top: 3px; }
+
+    .alert { border-radius: 5px; padding: 10px 12px; margin-bottom: 12px; display: flex; gap: 10px; align-items: flex-start; }
+    .alert.err { background: var(--red-100); border: 1px solid #f5b5b5; color: #7f1d1d; }
+    .alert.ok { background: var(--green-100); border: 1px solid #a7e3bb; color: #14532d; }
+    .alert.warn { background: var(--amber-100); border: 1px solid #f0cf8a; color: #78350f; }
+    .alert.info { background: var(--blue-100); border: 1px solid #b9d3f6; color: #1e3a8a; }
+    .alert ul { margin: 4px 0 0; padding-left: 18px; }
+
+    .tranche-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+    .tranche { border: 1px solid var(--slate-200); border-radius: 6px; padding: 12px; display: flex; gap: 12px; cursor: pointer; background: var(--white); }
+    .tranche.on { border-color: var(--blue-600); box-shadow: 0 0 0 2px var(--blue-100); }
+    .tranche.locked { opacity: .6; }
+    .tranche .num { width: 34px; height: 34px; border-radius: 4px; background: var(--slate-100); display: grid; place-items: center; font-weight: 700; font-size: 11px; }
+    .tranche h4 { margin: 0 0 2px; font-size: 13px; }
+    .amt { color: var(--blue-600); font-weight: 600; font-size: 11px; margin-top: 3px; }
+
+    .footer-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 14px; border-top: 1px solid var(--slate-200); background: var(--slate-50); align-items: center; }
+    .footer-actions .left { margin-right: auto; display: flex; gap: 8px; }
+    .declare { display: flex; gap: 8px; align-items: flex-start; padding: 10px 14px; border-top: 1px solid var(--slate-200); }
+    .crumb { margin-bottom: 10px; font-size: 12px; }
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--slate-200); padding: 0 14px; background: var(--white); flex-wrap: wrap; }
+    .tab { padding: 10px 14px; cursor: pointer; color: var(--slate-600); font-weight: 600; border-bottom: 2px solid transparent; }
+    .tab.on { color: var(--blue-600); border-bottom-color: var(--blue-600); }
+    .stage-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .stage-box { border: 1px solid var(--slate-200); border-radius: 6px; padding: 10px 12px; }
+    .stage-box h4 { margin: 0 0 6px; font-size: 12px; display: flex; justify-content: space-between; }
+    .stage-box .row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px dashed var(--slate-200); font-size: 12px; }
+
+    /* Pop-ups */
+    .overlay { position: absolute; inset: 0; background: rgba(15,23,42,.45); display: flex; justify-content: center; align-items: flex-start; padding-top: 40px; border-radius: 6px; min-height: 560px; }
+    .modal { background: var(--white); width: 640px; max-width: 94%; border-radius: 8px; box-shadow: 0 16px 40px rgba(15,23,42,.35); overflow: hidden; }
+    .modal-hd { padding: 12px 16px; border-bottom: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; }
+    .modal-hd h3 { margin: 0; font-size: 14px; }
+    .modal-bd { padding: 14px 16px; display: grid; gap: 12px; }
+    .modal-ft { padding: 12px 16px; border-top: 1px solid var(--slate-200); display: flex; justify-content: flex-end; gap: 8px; background: var(--slate-50); }
+    .x { cursor: pointer; color: var(--slate-500); font-size: 16px; border: 0; background: none; }
+    .checks { display: grid; gap: 6px; border: 1px solid var(--slate-300); border-radius: 4px; padding: 8px 10px; max-height: 150px; overflow: auto; }
+    .checks label { display: flex; gap: 8px; align-items: center; font-weight: 400; color: var(--slate-900); font-size: 12px; margin: 0; }
+    .segs { display: flex; gap: 6px; }
+    .segs .seg { padding: 5px 12px; }
+
+    /* Annotations */
+    .tag { display: none; font-family: Consolas, monospace; font-size: 10px; color: #7c3aed; background: #f3e8ff; border: 1px dashed #c4b5fd; padding: 1px 6px; border-radius: 3px; margin: 0 0 6px; width: fit-content; }
+    .annot .tag { display: block; }
+    .pending-note { display: none; }
+    .annot .pending-note { display: flex; }
+  </style>
+</head>
+<body>
+
+<div class="review-bar" id="reviewBar"></div>
+
+<div class="app" id="app">
+  <div class="topnav">
+    <div class="logo"><div class="logo-mark">M</div>MOGA</div>
+    <a>Home</a>
+    <a class="active">Applications ▾</a>
+    <a>Queries</a>
+    <div class="spacer"></div>
+    <div class="util">⭐ ＋ ？ ⚙ 🔔 <div class="avatar" id="avatar">K</div></div>
+  </div>
+
+  <div class="app-header" id="appHeader">
+    <div>
+      <h1>Application Overview <span class="name-chip">▸ RAJESH KAPOOR</span></h1>
+      <div class="meta" id="appMeta"></div>
+    </div>
+    <div class="hdr-actions">
+      <button class="btn-dark">⏸ PAUSE</button>
+      <span style="color:#a9b8d6">↺ 👤 ⧉ ▦</span>
+    </div>
+  </div>
+
+  <div class="layout" id="layout">
+    <nav class="sidebar" id="sidebar"></nav>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+
+<script>
+const state = {
+  screen: "m-de",
+  product: "Auto",
+  vehicle: "New",
+  tranche: "01",
+  dedupe: "etb",
+  docs: "complete",
+  disb: "pending",
+  poolTab: "pool",
+  viewTab: "failed",
+  qRole: "maker",
+  qTab: "m1",
+  qLevel: "Asset",
+  modal: "",
+  revCtx: "maker-dv",
+  annot: false
+};
+
+const SCREENS = [
+  ["m-de", "1. Ops Maker – Dedupe & Eligibility"],
+  ["m-dv", "2. Ops Maker – Document Verification"],
+  ["m-pd", "3. Ops Maker – Payment Disbursement"],
+  ["pool", "4. Ops Checker (LPU) Pool"],
+  ["c-de", "5. Ops Checker – Dedupe & Eligibility"],
+  ["c-dv", "6. Ops Checker – Document Verification"],
+  ["c-pd", "7. Ops Checker – Payment Disbursement"],
+  ["p-query", "8. Raise Query (pop-up)"],
+  ["p-rev", "9. Stage Reversal (pop-up)"],
+  ["p-chk", "10. Ops Checklist & Declaration (pop-up)"],
+  ["views", "11. Disbursement Views"],
+  ["queries", "12. Query List Views"],
+  ["prev", "13. Previous Stages (read-only)"]
+];
+
+const LIST_SCREENS = ["pool", "views", "queries"];
+const isChecker = () => state.screen.startsWith("c-") || state.screen === "pool" || state.screen === "p-chk";
+
+/* ---------- Sample data (illustrative only) ---------- */
+const APPLICANTS = [
+  { name: "Rajesh Kapoor", type: "Borrower", rel: "ETB", cif: "CIF ••••4821" },
+  { name: "Sunita Kapoor", type: "Co-Borrower", rel: "NTB", cif: "" },
+  { name: "Vikram Rao", type: "Guarantor", rel: "NTB", cif: "" }
+];
+
+function assets() {
+  if (state.product === "CE/CV") {
+    return state.tranche === "01"
+      ? [
+          { id: "A1", label: "Asset 1 · Chassis", vt: "Chassis", make: "Tata Motors", model: "Signa 4825.TK", variant: "BS VI", price: "₹ 34,00,000", lan: "LAN 0042 0201 0003 1101", col: "COL-77810021", cif: "CIF ••••4821", utr: "UTR ••••90412" },
+          { id: "A2", label: "Asset 2 · Body (linked to Asset 1)", vt: "Body", make: "Tata Motors", model: "Tipper Body 16 Cum", variant: "Box type", price: "₹ 8,00,000", lan: "LAN 0042 0201 0003 1102", col: "COL-77810022", cif: "CIF ••••4821", utr: "UTR ••••90413", body: true }
+        ]
+      : [
+          { id: "A3", label: "Asset 3 · Chassis", vt: "Chassis", make: "Ashok Leyland", model: "Ecomet 1615", variant: "HE", price: "₹ 26,00,000", lan: "LAN 0042 0201 0003 1103", col: "COL-77810023", cif: "CIF ••••4821", utr: "UTR ••••90414" }
+        ];
+  }
+  return state.tranche === "01"
+    ? [
+        { id: "A1", label: "Asset 1", vt: state.vehicle === "New" ? "Car" : "Car (Used)", make: "Tata Motors", model: "Nexon", variant: "XZ Plus", price: "₹ 9,85,000", lan: "LAN 0042 0101 0008 7654", col: "COL-55120011", cif: "CIF ••••4821", utr: "UTR ••••71230" },
+        { id: "A2", label: "Asset 2", vt: state.vehicle === "New" ? "Car" : "Car (Used)", make: "Tata Motors", model: "Nexon", variant: "XM", price: "₹ 9,15,000", lan: "LAN 0042 0101 0008 7655", col: "COL-55120012", cif: "CIF ••••4821", utr: "UTR ••••71231" }
+      ]
+    : [
+        { id: "A3", label: "Asset 3", vt: state.vehicle === "New" ? "Car" : "Car (Used)", make: "Maruti Suzuki", model: "Brezza", variant: "ZXi", price: "₹ 11,20,000", lan: "LAN 0042 0101 0008 7656", col: "COL-55120013", cif: "CIF ••••4821", utr: "UTR ••••71232" }
+      ];
+}
+
+function amounts() {
+  const cecv = state.product === "CE/CV";
+  const sanction = cecv ? 6800000 : 3035000;
+  const t1 = cecv ? 4200000 : 1900000;
+  const t2 = cecv ? 2600000 : 1135000;
+  const disbursed = state.disb === "disbursed" ? t1 : 0;
+  return { sanction, t1, t2, disbursed, undisbursed: sanction - disbursed };
+}
+
+const inr = (n) => "₹" + n.toLocaleString("en-IN");
+
+function seg(group, value, label) {
+  return `<button class="seg ${state[group] === value ? "on" : ""}" data-group="${group}" data-value="${value}">${label}</button>`;
+}
+
+function renderReviewBar() {
+  document.getElementById("reviewBar").innerHTML = `
+    <strong>Mockup controls</strong>
+    <div class="review-group"><span>Screen:</span>${SCREENS.map(([v, l]) => seg("screen", v, l)).join("")}${seg("screen", "all", "All screens")}</div>
+    <div class="review-group"><span>Product:</span>${seg("product", "Auto", "Auto")}${seg("product", "CE/CV", "CE/CV")}</div>
+    <div class="review-group"><span>Vehicle:</span>${seg("vehicle", "New", "New")}${seg("vehicle", "Used", "Used")}</div>
+    <div class="review-group"><span>Tranche:</span>${seg("tranche", "01", "Tranche 01")}${seg("tranche", "02", "Tranche 02")}</div>
+    <div class="review-group"><span>Dedupe:</span>${seg("dedupe", "etb", "ETB – CIF selected")}${seg("dedupe", "ntb", "NTB – CIF returned")}${seg("dedupe", "mismatch", "CIF mismatch")}${seg("dedupe", "suspect", "Suspect match")}${seg("dedupe", "apifail", "API failed")}</div>
+    <div class="review-group"><span>Documents:</span>${seg("docs", "complete", "All FTR / NA")}${seg("docs", "incomplete", "FTNR / not marked")}</div>
+    <div class="review-group"><span>Disbursement:</span>${seg("disb", "pending", "Pending")}${seg("disb", "failed", "CBS API failed")}${seg("disb", "disbursed", "Disbursed")}</div>
+    <div class="review-group"><span>Annotations:</span>${seg("annot", false, "Off")}${seg("annot", true, "On")}</div>`;
+}
+
+function renderSidebar() {
+  const first = state.tranche === "01";
+  const item = (target, label, note) => {
+    const active = state.screen === target || (state.screen === "p-query" && target === "m-dv") || (state.screen === "p-rev" && target === "m-dv") || (state.screen === "p-chk" && target === "c-pd");
+    const done = !first && target.endsWith("-de");
+    return `<div class="item ${active ? "active" : ""} ${done ? "done" : ""}" data-nav="${target}"><span class="dot"></span>${label}${note ? `<span class="side-note">${note}</span>` : ""}</div>`;
+  };
+  const deNote = first ? "" : "Tranche 01";
+  document.getElementById("sidebar").innerHTML = `
+    <div class="tranche-pick"><span>Tranche ${state.tranche} of 02</span><span>▾</span></div>
+    <div class="grp link-grp ${state.screen === "prev" ? "open" : ""}" data-nav="prev">▸ PREVIOUS STAGES <span>🔒</span></div>
+    <div class="grp open">▾ OPS MAKER</div>
+    ${item("m-de", "Dedupe & Eligibility", deNote)}
+    ${item("m-dv", "Document Verification")}
+    ${item("m-pd", "Payment Disbursement")}
+    <div class="grp open">▾ OPS CHECKER</div>
+    ${item("c-de", "Dedupe & Eligibility", deNote)}
+    ${item("c-dv", "Document Verification")}
+    ${item("c-pd", "Payment Disbursement")}
+    <div class="tag" style="margin:10px 12px">[Existing: losSidebar – Ops Maker / Ops Checker groups; same for Auto and CE/CV]</div>`;
+}
+
+/* ---------- Helpers ---------- */
+function hd(ico, title, sub) {
+  return `<div class="card-hd"><div class="ttl"><div class="ico">${ico}</div><div><h2>${title}</h2><p>${sub}</p></div></div></div>`;
+}
+
+function trancheLine() {
+  return `Tranche ${state.tranche} · ${state.product} · ${state.vehicle} vehicle`;
+}
+
+function statusBadge(s) {
+  const map = { Disbursed: "b-green", Pending: "b-grey", Failed: "b-red", FTR: "b-green", FTNR: "b-red", Matched: "b-red", "No Match": "b-green", Success: "b-green", Open: "b-amber", Closed: "b-green", Rejected: "b-red" };
+  return `<span class="badge ${map[s] || "b-grey"}">${s}</span>`;
+}
+
+/* ---------- Dedupe & Eligibility ---------- */
+function dedupeRows() {
+  const sc = state.dedupe;
+  return APPLICANTS.map((a, i) => {
+    let cif = a.cif || "—";
+    let dedupe = statusBadge("Success");
+    let suspect = statusBadge("No Match");
+    let action = '<span class="muted">Read only</span>';
+    let cls = "";
+    if (i === 1 && (sc === "ntb" || sc === "mismatch")) {
+      cif = sc === "mismatch" ? "CIF ••••7395" : '<span class="badge b-amber">2 CIFs returned – select one</span>';
+      action = sc === "mismatch" ? '<span class="badge b-red">Mandatory parameter mismatch</span>' : '<span class="link">Select CIF ↓</span>';
+      cls = sc === "mismatch" ? "bad" : "sel";
+    }
+    if (i === 1 && sc === "etb") cif = '<span class="muted">No CIF returned – remains NTB</span>';
+    if (i === 2 && sc !== "suspect") cif = '<span class="muted">No CIF returned – remains NTB</span>';
+    if (i === 2 && sc === "suspect") { suspect = statusBadge("Matched"); cls = "bad"; }
+    if (sc === "apifail" && i === 1) { dedupe = '<span class="badge b-red">Failed</span>'; cif = "—"; cls = "bad"; }
+    return `<tr class="${cls}"><td><b>${a.name}</b><div class="muted">${a.type}</div></td><td>${a.rel}</td><td>${cif}</td><td>${dedupe}<div class="muted">Run 04 Nov 2026, 11:02</div></td><td>${suspect}</td><td>${action}</td></tr>`;
+  }).join("");
+}
+
+function dedupeDetail(checker) {
+  const sc = state.dedupe;
+  if (sc === "ntb") {
+    return `
+      <div class="card">
+        <div class="group-hd">CIF selection – Sunita Kapoor (Co-Borrower, NTB) <span class="muted">Dedupe returned 2 CIFs. Select the CIF that belongs to the applicant.</span></div>
+        <table>
+          <thead><tr><th></th><th>CIF</th><th>Name</th><th>Date of Birth</th><th>PAN</th><th>Mobile</th></tr></thead>
+          <tbody>
+            <tr class="sel"><td><input type="radio" checked style="width:auto" /></td><td>CIF ••••7395</td><td>Sunita Kapoor</td><td>12-03-1986</td><td>XXXXX1234X</td><td>98XXXXXX21</td></tr>
+            <tr><td><input type="radio" style="width:auto" /></td><td>CIF ••••2208</td><td>Sunita R Kapoor</td><td>02-11-1979</td><td>XXXXX8810X</td><td>97XXXXXX65</td></tr>
+          </tbody>
+        </table>
+        <div class="tag" style="margin:8px 14px">[Existing: customerDedupeMasterPage – CIF selection reused]</div>
+      </div>`;
+  }
+  if (sc === "mismatch") {
+    const rows = [["Name", "Sunita Kapoor", "Sunita Kapoor", true], ["Date of Birth", "12-03-1986", "21-03-1986", false], ["PAN", "XXXXX1234X", "XXXXX1234X", true], ["Mobile", "98XXXXXX21", "98XXXXXX21", true]];
+    return `
+      <div class="alert err">⛔ <div><b>Hard stop – mandatory parameter mismatch on the selected CIF</b> (Sunita Kapoor, CIF ••••7395).<br/>Raise a query to Sales to get the data corrected in CBS, then use Re-run Dedupe to recheck.</div></div>
+      <div class="card">
+        <div class="group-hd">Mandatory parameter check – CIF ••••7395</div>
+        <table>
+          <thead><tr><th>Parameter</th><th>Loan application</th><th>Selected CIF (CBS)</th><th>Result</th></tr></thead>
+          <tbody>${rows.map(([p, l, c, ok]) => `<tr class="${ok ? "" : "bad"}"><td><b>${p}</b></td><td>${l}</td><td>${c}</td><td>${ok ? '<span class="badge b-green">Matched</span>' : '<span class="badge b-red">Mismatch</span>'}</td></tr>`).join("")}</tbody>
+        </table>
+        <div class="alert info pending-note" style="margin:10px 14px">ⓘ Mandatory parameters are the same as in Sales Negotiation – the rows shown are illustrative.</div>
+        <div class="footer-actions"><button class="btn" data-modal="query">Raise Query to Sales</button><button class="btn primary">⟳ Re-run Dedupe</button></div>
+      </div>`;
+  }
+  if (sc === "suspect") {
+    return `<div class="alert err">⛔ <div><b>Suspect Registry matched for Vikram Rao (Guarantor).</b><br/>This is a hard stop. The loan application has been <b>rejected automatically</b> by the system on 04 Nov 2026, 11:02.</div></div>`;
+  }
+  if (sc === "apifail") {
+    return `<div class="alert err">⚠ <div><b>Dedupe API failed for Sunita Kapoor – attempt 5 of 5.</b><br/>Dedupe is mandatory to proceed. Retry is available after the 15-minute cooling period (14:32 remaining).</div><button class="btn sm" disabled>⟳ Retry</button></div>`;
+  }
+  return `<div class="alert info">ⓘ <div>CIF is already selected for the ETB applicant, so the Dedupe screen is <b>read only</b>. Dedupe and Suspect Registry were run afresh ${checker ? "when the tranche moved to Ops Checker" : "when the tranche entered Ops Maker"}.</div></div>`;
+}
+
+function screenDe(checker) {
+  const first = state.tranche === "01";
+  const blocked = ["mismatch", "suspect", "apifail"].includes(state.dedupe);
+  const next = checker ? "c-dv" : "m-dv";
+  if (!first) {
+    return `
+      <div class="card">
+        ${hd("DE", `${checker ? "OPS CHECKER" : "OPS MAKER"} – DEDUPE & ELIGIBILITY`, trancheLine())}
+        <div class="card-bd">
+          <div class="alert info">ⓘ <div>Dedupe &amp; Eligibility is navigated only once, for the first tranche. It was completed with <b>Tranche 01</b> on 28 Oct 2026 and is shown here as read only.</div></div>
+          <table><thead><tr><th>Applicant</th><th>Relationship</th><th>Selected CIF</th><th>Dedupe</th><th>Suspect Registry</th><th></th></tr></thead>
+          <tbody>${APPLICANTS.map((a) => `<tr><td><b>${a.name}</b><div class="muted">${a.type}</div></td><td>${a.rel}</td><td>${a.cif || '<span class="muted">No CIF – NTB</span>'}</td><td>${statusBadge("Success")}</td><td>${statusBadge("No Match")}</td><td class="muted">Read only</td></tr>`).join("")}</tbody></table>
+        </div>
+        <div class="footer-actions"><button class="btn primary" data-nav="${next}">Next</button></div>
+      </div>`;
+  }
+  const detail = dedupeDetail(checker);
+  const detailOnTop = ["etb", "suspect", "apifail"].includes(state.dedupe);
+  return `
+    <div class="card">
+      ${hd("DE", `${checker ? "OPS CHECKER" : "OPS MAKER"} – DEDUPE & ELIGIBILITY`, `${trancheLine()} · Dedupe and Suspect Registry rerun on entry`)}
+      <div class="card-bd">
+        <div class="tag">[Existing: Dedupe and Suspect Registry APIs and logic reused · Integration_Checklist__c retry tracking]</div>
+        ${detailOnTop ? detail : ""}
+        <table>
+          <thead><tr><th>Applicant</th><th>Relationship</th><th>Selected CIF</th><th>Dedupe API</th><th>Suspect Registry</th><th></th></tr></thead>
+          <tbody>${dedupeRows()}</tbody>
+        </table>
+      </div>
+      ${detailOnTop ? "" : `<div class="card-bd" style="padding-top:0">${detail}</div>`}
+      <div class="footer-actions">
+        ${!checker && state.dedupe !== "suspect" ? `<div class="left"><button class="btn" data-modal="query">Raise Query</button></div>` : ""}
+        <button class="btn primary" ${blocked ? "disabled" : `data-nav="${next}"`}>Next</button>
+      </div>
+    </div>`;
+}
+
+/* ---------- Document Verification ---------- */
+function docGroups() {
+  const used = state.vehicle === "Used";
+  const groups = [
+    { level: "Loan Application", key: "APP", name: "APP-2026-094521", docs: [["Loan Agreement", true, true], ["Sanction Letter", true, true], ["Repayment Mandate (NACH)", true, true], ["DPN", false, false]] },
+    { level: "Applicant", key: "B", name: "Rajesh Kapoor · Borrower", docs: [["PAN Card", true, true], ["Address Proof", true, true], ["Bank Statement", false, true]] },
+    { level: "Applicant", key: "C", name: "Sunita Kapoor · Co-Borrower", docs: [["PAN Card", true, true], ["Address Proof", true, true]] }
+  ];
+  assets().forEach((a) => {
+    const docs = used
+      ? [["RC Copy", true, true], ["Valuation Report", true, true], ["Insurance Policy", true, true], ["Seller NOC", false, false]]
+      : [["Invoice", true, true], ["Insurance Policy", true, true], ["Margin Money Receipt", false, false]];
+    groups.push({ level: `Tranche ${state.tranche} / Asset`, key: a.id, name: `${a.label} · ${a.make} ${a.model} ${a.variant}`, docs });
+  });
+  return groups;
+}
+
+function makerStatus(groupKey, docName, mandatory, uploaded) {
+  if (state.docs === "incomplete") {
+    if (groupKey === "C" && docName === "Address Proof") return "FTNR";
+    if (groupKey === assets()[assets().length - 1].id && docName === "Insurance Policy") return "";
+  }
+  return mandatory || uploaded ? "FTR" : "NA";
+}
+
+function statusSelect(value, mandatory) {
+  const opts = mandatory ? ["FTR", "FTNR"] : ["FTR", "FTNR", "NA"];
+  const cls = value === "FTNR" ? "ftnr" : value === "" ? "unmarked" : "";
+  return `<select class="${cls}"><option value="">— Select —</option>${opts.map((o) => `<option ${o === value ? "selected" : ""}>${o}</option>`).join("")}</select>`;
+}
+
+function screenDv(checker) {
+  const groups = docGroups();
+  const incomplete = state.docs === "incomplete";
+  const problems = [];
+  const body = groups.map((g) => `
+    <div class="group-hd">${g.level} <span class="muted">${g.name}</span></div>
+    <table>
+      <thead><tr><th style="width:24%">Document</th><th style="width:10%">Type</th><th style="width:12%">File</th>${checker ? '<th style="width:11%">Ops Maker status</th>' : ""}<th style="width:14%">Verification Status</th><th>Remarks (optional)</th></tr></thead>
+      <tbody>
+        ${g.docs.map(([d, m, up]) => {
+          const ms = makerStatus(g.key, d, m, up);
+          const val = checker ? (m || up ? "FTR" : "NA") : ms;
+          if (!checker && (ms === "" || ms === "FTNR")) problems.push(`${d} – ${g.name} (${ms === "" ? "not marked" : "FTNR"})`);
+          const remark = !checker && ms === "FTNR" ? "Address on proof does not match KYC" : "";
+          return `<tr class="${!checker && (ms === "FTNR" || ms === "") ? "bad" : ""}">
+            <td><b>${d}</b></td>
+            <td>${m ? '<span class="badge b-blue">Mandatory</span>' : '<span class="badge b-grey">Optional</span>'}</td>
+            <td>${up ? '<button class="btn sm">👁 View</button>' : '<span class="muted">Not uploaded</span>'}</td>
+            ${checker ? `<td>${statusBadge(val)}</td>` : ""}
+            <td>${statusSelect(val, m)}</td>
+            <td><input maxlength="255" placeholder="Max 255 characters" value="${remark}" /></td>
+          </tr>`;
+        }).join("")}
+      </tbody>
+    </table>`).join("");
+
+  const makerFinal = incomplete ? "FTNR" : "FTR";
+  const finalRow = checker
+    ? `<div><span class="muted">Final Verification Status – Ops Maker</span><div>${statusBadge(makerFinal)}${incomplete ? ' <span class="muted">retained – Address Proof was marked FTNR earlier</span>' : ""}</div></div><div><span class="muted">Final Verification Status – Ops Checker</span><div>${statusBadge("FTR")}</div></div>`
+    : `<div><span class="muted">Final Verification Status – Ops Maker</span><div>${statusBadge(makerFinal)}</div></div>`;
+
+  return `
+    <div class="card">
+      ${hd("DV", `${checker ? "OPS CHECKER" : "OPS MAKER"} – DOCUMENT VERIFICATION`, `${trancheLine()} · checklist by product and vehicle type`)}
+      <div class="sub-hd">${finalRow}<span class="muted" style="max-width:520px">Auto-derived. Set to FTNR if any document is marked FTNR at any point in this stage, and stays FTNR.</span></div>
+      <div class="tag" style="margin:8px 14px 0">[Document_CheckList__c – Verification Status (FTR/FTNR/NA) and Final Verification Status per stage are new · documents listed are illustrative]</div>
+      ${!checker && incomplete ? `<div style="padding:12px 14px 0"><div class="alert err">⛔ <div><b>Cannot proceed to Payment Disbursement.</b> Mark the following documents as FTR or NA:<ul>${problems.map((p) => `<li>${p}</li>`).join("")}</ul></div></div></div>` : ""}
+      ${body}
+      ${checker ? `<div class="card-bd"><div class="field" style="max-width:760px"><label>Ops Checker Remarks</label><textarea rows="2" placeholder="Remarks before moving to Payment Disbursement"></textarea></div></div>` : ""}
+      <div class="footer-actions">
+        <div class="left">
+          ${checker
+            ? `<button class="btn danger" data-modal="reversal" data-ctx="checker-dv">↩ Send Back to Ops Maker</button>`
+            : `<button class="btn danger" data-modal="reversal" data-ctx="maker-dv">↩ Stage Reversal to Sales Negotiation</button>`}
+          <button class="btn" data-modal="query">Raise Query</button>
+        </div>
+        <button class="btn">Save</button>
+        <button class="btn primary" ${!checker && incomplete ? "" : `data-nav="${checker ? "c-pd" : "m-pd"}"`}>Next</button>
+      </div>
+    </div>`;
+}
+
+/* ---------- Payment Disbursement ---------- */
+function assetStatus(a, idx) {
+  if (state.tranche === "02") return "Pending";
+  if (state.disb === "disbursed") return "Disbursed";
+  if (state.disb === "failed") {
+    if (state.product === "CE/CV") return idx === 0 ? "Failed" : "Pending";
+    return idx === 0 ? "Disbursed" : "Failed";
+  }
+  return "Pending";
+}
+
+function trancheCards(selectable) {
+  const amt = amounts();
+  const t1Status = state.disb === "disbursed" ? '<span class="badge b-green">Disbursed</span>' : state.disb === "failed" ? '<span class="badge b-red">Failed</span>' : '<span class="badge b-grey">Pending</span>';
+  const t2Locked = state.disb !== "disbursed";
+  const card = (n, amount, mode, status, locked) => `
+    <div class="tranche ${state.tranche === n ? "on" : ""} ${locked ? "locked" : ""}" ${selectable ? `data-group="tranche" data-value="${n}"` : ""}>
+      <div class="num">${n}</div>
+      <div style="flex:1">
+        <h4>Tranche ${n} ${status}</h4>
+        <div class="amt">Tranche Amount: ${inr(amount)}</div>
+        <div class="muted">Mode of Payment: ${mode}</div>
+        ${locked ? '<div class="muted" style="margin-top:4px">🔒 Available after Tranche 01 is disbursed</div>' : ""}
+      </div>
+    </div>`;
+  return `
+    <div class="tranche-grid">
+      ${card("01", amt.t1, "RTGS", t1Status, false)}
+      ${card("02", amt.t2, "NEFT", '<span class="badge b-grey">Pending</span>', t2Locked)}
+    </div>`;
+}
+
+function summaryBlock() {
+  const amt = amounts();
+  return `
+    <div class="kv">
+      <div><span class="muted">Application</span><b>APP-2026-094521</b></div>
+      <div><span class="muted">Customer</span><b>Rajesh Kapoor</b></div>
+      <div><span class="muted">Sanction Amount</span><b>${inr(amt.sanction)}</b></div>
+      <div><span class="muted">Disbursed Amount</span><b>${inr(amt.disbursed)}</b></div>
+      <div><span class="muted">Undisbursed Amount</span><b>${inr(amt.undisbursed)}</b><span class="muted">Sanction – Disbursed</span></div>
+    </div>`;
+}
+
+function assetTable() {
+  const rows = assets().map((a, i) => {
+    const st = assetStatus(a, i);
+    const ok = st === "Disbursed";
+    const err = st === "Failed" ? `<div class="muted" style="color:#991b1b">CBS loan creation API – timeout (attempt 2 of 5)</div>` : "";
+    const wait = a.body && st === "Pending" && state.tranche === "01" ? '<div class="muted">Waits for chassis (Asset 1) to be disbursed</div>' : "";
+    return `<tr class="${st === "Failed" ? "bad" : ""}">
+      <td>${ok ? a.lan : '<span class="muted">—</span>'}</td>
+      <td>${ok ? a.utr : '<span class="muted">—</span>'}</td>
+      <td>${a.vt}</td>
+      <td>${ok ? a.col : '<span class="muted">—</span>'}</td>
+      <td>${a.make}</td><td>${a.model}</td><td>${a.variant}</td><td>${a.price}</td>
+      <td>${statusBadge(st)}${err}${wait}</td>
+    </tr>`;
+  }).join("");
+  return `
+    <table>
+      <thead><tr><th>LAN Number</th><th>UTR</th><th>Vehicle Type</th><th>Collateral ID</th><th>Make</th><th>Model</th><th>Variant</th><th>Ex-showroom Price</th><th>Status</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="tag" style="margin:8px 14px">[LAN, UTR – after successful CBS call · Collateral ID – from CBS · Vehicle Type, Make, Model, Variant, Ex-showroom – from Asset__c in LOS]</div>`;
+}
+
+function reverseFeed() {
+  const rows = assets().map((a, i) => ({ a, st: assetStatus(a, i) })).filter((r) => r.st === "Disbursed");
+  if (!rows.length) return "";
+  return `
+    <div class="group-hd">FC reverse feed <span class="muted">Values received from CBS after disbursement</span></div>
+    <table>
+      <thead><tr><th>Asset</th><th>Collateral ID</th><th>LAN</th><th>CIF</th><th>UTR</th></tr></thead>
+      <tbody>${rows.map(({ a }) => `<tr><td><b>${a.label}</b></td><td>${a.col}</td><td>${a.lan}</td><td>${a.cif}</td><td>${a.utr}</td></tr>`).join("")}</tbody>
+    </table>`;
+}
+
+function screenPd(checker) {
+  const t2Blocked = state.tranche === "02" && state.disb !== "disbursed";
+  const failed = state.disb === "failed" && state.tranche === "01";
+  const done = state.disb === "disbursed" && state.tranche === "01";
+  const initiated = (state.disb === "failed" || state.disb === "disbursed") && state.tranche === "01";
+
+  const alerts = [];
+  if (failed) alerts.push(`<div class="alert err">⚠ <div><b>CBS API failed</b> for ${state.product === "CE/CV" ? "Asset 1 (Chassis). Body disbursement is not initiated until the chassis is disbursed." : "Asset 2."}<br/>Retry or use Reinitiate Disbursement to rerun all failed APIs on all assets in this tranche. Up to 5 retries, then a 15-minute cooling period.</div></div>`);
+  if (done) alerts.push(`<div class="alert ok">✓ <div><b>Tranche 01 disbursed</b> on 04 Nov 2026, 15:20. Tranche 02 is now available for disbursement.</div></div>`);
+  if (t2Blocked) alerts.push(`<div class="alert warn">🔒 <div>Tranche 02 can be disbursed only after Tranche 01 is disbursed.</div></div>`);
+  if (!checker) alerts.push(`<div class="alert info">ⓘ <div>This screen is <b>read only</b> for the Ops Maker. Disbursement actions are available to the Ops Checker.</div></div>`);
+
+  const actions = checker
+    ? `
+      <div class="footer-actions">
+        <div class="left"><button class="btn danger" ${initiated ? "disabled" : 'data-modal="reversal" data-ctx="checker-pd"'}>↩ Send Back</button></div>
+        <button class="btn" ${failed ? "" : "disabled"}>⟳ Reinitiate Disbursement</button>
+        <button class="btn primary" ${done || failed || t2Blocked ? "disabled" : 'data-modal="opschecklist"'}>Submit Disbursement</button>
+      </div>`
+    : `
+      <label class="declare"><input type="checkbox" style="margin-top:2px" /> <span><b>Declaration</b> <span style="color:var(--red-600)">*</span><br/><span class="muted">I confirm that the details and documents of this tranche have been verified. (Declaration text pending from business.)</span></span></label>
+      <div class="footer-actions">
+        <button class="btn" data-nav="m-dv">Back</button>
+        <button class="btn primary" data-nav="pool">Submit to Ops Checker</button>
+      </div>`;
+
+  return `
+    <div class="card">
+      ${hd("PD", `${checker ? "OPS CHECKER" : "OPS MAKER"} – PAYMENT DISBURSEMENT`, trancheLine())}
+      <div class="card-bd">
+        <div class="tag">[Existing: wheelsPaymentRequest / Disbursement_Details__c reused where possible · remaining fields to be provided by business]</div>
+        ${alerts.join("")}
+        ${summaryBlock()}
+      </div>
+      <div class="card-bd" style="padding-top:0">${trancheCards(true)}</div>
+      <div class="group-hd">Tranche ${state.tranche} – assets <span class="muted">${checker ? "Click a tranche card to view its assets" : "Read only"}</span></div>
+      ${assetTable()}
+      ${reverseFeed()}
+      ${actions}
+    </div>
+    ${initiated && checker ? '<div class="muted">Send Back is available only before a disbursement is initiated.</div>' : ""}`;
+}
+
+/* ---------- Ops Checker (LPU) Pool ---------- */
+const POOL = [
+  ["APP-2026-094521", "Tranche 01", "Auto", "New", "Kavita Shah", "04 Nov 2026 12:10", null],
+  ["APP-2026-093310", "Tranche 02", "CE/CV", "New", "Rohit Menon", "04 Nov 2026 11:45", null],
+  ["APP-2026-092877", "Tranche 01", "Auto", "Used", "Kavita Shah", "04 Nov 2026 10:05", null],
+  ["APP-2026-091204", "Tranche 01", "CE/CV", "Used", "Rohit Menon", "03 Nov 2026 17:30", "Priya Nair"]
+];
+
+function screenPool() {
+  const mine = state.poolTab === "mine";
+  const rows = POOL.filter((r) => (mine ? r[6] === "Priya Nair" : r[6] === null));
+  return `
+    <div class="card">
+      ${hd("LP", "OPS CHECKER (LPU) POOL", "Tranches sent by Ops Maker for authorisation · same pool for Auto and CE/CV")}
+      <div class="tabs">
+        <div class="tab ${mine ? "" : "on"}" data-group="poolTab" data-value="pool">Pool – unassigned (3)</div>
+        <div class="tab ${mine ? "on" : ""}" data-group="poolTab" data-value="mine">Assigned to me (1)</div>
+      </div>
+      <div class="tag" style="margin:8px 14px 0">[New queue: Ops Checker (LPU) Pool · roles: Head – LPU &gt; LPU Admin &gt; LPU Team Lead &gt; LPU Officer/Authoriser – all can assign, reassign and work on cases]</div>
+      <table>
+        <thead><tr><th>Loan Application No</th><th>Tranche</th><th>Product</th><th>Vehicle Type</th><th>Sent by (Ops Maker)</th><th>Sent on</th><th>Owner</th><th style="width:300px"></th></tr></thead>
+        <tbody>
+          ${rows.map((r) => `
+            <tr>
+              <td class="link">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td>
+              <td>${r[6] || '<span class="badge b-grey">Pool</span>'}</td>
+              <td style="text-align:right;white-space:nowrap">
+                ${r[6]
+                  ? `<select style="width:140px;display:inline-block"><option>Reassign to…</option><option>Anil Kumar</option><option>Meera Iyer</option></select> <button class="btn primary sm" data-nav="c-de">Open</button>`
+                  : `<select style="width:140px;display:inline-block"><option>Assign to…</option><option>Priya Nair</option><option>Anil Kumar</option><option>Meera Iyer</option></select> <button class="btn primary sm">Assign to Me</button>`}
+              </td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+/* ---------- Disbursement views ---------- */
+function screenViews() {
+  const failed = state.viewTab === "failed";
+  const rows = failed
+    ? [
+        ["APP-2026-094521", "Tranche 01", "LAN 0042 0101 0008 7655", "Auto", "CBS loan creation", "Timeout", "2 / 5", "04 Nov 2026 15:20", "Priya Nair"],
+        ["APP-2026-090118", "Tranche 02", "LAN 0042 0201 0002 4410", "CE/CV", "Collateral linkage", "Invalid collateral type", "5 / 5 · cooling 09:14", "04 Nov 2026 14:58", "Anil Kumar"]
+      ]
+    : [
+        ["APP-2026-094521", "Tranche 01", "LAN 0042 0101 0008 7654", "Auto", "Disbursed", "—", "1 / 5", "04 Nov 2026 15:18", "Priya Nair"],
+        ["APP-2026-094521", "Tranche 01", "LAN 0042 0101 0008 7655", "Auto", "Failed", "Timeout", "2 / 5", "04 Nov 2026 15:20", "Priya Nair"],
+        ["APP-2026-089932", "Tranche 01", "LAN 0042 0201 0002 3907", "CE/CV", "Disbursed", "—", "1 / 5", "04 Nov 2026 13:02", "Meera Iyer"]
+      ];
+  return `
+    <div class="card">
+      ${hd("DV", "DISBURSEMENT VIEWS", "Visible to Ops Maker and Ops Checker")}
+      <div class="tabs">
+        <div class="tab ${failed ? "on" : ""}" data-group="viewTab" data-value="failed">Disbursement Failed</div>
+        <div class="tab ${failed ? "" : "on"}" data-group="viewTab" data-value="all">All Disbursement Submitted</div>
+      </div>
+      <div class="card-bd" style="padding-bottom:0"><div class="alert info pending-note">ⓘ Columns are illustrative – the final list is to be provided by business.</div></div>
+      <table>
+        <thead><tr><th>Loan Application No</th><th>Tranche</th><th>LAN</th><th>Product</th><th>${failed ? "Failed API" : "Status"}</th><th>Error</th><th>Attempts</th><th>Last attempt</th><th>Owner</th></tr></thead>
+        <tbody>${rows.map((r) => `<tr><td class="link" data-nav="c-pd">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${failed ? r[4] : statusBadge(r[4])}</td><td>${r[5]}</td><td>${r[6]}</td><td>${r[7]}</td><td>${r[8]}</td></tr>`).join("")}</tbody>
+      </table>
+    </div>`;
+}
+
+/* ---------- Query list views ---------- */
+const QVIEWS = {
+  maker: [
+    ["m1", "My application queries raised to Sales", "Open"],
+    ["m2", "My application queries resolved by Sales", "Closed"],
+    ["m3", "My application queries raised by Credit", "Open"],
+    ["m4", "My application queries raised by Ops Checker", "Open"]
+  ],
+  checker: [
+    ["c1", "My application queries raised to Ops Maker", "Open"],
+    ["c2", "My application queries resolved by Ops Maker", "Closed"]
+  ]
+};
+
+function screenQueries() {
+  const views = QVIEWS[state.qRole];
+  const current = views.find((v) => v[0] === state.qTab) || views[0];
+  const by = { m1: ["Kavita Shah", "Amit Verma (Sales)"], m2: ["Kavita Shah", "Kavita Shah"], m3: ["Deepak Rao (Credit)", "Kavita Shah"], m4: ["Priya Nair (Ops Checker)", "Kavita Shah"], c1: ["Priya Nair", "Kavita Shah (Ops Maker)"], c2: ["Priya Nair", "Priya Nair"] }[current[0]];
+  const rows = [
+    ["APP-2026-094521", "Tranche 01", "Auto", "New", "Document", "Address proof mismatch; Re-upload required"],
+    ["APP-2026-093310", "Tranche 02", "CE/CV", "New", "Asset", "Invoice amount mismatch"],
+    ["APP-2026-092877", "Tranche 01", "Auto", "Used", "Applicant", "DOB mismatch in CBS"]
+  ];
+  return `
+    <div class="card">
+      ${hd("QL", "QUERY LIST VIEWS", state.qRole === "maker" ? "List views for CPA / Ops Maker" : "List views for Ops Checker")}
+      <div class="sub-hd"><span class="muted">Viewing as</span><div class="segs">${seg("qRole", "maker", "CPA / Ops Maker")}${seg("qRole", "checker", "Ops Checker")}</div></div>
+      <div class="tabs">${views.map(([k, l]) => `<div class="tab ${current[0] === k ? "on" : ""}" data-group="qTab" data-value="${k}">${l}</div>`).join("")}</div>
+      <table>
+        <thead><tr><th>Loan Application No</th><th>Tranche No</th><th>Product</th><th>Vehicle Type</th><th>Query Type</th><th>Query Sub Type</th><th>Created by</th><th>Created Date/Time</th><th>Current Owner</th><th>Current Status</th></tr></thead>
+        <tbody>${rows.map((r, i) => `<tr><td class="link">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${by[0]}</td><td>0${4 - i} Nov 2026 1${i}:20</td><td>${by[1]}</td><td>${statusBadge(current[2])}</td></tr>`).join("")}</tbody>
+      </table>
+    </div>`;
+}
+
+/* ---------- Previous stages (read-only) ---------- */
+function screenPrev() {
+  const stages = [
+    ["QDE", ["Basic Details", "KYC Details", "Occupation Details", "Dedupe and Eligibility"]],
+    ["DDE", ["Asset Details", "Valuation", "Loan Terms", "Income and Banking"]],
+    ["Credit Processing", ["Investigation Reports", "Exposure Analysis", "Credit Assessment", "CAM and Approval Log"]],
+    ["Sales Negotiation", ["Offer", "Repayment", "Agreement", "Disbursement Tranche"]]
+  ];
+  return `
+    <div class="card">
+      ${hd("RO", "PREVIOUS STAGES – READ ONLY", "All stages before Ops are available to Ops Maker and Ops Checker in view-only mode")}
+      <div class="card-bd">
+        <div class="stage-list">
+          ${stages.map(([s, subs]) => `<div class="stage-box"><h4>${s} <span>🔒</span></h4>${subs.map((x) => `<div class="row"><span>${x}</span><span class="link">View</span></div>`).join("")}</div>`).join("")}
+        </div>
+        <div class="tag" style="margin-top:10px">[Sub stage names are illustrative – reuse existing stage navigation in read-only mode]</div>
+      </div>
+    </div>
+    <div class="card">
+      ${hd("LT", "LOAN TERMS (READ ONLY)", "Opened from Previous Stages · fields and actions are disabled")}
+      <div class="card-bd">
+        <div class="form-grid">
+          <div class="field"><label>Loan Amount</label><input readonly value="₹ 30,35,000" /></div>
+          <div class="field"><label>Tenure (months)</label><input readonly value="60" /></div>
+          <div class="field"><label>ROI (%)</label><input readonly value="9.25" /></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ---------- Pop-ups ---------- */
+function modalQuery() {
+  const lvl = state.qLevel;
+  const target = lvl === "Application" ? "<option>APP-2026-094521</option>"
+    : lvl === "Asset" ? assets().map((a) => `<option>${a.label} · ${a.make} ${a.model}</option>`).join("")
+    : APPLICANTS.map((a) => `<option>${a.name} · ${a.type}</option>`).join("");
+  const subs = ["Re-upload required", "Address proof mismatch", "Name mismatch", "DOB mismatch in CBS", "Document illegible", "Signature missing"];
+  return `
+    <div class="modal">
+      <div class="modal-hd"><h3>Raise Query</h3><button class="x" data-modal="">✕</button></div>
+      <div class="modal-bd">
+        <div class="tag">[Existing: Query__c / query module – changes: level selection, multi-select Sub Type, optional Remarks]</div>
+        <div class="field"><label>Raise query at <span class="req">*</span></label><div class="segs">${seg("qLevel", "Application", "Application")}${seg("qLevel", "Asset", "Asset")}${seg("qLevel", "Applicant", "Applicant")}</div></div>
+        <div class="field"><label>${lvl} <span class="req">*</span></label><select>${target}</select></div>
+        <div class="form-grid" style="grid-template-columns:1fr 1fr">
+          <div class="field"><label>Query Type <span class="req">*</span></label><select><option>Document</option><option>Applicant</option><option>Asset</option></select></div>
+          <div class="field"><label>Assign to <span class="req">*</span></label><select><option>${isChecker() ? "Kavita Shah (Ops Maker)" : "Amit Verma (Sales)"}</option><option>Deepak Rao (Credit)</option></select></div>
+        </div>
+        <div class="field"><label>Query Sub Type <span class="req">*</span> <span class="muted">(select one or more)</span></label>
+          <div class="checks">${subs.map((s, i) => `<label><input type="checkbox" ${i < 2 ? "checked" : ""} style="width:auto" /> ${s}</label>`).join("")}</div>
+        </div>
+        <div class="field"><label>Query details (optional)</label><textarea rows="2" placeholder="Free text"></textarea></div>
+        <div class="field"><label>Remarks (optional)</label><textarea rows="2" maxlength="255"></textarea></div>
+      </div>
+      <div class="modal-ft"><button class="btn" data-modal="">Cancel</button><button class="btn primary" data-modal="">Submit Query</button></div>
+    </div>`;
+}
+
+function modalReversal() {
+  const ctx = {
+    "maker-dv": ["Stage Reversal – Ops Maker", "Sales Negotiation stage · Disbursement Tranche sub stage", "Amit Verma (Sales) – last Sales user who worked on this tranche in Sales Negotiation"],
+    "checker-dv": ["Send Back to Ops Maker", "Ops Maker stage · Document Verification sub stage", "Kavita Shah – last Ops Maker who worked on this tranche"],
+    "checker-pd": ["Send Back to Ops Maker", "Ops Maker stage · Payment Disbursement sub stage", "Kavita Shah – last Ops Maker who worked on this tranche"]
+  }[state.revCtx];
+  return `
+    <div class="modal">
+      <div class="modal-hd"><h3>${ctx[0]}</h3><button class="x" data-modal="">✕</button></div>
+      <div class="modal-bd">
+        <div class="tag">[Existing: StageReversalController / Stage_reversal_configuration__mdt reused]</div>
+        <div class="form-grid" style="grid-template-columns:1fr 1fr">
+          <div class="field"><label>Tranche</label><input readonly value="Tranche ${state.tranche}" /></div>
+          <div class="field"><label>Send back to</label><input readonly value="${ctx[1]}" /></div>
+        </div>
+        <div class="field"><label>Will be assigned to</label><input readonly value="${ctx[2]}" /></div>
+        <div class="field"><label>Reversal Reason <span class="req">*</span></label><textarea rows="3" placeholder="Enter the reason for sending the tranche back"></textarea></div>
+      </div>
+      <div class="modal-ft"><button class="btn" data-modal="">Cancel</button><button class="btn danger" data-modal="">Confirm Send Back</button></div>
+    </div>`;
+}
+
+function modalOpsChecklist() {
+  const items = ["Disbursement amount matches the sanctioned tranche amount", "Beneficiary account details verified", "Mandatory documents verified as FTR / NA", "Insurance is valid on the disbursement date"];
+  return `
+    <div class="modal">
+      <div class="modal-hd"><h3>Ops Checklist – Tranche ${state.tranche}</h3><button class="x" data-modal="">✕</button></div>
+      <div class="modal-bd">
+        <div class="alert info pending-note">ⓘ Checklist items and declaration text are pending from business – items shown are illustrative.</div>
+        <div class="checks" style="max-height:none">${items.map((s) => `<label><input type="checkbox" checked style="width:auto" /> ${s}</label>`).join("")}</div>
+        <label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" style="width:auto;margin-top:3px" /> <span><b>Declaration</b> <span style="color:var(--red-600)">*</span><br/><span class="muted">I confirm that the tranche is verified and can be disbursed.</span></span></label>
+      </div>
+      <div class="modal-ft"><button class="btn" data-modal="">Cancel</button><button class="btn primary" data-modal="">Confirm &amp; Submit Disbursement</button></div>
+    </div>`;
+}
+
+const MODALS = { query: modalQuery, reversal: modalReversal, opschecklist: modalOpsChecklist };
+
+/* ---------- Rendering ---------- */
+const RENDER = {
+  "m-de": () => screenDe(false),
+  "m-dv": () => screenDv(false),
+  "m-pd": () => screenPd(false),
+  pool: screenPool,
+  "c-de": () => screenDe(true),
+  "c-dv": () => screenDv(true),
+  "c-pd": () => screenPd(true),
+  "p-query": () => screenDv(false),
+  "p-rev": () => screenDv(false),
+  "p-chk": () => screenPd(true),
+  views: screenViews,
+  queries: screenQueries,
+  prev: screenPrev
+};
+const FIXED_MODAL = { "p-query": "query", "p-rev": "reversal", "p-chk": "opschecklist" };
+
+function page(key, modalKey) {
+  const modal = modalKey && MODALS[modalKey] ? `<div class="overlay">${MODALS[modalKey]()}</div>` : "";
+  return `<div class="screen-wrap">${RENDER[key]()}${modal}</div>`;
+}
+
+function renderScreen(key) {
+  return page(key, FIXED_MODAL[key] || state.modal);
+}
+
+function render() {
+  const all = state.screen === "all";
+  document.getElementById("app").classList.toggle("annot", state.annot === true);
+  document.getElementById("avatar").textContent = isChecker() ? "P" : "K";
+  document.getElementById("appMeta").textContent = `# APP-2026-094521 | Vehicle | ${state.product} | ${state.vehicle} | Tranche ${state.tranche} of 02`;
+  const list = !all && LIST_SCREENS.includes(state.screen);
+  document.getElementById("appHeader").style.display = list ? "none" : "";
+  document.getElementById("layout").classList.toggle("no-side", list);
+  renderReviewBar();
+  renderSidebar();
+  document.getElementById("main").innerHTML = all ? renderAll() : renderScreen(state.screen);
+  try { history.replaceState(null, "", "#" + state.screen); } catch (e) { /* sandboxed previews disallow history access */ }
+}
+
+function renderAll() {
+  const current = state.screen;
+  const modal = state.modal;
+  const revCtx = state.revCtx;
+  state.modal = "";
+  state.revCtx = "maker-dv";
+  const html = SCREENS.map(([v, l]) => {
+    state.screen = v;
+    return `<div class="all-title">${l}</div>${renderScreen(v)}`;
+  }).join("");
+  state.screen = current;
+  state.modal = modal;
+  state.revCtx = revCtx;
+  return html;
+}
+
+document.addEventListener("click", (e) => {
+  const modal = e.target.closest("[data-modal]");
+  if (modal && !modal.disabled) {
+    state.modal = modal.dataset.modal;
+    if (modal.dataset.ctx) state.revCtx = modal.dataset.ctx;
+    if (!state.modal && FIXED_MODAL[state.screen]) state.screen = state.screen === "p-chk" ? "c-pd" : "m-dv";
+    render();
+    return;
+  }
+  const nav = e.target.closest("[data-nav]");
+  if (nav && !nav.disabled) { state.screen = nav.dataset.nav; state.modal = ""; render(); return; }
+  const opt = e.target.closest("[data-group]");
+  if (opt) {
+    const raw = opt.dataset.value;
+    state[opt.dataset.group] = raw === "true" ? true : raw === "false" ? false : raw;
+    if (opt.dataset.group === "screen") state.modal = "";
+    if (opt.dataset.group === "qRole") state.qTab = raw === "maker" ? "m1" : "c1";
+    if (opt.dataset.group === "screen" && raw === "p-rev") state.revCtx = "maker-dv";
+    render();
+  }
+});
+
+const initial = location.hash.slice(1);
+if (initial === "all" || RENDER[initial]) state.screen = initial;
+render();
+</script>
+</body>
+</html>
